@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+{% load static %}
+<!doctype html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Do-Fu-Ióh</title>
-  {% load static %}
   <link rel="stylesheet" href="{% static 'core/css/styles.css' %}" />
 </head>
 <body>
@@ -13,7 +13,7 @@
       <div>
         <p class="eyebrow">Django + Supabase + Render</p>
         <h1>Do-Fu-Ióh táctico</h1>
-        <p>Juego híbrido de cartas + tablero: invocas desde la mano y luego controlas unidades en una grilla 2D con PA y PM por turno.</p>
+        <p>Combate por coordenadas reales sobre una grilla de 12x15 con fases de turno (main, combat, end).</p>
       </div>
       <div class="hero-actions">
         <button id="refresh-state">Refrescar partida</button>
@@ -39,7 +39,7 @@
         </div>
       </div>
       <div class="panel">
-        <h2>Cartas / Invocaciones</h2>
+        <h2>Cartas</h2>
         <div class="catalog-toolbar">
           <select id="family-filter"><option value="">Todas las familias</option></select>
         </div>
@@ -60,7 +60,7 @@
 
     <section class="grid board-grid">
       <div class="panel">
-        <h3>Tablero táctico 6x4</h3>
+        <h3>Tablero táctico 12x15</h3>
         <div id="board" class="board"></div>
       </div>
       <div class="panel">
@@ -80,6 +80,7 @@
           <label>Objetivo (id) <input id="target-id" placeholder="u-..." /></label>
           <button id="attack-btn">Atacar unidad</button>
           <button id="direct-attack-btn">Ataque directo</button>
+          <button id="next-phase-btn">Siguiente fase</button>
           <button id="end-turn-btn" class="ghost">Terminar turno</button>
         </div>
       </div>

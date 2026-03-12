@@ -20,10 +20,9 @@ async function api(url, options = {}) {
 }
 
 function renderCatalog() {
-  const catalog = $('#catalog');
   const filter = familyFilter.value;
   const cards = appState.cards.filter((card) => !filter || card.family === filter);
-  catalog.innerHTML = cards.map(card => `
+  $('#catalog').innerHTML = cards.map(card => `
     <article class="card">
       <img src="${card.image}" alt="${card.name}" />
       <h4>${card.name}</h4>
@@ -85,7 +84,7 @@ function renderBoard() {
       cells.push(`
         <div class="cell ${ownerClass}">
           <div class="coord">${x},${y}</div>
-          ${unit ? `<div class="token"><strong>${unit.card.name}</strong><span>#${shortId(unit.id)}</span><span>PdV ${unit.current_hp} · PdC ${unit.current_shell}</span><span>PA ${unit.ap_left} · PM ${unit.pm_left}</span></div>` : '<div class="small">·</div>'}
+          ${unit ? `<div class="token"><strong>${unit.card.name}</strong><span>#${shortId(unit.id)}</span><span>PdV ${unit.current_hp} · PdC ${unit.current_shell}</span><span>Ataques ${unit.attacks_left} · Movimiento ${unit.move_left}</span></div>` : '<div class="small">·</div>'}
         </div>
       `);
     }
@@ -108,8 +107,9 @@ function renderBoard() {
   $('#match-summary').innerHTML = `
     <div><strong>Sala:</strong> ${appState.roomCode || '-'}</div>
     <div><strong>Tu lado:</strong> ${mySide || '-'}</div>
-    <div><strong>Turno:</strong> ${match.turn}</div>
-    <div><strong>Ronda:</strong> ${match.turn_number}</div>
+    <div><strong>Turno:</strong> ${match.turn.active_side}</div>
+    <div><strong>Número de turno:</strong> ${match.turn.number}</div>
+    <div><strong>Fase:</strong> ${match.turn.phase}</div>
     <div><strong>Tu vida:</strong> ${me?.life ?? '-'} · <strong>Energía:</strong> ${me?.energy ?? '-'}/${me?.max_energy ?? '-'}</div>
     <div><strong>Vida rival:</strong> ${enemy?.life ?? '-'}</div>
     <div><strong>Biblioteca rival:</strong> ${enemy?.library_count ?? 0} · <strong>Mano rival:</strong> ${enemy?.hand_count ?? 0}</div>
@@ -120,7 +120,7 @@ function renderBoard() {
   const enemyUnits = enemy?.units || [];
   $('#unit-list').innerHTML = `
     <strong>Tus unidades</strong>
-    ${ownUnits.map(u => `<div>#${shortId(u.id)} · ${u.card.name} (${u.x},${u.y}) · PA ${u.ap_left} · PM ${u.pm_left}</div>`).join('') || '<div>Sin unidades propias.</div>'}
+    ${ownUnits.map(u => `<div>#${shortId(u.id)} · ${u.card.name} (${u.x},${u.y}) · ATK ${u.attacks_left} · MOV ${u.move_left}</div>`).join('') || '<div>Sin unidades propias.</div>'}
     <hr />
     <strong>Unidades enemigas</strong>
     ${enemyUnits.map(u => `<div>#${shortId(u.id)} · ${u.card.name} (${u.x},${u.y})</div>`).join('') || '<div>Sin unidades enemigas.</div>'}
@@ -212,6 +212,7 @@ $('#summon-btn').addEventListener('click', () => action('summon').catch(err => a
 $('#move-btn').addEventListener('click', () => action('move').catch(err => alert(err.message)));
 $('#attack-btn').addEventListener('click', () => action('attack').catch(err => alert(err.message)));
 $('#direct-attack-btn').addEventListener('click', () => action('direct_attack').catch(err => alert(err.message)));
+$('#next-phase-btn').addEventListener('click', () => action('next_phase').catch(err => alert(err.message)));
 $('#end-turn-btn').addEventListener('click', () => action('end_turn').catch(err => alert(err.message)));
 familyFilter.addEventListener('change', renderCatalog);
 

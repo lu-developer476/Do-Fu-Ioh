@@ -58,7 +58,7 @@ Este repo ya está preparado para deploy:
   ```
 - **Start Command**
   ```bash
-  gunicorn do_fu_ioh.wsgi:application
+  gunicorn do_fu_ioh.wsgi:application --bind 0.0.0.0:$PORT
   ```
 
 `render.yaml` incluye configuración base para web service. Solo definí las variables de entorno y `DATABASE_URL` apuntando a Supabase.

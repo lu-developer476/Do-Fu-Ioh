@@ -3,7 +3,7 @@ services:
     name: do-fu-ioh
     env: python
     buildCommand: "./build.sh"
-    startCommand: "gunicorn do_fu_ioh.wsgi:application"
+    startCommand: "gunicorn do_fu_ioh.wsgi:application --bind 0.0.0.0:$PORT"
     envVars:
       - key: DJANGO_SECRET_KEY
         generateValue: true

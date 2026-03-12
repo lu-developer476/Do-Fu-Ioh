@@ -1,11 +1,9 @@
-import json
 import random
 import string
-from pathlib import Path
 
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models.signals import post_migrate, post_save
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 
@@ -17,9 +15,17 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     avatar_url = models.URLField(blank=True, default='')
 
+    def __str__(self):
+        return f'Perfil de {self.user.username}'
+
 
 class MonsterCard(models.Model):
-    STAGES = [('base', 'Base'), ('fusion', 'Fusión'), ('evolution', 'Evolución')]
+    STAGES = [
+        ('base', 'Base'),
+        ('fusion', 'Fusión'),
+        ('evolution', 'Evolución'),
+    ]
+
     family = models.CharField(max_length=40, db_index=True)
     name = models.CharField(max_length=120, unique=True)
     slug = models.SlugField(max_length=140, unique=True)
@@ -54,7 +60,7 @@ class Deck(models.Model):
         ordering = ['-updated_at']
 
     def __str__(self):
-        return f"{self.user.username}: {self.name}"
+        return f'{self.user.username}: {self.name}'
 
 
 class DeckEntry(models.Model):
@@ -64,6 +70,9 @@ class DeckEntry(models.Model):
 
     class Meta:
         unique_together = ('deck', 'card')
+
+    def __str__(self):
+        return f'{self.deck.name} - {self.card.name} x{self.quantity}'
 
 
 class MatchRecord(models.Model):
@@ -79,43 +88,11 @@ class MatchRecord(models.Model):
     class Meta:
         ordering = ['-updated_at']
 
+    def __str__(self):
+        return f'Partida {self.room_code} - {self.status}'
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         UserProfile.objects.create(user=instance)
-
-
-def _slugify(value: str) -> str:
-    import unicodedata
-    value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
-    value = ''.join(ch.lower() if ch.isalnum() else '-' for ch in value)
-    value = '-'.join(part for part in value.split('-') if part)
-    return value[:140]
-
-
-@receiver(post_migrate)
-def seed_cards(sender, **kwargs):
-    if sender.name != 'core':
-        return
-    data_path = Path(__file__).resolve().parent.parent / 'data' / 'cards.json'
-    if not data_path.exists():
-        return
-    cards = json.loads(data_path.read_text(encoding='utf-8'))
-    for item in cards:
-        MonsterCard.objects.update_or_create(
-            slug=_slugify(item['name']),
-            defaults={
-                'family': item['family'],
-                'name': item['name'],
-                'stage': item['stage'],
-                'level_min': item['level_min'],
-                'level_max': item['level_max'],
-                'hp': item['hp'],
-                'shell': item['shell'],
-                'action_points': item['action_points'],
-                'movement_points': item['movement_points'],
-                'description': item['description'],
-                'image': item['image'],
-            }
-        )

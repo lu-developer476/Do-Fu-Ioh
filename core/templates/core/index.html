@@ -13,7 +13,7 @@
       <div>
         <p class="eyebrow">Django + Supabase + Render</p>
         <h1>Do-Fu-Ióh táctico</h1>
-        <p>Combate por coordenadas reales sobre una grilla de 12x15 con fases de turno (main, combat, end).</p>
+        <p>Cartas que invocan unidades tácticas en un tablero por turnos.</p>
       </div>
       <div class="hero-actions">
         <button id="refresh-state">Refrescar partida</button>
@@ -47,46 +47,26 @@
       </div>
     </section>
 
-    <section class="grid two-cols">
+    <section class="grid match-layout">
       <div class="panel">
-        <h2>Tu mano</h2>
-        <div id="hand" class="card-row"></div>
-      </div>
-      <div class="panel">
-        <h2>Estado de la partida</h2>
-        <div id="match-summary" class="stack small"></div>
-      </div>
-    </section>
-
-    <section class="grid board-grid">
-      <div class="panel">
-        <h3>Tablero táctico 12x15</h3>
+        <h2>Tablero táctico 12x15</h2>
+        <p class="small">Clic en carta de tu mano para preparar invocación. Clic en unidad propia para mover/atacar.</p>
         <div id="board" class="board"></div>
       </div>
-      <div class="panel">
-        <h3>Acciones tácticas</h3>
-        <div class="stack">
-          <label>Índice carta mano <input id="hand-index" type="number" min="0" value="0" /></label>
-          <label>Invocar en X <input id="summon-x" type="number" min="0" value="0" /></label>
-          <label>Invocar en Y <input id="summon-y" type="number" min="0" value="0" /></label>
-          <button id="summon-btn">Invocar unidad</button>
-          <hr />
-          <label>Unidad propia (id) <input id="unit-id" placeholder="u-..." /></label>
-          <label>Mover a X <input id="move-x" type="number" min="0" value="0" /></label>
-          <label>Mover a Y <input id="move-y" type="number" min="0" value="0" /></label>
-          <button id="move-btn">Mover</button>
-          <hr />
-          <label>Atacante (id) <input id="attacker-id" placeholder="u-..." /></label>
-          <label>Objetivo (id) <input id="target-id" placeholder="u-..." /></label>
-          <button id="attack-btn">Atacar unidad</button>
-          <button id="direct-attack-btn">Ataque directo</button>
-          <button id="next-phase-btn">Siguiente fase</button>
+      <div class="stack">
+        <div class="panel">
+          <h2>Tu mano</h2>
+          <div id="hand" class="card-row"></div>
+        </div>
+        <div class="panel">
+          <h2>Estado y selección</h2>
+          <div id="match-summary" class="stack small"></div>
           <button id="end-turn-btn" class="ghost">Terminar turno</button>
         </div>
-      </div>
-      <div class="panel">
-        <h3>Unidades en juego</h3>
-        <div id="unit-list" class="stack small"></div>
+        <div class="panel">
+          <h2>Unidades</h2>
+          <div id="unit-list" class="stack small"></div>
+        </div>
       </div>
     </section>
 

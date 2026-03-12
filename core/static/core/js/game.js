@@ -3,6 +3,8 @@ let appState = {
   cards: [],
   roomCode: null,
   match: null,
+  selectedHandIndex: null,
+  selectedUnitId: null,
 };
 
 const $ = (sel) => document.querySelector(sel);
@@ -52,11 +54,98 @@ function resolveSides() {
 }
 
 function findUnitAt(units = [], x, y) {
-  return units.find(u => u.x === x && u.y === y);
+  return units.find((u) => u.x === x && u.y === y);
 }
 
 function shortId(unitId) {
   return unitId?.slice(-4) || '----';
+}
+
+function isMyTurn(mySide) {
+  return Boolean(appState.match && mySide && appState.match.turn.active_side === mySide);
+}
+
+function summonRowsForSide(side, boardHeight) {
+  return side === 'host'
+    ? [0, 1, 2]
+    : [boardHeight - 1, boardHeight - 2, boardHeight - 3];
+}
+
+function computeMoveTargets(selectedUnit, meUnits, enemyUnits) {
+  if (!selectedUnit || selectedUnit.pm_current <= 0 || !selectedUnit.can_move) return new Set();
+  const occupied = new Set([...meUnits, ...enemyUnits].map((u) => `${u.x},${u.y}`));
+  const targets = new Set();
+  for (let dx = -selectedUnit.pm_current; dx <= selectedUnit.pm_current; dx += 1) {
+    for (let dy = -selectedUnit.pm_current; dy <= selectedUnit.pm_current; dy += 1) {
+      const dist = Math.abs(dx) + Math.abs(dy);
+      if (dist === 0 || dist > selectedUnit.pm_current) continue;
+      const x = selectedUnit.x + dx;
+      const y = selectedUnit.y + dy;
+      const key = `${x},${y}`;
+      if (occupied.has(key)) continue;
+      targets.add(key);
+    }
+  }
+  return targets;
+}
+
+function computeAttackTargets(selectedUnit, enemyUnits) {
+  if (!selectedUnit || selectedUnit.pa_current <= 0 || !selectedUnit.can_act) return new Set();
+  const baseRange = selectedUnit.card.stage === 'base' ? 1 : 2;
+  const attackRange = Math.min(5, baseRange + Math.floor(selectedUnit.card.action_points / 2));
+  return new Set(enemyUnits
+    .filter((enemy) => Math.abs(enemy.x - selectedUnit.x) + Math.abs(enemy.y - selectedUnit.y) <= attackRange)
+    .map((enemy) => enemy.id));
+}
+
+function isUnitSummonedThisTurn(unit) {
+  return appState.match && unit.summoned_turn === appState.match.turn.number;
+}
+
+async function sendAction(actionPayload) {
+  const data = await api(`/api/match/${appState.roomCode}/action/`, {
+    method: 'POST',
+    body: JSON.stringify(actionPayload),
+  });
+  appState.match = data.match;
+  renderBoard();
+}
+
+async function onCellClick(x, y) {
+  if (!appState.match || !appState.roomCode) return;
+  const { me, enemy, mySide } = resolveSides();
+  if (!me || !enemy || !isMyTurn(mySide)) return;
+
+  const myUnit = findUnitAt(me.units, x, y);
+  const enemyUnit = findUnitAt(enemy.units, x, y);
+  const selectedHandCard = me.hand[appState.selectedHandIndex];
+  const selectedUnit = me.units.find((u) => u.id === appState.selectedUnitId);
+
+  if (myUnit) {
+    appState.selectedUnitId = myUnit.id;
+    appState.selectedHandIndex = null;
+    renderBoard();
+    return;
+  }
+
+  if (selectedHandCard) {
+    await sendAction({ action: 'summon', hand_index: appState.selectedHandIndex, x, y });
+    appState.selectedHandIndex = null;
+    return;
+  }
+
+  if (!selectedUnit || isUnitSummonedThisTurn(selectedUnit)) return;
+
+  if (enemyUnit) {
+    const validAttackTargets = computeAttackTargets(selectedUnit, enemy.units);
+    if (!validAttackTargets.has(enemyUnit.id)) return;
+    await sendAction({ action: 'attack', attacker_id: selectedUnit.id, target_id: enemyUnit.id });
+    return;
+  }
+
+  const validMoveTargets = computeMoveTargets(selectedUnit, me.units, enemy.units);
+  if (!validMoveTargets.has(`${x},${y}`)) return;
+  await sendAction({ action: 'move', unit_id: selectedUnit.id, to_x: x, to_y: y });
 }
 
 function renderBoard() {
@@ -73,6 +162,11 @@ function renderBoard() {
   const { me, enemy, mySide } = resolveSides();
   const width = match.board.width;
   const height = match.board.height;
+  const selectedUnit = me?.units?.find((u) => u.id === appState.selectedUnitId) || null;
+  const selectedHandCard = me?.hand?.[appState.selectedHandIndex] || null;
+  const moveTargets = computeMoveTargets(selectedUnit, me?.units || [], enemy?.units || []);
+  const attackTargets = computeAttackTargets(selectedUnit, enemy?.units || []);
+  const summonRows = summonRowsForSide(mySide, height);
 
   const cells = [];
   for (let y = 0; y < height; y += 1) {
@@ -81,59 +175,97 @@ function renderBoard() {
       const enemyUnit = findUnitAt(enemy?.units, x, y);
       const unit = ownUnit || enemyUnit;
       const ownerClass = ownUnit ? 'ally' : (enemyUnit ? 'enemy' : 'empty');
+      const key = `${x},${y}`;
+      const canSummon = Boolean(selectedHandCard) && summonRows.includes(y) && !unit && isMyTurn(mySide);
+      const canMoveHere = moveTargets.has(key) && isMyTurn(mySide);
+      const isSelected = ownUnit && selectedUnit && ownUnit.id === selectedUnit.id;
+      const canAttackThis = enemyUnit && attackTargets.has(enemyUnit.id) && isMyTurn(mySide);
+      const hintClass = canSummon ? 'hint-summon' : canMoveHere ? 'hint-move' : canAttackThis ? 'hint-attack' : '';
+
       cells.push(`
-        <div class="cell ${ownerClass}">
+        <button class="cell ${ownerClass} ${hintClass} ${isSelected ? 'selected' : ''}" data-x="${x}" data-y="${y}">
           <div class="coord">${x},${y}</div>
-          ${unit ? `<div class="token"><strong>${unit.card.name}</strong><span>#${shortId(unit.id)}</span><span>PdV ${unit.current_hp} · PdC ${unit.current_shell}</span><span>Ataques ${unit.attacks_left} · Movimiento ${unit.move_left}</span></div>` : '<div class="small">·</div>'}
-        </div>
+          ${unit
+            ? `<div class="token"><strong>${unit.card.name}</strong><span>#${shortId(unit.id)}</span><span>PdV ${unit.hp_current} · PdC ${unit.shell_current}</span><span>PA ${unit.pa_current} · PM ${unit.pm_current}</span></div>`
+            : '<div class="small">·</div>'}
+        </button>
       `);
     }
   }
   $('#board').innerHTML = cells.join('');
 
-  $('#hand').innerHTML = (me?.hand || []).map((card, index) => `
-    <article class="card">
-      <img src="${card.image}" alt="${card.name}" />
-      <h4>#${index} · ${card.name}</h4>
-      <div class="meta">
-        <span class="badge">${card.family}</span>
-        <span class="badge">${card.stage}</span>
-        <span class="badge">PA ${card.action_points}</span>
-        <span class="badge">PM ${card.movement_points}</span>
-      </div>
-    </article>
-  `).join('') || '<div class="small">No quedan cartas en mano.</div>';
+  document.querySelectorAll('.cell').forEach((cell) => {
+    cell.addEventListener('click', () => {
+      const x = Number(cell.dataset.x);
+      const y = Number(cell.dataset.y);
+      onCellClick(x, y).catch((err) => alert(err.message));
+    });
+  });
+
+  $('#hand').innerHTML = (me?.hand || []).map((card, index) => {
+    const selectedClass = appState.selectedHandIndex === index ? 'selected' : '';
+    return `
+      <button class="card hand-card ${selectedClass}" data-hand-index="${index}">
+        <img src="${card.image}" alt="${card.name}" />
+        <h4>#${index} · ${card.name}</h4>
+        <div class="meta">
+          <span class="badge">Coste ${Math.max(1, card.level_min)}</span>
+          <span class="badge">PA ${card.action_points}</span>
+          <span class="badge">PM ${card.movement_points}</span>
+        </div>
+      </button>
+    `;
+  }).join('') || '<div class="small">No quedan cartas en mano.</div>';
+
+  document.querySelectorAll('.hand-card').forEach((cardBtn) => {
+    cardBtn.addEventListener('click', () => {
+      if (!isMyTurn(mySide)) return;
+      const index = Number(cardBtn.dataset.handIndex);
+      appState.selectedHandIndex = appState.selectedHandIndex === index ? null : index;
+      appState.selectedUnitId = null;
+      renderBoard();
+    });
+  });
+
+  const selectedText = selectedHandCard
+    ? `Carta seleccionada: #${appState.selectedHandIndex} ${selectedHandCard.name}`
+    : selectedUnit
+      ? `Unidad seleccionada: ${selectedUnit.card.name} (#${shortId(selectedUnit.id)})`
+      : 'Sin selección activa';
 
   $('#match-summary').innerHTML = `
     <div><strong>Sala:</strong> ${appState.roomCode || '-'}</div>
     <div><strong>Tu lado:</strong> ${mySide || '-'}</div>
-    <div><strong>Turno:</strong> ${match.turn.active_side}</div>
+    <div><strong>Turno activo:</strong> ${match.turn.active_side}</div>
     <div><strong>Número de turno:</strong> ${match.turn.number}</div>
-    <div><strong>Fase:</strong> ${match.turn.phase}</div>
     <div><strong>Tu vida:</strong> ${me?.life ?? '-'} · <strong>Energía:</strong> ${me?.energy ?? '-'}/${me?.max_energy ?? '-'}</div>
-    <div><strong>Vida rival:</strong> ${enemy?.life ?? '-'}</div>
-    <div><strong>Biblioteca rival:</strong> ${enemy?.library_count ?? 0} · <strong>Mano rival:</strong> ${enemy?.hand_count ?? 0}</div>
+    <div><strong>Rival vida:</strong> ${enemy?.life ?? '-'}</div>
+    <div><strong>Tu mazo:</strong> ${me?.library_count ?? 0} · <strong>Tu mano:</strong> ${me?.hand?.length ?? 0}</div>
+    <div><strong>Mazo rival:</strong> ${enemy?.library_count ?? 0} · <strong>Mano rival:</strong> ${enemy?.hand_count ?? 0}</div>
     <div><strong>Ganador:</strong> ${match.winner || 'sin definir'}</div>
+    <div><strong>Selección:</strong> ${selectedText}</div>
   `;
 
   const ownUnits = me?.units || [];
   const enemyUnits = enemy?.units || [];
   $('#unit-list').innerHTML = `
     <strong>Tus unidades</strong>
-    ${ownUnits.map(u => `<div>#${shortId(u.id)} · ${u.card.name} (${u.x},${u.y}) · ATK ${u.attacks_left} · MOV ${u.move_left}</div>`).join('') || '<div>Sin unidades propias.</div>'}
+    ${ownUnits.map((u) => `<div>#${shortId(u.id)} · ${u.card.name} (${u.x},${u.y}) · PdV ${u.hp_current} · PA ${u.pa_current} · PM ${u.pm_current}</div>`).join('') || '<div>Sin unidades propias.</div>'}
     <hr />
     <strong>Unidades enemigas</strong>
-    ${enemyUnits.map(u => `<div>#${shortId(u.id)} · ${u.card.name} (${u.x},${u.y})</div>`).join('') || '<div>Sin unidades enemigas.</div>'}
+    ${enemyUnits.map((u) => `<div>#${shortId(u.id)} · ${u.card.name} (${u.x},${u.y}) · PdV ${u.hp_current}</div>`).join('') || '<div>Sin unidades enemigas.</div>'}
   `;
 
-  $('#log').innerHTML = (match.log || []).slice().reverse().map(item => `<div class="log-item">${item}</div>`).join('');
+  $('#log').innerHTML = (match.event_log || []).slice().reverse().map((item) => (
+    `<div class="log-item">T${item.turn} · <strong>${item.event}</strong> · ${item.message}</div>`
+  )).join('');
 }
 
 async function loadCards() {
   const data = await api('/api/cards/');
   appState.cards = data.cards;
-  const families = [...new Set(data.cards.map(card => card.family))];
-  familyFilter.innerHTML = '<option value="">Todas las familias</option>' + families.map(f => `<option value="${f}">${f}</option>`).join('');
+  const families = [...new Set(data.cards.map((card) => card.family))];
+  familyFilter.innerHTML = '<option value="">Todas las familias</option>' + families.map((f) => `<option value="${f}">${f}</option>`).join('');
   renderCatalog();
 }
 
@@ -162,6 +294,8 @@ async function createMatch() {
   const data = await api('/api/match/create/', { method: 'POST', body: '{}' });
   appState.roomCode = data.room_code;
   appState.match = data.match;
+  appState.selectedHandIndex = null;
+  appState.selectedUnitId = null;
   renderBoard();
 }
 
@@ -170,6 +304,8 @@ async function joinMatch() {
   const data = await api(`/api/match/${code}/join/`, { method: 'POST', body: '{}' });
   appState.roomCode = data.room_code;
   appState.match = data.match;
+  appState.selectedHandIndex = null;
+  appState.selectedUnitId = null;
   renderBoard();
 }
 
@@ -180,40 +316,29 @@ async function refreshMatch() {
   renderBoard();
 }
 
-async function action(kind) {
-  if (!appState.roomCode) return alert('Primero crea o únete a una sala.');
-  const payload = {
-    action: kind,
-    hand_index: Number($('#hand-index').value),
-    x: Number($('#summon-x').value),
-    y: Number($('#summon-y').value),
-    unit_id: $('#unit-id').value.trim(),
-    to_x: Number($('#move-x').value),
-    to_y: Number($('#move-y').value),
-    attacker_id: $('#attacker-id').value.trim(),
-    target_id: $('#target-id').value.trim(),
-  };
-  const data = await api(`/api/match/${appState.roomCode}/action/`, { method: 'POST', body: JSON.stringify(payload) });
-  appState.match = data.match;
-  renderBoard();
+async function endTurn() {
+  if (!appState.roomCode) return;
+  await sendAction({ action: 'end_turn' });
+  appState.selectedHandIndex = null;
+  appState.selectedUnitId = null;
 }
 
-$('#register-btn').addEventListener('click', () => authAction('register').catch(err => alert(err.message)));
-$('#login-btn').addEventListener('click', () => authAction('login').catch(err => alert(err.message)));
+$('#register-btn').addEventListener('click', () => authAction('register').catch((err) => alert(err.message)));
+$('#login-btn').addEventListener('click', () => authAction('login').catch((err) => alert(err.message)));
 $('#logout-btn').addEventListener('click', async () => {
   await api('/api/auth/logout/', { method: 'POST', body: '{}' });
   appState.me = null;
+  appState.roomCode = null;
+  appState.match = null;
+  appState.selectedHandIndex = null;
+  appState.selectedUnitId = null;
   $('#auth-status').textContent = 'Sesión cerrada.';
+  renderBoard();
 });
-$('#create-match').addEventListener('click', () => createMatch().catch(err => alert(err.message)));
-$('#join-match').addEventListener('click', () => joinMatch().catch(err => alert(err.message)));
-$('#refresh-state').addEventListener('click', () => refreshMatch().catch(err => alert(err.message)));
-$('#summon-btn').addEventListener('click', () => action('summon').catch(err => alert(err.message)));
-$('#move-btn').addEventListener('click', () => action('move').catch(err => alert(err.message)));
-$('#attack-btn').addEventListener('click', () => action('attack').catch(err => alert(err.message)));
-$('#direct-attack-btn').addEventListener('click', () => action('direct_attack').catch(err => alert(err.message)));
-$('#next-phase-btn').addEventListener('click', () => action('next_phase').catch(err => alert(err.message)));
-$('#end-turn-btn').addEventListener('click', () => action('end_turn').catch(err => alert(err.message)));
+$('#create-match').addEventListener('click', () => createMatch().catch((err) => alert(err.message)));
+$('#join-match').addEventListener('click', () => joinMatch().catch((err) => alert(err.message)));
+$('#refresh-state').addEventListener('click', () => refreshMatch().catch((err) => alert(err.message)));
+$('#end-turn-btn').addEventListener('click', () => endTurn().catch((err) => alert(err.message)));
 familyFilter.addEventListener('change', renderCatalog);
 
 loadCards().then(loadProfile).then(renderBoard);

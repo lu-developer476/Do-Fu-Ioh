@@ -17,4 +17,9 @@ urlpatterns = [
     path('api/match/<str:room_code>/', views.get_match, name='get_match'),
     path('api/match/<str:room_code>/join/', views.join_match, name='join_match'),
     path('api/match/<str:room_code>/action/', views.match_action, name='match_action'),
+    path('api/match/<str:room_code>/draw/', views.draw_card, name='draw_card'),
+    path('api/match/<str:room_code>/summon/', views.summon_unit, name='summon_unit'),
+    path('api/match/<str:room_code>/move/', views.move_unit, name='move_unit'),
+    path('api/match/<str:room_code>/attack/', views.attack_unit, name='attack_unit'),
+    path('api/match/<str:room_code>/end-turn/', views.end_turn, name='end_turn'),
 ]

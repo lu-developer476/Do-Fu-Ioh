@@ -16,7 +16,7 @@ HAND_SIZE = 3
 DEFAULT_DECK_SIZE = 10
 BOARD_WIDTH = 12
 BOARD_HEIGHT = 15
-TURN_PHASES = ('main', 'combat', 'end')
+MAX_SUMMONS_PER_TURN = 1
 
 
 def _payload(request):
@@ -213,9 +213,26 @@ def _create_initial_state(host, guest=None):
     guest_deck = _get_active_deck(guest) if guest else None
     return {
         'winner': None,
-        'board': {'width': BOARD_WIDTH, 'height': BOARD_HEIGHT, 'units': []},
-        'turn': {'number': 1, 'active_side': 'host', 'phase': 'main'},
-        'log': ['Partida creada: tablero 12x15 listo.'],
+        'board': {'width': BOARD_WIDTH, 'height': BOARD_HEIGHT},
+        'turn': {
+            'number': 1,
+            'active_side': 'host',
+            'actions': {
+                'summons': 0,
+                'draw_used': False,
+                'moved_units': [],
+                'attacked_units': [],
+            },
+        },
+        'discard': [],
+        'units': [],
+        'event_log': [
+            {
+                'turn': 1,
+                'event': 'match_created',
+                'message': 'Partida creada: tablero 12x15 listo.',
+            }
+        ],
         'host': _new_player_state(host, host_deck),
         'guest': _new_player_state(guest, guest_deck) if guest else None,
     }
@@ -247,19 +264,19 @@ def _is_inside_board(x, y):
 
 
 def _units_for_side(state, side):
-    return [u for u in state['board']['units'] if u['owner'] == side and u['current_hp'] > 0]
+    return [u for u in state['units'] if u['owner'] == side and u['hp_current'] > 0]
 
 
 def _find_unit(state, unit_id):
-    for unit in state['board']['units']:
+    for unit in state['units']:
         if unit['id'] == unit_id:
             return unit
     return None
 
 
 def _find_unit_by_pos(state, x, y):
-    for unit in state['board']['units']:
-        if unit['x'] == x and unit['y'] == y and unit['current_hp'] > 0:
+    for unit in state['units']:
+        if unit['x'] == x and unit['y'] == y and unit['hp_current'] > 0:
             return unit
     return None
 
@@ -298,8 +315,17 @@ def _start_turn(state, side):
     player['energy'] = player['max_energy']
     _draw_card(player)
     for unit in _units_for_side(state, side):
-        unit['move_left'] = unit['card']['movement_points']
-        unit['attacks_left'] = max(1, unit['card']['action_points'] // 2)
+        unit['pm_current'] = unit['card']['movement_points']
+        unit['pa_current'] = unit['card']['action_points']
+        unit['can_move'] = True
+        unit['can_act'] = True
+
+    state['turn']['actions'] = {
+        'summons': 0,
+        'draw_used': False,
+        'moved_units': [],
+        'attacked_units': [],
+    }
 
 
 def _require_turn(state, side):
@@ -307,25 +333,11 @@ def _require_turn(state, side):
     return turn['active_side'] == side and not state.get('winner')
 
 
-def _active_phase(state):
-    return state['turn']['phase']
-
-
-def _advance_phase(state):
-    current = state['turn']['phase']
-    idx = TURN_PHASES.index(current)
-    if idx + 1 < len(TURN_PHASES):
-        state['turn']['phase'] = TURN_PHASES[idx + 1]
-        return True
-    return False
-
-
 def _end_turn(state):
     current_side = state['turn']['active_side']
     next_side = _enemy_side(current_side)
     state['turn']['active_side'] = next_side
     state['turn']['number'] += 1
-    state['turn']['phase'] = 'main'
     _start_turn(state, next_side)
 
 
@@ -351,6 +363,38 @@ def _public_state(state, viewer_side):
         public_state['guest']['units'] = _serialize_units(state, 'guest')
 
     return public_state
+
+
+def _safe_int(value, default=-1):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _append_event(state, event, message):
+    state['event_log'].append({'turn': state['turn']['number'], 'event': event, 'message': message})
+
+
+def _validate_match_for_action(request, room_code):
+    if not request.user.is_authenticated:
+        return None, None, None, JsonResponse({'status': 'error', 'message': 'No autenticado'}, status=401)
+    match = get_object_or_404(MatchRecord, room_code=room_code)
+    side = _match_side(match, request.user)
+    if not side:
+        return None, None, None, JsonResponse({'status': 'error', 'message': 'No perteneces a esta sala'}, status=403)
+    state = deepcopy(match.game_state)
+    if not state.get('guest'):
+        return None, None, None, JsonResponse({'status': 'error', 'message': 'Esperando rival'}, status=409)
+    if not _require_turn(state, side):
+        return None, None, None, JsonResponse({'status': 'error', 'message': 'No es tu turno'}, status=409)
+    return match, state, side, None
+
+
+def _save_and_respond(match, state, side, room_code):
+    match.game_state = state
+    match.save(update_fields=['game_state', 'status', 'winner', 'updated_at'])
+    return JsonResponse({'status': 'ok', 'room_code': room_code, 'match': _public_state(state, side)})
 
 
 @require_http_methods(['POST'])
@@ -397,158 +441,190 @@ def get_match(request, room_code):
 
 @require_http_methods(['POST'])
 @csrf_exempt
-def match_action(request, room_code):
-    if not request.user.is_authenticated:
-        return JsonResponse({'status': 'error', 'message': 'No autenticado'}, status=401)
-    match = get_object_or_404(MatchRecord, room_code=room_code)
-    side = _match_side(match, request.user)
-    if not side:
-        return JsonResponse({'status': 'error', 'message': 'No perteneces a esta sala'}, status=403)
+def draw_card(request, room_code):
+    match, state, side, error = _validate_match_for_action(request, room_code)
+    if error:
+        return error
 
-    state = deepcopy(match.game_state)
-    if not state.get('guest'):
-        return JsonResponse({'status': 'error', 'message': 'Esperando rival'}, status=409)
-    if not _require_turn(state, side):
-        return JsonResponse({'status': 'error', 'message': 'No es tu turno'}, status=409)
+    actions = state['turn']['actions']
+    if actions['draw_used']:
+        return JsonResponse({'status': 'error', 'message': 'Ya robaste carta en este turno'}, status=400)
+    player = state[side]
+    if not player['library']:
+        return JsonResponse({'status': 'error', 'message': 'No quedan cartas en el mazo'}, status=400)
+
+    _draw_card(player)
+    actions['draw_used'] = True
+    _append_event(state, 'draw_card', f"{player['username']} robó una carta.")
+    return _save_and_respond(match, state, side, room_code)
+
+
+@require_http_methods(['POST'])
+@csrf_exempt
+def summon_unit(request, room_code):
+    match, state, side, error = _validate_match_for_action(request, room_code)
+    if error:
+        return error
 
     data = _payload(request)
-    action = data.get('action')
-    phase = _active_phase(state)
+    hand_index = _safe_int(data.get('hand_index'))
+    x = _safe_int(data.get('x'))
+    y = _safe_int(data.get('y'))
     player = state[side]
+    actions = state['turn']['actions']
+
+    if actions['summons'] >= MAX_SUMMONS_PER_TURN:
+        return JsonResponse({'status': 'error', 'message': 'Ya invocaste el máximo permitido este turno'}, status=400)
+    if hand_index < 0 or hand_index >= len(player['hand']):
+        return JsonResponse({'status': 'error', 'message': 'Carta inválida'}, status=400)
+    if not _is_inside_board(x, y):
+        return JsonResponse({'status': 'error', 'message': 'Casilla fuera del tablero'}, status=400)
+    if y not in _summon_rows_for_side(side):
+        return JsonResponse({'status': 'error', 'message': 'Solo puedes invocar en tu zona de despliegue'}, status=400)
+    if not _is_cell_free(state, x, y):
+        return JsonResponse({'status': 'error', 'message': 'Casilla ocupada'}, status=400)
+
+    card = player['hand'][hand_index]
+    summon_cost = max(1, card['level_min'])
+    if player['energy'] < summon_cost:
+        return JsonResponse({'status': 'error', 'message': 'No te alcanza la energía'}, status=400)
+
+    card = player['hand'].pop(hand_index)
+    player['energy'] -= summon_cost
+    state['units'].append({
+        'id': f"u-{card['slug']}-{random.randint(1000, 9999)}",
+        'base_card_id': card['id'],
+        'owner': side,
+        'x': x,
+        'y': y,
+        'card': card,
+        'hp_current': card['hp'],
+        'shell_current': card['shell'],
+        'pa_current': 0,
+        'pm_current': 0,
+        'status': 'summoned',
+        'can_act': False,
+        'can_move': False,
+        'summoned_turn': state['turn']['number'],
+    })
+    actions['summons'] += 1
+    _append_event(state, 'summon', f"{player['username']} invocó {card['name']} en ({x},{y}).")
+    return _save_and_respond(match, state, side, room_code)
+
+
+@require_http_methods(['POST'])
+@csrf_exempt
+def move_unit(request, room_code):
+    match, state, side, error = _validate_match_for_action(request, room_code)
+    if error:
+        return error
+
+    data = _payload(request)
+    unit = _find_unit(state, data.get('unit_id'))
+    to_x = _safe_int(data.get('to_x'))
+    to_y = _safe_int(data.get('to_y'))
+
+    if not unit or unit['owner'] != side:
+        return JsonResponse({'status': 'error', 'message': 'Unidad inválida'}, status=400)
+    if unit['hp_current'] <= 0 or not unit['can_move']:
+        return JsonResponse({'status': 'error', 'message': 'La unidad no puede moverse'}, status=400)
+    if unit['summoned_turn'] == state['turn']['number']:
+        return JsonResponse({'status': 'error', 'message': 'La unidad no puede moverse el turno en que fue invocada'}, status=400)
+    if not _is_inside_board(to_x, to_y):
+        return JsonResponse({'status': 'error', 'message': 'Destino fuera del tablero'}, status=400)
+    if not _is_cell_free(state, to_x, to_y):
+        return JsonResponse({'status': 'error', 'message': 'Casilla ocupada'}, status=400)
+
+    distance = _manhattan(unit['x'], unit['y'], to_x, to_y)
+    if distance <= 0:
+        return JsonResponse({'status': 'error', 'message': 'Movimiento nulo'}, status=400)
+    if distance > unit['pm_current']:
+        return JsonResponse({'status': 'error', 'message': 'No puedes mover más allá del PM disponible'}, status=400)
+
+    unit['x'] = to_x
+    unit['y'] = to_y
+    unit['pm_current'] -= distance
+    unit['can_move'] = unit['pm_current'] > 0
+    state['turn']['actions']['moved_units'].append(unit['id'])
+    _append_event(state, 'move', f"{unit['card']['name']} se movió a ({to_x},{to_y}).")
+    return _save_and_respond(match, state, side, room_code)
+
+
+@require_http_methods(['POST'])
+@csrf_exempt
+def attack_unit(request, room_code):
+    match, state, side, error = _validate_match_for_action(request, room_code)
+    if error:
+        return error
+
+    data = _payload(request)
+    attacker = _find_unit(state, data.get('attacker_id'))
+    target = _find_unit(state, data.get('target_id'))
     enemy = state[_enemy_side(side)]
 
-    if action == 'summon':
-        if phase != 'main':
-            return JsonResponse({'status': 'error', 'message': 'Solo puedes invocar en fase principal'}, status=400)
-        hand_index = int(data.get('hand_index', -1))
-        x = int(data.get('x', -1))
-        y = int(data.get('y', -1))
-        if hand_index < 0 or hand_index >= len(player['hand']):
-            return JsonResponse({'status': 'error', 'message': 'Carta inválida'}, status=400)
-        if not _is_inside_board(x, y):
-            return JsonResponse({'status': 'error', 'message': 'Casilla fuera del tablero'}, status=400)
-        if y not in _summon_rows_for_side(side):
-            return JsonResponse({'status': 'error', 'message': 'Solo puedes invocar en tu zona de despliegue'}, status=400)
-        if not _is_cell_free(state, x, y):
-            return JsonResponse({'status': 'error', 'message': 'Casilla ocupada'}, status=400)
-        if player['energy'] < 1:
-            return JsonResponse({'status': 'error', 'message': 'No te alcanza la energía'}, status=400)
+    if not attacker or attacker['owner'] != side:
+        return JsonResponse({'status': 'error', 'message': 'Atacante inválido'}, status=400)
+    if not target or target['owner'] == side:
+        return JsonResponse({'status': 'error', 'message': 'Objetivo inválido'}, status=400)
+    if attacker['summoned_turn'] == state['turn']['number']:
+        return JsonResponse({'status': 'error', 'message': 'La unidad no puede atacar el turno en que fue invocada'}, status=400)
+    if not attacker['can_act'] or attacker['pa_current'] <= 0:
+        return JsonResponse({'status': 'error', 'message': 'La unidad no puede actuar'}, status=400)
 
-        card = player['hand'].pop(hand_index)
-        player['energy'] -= 1
-        state['board']['units'].append({
-            'id': f"u-{card['slug']}-{random.randint(1000, 9999)}",
-            'owner': side,
-            'x': x,
-            'y': y,
-            'card': card,
-            'current_hp': card['hp'],
-            'current_shell': card['shell'],
-            'move_left': 0,
-            'attacks_left': 0,
-            'summoned_turn': state['turn']['number'],
-        })
-        state['log'].append(f"{player['username']} invocó {card['name']} en ({x},{y}).")
+    distance = _manhattan(attacker['x'], attacker['y'], target['x'], target['y'])
+    if distance > _combat_range(attacker['card']):
+        return JsonResponse({'status': 'error', 'message': 'No puedes atacar fuera del rango permitido'}, status=400)
 
-    elif action == 'move':
-        if phase != 'main':
-            return JsonResponse({'status': 'error', 'message': 'Solo puedes mover en fase principal'}, status=400)
-        unit_id = data.get('unit_id')
-        to_x = int(data.get('to_x', -1))
-        to_y = int(data.get('to_y', -1))
-        unit = _find_unit(state, unit_id)
-        if not unit or unit['owner'] != side:
-            return JsonResponse({'status': 'error', 'message': 'Unidad inválida'}, status=400)
-        if not _is_inside_board(to_x, to_y):
-            return JsonResponse({'status': 'error', 'message': 'Destino fuera del tablero'}, status=400)
-        if not _is_cell_free(state, to_x, to_y):
-            return JsonResponse({'status': 'error', 'message': 'Casilla ocupada'}, status=400)
+    damage = _combat_damage(attacker['card'])
+    attacker['pa_current'] -= 1
+    attacker['can_act'] = attacker['pa_current'] > 0
+    state['turn']['actions']['attacked_units'].append(attacker['id'])
 
-        distance = _manhattan(unit['x'], unit['y'], to_x, to_y)
-        if distance <= 0:
-            return JsonResponse({'status': 'error', 'message': 'Movimiento nulo'}, status=400)
-        if unit['move_left'] < distance:
-            return JsonResponse({'status': 'error', 'message': 'No tienes PM suficientes'}, status=400)
+    remaining = damage
+    if target['shell_current'] > 0:
+        absorbed = min(target['shell_current'], remaining)
+        target['shell_current'] -= absorbed
+        remaining -= absorbed
+    if remaining > 0:
+        target['hp_current'] -= remaining
 
-        unit['x'] = to_x
-        unit['y'] = to_y
-        unit['move_left'] -= distance
-        state['log'].append(f"{unit['card']['name']} se movió a ({to_x},{to_y}).")
-
-    elif action == 'attack':
-        if phase != 'combat':
-            return JsonResponse({'status': 'error', 'message': 'Solo puedes atacar en fase de combate'}, status=400)
-        attacker_id = data.get('attacker_id')
-        target_id = data.get('target_id')
-        attacker = _find_unit(state, attacker_id)
-        target = _find_unit(state, target_id)
-        if not attacker or not target or attacker['owner'] != side or target['owner'] == side:
-            return JsonResponse({'status': 'error', 'message': 'Ataque inválido'}, status=400)
-        if attacker['attacks_left'] < 1:
-            return JsonResponse({'status': 'error', 'message': 'No tienes ataques disponibles'}, status=400)
-        if attacker['summoned_turn'] == state['turn']['number']:
-            return JsonResponse({'status': 'error', 'message': 'La unidad no puede atacar el turno en que fue invocada'}, status=400)
-
-        distance = _manhattan(attacker['x'], attacker['y'], target['x'], target['y'])
-        if distance > _combat_range(attacker['card']):
-            return JsonResponse({'status': 'error', 'message': 'Objetivo fuera de alcance'}, status=400)
-
-        damage = _combat_damage(attacker['card'])
-        attacker['attacks_left'] -= 1
-
-        remaining = damage
-        if target['current_shell'] > 0:
-            absorbed = min(target['current_shell'], remaining)
-            target['current_shell'] -= absorbed
-            remaining -= absorbed
-        if remaining > 0:
-            target['current_hp'] -= remaining
-
-        if target['current_hp'] <= 0:
-            enemy['graveyard'].append(target['card'])
-            state['board']['units'] = [u for u in state['board']['units'] if u['id'] != target['id']]
-            state['log'].append(f"{attacker['card']['name']} derrotó a {target['card']['name']}.")
-        else:
-            state['log'].append(f"{attacker['card']['name']} golpeó a {target['card']['name']} por {damage}.")
-
-    elif action == 'direct_attack':
-        if phase != 'combat':
-            return JsonResponse({'status': 'error', 'message': 'Solo puedes atacar en fase de combate'}, status=400)
-        attacker_id = data.get('attacker_id')
-        attacker = _find_unit(state, attacker_id)
-        if not attacker or attacker['owner'] != side:
-            return JsonResponse({'status': 'error', 'message': 'Unidad inválida'}, status=400)
-        if attacker['attacks_left'] < 1:
-            return JsonResponse({'status': 'error', 'message': 'No tienes ataques disponibles'}, status=400)
-        if attacker['summoned_turn'] == state['turn']['number']:
-            return JsonResponse({'status': 'error', 'message': 'La unidad no puede atacar el turno en que fue invocada'}, status=400)
-
-        # Condición posicional: para atacar directo debes estar en el tercio enemigo del tablero.
-        enemy_frontier = BOARD_HEIGHT // 3
-        in_enemy_zone = attacker['y'] >= BOARD_HEIGHT - enemy_frontier if side == 'host' else attacker['y'] < enemy_frontier
-        if not in_enemy_zone:
-            return JsonResponse({'status': 'error', 'message': 'Debes penetrar la zona enemiga para atacar directo'}, status=400)
-
-        damage = max(1, _combat_damage(attacker['card']) - 1)
-        attacker['attacks_left'] -= 1
-        enemy['life'] -= damage
-        state['log'].append(f"{attacker['card']['name']} hizo ataque directo por {damage}.")
-        _check_winner(match, state)
-
-    elif action == 'next_phase':
-        if not _advance_phase(state):
-            return JsonResponse({'status': 'error', 'message': 'Ya estás en la última fase'}, status=400)
-        state['log'].append(f"{player['username']} avanzó a fase {state['turn']['phase']}.")
-
-    elif action == 'end_turn':
-        if phase != 'end':
-            return JsonResponse({'status': 'error', 'message': 'Debes llegar a fase end antes de terminar turno'}, status=400)
-        _end_turn(state)
-        state['log'].append(f"{player['username']} terminó su turno.")
-
+    if target['hp_current'] <= 0:
+        enemy['graveyard'].append(target['card'])
+        state['discard'].append(target['card'])
+        state['units'] = [u for u in state['units'] if u['id'] != target['id']]
+        _append_event(state, 'attack', f"{attacker['card']['name']} derrotó a {target['card']['name']}.")
     else:
-        return JsonResponse({'status': 'error', 'message': 'Acción desconocida'}, status=400)
+        _append_event(state, 'attack', f"{attacker['card']['name']} golpeó a {target['card']['name']} por {damage}.")
 
-    match.game_state = state
-    match.save(update_fields=['game_state', 'status', 'winner', 'updated_at'])
-    return JsonResponse({'status': 'ok', 'room_code': room_code, 'match': _public_state(state, side)})
+    return _save_and_respond(match, state, side, room_code)
+
+
+@require_http_methods(['POST'])
+@csrf_exempt
+def end_turn(request, room_code):
+    match, state, side, error = _validate_match_for_action(request, room_code)
+    if error:
+        return error
+
+    player = state[side]
+    _end_turn(state)
+    _append_event(state, 'end_turn', f"{player['username']} terminó su turno.")
+    return _save_and_respond(match, state, side, room_code)
+
+
+@require_http_methods(['POST'])
+@csrf_exempt
+def match_action(request, room_code):
+    data = _payload(request)
+    action = data.get('action')
+    if action == 'draw_card':
+        return draw_card(request, room_code)
+    if action == 'summon':
+        return summon_unit(request, room_code)
+    if action == 'move':
+        return move_unit(request, room_code)
+    if action == 'attack':
+        return attack_unit(request, room_code)
+    if action == 'end_turn':
+        return end_turn(request, room_code)
+    return JsonResponse({'status': 'error', 'message': 'Acción desconocida'}, status=400)

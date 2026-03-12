@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: do-fu-ioh
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn do_fu_ioh.wsgi:application"
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_ALLOWED_HOSTS
+        value: "do-fu-ioh.onrender.com"
+      - key: CSRF_TRUSTED_ORIGINS
+        value: "https://do-fu-ioh.onrender.com"
+      - key: DATABASE_URL
+        sync: false

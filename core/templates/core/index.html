@@ -12,8 +12,8 @@
     <section class="hero panel">
       <div>
         <p class="eyebrow">Django + Supabase + Render</p>
-        <h1>Do-Fu-Ióh</h1>
-        <p>Juego de cartas por turnos inspirado en las familias de monstruos cargadas desde tu documento y reutilizando la base técnica del proyecto de ajedrez.</p>
+        <h1>Do-Fu-Ióh táctico</h1>
+        <p>Juego híbrido de cartas + tablero: invocas desde la mano y luego controlas unidades en una grilla 2D con PA y PM por turno.</p>
       </div>
       <div class="hero-actions">
         <button id="refresh-state">Refrescar partida</button>
@@ -39,7 +39,7 @@
         </div>
       </div>
       <div class="panel">
-        <h2>Cartas cargadas</h2>
+        <h2>Cartas / Invocaciones</h2>
         <div class="catalog-toolbar">
           <select id="family-filter"><option value="">Todas las familias</option></select>
         </div>
@@ -60,26 +60,32 @@
 
     <section class="grid board-grid">
       <div class="panel">
-        <h3>Campo rival</h3>
-        <div id="enemy-board" class="lanes"></div>
+        <h3>Tablero táctico 6x4</h3>
+        <div id="board" class="board"></div>
       </div>
       <div class="panel">
-        <h3>Tu campo</h3>
-        <div id="player-board" class="lanes"></div>
-      </div>
-      <div class="panel">
-        <h3>Acciones</h3>
+        <h3>Acciones tácticas</h3>
         <div class="stack">
-          <label>Carta de mano índice <input id="hand-index" type="number" min="0" value="0" /></label>
-          <label>Carril <select id="lane-select"><option value="top">Top</option><option value="mid">Mid</option><option value="bot">Bot</option></select></label>
-          <button id="summon-btn">Invocar</button>
+          <label>Índice carta mano <input id="hand-index" type="number" min="0" value="0" /></label>
+          <label>Invocar en X <input id="summon-x" type="number" min="0" value="0" /></label>
+          <label>Invocar en Y <input id="summon-y" type="number" min="0" value="0" /></label>
+          <button id="summon-btn">Invocar unidad</button>
           <hr />
-          <label>Desde <select id="from-lane"><option value="top">Top</option><option value="mid">Mid</option><option value="bot">Bot</option></select></label>
-          <label>Objetivo <select id="target-lane"><option value="top">Top</option><option value="mid">Mid</option><option value="bot">Bot</option></select></label>
+          <label>Unidad propia (id) <input id="unit-id" placeholder="u-..." /></label>
+          <label>Mover a X <input id="move-x" type="number" min="0" value="0" /></label>
+          <label>Mover a Y <input id="move-y" type="number" min="0" value="0" /></label>
           <button id="move-btn">Mover</button>
-          <button id="attack-btn">Atacar</button>
+          <hr />
+          <label>Atacante (id) <input id="attacker-id" placeholder="u-..." /></label>
+          <label>Objetivo (id) <input id="target-id" placeholder="u-..." /></label>
+          <button id="attack-btn">Atacar unidad</button>
+          <button id="direct-attack-btn">Ataque directo</button>
           <button id="end-turn-btn" class="ghost">Terminar turno</button>
         </div>
+      </div>
+      <div class="panel">
+        <h3>Unidades en juego</h3>
+        <div id="unit-list" class="stack small"></div>
       </div>
     </section>
 

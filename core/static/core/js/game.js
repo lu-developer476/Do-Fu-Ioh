@@ -1,4 +1,3 @@
-
 let appState = {
   me: null,
   cards: [],
@@ -31,7 +30,8 @@ function renderCatalog() {
       <div class="meta">
         <span class="badge">${card.family}</span>
         <span class="badge">${card.stage}</span>
-        <span class="badge">HP ${card.hp}</span>
+        <span class="badge">Niv ${card.level_min}-${card.level_max}</span>
+        <span class="badge">PdV ${card.hp}</span>
         <span class="badge">PdC ${card.shell}</span>
         <span class="badge">PA ${card.action_points}</span>
         <span class="badge">PM ${card.movement_points}</span>
@@ -41,49 +41,64 @@ function renderCatalog() {
   `).join('');
 }
 
-function laneCardHtml(cardState) {
-  if (!cardState) return '<div class="small">Vacío</div>';
-  const card = cardState.card;
-  return `
-    <div class="unit">
-      <img src="${card.image}" alt="${card.name}" />
-      <div>
-        <strong>${card.name}</strong>
-        <div class="small">HP ${cardState.current_hp} · PdC ${cardState.current_shell}</div>
-        <div class="small">PA ${card.action_points} · PM ${card.movement_points} · ${cardState.can_attack ? 'Listo para atacar' : 'Fatigado'}</div>
-      </div>
-    </div>
-  `;
+function resolveSides() {
+  const match = appState.match;
+  if (!match || !appState.me) return { me: null, enemy: null, mySide: null };
+  const mySide = match.host.user_id === appState.me.id ? 'host' : 'guest';
+  return {
+    me: match[mySide],
+    enemy: match[mySide === 'host' ? 'guest' : 'host'],
+    mySide,
+  };
+}
+
+function findUnitAt(units = [], x, y) {
+  return units.find(u => u.x === x && u.y === y);
+}
+
+function shortId(unitId) {
+  return unitId?.slice(-4) || '----';
 }
 
 function renderBoard() {
   const match = appState.match;
   if (!match) {
-    $('#player-board').innerHTML = '<div class="small">Todavía no hay partida.</div>';
-    $('#enemy-board').innerHTML = '<div class="small">Todavía no hay partida.</div>';
+    $('#board').innerHTML = '<div class="small">Todavía no hay partida.</div>';
     $('#hand').innerHTML = '<div class="small">Tu mano aparecerá acá.</div>';
     $('#match-summary').innerHTML = '<div class="small">Crea o únete a una sala.</div>';
+    $('#unit-list').innerHTML = '<div class="small">Sin unidades.</div>';
     $('#log').innerHTML = '';
     return;
   }
-  const me = match.host.user_id === appState.me?.id ? match.host : match.guest;
-  const enemy = match.host.user_id === appState.me?.id ? match.guest : match.host;
-  const makeLanes = (player) => ['top','mid','bot'].map(lane => `
-    <div class="lane">
-      <div class="lane-label">${lane}</div>
-      ${laneCardHtml(player?.board?.[lane])}
-    </div>
-  `).join('');
 
-  $('#player-board').innerHTML = makeLanes(me);
-  $('#enemy-board').innerHTML = makeLanes(enemy || {board:{}});
+  const { me, enemy, mySide } = resolveSides();
+  const width = match.board.width;
+  const height = match.board.height;
+
+  const cells = [];
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) {
+      const ownUnit = findUnitAt(me?.units, x, y);
+      const enemyUnit = findUnitAt(enemy?.units, x, y);
+      const unit = ownUnit || enemyUnit;
+      const ownerClass = ownUnit ? 'ally' : (enemyUnit ? 'enemy' : 'empty');
+      cells.push(`
+        <div class="cell ${ownerClass}">
+          <div class="coord">${x},${y}</div>
+          ${unit ? `<div class="token"><strong>${unit.card.name}</strong><span>#${shortId(unit.id)}</span><span>PdV ${unit.current_hp} · PdC ${unit.current_shell}</span><span>PA ${unit.ap_left} · PM ${unit.pm_left}</span></div>` : '<div class="small">·</div>'}
+        </div>
+      `);
+    }
+  }
+  $('#board').innerHTML = cells.join('');
+
   $('#hand').innerHTML = (me?.hand || []).map((card, index) => `
     <article class="card">
       <img src="${card.image}" alt="${card.name}" />
       <h4>#${index} · ${card.name}</h4>
       <div class="meta">
-        <span class="badge">HP ${card.hp}</span>
-        <span class="badge">PdC ${card.shell}</span>
+        <span class="badge">${card.family}</span>
+        <span class="badge">${card.stage}</span>
         <span class="badge">PA ${card.action_points}</span>
         <span class="badge">PM ${card.movement_points}</span>
       </div>
@@ -92,6 +107,7 @@ function renderBoard() {
 
   $('#match-summary').innerHTML = `
     <div><strong>Sala:</strong> ${appState.roomCode || '-'}</div>
+    <div><strong>Tu lado:</strong> ${mySide || '-'}</div>
     <div><strong>Turno:</strong> ${match.turn}</div>
     <div><strong>Ronda:</strong> ${match.turn_number}</div>
     <div><strong>Tu vida:</strong> ${me?.life ?? '-'} · <strong>Energía:</strong> ${me?.energy ?? '-'}/${me?.max_energy ?? '-'}</div>
@@ -99,6 +115,17 @@ function renderBoard() {
     <div><strong>Biblioteca rival:</strong> ${enemy?.library_count ?? 0} · <strong>Mano rival:</strong> ${enemy?.hand_count ?? 0}</div>
     <div><strong>Ganador:</strong> ${match.winner || 'sin definir'}</div>
   `;
+
+  const ownUnits = me?.units || [];
+  const enemyUnits = enemy?.units || [];
+  $('#unit-list').innerHTML = `
+    <strong>Tus unidades</strong>
+    ${ownUnits.map(u => `<div>#${shortId(u.id)} · ${u.card.name} (${u.x},${u.y}) · PA ${u.ap_left} · PM ${u.pm_left}</div>`).join('') || '<div>Sin unidades propias.</div>'}
+    <hr />
+    <strong>Unidades enemigas</strong>
+    ${enemyUnits.map(u => `<div>#${shortId(u.id)} · ${u.card.name} (${u.x},${u.y})</div>`).join('') || '<div>Sin unidades enemigas.</div>'}
+  `;
+
   $('#log').innerHTML = (match.log || []).slice().reverse().map(item => `<div class="log-item">${item}</div>`).join('');
 }
 
@@ -158,9 +185,13 @@ async function action(kind) {
   const payload = {
     action: kind,
     hand_index: Number($('#hand-index').value),
-    lane: $('#lane-select').value,
-    from_lane: $('#from-lane').value,
-    target_lane: $('#target-lane').value,
+    x: Number($('#summon-x').value),
+    y: Number($('#summon-y').value),
+    unit_id: $('#unit-id').value.trim(),
+    to_x: Number($('#move-x').value),
+    to_y: Number($('#move-y').value),
+    attacker_id: $('#attacker-id').value.trim(),
+    target_id: $('#target-id').value.trim(),
   };
   const data = await api(`/api/match/${appState.roomCode}/action/`, { method: 'POST', body: JSON.stringify(payload) });
   appState.match = data.match;
@@ -169,13 +200,18 @@ async function action(kind) {
 
 $('#register-btn').addEventListener('click', () => authAction('register').catch(err => alert(err.message)));
 $('#login-btn').addEventListener('click', () => authAction('login').catch(err => alert(err.message)));
-$('#logout-btn').addEventListener('click', async () => { await api('/api/auth/logout/', { method: 'POST', body: '{}' }); appState.me = null; $('#auth-status').textContent = 'Sesión cerrada.'; });
+$('#logout-btn').addEventListener('click', async () => {
+  await api('/api/auth/logout/', { method: 'POST', body: '{}' });
+  appState.me = null;
+  $('#auth-status').textContent = 'Sesión cerrada.';
+});
 $('#create-match').addEventListener('click', () => createMatch().catch(err => alert(err.message)));
 $('#join-match').addEventListener('click', () => joinMatch().catch(err => alert(err.message)));
 $('#refresh-state').addEventListener('click', () => refreshMatch().catch(err => alert(err.message)));
 $('#summon-btn').addEventListener('click', () => action('summon').catch(err => alert(err.message)));
 $('#move-btn').addEventListener('click', () => action('move').catch(err => alert(err.message)));
 $('#attack-btn').addEventListener('click', () => action('attack').catch(err => alert(err.message)));
+$('#direct-attack-btn').addEventListener('click', () => action('direct_attack').catch(err => alert(err.message)));
 $('#end-turn-btn').addEventListener('click', () => action('end_turn').catch(err => alert(err.message)));
 familyFilter.addEventListener('change', renderCatalog);
 

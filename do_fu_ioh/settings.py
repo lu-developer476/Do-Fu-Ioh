@@ -6,19 +6,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'dev-secret-key-change-me')
 DEBUG = os.getenv('DJANGO_DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = [
-    'do-fu-ioh.onrender.com',
-    '.onrender.com',
-    '127.0.0.1',
-    'localhost',
-]
+def _split_env_list(value):
+    return [item.strip() for item in value.split(',') if item.strip()]
 
-CSRF_TRUSTED_ORIGINS = [
-    'https://do-fu-ioh.onrender.com',
-    'https://*.onrender.com',
-    'http://127.0.0.1:8000',
-    'http://localhost:8000',
-]
+
+ALLOWED_HOSTS = _split_env_list(os.getenv(
+    'DJANGO_ALLOWED_HOSTS',
+    'do-fu-ioh.onrender.com,.onrender.com,127.0.0.1,localhost',
+))
+
+CSRF_TRUSTED_ORIGINS = _split_env_list(os.getenv(
+    'CSRF_TRUSTED_ORIGINS',
+    'https://do-fu-ioh.onrender.com,https://*.onrender.com,http://127.0.0.1:8000,http://localhost:8000',
+))
 
 INSTALLED_APPS = [
     'django.contrib.admin',

@@ -1,5 +1,6 @@
 import json
 import random
+import secrets
 from copy import deepcopy
 
 from django.contrib.auth import authenticate, login, logout
@@ -17,6 +18,8 @@ DEFAULT_DECK_SIZE = 10
 BOARD_WIDTH = 12
 BOARD_HEIGHT = 15
 MAX_SUMMONS_PER_TURN = 1
+AI_USERNAME = "__dojo_ai__"
+GUEST_HOST_USERNAME = "__guest_player__"
 
 
 def _payload(request):
@@ -52,6 +55,33 @@ def _serialize_user(user):
         'avatar_url': user.profile.avatar_url,
     }
 
+
+
+
+def _get_or_create_system_user(username, email=''):
+    user, created = User.objects.get_or_create(
+        username=username,
+        defaults={'email': email, 'password': '!' },
+    )
+    if created:
+        user.set_unusable_password()
+        user.save(update_fields=['password'])
+    return user
+
+
+def _request_match_side(match, request):
+    state = match.game_state or {}
+    if request.user.is_authenticated:
+        side = _match_side(match, request.user)
+        if side:
+            return side
+
+    if state.get('mode') == 'vs_ai':
+        session_token = request.session.get('ai_match_token')
+        if session_token and session_token == state.get('session_token'):
+            return 'host'
+
+    return None
 
 def index(request):
     return render(request, 'core/index.html')
@@ -208,11 +238,13 @@ def _new_player_state(user, deck):
     }
 
 
-def _create_initial_state(host, guest=None):
+def _create_initial_state(host, guest=None, mode='pvp', session_token=''):
     host_deck = _get_active_deck(host)
     guest_deck = _get_active_deck(guest) if guest else None
     return {
         'winner': None,
+        'mode': mode,
+        'session_token': session_token,
         'board': {'width': BOARD_WIDTH, 'height': BOARD_HEIGHT},
         'turn': {
             'number': 1,
@@ -348,6 +380,8 @@ def _serialize_units(state, side):
 def _public_state(state, viewer_side):
     public_state = deepcopy(state)
     hidden = _enemy_side(viewer_side)
+    public_state.pop('session_token', None)
+    public_state['viewer_side'] = viewer_side
 
     if public_state.get(hidden):
         public_state[hidden]['library_count'] = len(public_state[hidden]['library'])
@@ -377,10 +411,8 @@ def _append_event(state, event, message):
 
 
 def _validate_match_for_action(request, room_code):
-    if not request.user.is_authenticated:
-        return None, None, None, JsonResponse({'status': 'error', 'message': 'No autenticado'}, status=401)
     match = get_object_or_404(MatchRecord, room_code=room_code)
-    side = _match_side(match, request.user)
+    side = _request_match_side(match, request)
     if not side:
         return None, None, None, JsonResponse({'status': 'error', 'message': 'No perteneces a esta sala'}, status=403)
     state = deepcopy(match.game_state)
@@ -397,6 +429,83 @@ def _save_and_respond(match, state, side, room_code):
     return JsonResponse({'status': 'ok', 'room_code': room_code, 'match': _public_state(state, side)})
 
 
+def _free_cell_for_summon(state, side):
+    rows = sorted(_summon_rows_for_side(side), reverse=(side == 'guest'))
+    for y in rows:
+        for x in range(BOARD_WIDTH):
+            if _is_cell_free(state, x, y):
+                return x, y
+    return None, None
+
+
+def _run_ai_turn(state):
+    if state.get('winner') or state['turn']['active_side'] != 'guest' or not state.get('guest'):
+        return
+
+    ai_player = state['guest']
+    host_player = state['host']
+    actions = state['turn']['actions']
+
+    if ai_player['hand'] and actions['summons'] < MAX_SUMMONS_PER_TURN:
+        x, y = _free_cell_for_summon(state, 'guest')
+        if x is not None:
+            card = ai_player['hand'][0]
+            summon_cost = max(1, card['level_min'])
+            if ai_player['energy'] >= summon_cost:
+                card = ai_player['hand'].pop(0)
+                ai_player['energy'] -= summon_cost
+                state['units'].append({
+                    'id': f"u-{card['slug']}-{random.randint(1000, 9999)}",
+                    'base_card_id': card['id'],
+                    'owner': 'guest',
+                    'x': x,
+                    'y': y,
+                    'card': card,
+                    'hp_current': card['hp'],
+                    'shell_current': card['shell'],
+                    'pa_current': 0,
+                    'pm_current': 0,
+                    'status': 'summoned',
+                    'can_act': False,
+                    'can_move': False,
+                    'summoned_turn': state['turn']['number'],
+                })
+                actions['summons'] += 1
+                _append_event(state, 'ai_summon', f"{ai_player['username']} invocó {card['name']} en ({x},{y}).")
+
+    for unit in list(_units_for_side(state, 'guest')):
+        if unit['summoned_turn'] == state['turn']['number'] or not unit['can_act'] or unit['pa_current'] <= 0:
+            continue
+        host_units = _units_for_side(state, 'host')
+        in_range = [u for u in host_units if _manhattan(unit['x'], unit['y'], u['x'], u['y']) <= _combat_range(unit['card'])]
+        if not in_range:
+            continue
+        target = sorted(in_range, key=lambda u: (_manhattan(unit['x'], unit['y'], u['x'], u['y']), u['hp_current']))[0]
+
+        damage = _combat_damage(unit['card'])
+        unit['pa_current'] -= 1
+        unit['can_act'] = unit['pa_current'] > 0
+        remaining = damage
+        if target['shell_current'] > 0:
+            absorbed = min(target['shell_current'], remaining)
+            target['shell_current'] -= absorbed
+            remaining -= absorbed
+        if remaining > 0:
+            target['hp_current'] -= remaining
+
+        if target['hp_current'] <= 0:
+            host_player['graveyard'].append(target['card'])
+            state['discard'].append(target['card'])
+            state['units'] = [u for u in state['units'] if u['id'] != target['id']]
+            _append_event(state, 'ai_attack', f"{unit['card']['name']} derrotó a {target['card']['name']}.")
+        else:
+            _append_event(state, 'ai_attack', f"{unit['card']['name']} golpeó a {target['card']['name']} por {damage}.")
+
+    if not state.get('winner'):
+        _end_turn(state)
+        _append_event(state, 'ai_end_turn', f"{ai_player['username']} terminó su turno.")
+
+
 @require_http_methods(['POST'])
 @csrf_exempt
 def create_match(request):
@@ -409,12 +518,36 @@ def create_match(request):
     return JsonResponse({'status': 'ok', 'room_code': match.room_code, 'match': _public_state(match.game_state, 'host')}, status=201)
 
 
+
+@require_http_methods(['POST'])
+@csrf_exempt
+def create_match_vs_ai(request):
+    host_user = request.user if request.user.is_authenticated else _get_or_create_system_user(GUEST_HOST_USERNAME)
+    ai_user = _get_or_create_system_user(AI_USERNAME)
+    _ensure_default_deck(host_user)
+    _ensure_default_deck(ai_user)
+
+    session_token = secrets.token_urlsafe(18)
+    request.session['ai_match_token'] = session_token
+    request.session.save()
+
+    state = _create_initial_state(host_user, ai_user, mode='vs_ai', session_token=session_token)
+    state['host']['username'] = request.user.username if request.user.is_authenticated else 'Invitado'
+    state['guest']['username'] = 'Do-Fu IA'
+    _start_turn(state, 'host')
+
+    match = MatchRecord.objects.create(host=host_user, guest=ai_user, status='in_progress', game_state=state)
+    return JsonResponse({'status': 'ok', 'room_code': match.room_code, 'match': _public_state(match.game_state, 'host')}, status=201)
+
+
 @require_http_methods(['POST'])
 @csrf_exempt
 def join_match(request, room_code):
     if not request.user.is_authenticated:
         return JsonResponse({'status': 'error', 'message': 'No autenticado'}, status=401)
     match = get_object_or_404(MatchRecord, room_code=room_code)
+    if match.game_state.get('mode') == 'vs_ai':
+        return JsonResponse({'status': 'error', 'message': 'Esta sala es exclusiva para partidas contra IA'}, status=409)
     if match.guest_id and match.guest_id != request.user.id:
         return JsonResponse({'status': 'error', 'message': 'La sala ya está llena'}, status=409)
     if match.host_id == request.user.id:
@@ -430,10 +563,8 @@ def join_match(request, room_code):
 
 @require_GET
 def get_match(request, room_code):
-    if not request.user.is_authenticated:
-        return JsonResponse({'status': 'error', 'message': 'No autenticado'}, status=401)
     match = get_object_or_404(MatchRecord, room_code=room_code)
-    side = _match_side(match, request.user)
+    side = _request_match_side(match, request)
     if not side:
         return JsonResponse({'status': 'error', 'message': 'No perteneces a esta sala'}, status=403)
     return JsonResponse({'status': 'ok', 'room_code': room_code, 'match': _public_state(match.game_state, side)})
@@ -609,6 +740,10 @@ def end_turn(request, room_code):
     player = state[side]
     _end_turn(state)
     _append_event(state, 'end_turn', f"{player['username']} terminó su turno.")
+
+    if state.get('mode') == 'vs_ai' and state['turn']['active_side'] == 'guest':
+        _run_ai_turn(state)
+
     return _save_and_respond(match, state, side, room_code)
 
 

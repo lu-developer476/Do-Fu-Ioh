@@ -24,7 +24,7 @@ async function api(url, options = {}) {
 function renderCatalog() {
   const filter = familyFilter.value;
   const cards = appState.cards.filter((card) => !filter || card.family === filter);
-  $('#catalog').innerHTML = cards.map(card => `
+  $('#catalog').innerHTML = cards.map((card) => `
     <article class="card">
       <img src="${card.image}" alt="${card.name}" />
       <h4>${card.name}</h4>
@@ -44,8 +44,13 @@ function renderCatalog() {
 
 function resolveSides() {
   const match = appState.match;
-  if (!match || !appState.me) return { me: null, enemy: null, mySide: null };
-  const mySide = match.host.user_id === appState.me.id ? 'host' : 'guest';
+  if (!match) return { me: null, enemy: null, mySide: null };
+  let mySide = null;
+  if (appState.me && match.host?.user_id === appState.me.id) mySide = 'host';
+  else if (appState.me && match.guest?.user_id === appState.me.id) mySide = 'guest';
+  else if (match.viewer_side) mySide = match.viewer_side;
+
+  if (!mySide) return { me: null, enemy: null, mySide: null };
   return {
     me: match[mySide],
     enemy: match[mySide === 'host' ? 'guest' : 'host'],
@@ -66,9 +71,7 @@ function isMyTurn(mySide) {
 }
 
 function summonRowsForSide(side, boardHeight) {
-  return side === 'host'
-    ? [0, 1, 2]
-    : [boardHeight - 1, boardHeight - 2, boardHeight - 3];
+  return side === 'host' ? [0, 1, 2] : [boardHeight - 1, boardHeight - 2, boardHeight - 3];
 }
 
 function computeMoveTargets(selectedUnit, meUnits, enemyUnits) {
@@ -81,9 +84,8 @@ function computeMoveTargets(selectedUnit, meUnits, enemyUnits) {
       if (dist === 0 || dist > selectedUnit.pm_current) continue;
       const x = selectedUnit.x + dx;
       const y = selectedUnit.y + dy;
-      const key = `${x},${y}`;
-      if (occupied.has(key)) continue;
-      targets.add(key);
+      if (occupied.has(`${x},${y}`)) continue;
+      targets.add(`${x},${y}`);
     }
   }
   return targets;
@@ -153,7 +155,7 @@ function renderBoard() {
   if (!match) {
     $('#board').innerHTML = '<div class="small">Todavía no hay partida.</div>';
     $('#hand').innerHTML = '<div class="small">Tu mano aparecerá acá.</div>';
-    $('#match-summary').innerHTML = '<div class="small">Crea o únete a una sala.</div>';
+    $('#match-summary').innerHTML = '<div class="small">Creá una sala o jugá vs IA.</div>';
     $('#unit-list').innerHTML = '<div class="small">Sin unidades.</div>';
     $('#log').innerHTML = '';
     return;
@@ -235,6 +237,7 @@ function renderBoard() {
 
   $('#match-summary').innerHTML = `
     <div><strong>Sala:</strong> ${appState.roomCode || '-'}</div>
+    <div><strong>Modo:</strong> ${match.mode === 'vs_ai' ? 'Contra IA' : 'PVP'}</div>
     <div><strong>Tu lado:</strong> ${mySide || '-'}</div>
     <div><strong>Turno activo:</strong> ${match.turn.active_side}</div>
     <div><strong>Número de turno:</strong> ${match.turn.number}</div>
@@ -286,12 +289,22 @@ async function loadProfile() {
     appState.me = data.user;
     $('#auth-status').textContent = `Sesión activa como ${data.user.username}.`;
   } catch {
-    $('#auth-status').textContent = 'Todavía no iniciaste sesión.';
+    appState.me = null;
+    $('#auth-status').textContent = 'Modo invitado activo. Podés jugar vs IA sin registrarte.';
   }
 }
 
 async function createMatch() {
   const data = await api('/api/match/create/', { method: 'POST', body: '{}' });
+  appState.roomCode = data.room_code;
+  appState.match = data.match;
+  appState.selectedHandIndex = null;
+  appState.selectedUnitId = null;
+  renderBoard();
+}
+
+async function createAIMatch() {
+  const data = await api('/api/match/create-vs-ai/', { method: 'POST', body: '{}' });
   appState.roomCode = data.room_code;
   appState.match = data.match;
   appState.selectedHandIndex = null;
@@ -332,10 +345,11 @@ $('#logout-btn').addEventListener('click', async () => {
   appState.match = null;
   appState.selectedHandIndex = null;
   appState.selectedUnitId = null;
-  $('#auth-status').textContent = 'Sesión cerrada.';
+  $('#auth-status').textContent = 'Modo invitado activo. Podés jugar vs IA sin registrarte.';
   renderBoard();
 });
 $('#create-match').addEventListener('click', () => createMatch().catch((err) => alert(err.message)));
+$('#create-ai-match').addEventListener('click', () => createAIMatch().catch((err) => alert(err.message)));
 $('#join-match').addEventListener('click', () => joinMatch().catch((err) => alert(err.message)));
 $('#refresh-state').addEventListener('click', () => refreshMatch().catch((err) => alert(err.message)));
 $('#end-turn-btn').addEventListener('click', () => endTurn().catch((err) => alert(err.message)));

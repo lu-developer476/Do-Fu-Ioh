@@ -162,3 +162,55 @@ class TacticalMatchFlowTests(TestCase):
         end_turn = self.client.post(f'/api/match/{room_code}/end-turn/', data='{}', content_type='application/json')
         self.assertEqual(end_turn.status_code, 200)
         self.assertEqual(end_turn.json()['match']['turn']['active_side'], 'guest')
+
+
+class AnonymousAIMatchTests(TestCase):
+    def setUp(self):
+        for family in ['Píos', 'Escarahojas', 'Gelatinas', 'Kitsus']:
+            for idx in range(3):
+                MonsterCard.objects.create(
+                    family=family,
+                    name=f'{family} Carta {idx}',
+                    slug=f'{family.lower()}-carta-{idx}'.replace('í', 'i'),
+                    stage='base',
+                    level_min=1,
+                    level_max=2,
+                    hp=5,
+                    shell=1,
+                    action_points=2,
+                    movement_points=2,
+                    description='test',
+                )
+
+    def test_guest_can_create_vs_ai_match_without_auth(self):
+        response = self.client.post('/api/match/create-vs-ai/', data='{}', content_type='application/json')
+        self.assertEqual(response.status_code, 201)
+        payload = response.json()
+        self.assertEqual(payload['match']['mode'], 'vs_ai')
+        self.assertEqual(payload['match']['viewer_side'], 'host')
+        self.assertEqual(payload['match']['host']['username'], 'Invitado')
+
+    def test_guest_can_play_turn_and_ai_responds(self):
+        created = self.client.post('/api/match/create-vs-ai/', data='{}', content_type='application/json').json()
+        room_code = created['room_code']
+
+        summon = self.client.post(
+            f'/api/match/{room_code}/action/',
+            data=json.dumps({'action': 'summon', 'hand_index': 0, 'x': 0, 'y': 0}),
+            content_type='application/json',
+        )
+        self.assertEqual(summon.status_code, 200)
+
+        end_turn = self.client.post(
+            f'/api/match/{room_code}/action/',
+            data=json.dumps({'action': 'end_turn'}),
+            content_type='application/json',
+        )
+        self.assertEqual(end_turn.status_code, 200)
+        state = end_turn.json()['match']
+        self.assertEqual(state['turn']['active_side'], 'host')
+        self.assertTrue(any(event['event'].startswith('ai_') for event in state['event_log']))
+
+    def test_anonymous_cannot_create_pvp_match(self):
+        response = self.client.post('/api/match/create/', data='{}', content_type='application/json')
+        self.assertEqual(response.status_code, 401)

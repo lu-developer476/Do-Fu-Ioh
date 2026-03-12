@@ -11,13 +11,14 @@
   <main class="app-shell">
     <section class="hero panel">
       <div>
-        <p class="eyebrow">Django + Supabase + Render</p>
-        <h1>Do-Fu-Ióh táctico</h1>
-        <p>Cartas que invocan unidades tácticas en un tablero por turnos.</p>
+        <p class="eyebrow">Do-Fu-Ióh · Tablero táctico</p>
+        <h1>Duelo de cartas en arena</h1>
+        <p>Jugá libre contra la IA sin cuenta, o iniciá sesión para acceder a salas y funciones de perfil.</p>
       </div>
       <div class="hero-actions">
-        <button id="refresh-state">Refrescar partida</button>
-        <button id="create-match">Crear sala</button>
+        <button id="refresh-state" class="ghost">Refrescar partida</button>
+        <button id="create-ai-match">Jugar vs IA (sin registro)</button>
+        <button id="create-match">Crear sala PVP</button>
         <input id="join-room-code" placeholder="Código de sala" maxlength="8" />
         <button id="join-match">Unirse</button>
       </div>
@@ -25,7 +26,7 @@
 
     <section class="grid two-cols">
       <div class="panel">
-        <h2>Cuenta</h2>
+        <h2>Cuenta (opcional)</h2>
         <div class="stack auth-box">
           <input id="username" placeholder="Usuario" />
           <input id="email" placeholder="Correo" />
@@ -35,7 +36,7 @@
             <button id="login-btn">Ingresar</button>
             <button id="logout-btn" class="ghost">Salir</button>
           </div>
-          <p id="auth-status">Todavía no iniciaste sesión.</p>
+          <p id="auth-status">Modo invitado activo. Podés jugar vs IA sin registrarte.</p>
         </div>
       </div>
       <div class="panel">
@@ -50,7 +51,7 @@
     <section class="grid match-layout">
       <div class="panel">
         <h2>Tablero táctico 12x15</h2>
-        <p class="small">Clic en carta de tu mano para preparar invocación. Clic en unidad propia para mover/atacar.</p>
+        <p class="small">Clic en carta de tu mano para invocar. Clic en unidad propia para mover/atacar.</p>
         <div id="board" class="board"></div>
       </div>
       <div class="stack">

@@ -32,11 +32,13 @@
       </section>
 
       <section class="panel compact-panel">
-        <h2>Cartas disponibles</h2>
-        <div class="catalog-toolbar">
-          <select id="family-filter"><option value="">Todas las familias</option></select>
-        </div>
-        <div id="catalog" class="catalog"></div>
+        <details class="catalog-details" open>
+          <summary>CARTAS DISPONIBLES</summary>
+          <div class="catalog-toolbar">
+            <select id="family-filter"><option value="">Todas las familias</option></select>
+          </div>
+          <div id="catalog" class="catalog"></div>
+        </details>
       </section>
     </aside>
 
@@ -86,6 +88,7 @@
       <div id="log" class="log"></div>
     </section>
   </main>
+  {{ cards_seed_json|json_script:"cards-seed" }}
   <script src="{% static 'core/js/game.js' %}"></script>
 </body>
 </html>

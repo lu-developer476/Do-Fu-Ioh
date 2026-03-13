@@ -2,6 +2,7 @@ import json
 import random
 import secrets
 import threading
+import time
 from copy import deepcopy
 from pathlib import Path
 
@@ -32,6 +33,8 @@ REQUIRED_GAME_TABLES = {'core_monstercard', 'core_deck', 'core_deckentry', 'core
 REQUIRED_AUTH_TABLES = {'auth_user', 'django_session'}
 _schema_bootstrap_lock = threading.Lock()
 _schema_bootstrap_attempted = False
+_schema_bootstrap_last_attempt = 0.0
+SCHEMA_BOOTSTRAP_RETRY_SECONDS = 15
 
 
 def _coerce_int(value, default):
@@ -106,22 +109,30 @@ def _auth_schema_is_ready():
 
 
 def _try_bootstrap_schema_once():
-    global _schema_bootstrap_attempted
+    global _schema_bootstrap_attempted, _schema_bootstrap_last_attempt
 
     if _schema_bootstrap_attempted:
         return
 
+    now_ts = time.monotonic()
+    if now_ts - _schema_bootstrap_last_attempt < SCHEMA_BOOTSTRAP_RETRY_SECONDS:
+        return
+
     with _schema_bootstrap_lock:
+        now_ts = time.monotonic()
         if _schema_bootstrap_attempted:
             return
+        if now_ts - _schema_bootstrap_last_attempt < SCHEMA_BOOTSTRAP_RETRY_SECONDS:
+            return
+
+        _schema_bootstrap_last_attempt = now_ts
 
         try:
             call_command('migrate', interactive=False, run_syncdb=True, verbosity=0)
+            _schema_bootstrap_attempted = _game_schema_is_ready() and _auth_schema_is_ready()
         except Exception:
             # Si Render no puede migrar en runtime, dejamos que la API responda con 503 amigable.
             pass
-        finally:
-            _schema_bootstrap_attempted = True
 
 
 def _ensure_schema_ready(include_auth=False):
@@ -208,7 +219,32 @@ def _request_match_side(match, request):
     return None
 
 def index(request):
-    return render(request, 'core/index.html')
+    cards_seed = []
+    try:
+        raw_cards_seed = json.loads(CARDS_SEED_PATH.read_text(encoding='utf-8'))
+    except (json.JSONDecodeError, OSError):
+        raw_cards_seed = []
+
+    for card in raw_cards_seed:
+        cards_seed.append(
+            {
+                'id': card.get('id') or card.get('slug') or card.get('name', ''),
+                'name': card.get('name', 'Carta sin nombre'),
+                'slug': card.get('slug') or slugify(card.get('name', 'carta')),
+                'family': card.get('family', 'Genérica'),
+                'stage': card.get('stage', 'base'),
+                'level_min': _coerce_int(card.get('level_min', 1), 1),
+                'level_max': _coerce_int(card.get('level_max', 1), 1),
+                'hp': _coerce_int(card.get('hp', 1), 1),
+                'shell': _coerce_int(card.get('shell', 0), 0),
+                'action_points': _coerce_int(card.get('action_points', 1), 1),
+                'movement_points': _coerce_int(card.get('movement_points', 1), 1),
+                'description': card.get('description', ''),
+                'image': _resolve_card_image(card.get('image', '')),
+            }
+        )
+
+    return render(request, 'core/index.html', {'cards_seed_json': json.dumps(cards_seed, ensure_ascii=False)})
 
 
 def health(request):

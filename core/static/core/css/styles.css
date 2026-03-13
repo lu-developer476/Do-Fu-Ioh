@@ -73,7 +73,7 @@ input, select {
 .row { display: flex; gap: 8px; flex-wrap: wrap; }
 .small { font-size: .9rem; color: #f3e4c8; }
 
-.board-panel { display: grid; gap: 14px; align-content: start; }
+.board-panel { display: grid; gap: 14px; align-content: start; min-width: 0; }
 .board-header h2 { margin: 0; text-transform: uppercase; letter-spacing: .08em; }
 .board-header p { margin: 4px 0 0; color: #f3e4c8; }
 
@@ -85,8 +85,9 @@ input, select {
   border-radius: 12px;
   background: radial-gradient(circle at center, rgba(106, 127, 58, .45), rgba(40, 54, 29, .94));
   padding: 12px;
-  transform: perspective(900px) rotateX(25deg);
-  transform-origin: center top;
+  width: min(100%, 860px);
+  margin: 0 auto;
+  overflow: auto;
 }
 
 .cell {
@@ -161,11 +162,35 @@ input, select {
 }
 
 .bottom-panel { grid-column: 1 / -1; }
+
+.catalog-details summary {
+  cursor: pointer;
+  list-style: none;
+  font-weight: 700;
+  letter-spacing: .08em;
+  margin-bottom: 10px;
+}
+
+.catalog-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.catalog-details summary::after {
+  content: "▾";
+  margin-left: 8px;
+}
+
+.catalog-details:not([open]) summary::after {
+  content: "▸";
+}
 hr { border: 0; border-top: 1px solid #b89364; }
 
 @media (max-width: 1300px) {
   .arcade-shell { grid-template-columns: 1fr; }
-  .board { grid-template-columns: repeat(8, minmax(40px, 1fr)); }
+  .board {
+    width: 100%;
+    grid-template-columns: repeat(11, minmax(40px, 1fr));
+  }
   .board-footer { flex-direction: column; }
 }
 

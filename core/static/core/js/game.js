@@ -31,6 +31,17 @@ async function api(url, options = {}) {
   return data;
 }
 
+function localSeedCards() {
+  const seedTag = document.getElementById('cards-seed');
+  if (!seedTag) return [];
+  try {
+    const parsed = JSON.parse(seedTag.textContent || '[]');
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
 function renderCatalog() {
   const filter = familyFilter.value;
   const cards = appState.cards.filter((card) => !filter || card.family === filter);
@@ -320,9 +331,16 @@ function renderBoard() {
 }
 
 async function loadCards() {
-  const data = await api('/api/cards/');
-  appState.cards = data.cards;
-  const families = [...new Set(data.cards.map((card) => card.family))];
+  let cards = [];
+  try {
+    const data = await api('/api/cards/');
+    cards = data.cards || [];
+  } catch {
+    cards = localSeedCards();
+  }
+
+  appState.cards = cards;
+  const families = [...new Set(cards.map((card) => card.family))];
   familyFilter.innerHTML = '<option value="">Todas las familias</option>' + families.map((f) => `<option value="${f}">${f}</option>`).join('');
   renderCatalog();
 }
@@ -445,9 +463,9 @@ if (familyFilter) {
 renderStaticBoard();
 
 Promise.allSettled([loadCards(), loadProfile()]).then((results) => {
-  const firstError = results.find((result) => result.status === 'rejected');
-  if (firstError) {
-    setAuthStatus(firstError.reason?.message || 'No se pudo cargar todo el panel, pero podés jugar igual.', true);
+  const profileError = results[1]?.status === 'rejected' ? results[1].reason : null;
+  if (profileError) {
+    setAuthStatus(profileError.message || 'No se pudo cargar todo el panel, pero podés jugar igual.', true);
   }
   renderBoard();
 });

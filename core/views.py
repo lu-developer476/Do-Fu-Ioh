@@ -1,11 +1,13 @@
 import json
 import random
 import secrets
+import threading
 from copy import deepcopy
 from pathlib import Path
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.core.management import call_command
 from django.db import connection
 from django.db.utils import OperationalError, ProgrammingError
 from django.core.exceptions import ObjectDoesNotExist
@@ -27,6 +29,9 @@ AI_USERNAME = "__dojo_ai__"
 GUEST_HOST_USERNAME = "__guest_player__"
 CARDS_SEED_PATH = Path(__file__).resolve().parent.parent / 'data' / 'cards.json'
 REQUIRED_GAME_TABLES = {'core_monstercard', 'core_deck', 'core_deckentry', 'core_matchrecord'}
+REQUIRED_AUTH_TABLES = {'auth_user', 'django_session'}
+_schema_bootstrap_lock = threading.Lock()
+_schema_bootstrap_attempted = False
 
 
 def _coerce_int(value, default):
@@ -90,6 +95,45 @@ def _game_schema_is_ready():
     except (OperationalError, ProgrammingError):
         return False
     return REQUIRED_GAME_TABLES.issubset(available_tables)
+
+
+def _auth_schema_is_ready():
+    try:
+        available_tables = set(connection.introspection.table_names())
+    except (OperationalError, ProgrammingError):
+        return False
+    return REQUIRED_AUTH_TABLES.issubset(available_tables)
+
+
+def _try_bootstrap_schema_once():
+    global _schema_bootstrap_attempted
+
+    if _schema_bootstrap_attempted:
+        return
+
+    with _schema_bootstrap_lock:
+        if _schema_bootstrap_attempted:
+            return
+
+        try:
+            call_command('migrate', interactive=False, run_syncdb=True, verbosity=0)
+        except Exception:
+            # Si Render no puede migrar en runtime, dejamos que la API responda con 503 amigable.
+            pass
+        finally:
+            _schema_bootstrap_attempted = True
+
+
+def _ensure_schema_ready(include_auth=False):
+    game_ready = _game_schema_is_ready()
+    auth_ready = _auth_schema_is_ready() if include_auth else True
+    if game_ready and auth_ready:
+        return True
+
+    _try_bootstrap_schema_once()
+    game_ready = _game_schema_is_ready()
+    auth_ready = _auth_schema_is_ready() if include_auth else True
+    return game_ready and auth_ready
 
 
 def _schema_not_ready_response():
@@ -174,6 +218,9 @@ def health(request):
 @require_http_methods(['POST'])
 @csrf_exempt
 def register_user(request):
+    if not _ensure_schema_ready(include_auth=True):
+        return _schema_not_ready_response()
+
     data = _payload(request)
     username = (data.get('username') or '').strip()
     email = (data.get('email') or '').strip()
@@ -191,6 +238,9 @@ def register_user(request):
 @require_http_methods(['POST'])
 @csrf_exempt
 def login_user(request):
+    if not _ensure_schema_ready(include_auth=True):
+        return _schema_not_ready_response()
+
     data = _payload(request)
     user = authenticate(request, username=(data.get('username') or '').strip(), password=data.get('password') or '')
     if not user:
@@ -203,12 +253,18 @@ def login_user(request):
 @require_http_methods(['POST'])
 @csrf_exempt
 def logout_user(request):
+    if not _ensure_schema_ready(include_auth=True):
+        return _schema_not_ready_response()
+
     logout(request)
     return JsonResponse({'status': 'ok'})
 
 
 @require_GET
 def user_profile(request):
+    if not _ensure_schema_ready(include_auth=True):
+        return _schema_not_ready_response()
+
     if not request.user.is_authenticated:
         return JsonResponse({'status': 'error', 'message': 'No autenticado'}, status=401)
     _ensure_default_deck(request.user)
@@ -217,7 +273,7 @@ def user_profile(request):
 
 @require_GET
 def cards_catalog(request):
-    if not _game_schema_is_ready():
+    if not _ensure_schema_ready():
         return _schema_not_ready_response()
 
     _bootstrap_cards_if_empty()
@@ -226,7 +282,7 @@ def cards_catalog(request):
 
 
 def _ensure_default_deck(user):
-    if not _game_schema_is_ready():
+    if not _ensure_schema_ready():
         return None
 
     _bootstrap_cards_if_empty()
@@ -617,7 +673,7 @@ def _run_ai_turn(state):
 def create_match(request):
     if not request.user.is_authenticated:
         return JsonResponse({'status': 'error', 'message': 'No autenticado'}, status=401)
-    if not _game_schema_is_ready():
+    if not _ensure_schema_ready(include_auth=True):
         return _schema_not_ready_response()
 
     _ensure_default_deck(request.user)
@@ -631,7 +687,7 @@ def create_match(request):
 @require_http_methods(['POST'])
 @csrf_exempt
 def create_match_vs_ai(request):
-    if not _game_schema_is_ready():
+    if not _ensure_schema_ready(include_auth=True):
         return _schema_not_ready_response()
 
     host_user = request.user if request.user.is_authenticated else _get_or_create_system_user(GUEST_HOST_USERNAME)
@@ -655,6 +711,8 @@ def create_match_vs_ai(request):
 @require_http_methods(['POST'])
 @csrf_exempt
 def join_match(request, room_code):
+    if not _ensure_schema_ready(include_auth=True):
+        return _schema_not_ready_response()
     if not request.user.is_authenticated:
         return JsonResponse({'status': 'error', 'message': 'No autenticado'}, status=401)
     match = get_object_or_404(MatchRecord, room_code=room_code)

@@ -2,12 +2,14 @@ import json
 import random
 import secrets
 from copy import deepcopy
+from pathlib import Path
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
+from django.utils.text import slugify
 from django.utils.timezone import now
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_http_methods
@@ -21,6 +23,7 @@ BOARD_HEIGHT = 15
 MAX_SUMMONS_PER_TURN = 1
 AI_USERNAME = "__dojo_ai__"
 GUEST_HOST_USERNAME = "__guest_player__"
+CARDS_SEED_PATH = Path(__file__).resolve().parent.parent / 'data' / 'cards.json'
 
 
 def _payload(request):
@@ -59,6 +62,37 @@ def _serialize_user(user):
         'email': user.email,
         'avatar_url': avatar_url,
     }
+
+
+def _bootstrap_cards_if_empty():
+    if MonsterCard.objects.exists() or not CARDS_SEED_PATH.exists():
+        return
+
+    try:
+        cards_seed = json.loads(CARDS_SEED_PATH.read_text(encoding='utf-8'))
+    except (json.JSONDecodeError, OSError):
+        return
+
+    for index, raw_card in enumerate(cards_seed):
+        raw_name = raw_card.get('name', 'Carta sin nombre')
+        raw_slug = raw_card.get('slug') or slugify(raw_name)
+        safe_slug = (raw_slug or f'carta-{index + 1}')[:140]
+        MonsterCard.objects.update_or_create(
+            slug=safe_slug,
+            defaults={
+                'family': raw_card.get('family', 'Genérica')[:40],
+                'name': raw_name[:120],
+                'stage': raw_card.get('stage', 'base'),
+                'level_min': int(raw_card.get('level_min', 1) or 1),
+                'level_max': int(raw_card.get('level_max', 1) or 1),
+                'hp': int(raw_card.get('hp', 1) or 1),
+                'shell': int(raw_card.get('shell', 0) or 0),
+                'action_points': int(raw_card.get('action_points', 1) or 1),
+                'movement_points': int(raw_card.get('movement_points', 1) or 1),
+                'description': raw_card.get('description', ''),
+                'image': raw_card.get('image', ''),
+            },
+        )
 
 
 
@@ -142,11 +176,13 @@ def user_profile(request):
 
 @require_GET
 def cards_catalog(request):
+    _bootstrap_cards_if_empty()
     cards = [_serialize_card(c) for c in MonsterCard.objects.all()]
     return JsonResponse({'status': 'ok', 'cards': cards})
 
 
 def _ensure_default_deck(user):
+    _bootstrap_cards_if_empty()
     if user.decks.exists():
         return user.decks.filter(is_active=True).first() or user.decks.first()
     deck = Deck.objects.create(user=user, name='Mazo inicial', is_active=True)

@@ -27,7 +27,7 @@ async function api(url, options = {}) {
   });
 
   const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(data.message || 'Error inesperado');
+  if (!response.ok) throw new Error(data.message || `Error HTTP ${response.status}`);
   return data;
 }
 
@@ -382,6 +382,7 @@ async function endTurn() {
 
 function bindAsyncButton(selector, handler) {
   const button = $(selector);
+  if (!button) return;
   button.addEventListener('click', async () => {
     if (button.disabled) return;
     const originalText = button.textContent;
@@ -414,6 +415,16 @@ bindAsyncButton('#create-ai-match', createAIMatch);
 bindAsyncButton('#join-match', joinMatch);
 bindAsyncButton('#refresh-state', refreshMatch);
 bindAsyncButton('#end-turn-btn', endTurn);
-familyFilter.addEventListener('change', renderCatalog);
+if (familyFilter) {
+  familyFilter.addEventListener('change', renderCatalog);
+}
 
-loadCards().then(loadProfile).then(renderBoard).catch((err) => setAuthStatus(err.message, true));
+renderStaticBoard();
+
+Promise.allSettled([loadCards(), loadProfile()]).then((results) => {
+  const firstError = results.find((result) => result.status === 'rejected');
+  if (firstError) {
+    setAuthStatus(firstError.reason?.message || 'No se pudo cargar todo el panel, pero podés jugar igual.', true);
+  }
+  renderBoard();
+});

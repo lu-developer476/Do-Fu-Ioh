@@ -215,6 +215,16 @@ class AnonymousAIMatchTests(TestCase):
         response = self.client.post('/api/match/create/', data='{}', content_type='application/json')
         self.assertEqual(response.status_code, 401)
 
+    def test_vs_ai_bootstraps_cards_when_catalog_is_empty(self):
+        MonsterCard.objects.all().delete()
+
+        response = self.client.post('/api/match/create-vs-ai/', data='{}', content_type='application/json')
+        self.assertEqual(response.status_code, 201)
+
+        payload = response.json()
+        self.assertGreater(MonsterCard.objects.count(), 0)
+        self.assertGreater(len(payload['match']['host']['hand']), 0)
+
 
 class AuthFlowTests(TestCase):
     def test_login_without_profile_does_not_raise_server_error(self):

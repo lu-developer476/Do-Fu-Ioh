@@ -144,7 +144,7 @@ function renderStaticBoard() {
       const squareClass = (x + y) % 2 === 0 ? 'square-light' : 'square-dark';
       cells.push(`
         <div class="cell ${squareClass} empty preview-cell">
-          <div class="small">·</div>
+          <div class="small"></div>
         </div>
       `);
     }
@@ -243,7 +243,7 @@ function renderBoard() {
         <button class="cell ${squareClass} ${ownerClass} ${deployClass} ${hintClass} ${isSelected ? 'selected' : ''}" data-x="${x}" data-y="${y}">
           ${unit
             ? `<div class="token"><strong>${unit.card.name}</strong><span>#${shortId(unit.id)}</span><span>PdV ${unit.hp_current} · PdC ${unit.shell_current}</span><span>PA ${unit.pa_current} · PM ${unit.pm_current}</span></div>`
-            : '<div class="small">·</div>'}
+            : '<div class="small"></div>'}
         </button>
       `);
     }

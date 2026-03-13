@@ -79,11 +79,14 @@ input, select {
 
 .board {
   display: grid;
-  grid-template-columns: repeat(12, minmax(48px, 1fr));
-  gap: 0;
-  border: 8px solid #26402d;
-  background: repeating-linear-gradient(-45deg, #2f4a35, #2f4a35 8px, #3b5a42 8px, #3b5a42 16px);
-  padding: 14px;
+  grid-template-columns: repeat(11, minmax(48px, 1fr));
+  gap: 2px;
+  border: 6px solid #263221;
+  border-radius: 12px;
+  background: radial-gradient(circle at center, rgba(106, 127, 58, .45), rgba(40, 54, 29, .94));
+  padding: 12px;
+  transform: perspective(900px) rotateX(25deg);
+  transform-origin: center top;
 }
 
 .cell {
@@ -95,18 +98,22 @@ input, select {
   display: grid;
   gap: 3px;
   align-content: start;
-  border-radius: 0;
+  border-radius: 6px;
   background: var(--square-light);
+  transition: transform .12s ease, box-shadow .12s ease;
 }
 
-.cell.square-dark { background: var(--square-dark); color: #fdf6ea; }
-.cell.square-light { background: var(--square-light); }
+.cell.square-dark { background: #6a7444; color: #fdf6ea; }
+.cell.square-light { background: #7f8950; color: #f7f3dc; }
 .cell.ally { box-shadow: inset 0 0 0 2px rgba(100, 250, 169, .55); }
 .cell.enemy { box-shadow: inset 0 0 0 2px rgba(255, 137, 125, .55); }
 .cell.selected { outline: 2px solid #ffe082; z-index: 2; }
 .cell.hint-summon { box-shadow: inset 0 0 0 2px #90ffbe; }
 .cell.hint-move { box-shadow: inset 0 0 0 2px #7ad3ff; }
 .cell.hint-attack { box-shadow: inset 0 0 0 2px #ff9d6a; }
+.cell.deploy-ally { box-shadow: inset 0 0 0 2px rgba(58, 172, 255, .75); }
+.cell.deploy-enemy { box-shadow: inset 0 0 0 2px rgba(255, 116, 55, .7); }
+.cell:hover { transform: translateY(-1px); }
 .coord { font-size: .63rem; opacity: .85; }
 .token { font-size: .62rem; line-height: 1.05; display: grid; gap: 2px; }
 
@@ -117,6 +124,11 @@ input, select {
   max-height: 260px;
   overflow: auto;
   padding-right: 2px;
+}
+
+#hand.card-row {
+  grid-template-columns: repeat(1, minmax(180px, 1fr));
+  max-height: 520px;
 }
 
 .card {

@@ -1,5 +1,5 @@
-const DEFAULT_BOARD_WIDTH = 12;
-const DEFAULT_BOARD_HEIGHT = 15;
+const DEFAULT_BOARD_WIDTH = 11;
+const DEFAULT_BOARD_HEIGHT = 11;
 
 let appState = {
   me: null,
@@ -80,10 +80,28 @@ function isMyTurn(mySide) {
   return Boolean(appState.match && mySide && appState.match.turn.active_side === mySide);
 }
 
-function summonRowsForSide(side, boardHeight) {
-  return side === 'host' ? [0, 1, 2] : [boardHeight - 1, boardHeight - 2, boardHeight - 3];
-}
 
+function deploymentCellsForSide(side, boardWidth, boardHeight) {
+  if (!side) return new Set();
+  const middleX = Math.floor(boardWidth / 2);
+  if (side === 'host') {
+    return new Set([
+      `${middleX},0`,
+      `${middleX - 1},1`,
+      `${middleX},1`,
+      `${middleX + 1},1`,
+      `${middleX},2`,
+    ]);
+  }
+
+  return new Set([
+    `${middleX},${boardHeight - 1}`,
+    `${middleX - 1},${boardHeight - 2}`,
+    `${middleX},${boardHeight - 2}`,
+    `${middleX + 1},${boardHeight - 2}`,
+    `${middleX},${boardHeight - 3}`,
+  ]);
+}
 function computeMoveTargets(selectedUnit, meUnits, enemyUnits) {
   if (!selectedUnit || selectedUnit.pm_current <= 0 || !selectedUnit.can_move) return new Set();
   const occupied = new Set([...meUnits, ...enemyUnits].map((u) => `${u.x},${u.y}`));
@@ -197,7 +215,8 @@ function renderBoard() {
   const selectedHandCard = me?.hand?.[appState.selectedHandIndex] || null;
   const moveTargets = computeMoveTargets(selectedUnit, me?.units || [], enemy?.units || []);
   const attackTargets = computeAttackTargets(selectedUnit, enemy?.units || []);
-  const summonRows = summonRowsForSide(mySide, height);
+  const myDeploymentCells = deploymentCellsForSide(mySide, width, height);
+  const enemyDeploymentCells = deploymentCellsForSide(mySide === 'host' ? 'guest' : 'host', width, height);
 
   const cells = [];
   for (let y = 0; y < height; y += 1) {
@@ -208,14 +227,17 @@ function renderBoard() {
       const ownerClass = ownUnit ? 'ally' : (enemyUnit ? 'enemy' : 'empty');
       const squareClass = (x + y) % 2 === 0 ? 'square-light' : 'square-dark';
       const key = `${x},${y}`;
-      const canSummon = Boolean(selectedHandCard) && summonRows.includes(y) && !unit && isMyTurn(mySide);
+      const isMyDeployCell = myDeploymentCells.has(key);
+      const isEnemyDeployCell = enemyDeploymentCells.has(key);
+      const canSummon = Boolean(selectedHandCard) && isMyDeployCell && !unit && isMyTurn(mySide);
       const canMoveHere = moveTargets.has(key) && isMyTurn(mySide);
       const isSelected = ownUnit && selectedUnit && ownUnit.id === selectedUnit.id;
       const canAttackThis = enemyUnit && attackTargets.has(enemyUnit.id) && isMyTurn(mySide);
       const hintClass = canSummon ? 'hint-summon' : canMoveHere ? 'hint-move' : canAttackThis ? 'hint-attack' : '';
+      const deployClass = isMyDeployCell ? 'deploy-ally' : isEnemyDeployCell ? 'deploy-enemy' : '';
 
       cells.push(`
-        <button class="cell ${squareClass} ${ownerClass} ${hintClass} ${isSelected ? 'selected' : ''}" data-x="${x}" data-y="${y}">
+        <button class="cell ${squareClass} ${ownerClass} ${deployClass} ${hintClass} ${isSelected ? 'selected' : ''}" data-x="${x}" data-y="${y}">
           <div class="coord">${x},${y}</div>
           ${unit
             ? `<div class="token"><strong>${unit.card.name}</strong><span>#${shortId(unit.id)}</span><span>PdV ${unit.hp_current} · PdC ${unit.shell_current}</span><span>PA ${unit.pa_current} · PM ${unit.pm_current}</span></div>`
@@ -241,7 +263,7 @@ function renderBoard() {
     return `
       <button class="card hand-card ${selectedClass}" data-hand-index="${index}">
         <img src="${card.image}" alt="${card.name}" />
-        <h4>#${index} · ${card.name}</h4>
+        <h4>#${index + 1} · ${card.name}</h4>
         <div class="meta">
           <span class="badge">Coste ${Math.max(1, card.level_min)}</span>
           <span class="badge">PA ${card.action_points}</span>
@@ -262,7 +284,7 @@ function renderBoard() {
   });
 
   const selectedText = selectedHandCard
-    ? `Carta seleccionada: #${appState.selectedHandIndex} ${selectedHandCard.name}`
+    ? `Carta seleccionada: #${appState.selectedHandIndex + 1} ${selectedHandCard.name} (clic en casilla azul)`
     : selectedUnit
       ? `Unidad seleccionada: ${selectedUnit.card.name} (#${shortId(selectedUnit.id)})`
       : 'Sin selección activa';
@@ -275,10 +297,11 @@ function renderBoard() {
     <div><strong>Número de turno:</strong> ${match.turn.number}</div>
     <div><strong>Tu vida:</strong> ${me?.life ?? '-'} · <strong>Energía:</strong> ${me?.energy ?? '-'}/${me?.max_energy ?? '-'}</div>
     <div><strong>Rival vida:</strong> ${enemy?.life ?? '-'}</div>
-    <div><strong>Tu mazo:</strong> ${me?.library_count ?? 0} · <strong>Tu mano:</strong> ${me?.hand?.length ?? 0}</div>
+    <div><strong>Tu mazo:</strong> ${me?.library_count ?? 0} · <strong>Tu mano:</strong> ${me?.hand?.length ?? 0}/5</div>
     <div><strong>Mazo rival:</strong> ${enemy?.library_count ?? 0} · <strong>Mano rival:</strong> ${enemy?.hand_count ?? 0}</div>
     <div><strong>Ganador:</strong> ${match.winner || 'sin definir'}</div>
     <div><strong>Selección:</strong> ${selectedText}</div>
+    <div><strong>Zona de invocación:</strong> 5 casillas azules.</div>
   `;
 
   const ownUnits = me?.units || [];

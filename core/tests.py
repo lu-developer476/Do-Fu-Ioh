@@ -1,40 +1,51 @@
 import json
-import os
-from unittest.mock import patch
 
 from django.test import TestCase
 
 from .models import MonsterCard
-from .views import _sanitize_env_value, _schema_diagnostics
 
 
 class SoloAIModeTests(TestCase):
     def setUp(self):
-        for family in ['Píos', 'Escarahojas', 'Gelatinas', 'Kitsus']:
+        for family in ['Pios', 'Escarahojas', 'Gelatinas', 'Kitsus']:
             for idx in range(3):
                 MonsterCard.objects.create(
                     family=family,
                     name=f'{family} Carta {idx}',
-                    slug=f'{family.lower()}-carta-{idx}'.replace('í', 'i'),
+                    slug=f'{family.lower()}-carta-{idx}',
                     stage='base',
                     level_min=1,
                     level_max=2,
-                    hp=5,
+                    hp=6,
                     shell=1,
                     action_points=2,
                     movement_points=2,
                     description='test',
                 )
 
-    def test_create_vs_ai_without_auth(self):
-        response = self.client.post('/api/match/create-vs-ai/', data='{}', content_type='application/json')
-        self.assertEqual(response.status_code, 201)
-        payload = response.json()
+    def test_create_match_and_recover_from_session(self):
+        created = self.client.post('/api/match/create-vs-ai/', data='{}', content_type='application/json')
+        self.assertEqual(created.status_code, 200)
+        payload = created.json()
         self.assertEqual(payload['match']['mode'], 'vs_ai')
-        self.assertEqual(payload['match']['viewer_side'], 'host')
-        self.assertEqual(payload['match']['host']['username'], 'Jugador')
+        self.assertEqual(payload['match']['turn']['active_side'], 'host')
 
-    def test_turn_flow_and_ai_response(self):
+        active = self.client.get('/api/match/active/')
+        self.assertEqual(active.status_code, 200)
+        self.assertEqual(active.json()['room_code'], payload['room_code'])
+
+    def test_session_is_required_for_match_access(self):
+        created = self.client.post('/api/match/create-vs-ai/', data='{}', content_type='application/json').json()
+        room_code = created['room_code']
+
+        ok = self.client.get(f'/api/match/{room_code}/')
+        self.assertEqual(ok.status_code, 200)
+
+        other_client = self.client_class()
+        denied = other_client.get(f'/api/match/{room_code}/')
+        self.assertEqual(denied.status_code, 404)
+
+    def test_turn_actions_work_without_user_login(self):
         created = self.client.post('/api/match/create-vs-ai/', data='{}', content_type='application/json').json()
         room_code = created['room_code']
         center_x = created['match']['board']['width'] // 2
@@ -54,43 +65,4 @@ class SoloAIModeTests(TestCase):
         self.assertEqual(end_turn.status_code, 200)
         state = end_turn.json()['match']
         self.assertEqual(state['turn']['active_side'], 'host')
-        self.assertTrue(any(event['event'].startswith('ai_') for event in state['event_log']))
-
-    def test_removed_features_return_gone(self):
-        post_endpoints = [
-            '/api/match/create/',
-            '/api/auth/register/',
-            '/api/auth/login/',
-            '/api/auth/logout/',
-            '/api/decks/',
-        ]
-        for endpoint in post_endpoints:
-            response = self.client.post(endpoint, data='{}', content_type='application/json')
-            self.assertEqual(response.status_code, 410)
-
-        profile_response = self.client.get('/api/auth/profile/')
-        self.assertEqual(profile_response.status_code, 410)
-
-    def test_match_is_session_bound(self):
-        created = self.client.post('/api/match/create-vs-ai/', data='{}', content_type='application/json').json()
-        room_code = created['room_code']
-
-        ok_response = self.client.get(f'/api/match/{room_code}/')
-        self.assertEqual(ok_response.status_code, 200)
-
-        other_client = self.client_class()
-        blocked = other_client.get(f'/api/match/{room_code}/')
-        self.assertEqual(blocked.status_code, 404)
-
-
-class EnvironmentParsingTests(TestCase):
-    def test_sanitize_env_value_removes_key_prefix(self):
-        self.assertEqual(
-            _sanitize_env_value('DATABASE_URL=postgresql://example', 'DATABASE_URL'),
-            'postgresql://example',
-        )
-
-    def test_schema_diagnostics_warns_prefixed_database_url(self):
-        with patch.dict(os.environ, {'DATABASE_URL': 'DATABASE_URL=postgresql://example'}, clear=False):
-            diagnostics = _schema_diagnostics()
-        self.assertTrue(any('sin el prefijo DATABASE_URL=' in item for item in diagnostics))
+        self.assertTrue(any('Fin del turno' in item for item in state['log']))

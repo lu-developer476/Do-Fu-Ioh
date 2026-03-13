@@ -1,7 +1,7 @@
 const DEFAULT_BOARD_WIDTH = 11;
 const DEFAULT_BOARD_HEIGHT = 11;
 
-let appState = {
+const appState = {
   cards: [],
   roomCode: null,
   match: null,
@@ -12,8 +12,9 @@ let appState = {
 const $ = (sel) => document.querySelector(sel);
 const familyFilter = $('#family-filter');
 
-function setAuthStatus(message, isError = false) {
+function setStatus(message, isError = false) {
   const status = $('#auth-status');
+  if (!status) return;
   status.textContent = message;
   status.classList.toggle('status-error', isError);
 }
@@ -24,7 +25,6 @@ async function api(url, options = {}) {
     credentials: 'same-origin',
     ...options,
   });
-
   const data = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(data.message || `Error HTTP ${response.status}`);
   return data;
@@ -42,9 +42,11 @@ function localSeedCards() {
 }
 
 function renderCatalog() {
-  const filter = familyFilter.value;
+  const catalogEl = $('#catalog');
+  if (!catalogEl) return;
+  const filter = familyFilter?.value || '';
   const cards = appState.cards.filter((card) => !filter || card.family === filter);
-  $('#catalog').innerHTML = cards.map((card) => `
+  catalogEl.innerHTML = cards.map((card) => `
     <article class="card">
       <img src="${card.image}" alt="${card.name}" />
       <h4>${card.name}</h4>
@@ -52,53 +54,31 @@ function renderCatalog() {
         <span class="badge">${card.family}</span>
         <span class="badge">${card.stage}</span>
         <span class="badge">Niv ${card.level_min}-${card.level_max}</span>
-        <span class="badge">PdV ${card.hp}</span>
-        <span class="badge">PdC ${card.shell}</span>
-        <span class="badge">PA ${card.action_points}</span>
-        <span class="badge">PM ${card.movement_points}</span>
       </div>
-      <p>${card.description}</p>
+      <p>${card.description || ''}</p>
     </article>
-  `).join('');
+  `).join('') || '<div class="small">No hay cartas disponibles.</div>';
 }
 
 function resolveSides() {
-  const match = appState.match;
-  if (!match) return { me: null, enemy: null, mySide: null };
-  const mySide = 'host';
-  return {
-    me: match.host,
-    enemy: match.guest,
-    mySide,
-  };
+  if (!appState.match) return { me: null, enemy: null, mySide: null };
+  return { me: appState.match.host, enemy: appState.match.guest, mySide: 'host' };
 }
 
 function findUnitAt(units = [], x, y) {
   return units.find((u) => u.x === x && u.y === y);
 }
 
-function shortId(unitId) {
-  return unitId?.slice(-4) || '----';
-}
-
 function isMyTurn(mySide) {
-  return Boolean(appState.match && mySide && appState.match.turn.active_side === mySide);
+  return Boolean(appState.match && mySide && appState.match.turn?.active_side === mySide);
 }
-
 
 function deploymentCellsForSide(side, boardWidth, boardHeight) {
   if (!side) return new Set();
   const middleX = Math.floor(boardWidth / 2);
   if (side === 'host') {
-    return new Set([
-      `${middleX},0`,
-      `${middleX - 1},1`,
-      `${middleX},1`,
-      `${middleX + 1},1`,
-      `${middleX},2`,
-    ]);
+    return new Set([`${middleX},0`, `${middleX - 1},1`, `${middleX},1`, `${middleX + 1},1`, `${middleX},2`]);
   }
-
   return new Set([
     `${middleX},${boardHeight - 1}`,
     `${middleX - 1},${boardHeight - 2}`,
@@ -107,6 +87,7 @@ function deploymentCellsForSide(side, boardWidth, boardHeight) {
     `${middleX},${boardHeight - 3}`,
   ]);
 }
+
 function computeMoveTargets(selectedUnit, meUnits, enemyUnits) {
   if (!selectedUnit || selectedUnit.pm_current <= 0 || !selectedUnit.can_move) return new Set();
   const occupied = new Set([...meUnits, ...enemyUnits].map((u) => `${u.x},${u.y}`));
@@ -133,24 +114,16 @@ function computeAttackTargets(selectedUnit, enemyUnits) {
     .map((enemy) => enemy.id));
 }
 
-function isUnitSummonedThisTurn(unit) {
-  return appState.match && unit.summoned_turn === appState.match.turn.number;
-}
-
 function renderStaticBoard() {
+  const boardEl = $('#board');
+  if (!boardEl) return;
   const cells = [];
   for (let y = 0; y < DEFAULT_BOARD_HEIGHT; y += 1) {
     for (let x = 0; x < DEFAULT_BOARD_WIDTH; x += 1) {
       const squareClass = (x + y) % 2 === 0 ? 'square-light' : 'square-dark';
-      cells.push(`
-        <div class="cell ${squareClass} empty preview-cell">
-          <div class="small"></div>
-        </div>
-      `);
+      cells.push(`<div class="cell ${squareClass} empty preview-cell"><div class="small"></div></div>`);
     }
   }
-
-  const boardEl = $('#board');
   boardEl.style.gridTemplateColumns = `repeat(${DEFAULT_BOARD_WIDTH}, minmax(40px, 1fr))`;
   boardEl.innerHTML = cells.join('');
 }
@@ -169,10 +142,10 @@ async function onCellClick(x, y) {
   const { me, enemy, mySide } = resolveSides();
   if (!me || !enemy || !isMyTurn(mySide)) return;
 
-  const myUnit = findUnitAt(me.units, x, y);
-  const enemyUnit = findUnitAt(enemy.units, x, y);
-  const selectedHandCard = me.hand[appState.selectedHandIndex];
-  const selectedUnit = me.units.find((u) => u.id === appState.selectedUnitId);
+  const myUnit = findUnitAt(me.units || [], x, y);
+  const enemyUnit = findUnitAt(enemy.units || [], x, y);
+  const selectedHandCard = me.hand?.[appState.selectedHandIndex] || null;
+  const selectedUnit = (me.units || []).find((u) => u.id === appState.selectedUnitId) || null;
 
   if (myUnit) {
     appState.selectedUnitId = myUnit.id;
@@ -180,30 +153,27 @@ async function onCellClick(x, y) {
     renderBoard();
     return;
   }
-
   if (selectedHandCard) {
     await sendAction({ action: 'summon', hand_index: appState.selectedHandIndex, x, y });
     appState.selectedHandIndex = null;
     return;
   }
-
-  if (!selectedUnit || isUnitSummonedThisTurn(selectedUnit)) return;
+  if (!selectedUnit) return;
 
   if (enemyUnit) {
-    const validAttackTargets = computeAttackTargets(selectedUnit, enemy.units);
-    if (!validAttackTargets.has(enemyUnit.id)) return;
+    const attackTargets = computeAttackTargets(selectedUnit, enemy.units || []);
+    if (!attackTargets.has(enemyUnit.id)) return;
     await sendAction({ action: 'attack', attacker_id: selectedUnit.id, target_id: enemyUnit.id });
     return;
   }
 
-  const validMoveTargets = computeMoveTargets(selectedUnit, me.units, enemy.units);
-  if (!validMoveTargets.has(`${x},${y}`)) return;
+  const moveTargets = computeMoveTargets(selectedUnit, me.units || [], enemy.units || []);
+  if (!moveTargets.has(`${x},${y}`)) return;
   await sendAction({ action: 'move', unit_id: selectedUnit.id, to_x: x, to_y: y });
 }
 
 function renderBoard() {
-  const match = appState.match;
-  if (!match) {
+  if (!appState.match) {
     renderStaticBoard();
     $('#hand').innerHTML = '<div class="small">Tu mano aparecerá acá.</div>';
     $('#match-summary').innerHTML = '<div class="small">Iniciá una partida contra la IA para comenzar.</div>';
@@ -212,14 +182,14 @@ function renderBoard() {
   }
 
   const { me, enemy, mySide } = resolveSides();
-  const width = match.board.width;
-  const height = match.board.height;
+  const width = appState.match.board?.width || DEFAULT_BOARD_WIDTH;
+  const height = appState.match.board?.height || DEFAULT_BOARD_HEIGHT;
   const selectedUnit = me?.units?.find((u) => u.id === appState.selectedUnitId) || null;
   const selectedHandCard = me?.hand?.[appState.selectedHandIndex] || null;
   const moveTargets = computeMoveTargets(selectedUnit, me?.units || [], enemy?.units || []);
   const attackTargets = computeAttackTargets(selectedUnit, enemy?.units || []);
-  const myDeploymentCells = deploymentCellsForSide(mySide, width, height);
-  const enemyDeploymentCells = deploymentCellsForSide(mySide === 'host' ? 'guest' : 'host', width, height);
+  const myDeployment = deploymentCellsForSide(mySide, width, height);
+  const enemyDeployment = deploymentCellsForSide('guest', width, height);
 
   const cells = [];
   for (let y = 0; y < height; y += 1) {
@@ -227,94 +197,69 @@ function renderBoard() {
       const ownUnit = findUnitAt(me?.units, x, y);
       const enemyUnit = findUnitAt(enemy?.units, x, y);
       const unit = ownUnit || enemyUnit;
-      const ownerClass = ownUnit ? 'ally' : (enemyUnit ? 'enemy' : 'empty');
       const squareClass = (x + y) % 2 === 0 ? 'square-light' : 'square-dark';
       const key = `${x},${y}`;
-      const isMyDeployCell = myDeploymentCells.has(key);
-      const isEnemyDeployCell = enemyDeploymentCells.has(key);
-      const canSummon = Boolean(selectedHandCard) && isMyDeployCell && !unit && isMyTurn(mySide);
-      const canMoveHere = moveTargets.has(key) && isMyTurn(mySide);
-      const isSelected = ownUnit && selectedUnit && ownUnit.id === selectedUnit.id;
-      const canAttackThis = enemyUnit && attackTargets.has(enemyUnit.id) && isMyTurn(mySide);
-      const hintClass = canSummon ? 'hint-summon' : canMoveHere ? 'hint-move' : canAttackThis ? 'hint-attack' : '';
-      const deployClass = isMyDeployCell ? 'deploy-ally' : isEnemyDeployCell ? 'deploy-enemy' : '';
+      const canSummon = Boolean(selectedHandCard) && myDeployment.has(key) && !unit && isMyTurn(mySide);
+      const canMove = moveTargets.has(key) && isMyTurn(mySide);
+      const canAttack = enemyUnit && attackTargets.has(enemyUnit.id) && isMyTurn(mySide);
+      const deployClass = myDeployment.has(key) ? 'deploy-ally' : (enemyDeployment.has(key) ? 'deploy-enemy' : '');
+      const hintClass = canSummon ? 'hint-summon' : (canMove ? 'hint-move' : (canAttack ? 'hint-attack' : ''));
 
       cells.push(`
-        <button class="cell ${squareClass} ${ownerClass} ${deployClass} ${hintClass} ${isSelected ? 'selected' : ''}" data-x="${x}" data-y="${y}">
+        <button class="cell ${squareClass} ${ownUnit ? 'ally' : enemyUnit ? 'enemy' : 'empty'} ${deployClass} ${hintClass}" data-x="${x}" data-y="${y}">
           ${unit
-            ? `<div class="token"><strong>${unit.card.name}</strong><span>#${shortId(unit.id)}</span><span>PdV ${unit.hp_current} · PdC ${unit.shell_current}</span><span>PA ${unit.pa_current} · PM ${unit.pm_current}</span></div>`
+            ? `<div class="token"><strong>${unit.card.name}</strong><span>PdV ${unit.hp_current}</span><span>PA ${unit.pa_current} · PM ${unit.pm_current}</span></div>`
             : '<div class="small"></div>'}
         </button>
       `);
     }
   }
+
   const boardEl = $('#board');
   boardEl.style.gridTemplateColumns = `repeat(${width}, minmax(40px, 1fr))`;
   boardEl.innerHTML = cells.join('');
 
-  document.querySelectorAll('.cell').forEach((cell) => {
+  boardEl.querySelectorAll('.cell').forEach((cell) => {
     cell.addEventListener('click', () => {
-      const x = Number(cell.dataset.x);
-      const y = Number(cell.dataset.y);
-      onCellClick(x, y).catch((err) => setAuthStatus(err.message, true));
+      onCellClick(Number(cell.dataset.x), Number(cell.dataset.y)).catch((err) => setStatus(err.message, true));
     });
   });
 
-  $('#hand').innerHTML = (me?.hand || []).map((card, index) => {
-    const selectedClass = appState.selectedHandIndex === index ? 'selected' : '';
-    return `
-      <button class="card hand-card ${selectedClass}" data-hand-index="${index}">
-        <img src="${card.image}" alt="${card.name}" />
-        <h4>#${index + 1} · ${card.name}</h4>
-        <div class="meta">
-          <span class="badge">Coste ${Math.max(1, card.level_min)}</span>
-          <span class="badge">PA ${card.action_points}</span>
-          <span class="badge">PM ${card.movement_points}</span>
-        </div>
-      </button>
-    `;
-  }).join('') || '<div class="small">No quedan cartas en mano.</div>';
+  $('#hand').innerHTML = (me?.hand || []).map((card, index) => `
+    <button class="card hand-card ${appState.selectedHandIndex === index ? 'selected' : ''}" data-hand-index="${index}">
+      <img src="${card.image}" alt="${card.name}" />
+      <h4>#${index + 1} · ${card.name}</h4>
+    </button>
+  `).join('') || '<div class="small">No quedan cartas en mano.</div>';
 
-  document.querySelectorAll('.hand-card').forEach((cardBtn) => {
-    cardBtn.addEventListener('click', () => {
+  document.querySelectorAll('.hand-card').forEach((btn) => {
+    btn.addEventListener('click', () => {
       if (!isMyTurn(mySide)) return;
-      const index = Number(cardBtn.dataset.handIndex);
+      const index = Number(btn.dataset.handIndex);
       appState.selectedHandIndex = appState.selectedHandIndex === index ? null : index;
       appState.selectedUnitId = null;
       renderBoard();
     });
   });
 
-  const selectedText = selectedHandCard
-    ? `Carta seleccionada: #${appState.selectedHandIndex + 1} ${selectedHandCard.name} (clic en casilla azul)`
-    : selectedUnit
-      ? `Unidad seleccionada: ${selectedUnit.card.name} (#${shortId(selectedUnit.id)})`
-      : 'Sin selección activa';
-
   $('#match-summary').innerHTML = `
-    <div><strong>Modo:</strong> Contra IA</div>
-    <div><strong>Tu lado:</strong> ${mySide || '-'}</div>
-    <div><strong>Turno activo:</strong> ${match.turn.active_side}</div>
-    <div><strong>Número de turno:</strong> ${match.turn.number}</div>
-    <div><strong>Tu vida:</strong> ${me?.life ?? '-'} · <strong>Energía:</strong> ${me?.energy ?? '-'}/${me?.max_energy ?? '-'}</div>
-    <div><strong>Rival vida:</strong> ${enemy?.life ?? '-'}</div>
-    <div><strong>Tu mazo:</strong> ${me?.library_count ?? 0} · <strong>Tu mano:</strong> ${me?.hand?.length ?? 0}/5</div>
-    <div><strong>Mazo rival:</strong> ${enemy?.library_count ?? 0} · <strong>Mano rival:</strong> ${enemy?.hand_count ?? 0}</div>
-    <div><strong>Ganador:</strong> ${match.winner || 'sin definir'}</div>
-    <div><strong>Selección:</strong> ${selectedText}</div>
-    <div><strong>Zona de invocación:</strong> 5 casillas azules.</div>
+    <div><strong>Turno:</strong> ${appState.match.turn?.number || 1}</div>
+    <div><strong>Activo:</strong> ${appState.match.turn?.active_side || '-'}</div>
+    <div><strong>Tu vida:</strong> ${me?.life ?? '-'}</div>
+    <div><strong>Vida IA:</strong> ${enemy?.life ?? '-'}</div>
+    <div><strong>Energía:</strong> ${me?.energy ?? '-'}/${me?.max_energy ?? '-'}</div>
+    <div><strong>Ganador:</strong> ${appState.match.winner || 'sin definir'}</div>
   `;
 
   const ownUnits = me?.units || [];
   const enemyUnits = enemy?.units || [];
   $('#unit-list').innerHTML = `
     <strong>Tus unidades</strong>
-    ${ownUnits.map((u) => `<div>#${shortId(u.id)} · ${u.card.name} (${u.x},${u.y}) · PdV ${u.hp_current} · PA ${u.pa_current} · PM ${u.pm_current}</div>`).join('') || '<div>Sin unidades propias.</div>'}
+    ${ownUnits.map((u) => `<div>${u.card.name} (${u.x},${u.y}) PdV ${u.hp_current}</div>`).join('') || '<div>Sin unidades.</div>'}
     <hr />
-    <strong>Unidades enemigas</strong>
-    ${enemyUnits.map((u) => `<div>#${shortId(u.id)} · ${u.card.name} (${u.x},${u.y}) · PdV ${u.hp_current}</div>`).join('') || '<div>Sin unidades enemigas.</div>'}
+    <strong>Unidades IA</strong>
+    ${enemyUnits.map((u) => `<div>${u.card.name} (${u.x},${u.y}) PdV ${u.hp_current}</div>`).join('') || '<div>Sin unidades.</div>'}
   `;
-
 }
 
 async function loadCards() {
@@ -325,12 +270,22 @@ async function loadCards() {
   } catch {
     cards = localSeedCards();
   }
-
   if (!cards.length) cards = localSeedCards();
   appState.cards = cards;
-  const families = [...new Set(cards.map((card) => card.family))];
-  familyFilter.innerHTML = '<option value="">Todas las familias</option>' + families.map((f) => `<option value="${f}">${f}</option>`).join('');
+  if (familyFilter) {
+    const families = [...new Set(cards.map((card) => card.family))];
+    familyFilter.innerHTML = '<option value="">Todas las familias</option>' + families.map((f) => `<option value="${f}">${f}</option>`).join('');
+  }
   renderCatalog();
+}
+
+async function loadActiveMatch() {
+  const data = await api('/api/match/active/');
+  appState.roomCode = data.room_code;
+  appState.match = data.match;
+  appState.selectedHandIndex = null;
+  appState.selectedUnitId = null;
+  renderBoard();
 }
 
 async function createAIMatch() {
@@ -340,10 +295,15 @@ async function createAIMatch() {
   appState.selectedHandIndex = null;
   appState.selectedUnitId = null;
   renderBoard();
+  setStatus('Partida nueva creada en esta sesión.');
 }
 
 async function refreshMatch() {
-  if (!appState.roomCode) throw new Error('Primero iniciá una partida vs IA.');
+  if (!appState.roomCode) {
+    await loadActiveMatch();
+    if (!appState.roomCode) throw new Error('No hay partida activa en esta sesión.');
+    return;
+  }
   const data = await api(`/api/match/${appState.roomCode}/`);
   appState.match = data.match;
   renderBoard();
@@ -352,8 +312,6 @@ async function refreshMatch() {
 async function endTurn() {
   if (!appState.roomCode) throw new Error('No hay partida activa.');
   await sendAction({ action: 'end_turn' });
-  appState.selectedHandIndex = null;
-  appState.selectedUnitId = null;
 }
 
 function bindAsyncButton(selector, handler) {
@@ -361,31 +319,35 @@ function bindAsyncButton(selector, handler) {
   if (!button) return;
   button.addEventListener('click', async () => {
     if (button.disabled) return;
-    const originalText = button.textContent;
     button.disabled = true;
     try {
       await handler();
     } catch (err) {
-      setAuthStatus(err.message || 'Error inesperado', true);
+      setStatus(err.message || 'Error inesperado', true);
     } finally {
       button.disabled = false;
-      button.textContent = originalText;
     }
   });
 }
 
-bindAsyncButton('#create-ai-match', createAIMatch);
-bindAsyncButton('#refresh-state', refreshMatch);
-bindAsyncButton('#end-turn-btn', endTurn);
-if (familyFilter) {
-  familyFilter.addEventListener('change', renderCatalog);
+function boot() {
+  renderStaticBoard();
+  bindAsyncButton('#create-ai-match', createAIMatch);
+  bindAsyncButton('#refresh-state', refreshMatch);
+  bindAsyncButton('#end-turn-btn', endTurn);
+  familyFilter?.addEventListener('change', renderCatalog);
+
+  loadCards()
+    .then(loadActiveMatch)
+    .catch((err) => {
+      setStatus(err.message || 'No se pudo iniciar el juego.', true);
+      renderBoard();
+    })
+    .finally(() => {
+      if (!appState.match) {
+        setStatus('Sin login: hacé clic en "Jugar vs IA" para iniciar.');
+      }
+    });
 }
 
-renderStaticBoard();
-
-loadCards()
-  .catch(() => setAuthStatus('No se pudo cargar el catálogo completo.', true))
-  .finally(() => {
-    setAuthStatus('Este modo no usa autenticación. Hacé clic en "Jugar vs IA" para iniciar una partida nueva.');
-    renderBoard();
-  });
+document.addEventListener('DOMContentLoaded', boot, { once: true });

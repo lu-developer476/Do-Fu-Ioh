@@ -13,21 +13,13 @@
       <section class="panel intro-panel">
         <p class="kicker">Arcade Protocols</p>
         <h1>DO-FU-IÓH</h1>
-        <p>Jugá partidas tácticas con o sin cuenta. En modo invitado podés enfrentar a la IA al instante.</p>
+        <p>Jugá partidas tácticas sólo contra la IA, sin registro, salas ni código de unión.</p>
       </section>
 
       <section class="panel compact-panel">
-        <h2>Acceso opcional</h2>
+        <h2>Modo directo</h2>
         <div class="stack auth-box">
-          <input id="username" placeholder="Usuario" />
-          <input id="email" placeholder="Correo" />
-          <input id="password" placeholder="Contraseña" type="password" />
-          <div class="row">
-            <button id="register-btn">Registrarme</button>
-            <button id="login-btn">Ingresar</button>
-            <button id="logout-btn" class="ghost">Salir</button>
-          </div>
-          <p id="auth-status">Modo invitado activo. Podés jugar vs IA sin registrarte.</p>
+          <p id="auth-status">Este modo no usa autenticación. Hacé clic en "Jugar vs IA" para iniciar una partida nueva.</p>
         </div>
       </section>
 
@@ -49,8 +41,8 @@
       </header>
       <div id="board" class="board"></div>
       <footer class="board-footer">
-        <div><strong>Último movimiento:</strong> revisar panel de historial.</div>
-        <div><strong>Modo:</strong> local / online casual.</div>
+        <div><strong>Objetivo:</strong> derrotar al equipo de la IA.</div>
+        <div><strong>Modo:</strong> solo contra IA.</div>
       </footer>
     </section>
 
@@ -58,10 +50,7 @@
       <section class="panel compact-panel">
         <h2>Consola rápida</h2>
         <div class="stack">
-          <button id="create-ai-match">Jugar vs IA (sin registro)</button>
-          <button id="create-match">Crear sala PVP</button>
-          <input id="join-room-code" placeholder="Código de sala" maxlength="8" />
-          <button id="join-match">Unirse a sala</button>
+          <button id="create-ai-match">Jugar vs IA</button>
           <button id="refresh-state" class="ghost">Refrescar partida</button>
           <button id="end-turn-btn" class="ghost">Terminar turno</button>
         </div>
@@ -83,10 +72,7 @@
       </section>
     </aside>
 
-    <section class="panel bottom-panel">
-      <h2>Historial</h2>
-      <div id="log" class="log"></div>
-    </section>
+
   </main>
   {{ cards_seed_json|json_script:"cards-seed" }}
   <script src="{% static 'core/js/game.js' %}"></script>

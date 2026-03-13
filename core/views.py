@@ -6,14 +6,13 @@ import time
 from copy import deepcopy
 from pathlib import Path
 
-from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.core.management import call_command
 from django.db import connection
 from django.db.utils import OperationalError, ProgrammingError
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import render
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.views.decorators.csrf import csrf_exempt
@@ -27,7 +26,7 @@ BOARD_WIDTH = 11
 BOARD_HEIGHT = 11
 MAX_SUMMONS_PER_TURN = 1
 AI_USERNAME = "__dojo_ai__"
-GUEST_HOST_USERNAME = "__guest_player__"
+SOLO_PLAYER_USERNAME = "__solo_player__"
 CARDS_SEED_PATH = Path(__file__).resolve().parent.parent / 'data' / 'cards.json'
 REQUIRED_GAME_TABLES = {'core_monstercard', 'core_deck', 'core_deckentry', 'core_matchrecord'}
 REQUIRED_AUTH_TABLES = {'auth_user', 'django_session'}
@@ -218,6 +217,25 @@ def _request_match_side(match, request):
 
     return None
 
+
+def _get_solo_match_from_session(request):
+    match_id = request.session.get('solo_match_id')
+    if not match_id:
+        return None
+    try:
+        match = MatchRecord.objects.get(id=match_id)
+    except MatchRecord.DoesNotExist:
+        request.session.pop('solo_match_id', None)
+        request.session.pop('ai_match_token', None)
+        request.session.save()
+        return None
+
+    expected_token = request.session.get('ai_match_token')
+    state = match.game_state or {}
+    if not expected_token or state.get('session_token') != expected_token:
+        return None
+    return match
+
 def index(request):
     cards_seed = []
     try:
@@ -254,57 +272,24 @@ def health(request):
 @require_http_methods(['POST'])
 @csrf_exempt
 def register_user(request):
-    if not _ensure_schema_ready(include_auth=True):
-        return _schema_not_ready_response()
-
-    data = _payload(request)
-    username = (data.get('username') or '').strip()
-    email = (data.get('email') or '').strip()
-    password = data.get('password') or ''
-    if len(username) < 3 or len(password) < 6:
-        return JsonResponse({'status': 'error', 'message': 'Usuario o contraseña inválidos'}, status=400)
-    if User.objects.filter(username__iexact=username).exists():
-        return JsonResponse({'status': 'error', 'message': 'El usuario ya existe'}, status=409)
-    user = User.objects.create_user(username=username, email=email, password=password)
-    login(request, user)
-    _ensure_default_deck(user)
-    return JsonResponse({'status': 'ok', 'user': _serialize_user(user)}, status=201)
+    return JsonResponse({'status': 'error', 'message': 'La autenticación fue removida en el modo solo IA.'}, status=410)
 
 
 @require_http_methods(['POST'])
 @csrf_exempt
 def login_user(request):
-    if not _ensure_schema_ready(include_auth=True):
-        return _schema_not_ready_response()
-
-    data = _payload(request)
-    user = authenticate(request, username=(data.get('username') or '').strip(), password=data.get('password') or '')
-    if not user:
-        return JsonResponse({'status': 'error', 'message': 'Credenciales inválidas'}, status=401)
-    login(request, user)
-    _ensure_default_deck(user)
-    return JsonResponse({'status': 'ok', 'user': _serialize_user(user)})
+    return JsonResponse({'status': 'error', 'message': 'La autenticación fue removida en el modo solo IA.'}, status=410)
 
 
 @require_http_methods(['POST'])
 @csrf_exempt
 def logout_user(request):
-    if not _ensure_schema_ready(include_auth=True):
-        return _schema_not_ready_response()
-
-    logout(request)
-    return JsonResponse({'status': 'ok'})
+    return JsonResponse({'status': 'error', 'message': 'La autenticación fue removida en el modo solo IA.'}, status=410)
 
 
 @require_GET
 def user_profile(request):
-    if not _ensure_schema_ready(include_auth=True):
-        return _schema_not_ready_response()
-
-    if not request.user.is_authenticated:
-        return JsonResponse({'status': 'error', 'message': 'No autenticado'}, status=401)
-    _ensure_default_deck(request.user)
-    return JsonResponse({'status': 'ok', 'user': _serialize_user(request.user)})
+    return JsonResponse({'status': 'error', 'message': 'La autenticación fue removida en el modo solo IA.'}, status=410)
 
 
 @require_GET
@@ -354,42 +339,13 @@ def _serialize_deck(deck):
 @require_http_methods(['GET', 'POST'])
 @csrf_exempt
 def decks_list_create(request):
-    if not request.user.is_authenticated:
-        return JsonResponse({'status': 'error', 'message': 'No autenticado'}, status=401)
-    if request.method == 'GET':
-        _ensure_default_deck(request.user)
-        decks = [_serialize_deck(d) for d in request.user.decks.prefetch_related('entries__card').all()]
-        return JsonResponse({'status': 'ok', 'decks': decks})
-
-    data = _payload(request)
-    name = (data.get('name') or 'Nuevo mazo').strip()[:60]
-    card_ids = data.get('card_ids') or []
-    cards = list(MonsterCard.objects.filter(id__in=card_ids)[:20])
-    if len(cards) < 10:
-        return JsonResponse({'status': 'error', 'message': 'El mazo necesita al menos 10 cartas'}, status=400)
-    deck = Deck.objects.create(user=request.user, name=name, is_active=False)
-    for card in cards[:20]:
-        DeckEntry.objects.create(deck=deck, card=card, quantity=1)
-    return JsonResponse({'status': 'ok', 'deck': _serialize_deck(deck)}, status=201)
+    return JsonResponse({'status': 'error', 'message': 'Los mazos personalizados fueron removidos en modo solo IA.'}, status=410)
 
 
 @require_http_methods(['GET', 'PATCH', 'DELETE'])
 @csrf_exempt
 def deck_detail(request, deck_id):
-    if not request.user.is_authenticated:
-        return JsonResponse({'status': 'error', 'message': 'No autenticado'}, status=401)
-    deck = get_object_or_404(Deck.objects.prefetch_related('entries__card'), id=deck_id, user=request.user)
-    if request.method == 'GET':
-        return JsonResponse({'status': 'ok', 'deck': _serialize_deck(deck)})
-    if request.method == 'DELETE':
-        deck.delete()
-        return JsonResponse({'status': 'ok'})
-    data = _payload(request)
-    if data.get('activate'):
-        request.user.decks.update(is_active=False)
-        deck.is_active = True
-        deck.save(update_fields=['is_active'])
-    return JsonResponse({'status': 'ok', 'deck': _serialize_deck(deck)})
+    return JsonResponse({'status': 'error', 'message': 'Los mazos personalizados fueron removidos en modo solo IA.'}, status=410)
 
 
 def _get_active_deck(user):
@@ -610,10 +566,11 @@ def _append_event(state, event, message):
 
 
 def _validate_match_for_action(request, room_code):
-    match = get_object_or_404(MatchRecord, room_code=room_code)
-    side = _request_match_side(match, request)
-    if not side:
-        return None, None, None, JsonResponse({'status': 'error', 'message': 'No perteneces a esta sala'}, status=403)
+    match = _get_solo_match_from_session(request)
+    if not match or match.room_code != room_code:
+        return None, None, None, JsonResponse({'status': 'error', 'message': 'No hay una partida activa en esta sesión'}, status=404)
+
+    side = 'host'
     state = deepcopy(match.game_state)
     if not state.get('guest'):
         return None, None, None, JsonResponse({'status': 'error', 'message': 'Esperando rival'}, status=409)
@@ -707,17 +664,7 @@ def _run_ai_turn(state):
 @require_http_methods(['POST'])
 @csrf_exempt
 def create_match(request):
-    if not request.user.is_authenticated:
-        return JsonResponse({'status': 'error', 'message': 'No autenticado'}, status=401)
-    if not _ensure_schema_ready(include_auth=True):
-        return _schema_not_ready_response()
-
-    _ensure_default_deck(request.user)
-    state = _create_initial_state(request.user)
-    _start_turn(state, 'host')
-    match = MatchRecord.objects.create(host=request.user, game_state=state)
-    return JsonResponse({'status': 'ok', 'room_code': match.room_code, 'match': _public_state(match.game_state, 'host')}, status=201)
-
+    return JsonResponse({'status': 'error', 'message': 'El modo PVP fue removido. Usá Jugar vs IA.'}, status=410)
 
 
 @require_http_methods(['POST'])
@@ -726,54 +673,37 @@ def create_match_vs_ai(request):
     if not _ensure_schema_ready(include_auth=True):
         return _schema_not_ready_response()
 
-    host_user = request.user if request.user.is_authenticated else _get_or_create_system_user(GUEST_HOST_USERNAME)
+    host_user = _get_or_create_system_user(SOLO_PLAYER_USERNAME)
     ai_user = _get_or_create_system_user(AI_USERNAME)
     _ensure_default_deck(host_user)
     _ensure_default_deck(ai_user)
 
     session_token = secrets.token_urlsafe(18)
     request.session['ai_match_token'] = session_token
-    request.session.save()
 
     state = _create_initial_state(host_user, ai_user, mode='vs_ai', session_token=session_token)
-    state['host']['username'] = request.user.username if request.user.is_authenticated else 'Invitado'
+    state['host']['username'] = 'Jugador'
     state['guest']['username'] = 'Do-Fu IA'
     _start_turn(state, 'host')
 
     match = MatchRecord.objects.create(host=host_user, guest=ai_user, status='in_progress', game_state=state)
+    request.session['solo_match_id'] = match.id
+    request.session.save()
     return JsonResponse({'status': 'ok', 'room_code': match.room_code, 'match': _public_state(match.game_state, 'host')}, status=201)
 
 
 @require_http_methods(['POST'])
 @csrf_exempt
 def join_match(request, room_code):
-    if not _ensure_schema_ready(include_auth=True):
-        return _schema_not_ready_response()
-    if not request.user.is_authenticated:
-        return JsonResponse({'status': 'error', 'message': 'No autenticado'}, status=401)
-    match = get_object_or_404(MatchRecord, room_code=room_code)
-    if match.game_state.get('mode') == 'vs_ai':
-        return JsonResponse({'status': 'error', 'message': 'Esta sala es exclusiva para partidas contra IA'}, status=409)
-    if match.guest_id and match.guest_id != request.user.id:
-        return JsonResponse({'status': 'error', 'message': 'La sala ya está llena'}, status=409)
-    if match.host_id == request.user.id:
-        return JsonResponse({'status': 'ok', 'room_code': match.room_code, 'match': _public_state(match.game_state, 'host')})
-    match.guest = request.user
-    match.status = 'in_progress'
-    state = _create_initial_state(match.host, request.user)
-    _start_turn(state, 'host')
-    match.game_state = state
-    match.save(update_fields=['guest', 'status', 'game_state', 'updated_at'])
-    return JsonResponse({'status': 'ok', 'room_code': match.room_code, 'match': _public_state(match.game_state, 'guest')})
+    return JsonResponse({'status': 'error', 'message': 'El modo de salas fue removido. Usá Jugar vs IA.'}, status=410)
 
 
 @require_GET
 def get_match(request, room_code):
-    match = get_object_or_404(MatchRecord, room_code=room_code)
-    side = _request_match_side(match, request)
-    if not side:
-        return JsonResponse({'status': 'error', 'message': 'No perteneces a esta sala'}, status=403)
-    return JsonResponse({'status': 'ok', 'room_code': room_code, 'match': _public_state(match.game_state, side)})
+    match = _get_solo_match_from_session(request)
+    if not match or match.room_code != room_code:
+        return JsonResponse({'status': 'error', 'message': 'No hay una partida activa en esta sesión'}, status=404)
+    return JsonResponse({'status': 'ok', 'room_code': room_code, 'match': _public_state(match.game_state, 'host')})
 
 
 @require_http_methods(['POST'])

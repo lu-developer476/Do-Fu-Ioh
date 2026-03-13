@@ -2,7 +2,6 @@ const DEFAULT_BOARD_WIDTH = 11;
 const DEFAULT_BOARD_HEIGHT = 11;
 
 let appState = {
-  me: null,
   cards: [],
   roomCode: null,
   match: null,
@@ -66,15 +65,10 @@ function renderCatalog() {
 function resolveSides() {
   const match = appState.match;
   if (!match) return { me: null, enemy: null, mySide: null };
-  let mySide = null;
-  if (appState.me && match.host?.user_id === appState.me.id) mySide = 'host';
-  else if (appState.me && match.guest?.user_id === appState.me.id) mySide = 'guest';
-  else if (match.viewer_side) mySide = match.viewer_side;
-
-  if (!mySide) return { me: null, enemy: null, mySide: null };
+  const mySide = 'host';
   return {
-    me: match[mySide],
-    enemy: match[mySide === 'host' ? 'guest' : 'host'],
+    me: match.host,
+    enemy: match.guest,
     mySide,
   };
 }
@@ -212,9 +206,8 @@ function renderBoard() {
   if (!match) {
     renderStaticBoard();
     $('#hand').innerHTML = '<div class="small">Tu mano aparecerá acá.</div>';
-    $('#match-summary').innerHTML = '<div class="small">Creá una sala o jugá vs IA.</div>';
+    $('#match-summary').innerHTML = '<div class="small">Iniciá una partida contra la IA para comenzar.</div>';
     $('#unit-list').innerHTML = '<div class="small">Sin unidades.</div>';
-    $('#log').innerHTML = '<div class="log-item">Esperando una partida activa.</div>';
     return;
   }
 
@@ -299,8 +292,7 @@ function renderBoard() {
       : 'Sin selección activa';
 
   $('#match-summary').innerHTML = `
-    <div><strong>Sala:</strong> ${appState.roomCode || '-'}</div>
-    <div><strong>Modo:</strong> ${match.mode === 'vs_ai' ? 'Contra IA' : 'PVP'}</div>
+    <div><strong>Modo:</strong> Contra IA</div>
     <div><strong>Tu lado:</strong> ${mySide || '-'}</div>
     <div><strong>Turno activo:</strong> ${match.turn.active_side}</div>
     <div><strong>Número de turno:</strong> ${match.turn.number}</div>
@@ -323,9 +315,6 @@ function renderBoard() {
     ${enemyUnits.map((u) => `<div>#${shortId(u.id)} · ${u.card.name} (${u.x},${u.y}) · PdV ${u.hp_current}</div>`).join('') || '<div>Sin unidades enemigas.</div>'}
   `;
 
-  $('#log').innerHTML = (match.event_log || []).slice().reverse().map((item) => (
-    `<div class="log-item">T${item.turn} · <strong>${item.event}</strong> · ${item.message}</div>`
-  )).join('');
 }
 
 async function loadCards() {
@@ -344,48 +333,6 @@ async function loadCards() {
   renderCatalog();
 }
 
-function authPayload() {
-  return {
-    username: $('#username').value.trim(),
-    email: $('#email').value.trim(),
-    password: $('#password').value,
-  };
-}
-
-async function authAction(kind) {
-  const payload = authPayload();
-  if (!payload.username || !payload.password) {
-    throw new Error('Ingresá usuario y contraseña.');
-  }
-  if (kind === 'register' && payload.password.length < 6) {
-    throw new Error('La contraseña debe tener al menos 6 caracteres.');
-  }
-
-  const data = await api(`/api/auth/${kind}/`, { method: 'POST', body: JSON.stringify(payload) });
-  appState.me = data.user;
-  setAuthStatus(`Sesión activa como ${data.user.username}.`);
-}
-
-async function loadProfile() {
-  try {
-    const data = await api('/api/auth/profile/');
-    appState.me = data.user;
-    setAuthStatus(`Sesión activa como ${data.user.username}.`);
-  } catch {
-    appState.me = null;
-    setAuthStatus('Modo invitado activo. Podés jugar vs IA sin registrarte.');
-  }
-}
-
-async function createMatch() {
-  const data = await api('/api/match/create/', { method: 'POST', body: '{}' });
-  appState.roomCode = data.room_code;
-  appState.match = data.match;
-  appState.selectedHandIndex = null;
-  appState.selectedUnitId = null;
-  renderBoard();
-}
-
 async function createAIMatch() {
   const data = await api('/api/match/create-vs-ai/', { method: 'POST', body: '{}' });
   appState.roomCode = data.room_code;
@@ -395,19 +342,8 @@ async function createAIMatch() {
   renderBoard();
 }
 
-async function joinMatch() {
-  const code = $('#join-room-code').value.trim().toUpperCase();
-  if (!code) throw new Error('Ingresá un código de sala.');
-  const data = await api(`/api/match/${code}/join/`, { method: 'POST', body: '{}' });
-  appState.roomCode = data.room_code;
-  appState.match = data.match;
-  appState.selectedHandIndex = null;
-  appState.selectedUnitId = null;
-  renderBoard();
-}
-
 async function refreshMatch() {
-  if (!appState.roomCode) throw new Error('Primero creá o uníte a una sala.');
+  if (!appState.roomCode) throw new Error('Primero iniciá una partida vs IA.');
   const data = await api(`/api/match/${appState.roomCode}/`);
   appState.match = data.match;
   renderBoard();
@@ -438,21 +374,7 @@ function bindAsyncButton(selector, handler) {
   });
 }
 
-bindAsyncButton('#register-btn', () => authAction('register'));
-bindAsyncButton('#login-btn', () => authAction('login'));
-bindAsyncButton('#logout-btn', async () => {
-  await api('/api/auth/logout/', { method: 'POST', body: '{}' });
-  appState.me = null;
-  appState.roomCode = null;
-  appState.match = null;
-  appState.selectedHandIndex = null;
-  appState.selectedUnitId = null;
-  setAuthStatus('Modo invitado activo. Podés jugar vs IA sin registrarte.');
-  renderBoard();
-});
-bindAsyncButton('#create-match', createMatch);
 bindAsyncButton('#create-ai-match', createAIMatch);
-bindAsyncButton('#join-match', joinMatch);
 bindAsyncButton('#refresh-state', refreshMatch);
 bindAsyncButton('#end-turn-btn', endTurn);
 if (familyFilter) {
@@ -461,10 +383,9 @@ if (familyFilter) {
 
 renderStaticBoard();
 
-Promise.allSettled([loadCards(), loadProfile()]).then((results) => {
-  const profileError = results[1]?.status === 'rejected' ? results[1].reason : null;
-  if (profileError) {
-    setAuthStatus(profileError.message || 'No se pudo cargar todo el panel, pero podés jugar igual.', true);
-  }
-  renderBoard();
-});
+loadCards()
+  .catch(() => setAuthStatus('No se pudo cargar el catálogo completo.', true))
+  .finally(() => {
+    setAuthStatus('Este modo no usa autenticación. Hacé clic en "Jugar vs IA" para iniciar una partida nueva.');
+    renderBoard();
+  });

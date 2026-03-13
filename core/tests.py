@@ -1,8 +1,11 @@
 import json
+import os
+from unittest.mock import patch
 
 from django.test import TestCase
 
 from .models import MonsterCard
+from .views import _sanitize_env_value, _schema_diagnostics
 
 
 class SoloAIModeTests(TestCase):
@@ -78,3 +81,16 @@ class SoloAIModeTests(TestCase):
         other_client = self.client_class()
         blocked = other_client.get(f'/api/match/{room_code}/')
         self.assertEqual(blocked.status_code, 404)
+
+
+class EnvironmentParsingTests(TestCase):
+    def test_sanitize_env_value_removes_key_prefix(self):
+        self.assertEqual(
+            _sanitize_env_value('DATABASE_URL=postgresql://example', 'DATABASE_URL'),
+            'postgresql://example',
+        )
+
+    def test_schema_diagnostics_warns_prefixed_database_url(self):
+        with patch.dict(os.environ, {'DATABASE_URL': 'DATABASE_URL=postgresql://example'}, clear=False):
+            diagnostics = _schema_diagnostics()
+        self.assertTrue(any('sin el prefijo DATABASE_URL=' in item for item in diagnostics))

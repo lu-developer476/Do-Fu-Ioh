@@ -63,6 +63,31 @@ Este repo ya está preparado para deploy:
 
 `render.yaml` incluye configuración base para web service. Solo definí las variables de entorno y `DATABASE_URL` apuntando a Supabase.
 
+### Errores frecuentes (Render + Supabase)
+
+Si ves el mensaje: `La base de datos todavía no está lista. Faltan tablas del juego (...)`, revisá esto:
+
+1. **Variables sin prefijo repetido**
+   - En Render, en el campo **Value**, cargá solo el valor.
+   - Correcto: `https://do-fu-ioh.onrender.com`
+   - Incorrecto: `CSRF_TRUSTED_ORIGINS=https://do-fu-ioh.onrender.com`
+
+2. **DATABASE_URL de Supabase (pooler) bien formada**
+   - Formato esperado: `postgresql://USER:PASSWORD@HOST:6543/postgres`
+
+3. **Migraciones ejecutadas**
+   - Abrí Shell en Render y corré:
+     ```bash
+     python manage.py migrate --noinput
+     ```
+
+4. **Schema público en Supabase**
+   - Verificá en SQL Editor:
+     ```sql
+     select schemaname, tablename from pg_tables where schemaname='public' order by tablename;
+     ```
+   - Deben existir tablas como `django_migrations`, `core_monstercard`, `core_deck`, `core_deckentry`, `core_matchrecord`.
+
 ## Notas de arquitectura
 
 - Backend y frontend están orientados a **cartas -> invocación -> unidades tácticas**.

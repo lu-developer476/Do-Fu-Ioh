@@ -10,6 +10,14 @@ def _split_env_list(value):
     return [item.strip() for item in value.split(',') if item.strip()]
 
 
+def _sanitize_env_value(raw_value, env_key):
+    value = (raw_value or '').strip().strip('"').strip("'")
+    prefix = f'{env_key}='
+    if value.startswith(prefix):
+        return value[len(prefix):].strip().strip('"').strip("'")
+    return value
+
+
 def _merge_unique(*groups):
     merged = []
     for group in groups:
@@ -20,14 +28,14 @@ def _merge_unique(*groups):
 
 
 ALLOWED_HOSTS = _merge_unique(
-    _split_env_list(os.getenv('DJANGO_ALLOWED_HOSTS', '')),
+    _split_env_list(_sanitize_env_value(os.getenv('DJANGO_ALLOWED_HOSTS', ''), 'DJANGO_ALLOWED_HOSTS')),
     ['do-fu-ioh.onrender.com', '.onrender.com', '127.0.0.1', 'localhost'],
 )
 
-CSRF_TRUSTED_ORIGINS = _split_env_list(os.getenv(
+CSRF_TRUSTED_ORIGINS = _split_env_list(_sanitize_env_value(os.getenv(
     'CSRF_TRUSTED_ORIGINS',
     'https://do-fu-ioh.onrender.com,https://*.onrender.com,http://127.0.0.1:8000,http://localhost:8000',
-))
+), 'CSRF_TRUSTED_ORIGINS'))
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -63,7 +71,7 @@ TEMPLATES = [{
 }]
 WSGI_APPLICATION = 'do_fu_ioh.wsgi.application'
 
-DATABASE_URL = os.getenv('DATABASE_URL', f'sqlite:///{BASE_DIR}/db.sqlite3')
+DATABASE_URL = _sanitize_env_value(os.getenv('DATABASE_URL', f'sqlite:///{BASE_DIR}/db.sqlite3'), 'DATABASE_URL')
 DATABASES = {
     'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=DATABASE_URL.startswith('postgres'))
 }

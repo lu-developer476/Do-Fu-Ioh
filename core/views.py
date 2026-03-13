@@ -49,6 +49,14 @@ def _coerce_int(value, default):
         return default
 
 
+def _sanitize_env_value(raw_value, env_key):
+    value = (raw_value or '').strip().strip('"').strip("'")
+    prefix = f'{env_key}='
+    if value.startswith(prefix):
+        return value[len(prefix):].strip().strip('"').strip("'")
+    return value
+
+
 def _resolve_card_image(image):
     raw_image = (image or '').strip()
     if not raw_image:
@@ -165,11 +173,14 @@ def _try_bootstrap_schema_once():
 
 def _schema_diagnostics(include_auth=False):
     diagnostics = []
-    env_database_url = os.getenv('DATABASE_URL', '')
+    raw_database_url = os.getenv('DATABASE_URL', '')
+    env_database_url = _sanitize_env_value(raw_database_url, 'DATABASE_URL')
     if not env_database_url:
         diagnostics.append('DATABASE_URL no está definida en el entorno runtime.')
     elif env_database_url.startswith('sqlite') and not settings.DEBUG:
         diagnostics.append('Se está usando SQLite en producción. Configurá DATABASE_URL de Supabase en Render.')
+    elif raw_database_url.startswith('DATABASE_URL='):
+        diagnostics.append('En Render, cargá solo el valor en DATABASE_URL (sin el prefijo DATABASE_URL=).')
 
     if include_auth and not _auth_schema_is_ready():
         diagnostics.append('Faltan tablas de autenticación/sesión (auth_user y/o django_session).')

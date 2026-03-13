@@ -5,6 +5,7 @@ from copy import deepcopy
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils.timezone import now
@@ -48,11 +49,15 @@ def _serialize_card(card):
 
 
 def _serialize_user(user):
+    try:
+        avatar_url = user.profile.avatar_url
+    except ObjectDoesNotExist:
+        avatar_url = ''
     return {
         'id': user.id,
         'username': user.username,
         'email': user.email,
-        'avatar_url': user.profile.avatar_url,
+        'avatar_url': avatar_url,
     }
 
 

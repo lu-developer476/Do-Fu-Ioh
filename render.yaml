@@ -3,7 +3,7 @@ services:
     name: do-fu-ioh
     env: python
     buildCommand: "./build.sh"
-    startCommand: "python manage.py migrate --noinput && gunicorn do_fu_ioh.wsgi:application --bind 0.0.0.0:$PORT"
+    startCommand: "python manage.py migrate --noinput --fake-initial && gunicorn do_fu_ioh.wsgi:application --bind 0.0.0.0:$PORT"
     envVars:
       - key: DJANGO_SECRET_KEY
         generateValue: true

@@ -1,0 +1,217 @@
+{
+  "level_name": "Nivel 3 - Hall y Primer Piso Casa Central BNA",
+  "sections": [
+    {
+      "id": "sec_01_escaleras_subsuelo_primer_piso",
+      "name": "Escaleras Monumentales",
+      "description": "Tramo de ascenso desde el subsuelo hacia el primer piso, con rellanos laterales y columnas que reducen visibilidad.",
+      "bounds": {
+        "x_min": 0,
+        "x_max": 32,
+        "y_min": 0,
+        "y_max": 58,
+        "z_min": -1,
+        "z_max": 0
+      },
+      "event_triggers": [
+        {
+          "id": "trg_stair_entry_lockdown",
+          "type": "on_enter_zone",
+          "position": { "x": 4, "y": 8, "z": -1 },
+          "radius": 3,
+          "action": "close_lower_gates_and_start_wave",
+          "params": {
+            "wave_id": "wave_stairs_01",
+            "gate_ids": ["gate_subsuelo_norte", "gate_subsuelo_sur"]
+          }
+        },
+        {
+          "id": "trg_mid_landing_ambush",
+          "type": "on_reach_point",
+          "position": { "x": 15, "y": 29, "z": -0.5 },
+          "radius": 2,
+          "action": "spawn_ambush_pack",
+          "params": {
+            "spawn_group": "ambush_landing",
+            "enemy_count": 10
+          }
+        }
+      ]
+    },
+    {
+      "id": "sec_02_hall_principal",
+      "name": "Hall Principal y Salida al 2° Piso",
+      "description": "Gran sala del primer piso con mostradores centrales, columnas perimetrales y escaleras ascendentes al fondo.",
+      "bounds": {
+        "x_min": 33,
+        "x_max": 118,
+        "y_min": 0,
+        "y_max": 78,
+        "z_min": 0,
+        "z_max": 0
+      },
+      "event_triggers": [
+        {
+          "id": "trg_hall_alarm",
+          "type": "on_enter_zone",
+          "position": { "x": 45, "y": 22, "z": 0 },
+          "radius": 6,
+          "action": "activate_alarm_and_spawn_wave",
+          "params": {
+            "wave_id": "wave_hall_02",
+            "sfx": "alarm_hall_bna"
+          }
+        },
+        {
+          "id": "trg_final_stair_unlock",
+          "type": "on_clear_combat_zones",
+          "position": { "x": 101, "y": 66, "z": 0 },
+          "radius": 5,
+          "action": "unlock_exit_stairs",
+          "params": {
+            "required_zones": ["cz_hall_counters", "cz_hall_columns", "cz_final_stairs"],
+            "unlock_target": "stairs_to_floor_2"
+          }
+        }
+      ]
+    }
+  ],
+  "spawn_points": [
+    {
+      "id": "sp_subsuelo_entrada_01",
+      "section_id": "sec_01_escaleras_subsuelo_primer_piso",
+      "position": { "x": 2, "y": 4, "z": -1 },
+      "spawn_type": "walker",
+      "max_alive": 6,
+      "respawn_seconds": 18
+    },
+    {
+      "id": "sp_rellano_lateral_02",
+      "section_id": "sec_01_escaleras_subsuelo_primer_piso",
+      "position": { "x": 23, "y": 34, "z": -0.5 },
+      "spawn_type": "runner",
+      "max_alive": 4,
+      "respawn_seconds": 22
+    },
+    {
+      "id": "sp_hall_mostradores_03",
+      "section_id": "sec_02_hall_principal",
+      "position": { "x": 60, "y": 26, "z": 0 },
+      "spawn_type": "walker",
+      "max_alive": 8,
+      "respawn_seconds": 20
+    },
+    {
+      "id": "sp_hall_columnas_04",
+      "section_id": "sec_02_hall_principal",
+      "position": { "x": 78, "y": 44, "z": 0 },
+      "spawn_type": "brute",
+      "max_alive": 2,
+      "respawn_seconds": 35
+    },
+    {
+      "id": "sp_salida_escaleras_05",
+      "section_id": "sec_02_hall_principal",
+      "position": { "x": 99, "y": 63, "z": 0 },
+      "spawn_type": "runner",
+      "max_alive": 5,
+      "respawn_seconds": 16
+    }
+  ],
+  "combat_zones": [
+    {
+      "id": "cz_escalera_inferior",
+      "section_id": "sec_01_escaleras_subsuelo_primer_piso",
+      "shape": "rectangle",
+      "area": {
+        "x_min": 0,
+        "x_max": 14,
+        "y_min": 0,
+        "y_max": 22,
+        "z": -1
+      },
+      "wave_profile": "short_rush",
+      "clear_condition": {
+        "type": "eliminate_enemies",
+        "remaining": 0
+      }
+    },
+    {
+      "id": "cz_rellano_central",
+      "section_id": "sec_01_escaleras_subsuelo_primer_piso",
+      "shape": "rectangle",
+      "area": {
+        "x_min": 12,
+        "x_max": 32,
+        "y_min": 22,
+        "y_max": 58,
+        "z": -0.5
+      },
+      "wave_profile": "ambush_mixed",
+      "clear_condition": {
+        "type": "survive_seconds",
+        "seconds": 45
+      }
+    },
+    {
+      "id": "cz_hall_counters",
+      "section_id": "sec_02_hall_principal",
+      "shape": "rectangle",
+      "area": {
+        "x_min": 38,
+        "x_max": 74,
+        "y_min": 10,
+        "y_max": 36,
+        "z": 0
+      },
+      "wave_profile": "dense_walkers",
+      "clear_condition": {
+        "type": "eliminate_enemies",
+        "remaining": 0
+      }
+    },
+    {
+      "id": "cz_hall_columns",
+      "section_id": "sec_02_hall_principal",
+      "shape": "rectangle",
+      "area": {
+        "x_min": 70,
+        "x_max": 94,
+        "y_min": 32,
+        "y_max": 56,
+        "z": 0
+      },
+      "wave_profile": "brute_with_support",
+      "clear_condition": {
+        "type": "eliminate_priority_targets",
+        "target_tag": "brute",
+        "count": 2
+      }
+    },
+    {
+      "id": "cz_final_stairs",
+      "section_id": "sec_02_hall_principal",
+      "shape": "rectangle",
+      "area": {
+        "x_min": 92,
+        "x_max": 118,
+        "y_min": 56,
+        "y_max": 78,
+        "z": 0
+      },
+      "wave_profile": "final_holdout",
+      "clear_condition": {
+        "type": "survive_seconds",
+        "seconds": 60
+      }
+    }
+  ],
+  "exit_point": {
+    "id": "exit_to_second_floor",
+    "position": { "x": 112, "y": 74, "z": 1 },
+    "unlock_condition": {
+      "type": "trigger_completed",
+      "trigger_id": "trg_final_stair_unlock"
+    }
+  }
+}

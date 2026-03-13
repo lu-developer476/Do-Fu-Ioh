@@ -214,3 +214,17 @@ class AnonymousAIMatchTests(TestCase):
     def test_anonymous_cannot_create_pvp_match(self):
         response = self.client.post('/api/match/create/', data='{}', content_type='application/json')
         self.assertEqual(response.status_code, 401)
+
+
+class AuthFlowTests(TestCase):
+    def test_login_without_profile_does_not_raise_server_error(self):
+        user = User.objects.create_user(username='sinperfil', password='123456')
+        user.profile.delete()
+
+        response = self.client.post(
+            '/api/auth/login/',
+            data=json.dumps({'username': 'sinperfil', 'password': '123456'}),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['user']['avatar_url'], '')

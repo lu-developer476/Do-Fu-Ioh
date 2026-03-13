@@ -1,3 +1,6 @@
+const DEFAULT_BOARD_WIDTH = 12;
+const DEFAULT_BOARD_HEIGHT = 15;
+
 let appState = {
   me: null,
   cards: [],
@@ -10,12 +13,19 @@ let appState = {
 const $ = (sel) => document.querySelector(sel);
 const familyFilter = $('#family-filter');
 
+function setAuthStatus(message, isError = false) {
+  const status = $('#auth-status');
+  status.textContent = message;
+  status.classList.toggle('status-error', isError);
+}
+
 async function api(url, options = {}) {
   const response = await fetch(url, {
     headers: { 'Content-Type': 'application/json' },
     credentials: 'same-origin',
     ...options,
   });
+
   const data = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(data.message || 'Error inesperado');
   return data;
@@ -104,6 +114,25 @@ function isUnitSummonedThisTurn(unit) {
   return appState.match && unit.summoned_turn === appState.match.turn.number;
 }
 
+function renderStaticBoard() {
+  const cells = [];
+  for (let y = 0; y < DEFAULT_BOARD_HEIGHT; y += 1) {
+    for (let x = 0; x < DEFAULT_BOARD_WIDTH; x += 1) {
+      const squareClass = (x + y) % 2 === 0 ? 'square-light' : 'square-dark';
+      cells.push(`
+        <div class="cell ${squareClass} empty preview-cell">
+          <div class="coord">${x},${y}</div>
+          <div class="small">·</div>
+        </div>
+      `);
+    }
+  }
+
+  const boardEl = $('#board');
+  boardEl.style.gridTemplateColumns = `repeat(${DEFAULT_BOARD_WIDTH}, minmax(40px, 1fr))`;
+  boardEl.innerHTML = cells.join('');
+}
+
 async function sendAction(actionPayload) {
   const data = await api(`/api/match/${appState.roomCode}/action/`, {
     method: 'POST',
@@ -153,11 +182,11 @@ async function onCellClick(x, y) {
 function renderBoard() {
   const match = appState.match;
   if (!match) {
-    $('#board').innerHTML = '<div class="small">Todavía no hay partida.</div>';
+    renderStaticBoard();
     $('#hand').innerHTML = '<div class="small">Tu mano aparecerá acá.</div>';
     $('#match-summary').innerHTML = '<div class="small">Creá una sala o jugá vs IA.</div>';
     $('#unit-list').innerHTML = '<div class="small">Sin unidades.</div>';
-    $('#log').innerHTML = '';
+    $('#log').innerHTML = '<div class="log-item">Esperando una partida activa.</div>';
     return;
   }
 
@@ -203,7 +232,7 @@ function renderBoard() {
     cell.addEventListener('click', () => {
       const x = Number(cell.dataset.x);
       const y = Number(cell.dataset.y);
-      onCellClick(x, y).catch((err) => alert(err.message));
+      onCellClick(x, y).catch((err) => setAuthStatus(err.message, true));
     });
   });
 
@@ -275,25 +304,36 @@ async function loadCards() {
   renderCatalog();
 }
 
-async function authAction(kind) {
-  const payload = {
-    username: $('#username').value,
-    email: $('#email').value,
+function authPayload() {
+  return {
+    username: $('#username').value.trim(),
+    email: $('#email').value.trim(),
     password: $('#password').value,
   };
+}
+
+async function authAction(kind) {
+  const payload = authPayload();
+  if (!payload.username || !payload.password) {
+    throw new Error('Ingresá usuario y contraseña.');
+  }
+  if (kind === 'register' && payload.password.length < 6) {
+    throw new Error('La contraseña debe tener al menos 6 caracteres.');
+  }
+
   const data = await api(`/api/auth/${kind}/`, { method: 'POST', body: JSON.stringify(payload) });
   appState.me = data.user;
-  $('#auth-status').textContent = `Sesión activa como ${data.user.username}.`;
+  setAuthStatus(`Sesión activa como ${data.user.username}.`);
 }
 
 async function loadProfile() {
   try {
     const data = await api('/api/auth/profile/');
     appState.me = data.user;
-    $('#auth-status').textContent = `Sesión activa como ${data.user.username}.`;
+    setAuthStatus(`Sesión activa como ${data.user.username}.`);
   } catch {
     appState.me = null;
-    $('#auth-status').textContent = 'Modo invitado activo. Podés jugar vs IA sin registrarte.';
+    setAuthStatus('Modo invitado activo. Podés jugar vs IA sin registrarte.');
   }
 }
 
@@ -317,6 +357,7 @@ async function createAIMatch() {
 
 async function joinMatch() {
   const code = $('#join-room-code').value.trim().toUpperCase();
+  if (!code) throw new Error('Ingresá un código de sala.');
   const data = await api(`/api/match/${code}/join/`, { method: 'POST', body: '{}' });
   appState.roomCode = data.room_code;
   appState.match = data.match;
@@ -326,36 +367,53 @@ async function joinMatch() {
 }
 
 async function refreshMatch() {
-  if (!appState.roomCode) return;
+  if (!appState.roomCode) throw new Error('Primero creá o uníte a una sala.');
   const data = await api(`/api/match/${appState.roomCode}/`);
   appState.match = data.match;
   renderBoard();
 }
 
 async function endTurn() {
-  if (!appState.roomCode) return;
+  if (!appState.roomCode) throw new Error('No hay partida activa.');
   await sendAction({ action: 'end_turn' });
   appState.selectedHandIndex = null;
   appState.selectedUnitId = null;
 }
 
-$('#register-btn').addEventListener('click', () => authAction('register').catch((err) => alert(err.message)));
-$('#login-btn').addEventListener('click', () => authAction('login').catch((err) => alert(err.message)));
-$('#logout-btn').addEventListener('click', async () => {
+function bindAsyncButton(selector, handler) {
+  const button = $(selector);
+  button.addEventListener('click', async () => {
+    if (button.disabled) return;
+    const originalText = button.textContent;
+    button.disabled = true;
+    try {
+      await handler();
+    } catch (err) {
+      setAuthStatus(err.message || 'Error inesperado', true);
+    } finally {
+      button.disabled = false;
+      button.textContent = originalText;
+    }
+  });
+}
+
+bindAsyncButton('#register-btn', () => authAction('register'));
+bindAsyncButton('#login-btn', () => authAction('login'));
+bindAsyncButton('#logout-btn', async () => {
   await api('/api/auth/logout/', { method: 'POST', body: '{}' });
   appState.me = null;
   appState.roomCode = null;
   appState.match = null;
   appState.selectedHandIndex = null;
   appState.selectedUnitId = null;
-  $('#auth-status').textContent = 'Modo invitado activo. Podés jugar vs IA sin registrarte.';
+  setAuthStatus('Modo invitado activo. Podés jugar vs IA sin registrarte.');
   renderBoard();
 });
-$('#create-match').addEventListener('click', () => createMatch().catch((err) => alert(err.message)));
-$('#create-ai-match').addEventListener('click', () => createAIMatch().catch((err) => alert(err.message)));
-$('#join-match').addEventListener('click', () => joinMatch().catch((err) => alert(err.message)));
-$('#refresh-state').addEventListener('click', () => refreshMatch().catch((err) => alert(err.message)));
-$('#end-turn-btn').addEventListener('click', () => endTurn().catch((err) => alert(err.message)));
+bindAsyncButton('#create-match', createMatch);
+bindAsyncButton('#create-ai-match', createAIMatch);
+bindAsyncButton('#join-match', joinMatch);
+bindAsyncButton('#refresh-state', refreshMatch);
+bindAsyncButton('#end-turn-btn', endTurn);
 familyFilter.addEventListener('change', renderCatalog);
 
-loadCards().then(loadProfile).then(renderBoard);
+loadCards().then(loadProfile).then(renderBoard).catch((err) => setAuthStatus(err.message, true));

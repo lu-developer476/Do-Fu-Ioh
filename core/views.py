@@ -16,10 +16,10 @@ from django.views.decorators.http import require_GET, require_http_methods
 
 from .models import Deck, DeckEntry, MatchRecord, MonsterCard
 
-HAND_SIZE = 3
+HAND_SIZE = 5
 DEFAULT_DECK_SIZE = 10
-BOARD_WIDTH = 12
-BOARD_HEIGHT = 15
+BOARD_WIDTH = 11
+BOARD_HEIGHT = 11
 MAX_SUMMONS_PER_TURN = 1
 AI_USERNAME = "__dojo_ai__"
 GUEST_HOST_USERNAME = "__guest_player__"
@@ -358,8 +358,23 @@ def _is_cell_free(state, x, y):
     return _find_unit_by_pos(state, x, y) is None
 
 
-def _summon_rows_for_side(side):
-    return {0, 1, 2} if side == 'host' else {BOARD_HEIGHT - 1, BOARD_HEIGHT - 2, BOARD_HEIGHT - 3}
+def _deployment_cells_for_side(side):
+    middle_x = BOARD_WIDTH // 2
+    if side == 'host':
+        return {
+            (middle_x, 0),
+            (middle_x - 1, 1),
+            (middle_x, 1),
+            (middle_x + 1, 1),
+            (middle_x, 2),
+        }
+    return {
+        (middle_x, BOARD_HEIGHT - 1),
+        (middle_x - 1, BOARD_HEIGHT - 2),
+        (middle_x, BOARD_HEIGHT - 2),
+        (middle_x + 1, BOARD_HEIGHT - 2),
+        (middle_x, BOARD_HEIGHT - 3),
+    }
 
 
 def _combat_range(card):
@@ -471,11 +486,10 @@ def _save_and_respond(match, state, side, room_code):
 
 
 def _free_cell_for_summon(state, side):
-    rows = sorted(_summon_rows_for_side(side), reverse=(side == 'guest'))
-    for y in rows:
-        for x in range(BOARD_WIDTH):
-            if _is_cell_free(state, x, y):
-                return x, y
+    deployment_cells = sorted(_deployment_cells_for_side(side), key=lambda cell: (cell[1], cell[0]), reverse=(side == 'guest'))
+    for x, y in deployment_cells:
+        if _is_cell_free(state, x, y):
+            return x, y
     return None, None
 
 
@@ -651,7 +665,7 @@ def summon_unit(request, room_code):
         return JsonResponse({'status': 'error', 'message': 'Carta inválida'}, status=400)
     if not _is_inside_board(x, y):
         return JsonResponse({'status': 'error', 'message': 'Casilla fuera del tablero'}, status=400)
-    if y not in _summon_rows_for_side(side):
+    if (x, y) not in _deployment_cells_for_side(side):
         return JsonResponse({'status': 'error', 'message': 'Solo puedes invocar en tu zona de despliegue'}, status=400)
     if not _is_cell_free(state, x, y):
         return JsonResponse({'status': 'error', 'message': 'Casilla ocupada'}, status=400)

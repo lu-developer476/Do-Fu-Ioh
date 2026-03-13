@@ -42,7 +42,7 @@ class TacticalMatchFlowTests(TestCase):
         self.client.login(username='host', password='123456')
         summon_response = self.client.post(
             f'/api/match/{room_code}/summon/',
-            data=json.dumps({'hand_index': 0, 'x': 0, 'y': 0}),
+            data=json.dumps({'hand_index': 0, 'x': 5, 'y': 0}),
             content_type='application/json',
         )
         self.assertEqual(summon_response.status_code, 200)
@@ -55,8 +55,8 @@ class TacticalMatchFlowTests(TestCase):
         self.assertEqual(response.status_code, 201)
 
         state = response.json()['match']
-        self.assertEqual(state['board']['width'], 12)
-        self.assertEqual(state['board']['height'], 15)
+        self.assertEqual(state['board']['width'], 11)
+        self.assertEqual(state['board']['height'], 11)
         self.assertIn('actions', state['turn'])
         self.assertIn('event_log', state)
         self.assertIn('discard', state)
@@ -75,14 +75,14 @@ class TacticalMatchFlowTests(TestCase):
 
         ok_summon = self.client.post(
             f'/api/match/{room_code}/summon/',
-            data=json.dumps({'hand_index': 0, 'x': 1, 'y': 1}),
+            data=json.dumps({'hand_index': 0, 'x': 4, 'y': 1}),
             content_type='application/json',
         )
         self.assertEqual(ok_summon.status_code, 200)
 
         second_summon = self.client.post(
             f'/api/match/{room_code}/summon/',
-            data=json.dumps({'hand_index': 0, 'x': 2, 'y': 1}),
+            data=json.dumps({'hand_index': 0, 'x': 5, 'y': 1}),
             content_type='application/json',
         )
         self.assertEqual(second_summon.status_code, 400)
@@ -104,7 +104,7 @@ class TacticalMatchFlowTests(TestCase):
         self.client.login(username='host', password='123456')
         too_far = self.client.post(
             f'/api/match/{room_code}/move/',
-            data=json.dumps({'unit_id': summoned_unit['id'], 'to_x': 5, 'to_y': 0}),
+            data=json.dumps({'unit_id': summoned_unit['id'], 'to_x': 10, 'to_y': 0}),
             content_type='application/json',
         )
         self.assertEqual(too_far.status_code, 400)
@@ -116,7 +116,7 @@ class TacticalMatchFlowTests(TestCase):
         self.client.login(username='host', password='123456')
         host_summon = self.client.post(
             f'/api/match/{room_code}/summon/',
-            data=json.dumps({'hand_index': 0, 'x': 0, 'y': 0}),
+            data=json.dumps({'hand_index': 0, 'x': 5, 'y': 0}),
             content_type='application/json',
         ).json()['match']['host']['units'][0]
         self.client.post(f'/api/match/{room_code}/end-turn/', data='{}', content_type='application/json')
@@ -125,7 +125,7 @@ class TacticalMatchFlowTests(TestCase):
         self.client.login(username='guest', password='123456')
         guest_summon = self.client.post(
             f'/api/match/{room_code}/summon/',
-            data=json.dumps({'hand_index': 0, 'x': 10, 'y': 14}),
+            data=json.dumps({'hand_index': 0, 'x': 5, 'y': 10}),
             content_type='application/json',
         ).json()['match']['guest']['units'][0]
         self.client.post(f'/api/match/{room_code}/end-turn/', data='{}', content_type='application/json')
@@ -193,13 +193,14 @@ class AnonymousAIMatchTests(TestCase):
     def test_guest_can_play_turn_and_ai_responds(self):
         created = self.client.post('/api/match/create-vs-ai/', data='{}', content_type='application/json').json()
         room_code = created['room_code']
+        center_x = created['match']['board']['width'] // 2
 
         summon = self.client.post(
             f'/api/match/{room_code}/action/',
-            data=json.dumps({'action': 'summon', 'hand_index': 0, 'x': 0, 'y': 0}),
+            data=json.dumps({'action': 'summon', 'hand_index': 0, 'x': center_x, 'y': 0}),
             content_type='application/json',
         )
-        self.assertEqual(summon.status_code, 200)
+        self.assertEqual(summon.status_code, 200, summon.json())
 
         end_turn = self.client.post(
             f'/api/match/{room_code}/action/',

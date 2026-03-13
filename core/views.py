@@ -6,6 +6,8 @@ from pathlib import Path
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.db import connection
+from django.db.utils import OperationalError, ProgrammingError
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
@@ -24,6 +26,7 @@ MAX_SUMMONS_PER_TURN = 1
 AI_USERNAME = "__dojo_ai__"
 GUEST_HOST_USERNAME = "__guest_player__"
 CARDS_SEED_PATH = Path(__file__).resolve().parent.parent / 'data' / 'cards.json'
+REQUIRED_GAME_TABLES = {'core_monstercard', 'core_deck', 'core_deckentry', 'core_matchrecord'}
 
 
 def _coerce_int(value, default):
@@ -81,7 +84,28 @@ def _serialize_user(user):
     }
 
 
+def _game_schema_is_ready():
+    try:
+        available_tables = set(connection.introspection.table_names())
+    except (OperationalError, ProgrammingError):
+        return False
+    return REQUIRED_GAME_TABLES.issubset(available_tables)
+
+
+def _schema_not_ready_response():
+    return JsonResponse(
+        {
+            'status': 'error',
+            'message': 'La base de datos todavía no está lista. Ejecutá migraciones y reintentá.',
+        },
+        status=503,
+    )
+
+
 def _bootstrap_cards_if_empty():
+    if not _game_schema_is_ready():
+        return
+
     if MonsterCard.objects.exists() or not CARDS_SEED_PATH.exists():
         return
 
@@ -193,12 +217,18 @@ def user_profile(request):
 
 @require_GET
 def cards_catalog(request):
+    if not _game_schema_is_ready():
+        return _schema_not_ready_response()
+
     _bootstrap_cards_if_empty()
     cards = [_serialize_card(c) for c in MonsterCard.objects.all()]
     return JsonResponse({'status': 'ok', 'cards': cards})
 
 
 def _ensure_default_deck(user):
+    if not _game_schema_is_ready():
+        return None
+
     _bootstrap_cards_if_empty()
     deck = user.decks.filter(is_active=True).first() or user.decks.first()
     if not deck:
@@ -587,6 +617,9 @@ def _run_ai_turn(state):
 def create_match(request):
     if not request.user.is_authenticated:
         return JsonResponse({'status': 'error', 'message': 'No autenticado'}, status=401)
+    if not _game_schema_is_ready():
+        return _schema_not_ready_response()
+
     _ensure_default_deck(request.user)
     state = _create_initial_state(request.user)
     _start_turn(state, 'host')
@@ -598,6 +631,9 @@ def create_match(request):
 @require_http_methods(['POST'])
 @csrf_exempt
 def create_match_vs_ai(request):
+    if not _game_schema_is_ready():
+        return _schema_not_ready_response()
+
     host_user = request.user if request.user.is_authenticated else _get_or_create_system_user(GUEST_HOST_USERNAME)
     ai_user = _get_or_create_system_user(AI_USERNAME)
     _ensure_default_deck(host_user)

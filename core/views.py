@@ -10,6 +10,7 @@ from pathlib import Path
 
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.contrib.sessions.models import Session
 from django.core.management import call_command
 from django.db import connection
 from django.db.utils import OperationalError, ProgrammingError
@@ -96,20 +97,42 @@ def _serialize_user(user):
     }
 
 
-def _game_schema_is_ready():
+def _table_exists(table_name):
     try:
-        available_tables = set(connection.introspection.table_names())
+        with connection.cursor() as cursor:
+            tables = connection.introspection.table_names(cursor)
     except (OperationalError, ProgrammingError):
         return False
-    return REQUIRED_GAME_TABLES.issubset(available_tables)
+    return table_name in tables
+
+
+def _model_query_works(model):
+    try:
+        model.objects.exists()
+    except (OperationalError, ProgrammingError):
+        return False
+    return True
+
+
+def _game_schema_is_ready():
+    model_checks = [
+        _model_query_works(MonsterCard),
+        _model_query_works(Deck),
+        _model_query_works(DeckEntry),
+        _model_query_works(MatchRecord),
+    ]
+    if all(model_checks):
+        return True
+
+    return all(_table_exists(table_name) for table_name in REQUIRED_GAME_TABLES)
 
 
 def _auth_schema_is_ready():
-    try:
-        available_tables = set(connection.introspection.table_names())
-    except (OperationalError, ProgrammingError):
-        return False
-    return REQUIRED_AUTH_TABLES.issubset(available_tables)
+    model_checks = [_model_query_works(User), _model_query_works(Session)]
+    if all(model_checks):
+        return True
+
+    return all(_table_exists(table_name) for table_name in REQUIRED_AUTH_TABLES)
 
 
 def _try_bootstrap_schema_once():

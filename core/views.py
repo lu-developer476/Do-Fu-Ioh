@@ -26,6 +26,23 @@ GUEST_HOST_USERNAME = "__guest_player__"
 CARDS_SEED_PATH = Path(__file__).resolve().parent.parent / 'data' / 'cards.json'
 
 
+def _coerce_int(value, default):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _resolve_card_image(image):
+    raw_image = (image or '').strip()
+    if not raw_image:
+        return ''
+    if raw_image.startswith(('http://', 'https://', '/')):
+        return raw_image
+    normalized = raw_image[7:] if raw_image.startswith('public/') else raw_image
+    return f'/static/{normalized}'
+
+
 def _payload(request):
     try:
         return json.loads(request.body.decode('utf-8') or '{}')
@@ -47,7 +64,7 @@ def _serialize_card(card):
         'action_points': card.action_points,
         'movement_points': card.movement_points,
         'description': card.description,
-        'image': f'/static/{card.image}' if card.image else '',
+        'image': _resolve_card_image(card.image),
     }
 
 
@@ -83,12 +100,12 @@ def _bootstrap_cards_if_empty():
                 'family': raw_card.get('family', 'Genérica')[:40],
                 'name': raw_name[:120],
                 'stage': raw_card.get('stage', 'base'),
-                'level_min': int(raw_card.get('level_min', 1) or 1),
-                'level_max': int(raw_card.get('level_max', 1) or 1),
-                'hp': int(raw_card.get('hp', 1) or 1),
-                'shell': int(raw_card.get('shell', 0) or 0),
-                'action_points': int(raw_card.get('action_points', 1) or 1),
-                'movement_points': int(raw_card.get('movement_points', 1) or 1),
+                'level_min': _coerce_int(raw_card.get('level_min', 1) or 1, 1),
+                'level_max': _coerce_int(raw_card.get('level_max', 1) or 1, 1),
+                'hp': _coerce_int(raw_card.get('hp', 1) or 1, 1),
+                'shell': _coerce_int(raw_card.get('shell', 0) or 0, 0),
+                'action_points': _coerce_int(raw_card.get('action_points', 1) or 1, 1),
+                'movement_points': _coerce_int(raw_card.get('movement_points', 1) or 1, 1),
                 'description': raw_card.get('description', ''),
                 'image': raw_card.get('image', ''),
             },
@@ -183,9 +200,13 @@ def cards_catalog(request):
 
 def _ensure_default_deck(user):
     _bootstrap_cards_if_empty()
-    if user.decks.exists():
-        return user.decks.filter(is_active=True).first() or user.decks.first()
-    deck = Deck.objects.create(user=user, name='Mazo inicial', is_active=True)
+    deck = user.decks.filter(is_active=True).first() or user.decks.first()
+    if not deck:
+        deck = Deck.objects.create(user=user, name='Mazo inicial', is_active=True)
+    if deck.entries.count() >= HAND_SIZE:
+        return deck
+
+    deck.entries.all().delete()
     families = ['Píos', 'Escarahojas', 'Gelatinas', 'Kitsus']
     for family in families:
         family_cards = list(MonsterCard.objects.filter(family=family, stage='base')[:3])

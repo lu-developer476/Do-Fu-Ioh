@@ -332,3 +332,24 @@ La configuración real del repo usa:
 8. **Preparar multiplayer real** recién después de estabilizar reglas y estado de partida.
 9. **Agregar observabilidad**: logs de errores, métricas básicas y trazabilidad de acciones de partida.
 10. **Sumar tests de UI** para validar flujo completo desde el navegador.
+
+## Calidad técnica incorporada en esta pasada
+
+- Validación explícita de integridad para `game_state`, incluyendo conteos, ids duplicados y unidades superpuestas.
+- Manejo claro de `JSON inválido` en endpoints críticos.
+- Persistencia más consistente del resultado final de la partida en `MatchRecord.status` y `MatchRecord.winner`.
+- Import del catálogo más estricto frente a seeds mal formados.
+- Tests de regresión para parsing inválido y estados inconsistentes.
+
+## Documentación adicional
+
+- Arquitectura técnica y bordes de extensión futura: `docs/architecture.md`.
+
+## Comandos útiles
+
+```bash
+python manage.py migrate
+python manage.py seed_cards_catalog
+python manage.py test
+python manage.py runserver
+```

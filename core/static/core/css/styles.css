@@ -45,6 +45,12 @@ button.ghost {
   border-color: #c29a6d;
 }
 
+button:disabled {
+  cursor: progress;
+  opacity: .72;
+  filter: saturate(.8);
+}
+
 input, select {
   width: 100%;
   padding: .7rem .85rem;

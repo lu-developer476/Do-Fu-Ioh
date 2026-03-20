@@ -1,14 +1,31 @@
 import json
 
+from pathlib import Path
+from tempfile import TemporaryDirectory
+
 from django.core.management import call_command
 from django.middleware.csrf import _get_new_csrf_string
 from django.test import Client, SimpleTestCase, TestCase
 
 from django.contrib.auth.models import User
 
+from .card_catalog import CardSeedDataError, load_cards_seed_data
 from .models import MatchRecord, MonsterCard
 from .system_users import AI_USERNAME, SOLO_PLAYER_USERNAME, get_single_player_system_users
 from .views import _ai_turn, _resolve_card_image, _serialize_card, _validate_match_state
+
+
+
+
+class CardSeedSourceValidationTests(SimpleTestCase):
+    def test_load_cards_seed_data_rejects_invalid_json(self):
+        with TemporaryDirectory() as tmp_dir:
+            path = Path(tmp_dir) / 'cards.json'
+            path.write_text('{bad json', encoding='utf-8')
+
+            with self.assertRaises(CardSeedDataError):
+                load_cards_seed_data(path=path)
+
 
 
 class CardsCatalogSeedTests(TestCase):
@@ -420,6 +437,8 @@ class SoloAIModeTests(TestCase):
         ]
         state["guest"]["hand"] = [state["guest"]["hand"][0]]
         state["guest"]["library"] = []
+        state["guest"]["hand_count"] = 1
+        state["guest"]["library_count"] = 0
         record.game_state = state
         record.save(update_fields=["game_state"])
 
@@ -451,9 +470,13 @@ class SoloAIModeTests(TestCase):
         state["turn"]["active_side"] = "host"
         state["host"]["hand"] = []
         state["host"]["library"] = []
+        state["host"]["hand_count"] = 0
+        state["host"]["library_count"] = 0
         state["host"]["units"] = []
         state["guest"]["hand"] = []
         state["guest"]["library"] = []
+        state["guest"]["hand_count"] = 0
+        state["guest"]["library_count"] = 0
         state["guest"]["units"] = [
             {
                 "id": "guest-survivor",
@@ -699,6 +722,8 @@ class SoloAIModeTests(TestCase):
         attacker["can_act"] = True
         state["guest"]["hand"] = []
         state["guest"]["library"] = []
+        state["guest"]["hand_count"] = 0
+        state["guest"]["library_count"] = 0
         state["guest"]["units"] = [
             {
                 "id": "guest-last-unit",
@@ -988,6 +1013,36 @@ class SoloAIModeTests(TestCase):
         self.assertEqual(
             response.json()["message"],
             "Estado de partida inválido: host.energy debe ser un entero mayor o igual a 0.",
+        )
+
+    def test_create_match_rejects_invalid_json_body(self):
+        response = self.client.post(
+            "/api/match/create-vs-ai/",
+            data='{"difficulty":',
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["message"], "JSON inválido.")
+
+    def test_get_match_returns_clear_json_when_counts_are_inconsistent(self):
+        created = self.client.post(
+            "/api/match/create-vs-ai/", data="{}", content_type="application/json"
+        ).json()
+        room_code = created["room_code"]
+
+        record = MatchRecord.objects.get(room_code=room_code)
+        state = record.game_state
+        state["host"]["hand_count"] = 999
+        record.game_state = state
+        record.save(update_fields=["game_state"])
+
+        response = self.client.get(f"/api/match/{room_code}/")
+
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(
+            response.json()["message"],
+            "Estado de partida inválido: host.hand_count no coincide con hand.",
         )
 
     def test_match_action_rejects_unexpected_action_payload_types(self):

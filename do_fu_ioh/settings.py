@@ -4,22 +4,29 @@ from pathlib import Path
 import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-DEBUG = os.getenv('DJANGO_DEBUG', 'False').lower() == 'true'
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'dev-secret-key-change-me')
-if not DEBUG and SECRET_KEY == 'dev-secret-key-change-me':
-    raise RuntimeError('DJANGO_SECRET_KEY must be configured when DEBUG=False')
-
-
-def _split_env_list(value):
-    return [item.strip() for item in value.split(',') if item.strip()]
 
 
 def _sanitize_env_value(raw_value, env_key):
     value = (raw_value or '').strip().strip('"').strip("'")
     prefix = f'{env_key}='
     if value.startswith(prefix):
-        return value[len(prefix):].strip().strip('"').strip("'")
-    return value
+        value = value[len(prefix):]
+    return value.strip().strip('"').strip("'")
+
+
+def _split_env_list(value):
+    return [item.strip() for item in value.split(',') if item.strip()]
+
+
+def _get_env(key, default=''):
+    return _sanitize_env_value(os.getenv(key, default), key)
+
+
+def _env_flag(key, default=False):
+    value = _get_env(key)
+    if not value:
+        return default
+    return value.lower() in {'1', 'true', 't', 'yes', 'y', 'on'}
 
 
 def _merge_unique(*groups):
@@ -31,15 +38,35 @@ def _merge_unique(*groups):
     return merged
 
 
+def _is_local_host(host):
+    return host in {'localhost', '127.0.0.1', '[::1]'}
+
+
+DEBUG = _env_flag('DJANGO_DEBUG', default=False)
+# Local fallback only; production must override this via environment.
+SECRET_KEY_FALLBACK = 'dev-only-secret-key-change-me-before-production-please'
+SECRET_KEY = _get_env('DJANGO_SECRET_KEY', SECRET_KEY_FALLBACK)
+if not DEBUG and SECRET_KEY == SECRET_KEY_FALLBACK:
+    raise RuntimeError('DJANGO_SECRET_KEY must be configured when DEBUG=False')
+
+DEFAULT_ALLOWED_HOSTS = ['do-fu-ioh.onrender.com', '127.0.0.1', 'localhost']
 ALLOWED_HOSTS = _merge_unique(
-    _split_env_list(_sanitize_env_value(os.getenv('DJANGO_ALLOWED_HOSTS', ''), 'DJANGO_ALLOWED_HOSTS')),
-    ['do-fu-ioh.onrender.com', '127.0.0.1', 'localhost'],
+    _split_env_list(_get_env('DJANGO_ALLOWED_HOSTS')),
+    DEFAULT_ALLOWED_HOSTS,
 )
 
-CSRF_TRUSTED_ORIGINS = _split_env_list(_sanitize_env_value(os.getenv(
-    'CSRF_TRUSTED_ORIGINS',
-    'https://do-fu-ioh.onrender.com,http://127.0.0.1:8000,http://localhost:8000',
-), 'CSRF_TRUSTED_ORIGINS'))
+_default_csrf_trusted_origins = []
+for host in ALLOWED_HOSTS:
+    schemes = ('http', 'https') if _is_local_host(host) else ('https',)
+    for scheme in schemes:
+        origin = f'{scheme}://{host}'
+        if origin not in _default_csrf_trusted_origins:
+            _default_csrf_trusted_origins.append(origin)
+
+CSRF_TRUSTED_ORIGINS = _merge_unique(
+    _split_env_list(_get_env('CSRF_TRUSTED_ORIGINS')),
+    _default_csrf_trusted_origins,
+)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -75,9 +102,13 @@ TEMPLATES = [{
 }]
 WSGI_APPLICATION = 'do_fu_ioh.wsgi.application'
 
-DATABASE_URL = _sanitize_env_value(os.getenv('DATABASE_URL', f'sqlite:///{BASE_DIR}/db.sqlite3'), 'DATABASE_URL')
+DATABASE_URL = _get_env('DATABASE_URL', f'sqlite:///{BASE_DIR}/db.sqlite3')
 DATABASES = {
-    'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=DATABASE_URL.startswith('postgres'))
+    'default': dj_database_url.parse(
+        DATABASE_URL,
+        conn_max_age=600,
+        ssl_require=DATABASE_URL.startswith('postgres'),
+    )
 }
 
 AUTH_PASSWORD_VALIDATORS = []
@@ -110,7 +141,8 @@ SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SAMESITE = 'Lax'
 X_FRAME_OPTIONS = 'DENY'
 SECURE_CONTENT_TYPE_NOSNIFF = True
-SECURE_SSL_REDIRECT = os.getenv('DJANGO_SECURE_SSL_REDIRECT', str(not DEBUG)).lower() == 'true'
+SECURE_REFERRER_POLICY = 'same-origin'
+SECURE_SSL_REDIRECT = _env_flag('DJANGO_SECURE_SSL_REDIRECT', default=not DEBUG)
 SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
 SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
 SECURE_HSTS_PRELOAD = not DEBUG

@@ -6,12 +6,20 @@ MVP actual: **juego táctico single-player contra IA** con Django + sesiones.
 
 - No hay login/registro para jugar.
 - El jugador usa **sesión de Django** como identidad de partida.
+- Los usuarios `__solo_player__` y `__dojo_ai__` existen sólo como **actores internos compartidos** para persistir `MatchRecord`; no representan login humano ni ownership real del jugador.
 - Botón **“Jugar vs IA”** crea/reinicia una partida para la sesión actual.
 - El tablero siempre renderiza (aunque no haya partida activa todavía).
 - Estado de partida persistido en `MatchRecord.game_state`.
 - Catálogo de cartas cargado desde `data/cards.json` (seed automático si la tabla está vacía).
 - El catálogo, la mano y el tablero usan las imágenes reales publicadas en `public/images`.
 - Los costos de invocación del MVP dependen de la etapa de la carta: `base=1`, `fusion=3`, `evolution=5`.
+
+## Nota sobre usuarios del sistema del MVP
+
+- Se mantienen porque para el MVP actual resuelven una necesidad concreta: `MatchRecord.host` y `MatchRecord.guest` requieren `User`, pero el producto sigue siendo **single-player por sesión**, sin registro ni autenticación.
+- La identidad real del jugador hoy vive en la **sesión de Django** (`active_ai_match_room_code`), no en esas filas de `auth_user`.
+- Para reducir rarezas, el código ahora encapsula esos actores en `core/system_users.py`, los trata como usernames reservados, les deja contraseña inutilizable y `is_active=False`.
+- Si en el futuro aparece login real, estos usuarios deben seguir reservados o migrarse a un modelo explícito de actores del sistema antes de exponer registro público.
 
 ## Endpoints activos
 

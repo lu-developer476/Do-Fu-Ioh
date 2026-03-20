@@ -6,7 +6,6 @@ from collections import deque
 from pathlib import Path
 
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.db.utils import OperationalError, ProgrammingError
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -14,6 +13,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_GET, require_http_methods
 
 from .models import MatchRecord, MonsterCard
+from .system_users import get_single_player_system_users
 
 BOARD_WIDTH = 11
 BOARD_HEIGHT = 11
@@ -22,8 +22,6 @@ DECK_SIZE = 12
 MAX_ENERGY = 10
 AI_DIFFICULTIES = {"normal", "extremo"}
 SESSION_MATCH_KEY = "active_ai_match_room_code"
-AI_USERNAME = "__dojo_ai__"
-SOLO_SYSTEM_USERNAME = "__solo_player__"
 CARDS_DATA_PATH = Path(settings.BASE_DIR) / "data" / "cards.json"
 SUMMON_COST_BY_STAGE = {
     "base": 1,
@@ -208,13 +206,6 @@ def _build_new_match_state(cards, difficulty="normal"):
     }
 
 
-def _get_or_create_system_user(username):
-    user, _ = User.objects.get_or_create(username=username, defaults={"email": ""})
-    if not user.has_usable_password():
-        return user
-    user.set_unusable_password()
-    user.save(update_fields=["password"])
-    return user
 
 
 # Validation helpers
@@ -960,8 +951,7 @@ def create_match_vs_ai(request):
     payload = _payload(request)
     difficulty = _normalize_ai_difficulty(payload.get("difficulty"))
     cards = list(MonsterCard.objects.all())
-    ai_user = _get_or_create_system_user(AI_USERNAME)
-    solo_system_user = _get_or_create_system_user(SOLO_SYSTEM_USERNAME)
+    solo_system_user, ai_user = get_single_player_system_users()
 
     record = _active_match_from_session(request)
     if record:

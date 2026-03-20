@@ -3,7 +3,10 @@ import json
 from django.middleware.csrf import _get_new_csrf_string
 from django.test import Client, TestCase
 
+from django.contrib.auth.models import User
+
 from .models import MatchRecord, MonsterCard
+from .system_users import AI_USERNAME, SOLO_PLAYER_USERNAME, get_single_player_system_users
 from .views import _ai_turn
 
 
@@ -25,6 +28,27 @@ class SoloAIModeTests(TestCase):
                     description="test",
                     image="public/images/pios/base/pio-albino.png",
                 )
+
+
+    def test_single_player_uses_reserved_system_users_only_as_internal_actors(self):
+        solo_user, ai_user = get_single_player_system_users()
+
+        self.assertEqual(solo_user.username, SOLO_PLAYER_USERNAME)
+        self.assertEqual(ai_user.username, AI_USERNAME)
+        self.assertFalse(solo_user.is_active)
+        self.assertFalse(ai_user.is_active)
+        self.assertFalse(solo_user.has_usable_password())
+        self.assertFalse(ai_user.has_usable_password())
+
+        created = self.client.post(
+            "/api/match/create-vs-ai/", data="{}", content_type="application/json"
+        )
+        self.assertEqual(created.status_code, 200)
+
+        record = MatchRecord.objects.get(room_code=created.json()["room_code"])
+        self.assertEqual(record.host.username, SOLO_PLAYER_USERNAME)
+        self.assertEqual(record.guest.username, AI_USERNAME)
+        self.assertEqual(User.objects.filter(username__in=[SOLO_PLAYER_USERNAME, AI_USERNAME]).count(), 2)
 
     def test_create_match_and_recover_from_session(self):
         created = self.client.post(

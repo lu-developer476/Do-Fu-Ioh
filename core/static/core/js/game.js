@@ -164,10 +164,22 @@ function computeMoveTargets(selectedUnit, meUnits, enemyUnits, boardWidth = DEFA
   return distances;
 }
 
+function computeAttackRange(selectedUnit) {
+  if (!selectedUnit) return 0;
+  // Misma regla que backend: base = 1, no-base = 2, más PA/2 redondeado hacia abajo.
+  const baseRange = selectedUnit.card.stage === 'base' ? 1 : 2;
+  return Math.min(5, baseRange + Math.floor(selectedUnit.card.action_points / 2));
+}
+
 function computeAttackTargets(selectedUnit, enemyUnits) {
   if (!selectedUnit || selectedUnit.pa_current <= 0 || !selectedUnit.can_act) return new Set();
-  const baseRange = selectedUnit.card.stage === 'base' ? 1 : 2;
-  const attackRange = Math.min(5, baseRange + Math.floor(selectedUnit.card.action_points / 2));
+
+  // Si el backend ya resolvió los blancos, el cliente usa exactamente esa lista.
+  if (Array.isArray(selectedUnit.attackable_unit_ids)) {
+    return new Set(selectedUnit.attackable_unit_ids);
+  }
+
+  const attackRange = computeAttackRange(selectedUnit);
   return new Set(enemyUnits
     .filter((enemy) => Math.abs(enemy.x - selectedUnit.x) + Math.abs(enemy.y - selectedUnit.y) <= attackRange)
     .map((enemy) => enemy.id));

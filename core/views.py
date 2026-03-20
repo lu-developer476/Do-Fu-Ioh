@@ -268,21 +268,39 @@ def _serialize_reachable_cells(state, unit):
     ]
 
 
+def _attack_range(unit):
+    # Regla única de rango: base = 1, no-base = 2, más PA/2 redondeado hacia abajo.
+    base_range = 1 if unit['card']['stage'] == 'base' else 2
+    return min(5, base_range + unit['card']['action_points'] // 2)
+
+
+def _attackable_unit_ids(state, attacker, enemy_side=None):
+    if attacker['pa_current'] <= 0 or not attacker['can_act']:
+        return []
+
+    side = enemy_side or ('guest' if attacker['owner'] == 'host' else 'host')
+    attack_range = _attack_range(attacker)
+    attackable = []
+    for target in state.get(side, {}).get('units', []):
+        distance = abs(attacker['x'] - target['x']) + abs(attacker['y'] - target['y'])
+        if distance <= attack_range:
+            attackable.append(target['id'])
+    return sorted(attackable)
+
+
 def _state_for_client(state):
     payload = json.loads(json.dumps(state))
     for side in ('host', 'guest'):
+        enemy_side = 'guest' if side == 'host' else 'host'
         for unit in payload.get(side, {}).get('units', []):
             unit['reachable_cells'] = _serialize_reachable_cells(payload, unit)
+            unit['attack_range'] = _attack_range(unit)
+            unit['attackable_unit_ids'] = _attackable_unit_ids(payload, unit, enemy_side=enemy_side)
     return payload
 
 
-def _can_attack(attacker, target):
-    if attacker['pa_current'] <= 0 or not attacker['can_act']:
-        return False
-    base_range = 1 if attacker['card']['stage'] == 'base' else 2
-    attack_range = min(5, base_range + attacker['card']['action_points'] // 2)
-    distance = abs(attacker['x'] - target['x']) + abs(attacker['y'] - target['y'])
-    return distance <= attack_range
+def _can_attack(state, attacker, target):
+    return target['id'] in _attackable_unit_ids(state, attacker, enemy_side=target['owner'])
 
 
 def _refresh_counts(state):
@@ -380,7 +398,7 @@ def _apply_action(state, side, payload):
         target = _find_unit(enemy, payload.get('target_id'))
         if not attacker or not target:
             return 'Ataque inválido.'
-        if not _can_attack(attacker, target):
+        if not _can_attack(state, attacker, target):
             return 'Objetivo fuera de rango o sin PA.'
 
         attacker['pa_current'] -= 1
@@ -459,7 +477,7 @@ def _ai_turn(state):
         if not nearest:
             continue
 
-        while unit['can_act'] and nearest and _can_attack(unit, nearest):
+        while unit['can_act'] and nearest and _can_attack(state, unit, nearest):
             _apply_action(state, 'guest', {'action': 'attack', 'attacker_id': unit['id'], 'target_id': nearest['id']})
             nearest = _nearest_enemy(unit, state['host']['units'])
 
@@ -471,7 +489,7 @@ def _ai_turn(state):
             _, nx, ny = move
             _apply_action(state, 'guest', {'action': 'move', 'unit_id': unit['id'], 'to_x': nx, 'to_y': ny})
             nearest = _nearest_enemy(unit, state['host']['units'])
-            while unit['can_act'] and nearest and _can_attack(unit, nearest):
+            while unit['can_act'] and nearest and _can_attack(state, unit, nearest):
                 _apply_action(state, 'guest', {'action': 'attack', 'attacker_id': unit['id'], 'target_id': nearest['id']})
                 nearest = _nearest_enemy(unit, state['host']['units'])
 

@@ -1,6 +1,14 @@
 const DEFAULT_BOARD_WIDTH = 11;
 const DEFAULT_BOARD_HEIGHT = 11;
 const CARD_IMAGE_PLACEHOLDER = '/static/core/img/placeholders/card-placeholder.svg';
+const EMPTY_MESSAGES = {
+  catalog: 'No hay cartas disponibles.',
+  matchLog: 'Todavía no hay eventos registrados.',
+  hand: 'No quedan cartas en mano.',
+  handPreview: 'Tu mano aparecerá acá.',
+  summary: 'Iniciá una partida contra la IA para comenzar.',
+  units: 'Sin unidades.',
+};
 
 const appState = {
   cards: [],
@@ -57,6 +65,62 @@ function escapeHtml(value) {
     .replaceAll("'", '&#39;');
 }
 
+function clearElement(element) {
+  if (element) element.replaceChildren();
+}
+
+function renderEmptyState(element, message, className = 'small') {
+  if (!element) return;
+  const empty = document.createElement('div');
+  empty.className = className;
+  empty.textContent = message;
+  element.replaceChildren(empty);
+}
+
+function appendTextElement(parent, tagName, text, className = '') {
+  const element = document.createElement(tagName);
+  if (className) element.className = className;
+  element.textContent = text;
+  parent.appendChild(element);
+  return element;
+}
+
+function appendBadgeRow(parent, values = []) {
+  const row = document.createElement('div');
+  row.className = 'meta';
+  values.forEach((value) => {
+    const badge = document.createElement('span');
+    badge.className = 'badge';
+    badge.textContent = value;
+    row.appendChild(badge);
+  });
+  parent.appendChild(row);
+  return row;
+}
+
+function createCardImageElement(image, name, className = '') {
+  const frame = document.createElement('span');
+  frame.className = `card-image-frame${className ? ` ${className}` : ''}`;
+  frame.dataset.cardImageFrame = '';
+
+  const img = document.createElement('img');
+  img.className = ['card-image', className].filter(Boolean).join(' ');
+  img.src = resolveCardImage(image);
+  img.alt = name || 'Carta sin nombre';
+  img.loading = 'lazy';
+  img.decoding = 'async';
+  img.dataset.cardImage = '';
+  img.dataset.originalSrc = img.src;
+
+  const fallback = document.createElement('span');
+  fallback.className = 'card-image-fallback';
+  fallback.setAttribute('aria-hidden', 'true');
+  fallback.textContent = 'Sin imagen';
+
+  frame.append(img, fallback);
+  return frame;
+}
+
 function resolveCardImage(image) {
   const raw = String(image ?? '').trim();
   if (!raw) return CARD_IMAGE_PLACEHOLDER;
@@ -79,28 +143,6 @@ function resolveCardImage(image) {
 
   if (normalized.startsWith('/')) return normalized;
   return `/static/${normalized}`;
-}
-
-function buildCardImageMarkup(image, name, className = '') {
-  const safeName = escapeHtml(name || 'Carta sin nombre');
-  const resolvedSrc = escapeHtml(resolveCardImage(image));
-  const classes = ['card-image'];
-  if (className) classes.push(className);
-
-  return `
-    <span class="card-image-frame ${escapeHtml(className)}" data-card-image-frame>
-      <img
-        class="${classes.join(' ')}"
-        src="${resolvedSrc}"
-        alt="${safeName}"
-        loading="lazy"
-        decoding="async"
-        data-card-image
-        data-original-src="${resolvedSrc}"
-      />
-      <span class="card-image-fallback" aria-hidden="true">Sin imagen</span>
-    </span>
-  `;
 }
 
 function installCardImageFallbacks(scope = document) {
@@ -163,20 +205,26 @@ function localSeedCards() {
 function renderCatalog() {
   const catalogEl = $('#catalog');
   if (!catalogEl) return;
+
+  clearElement(catalogEl);
   const filter = familyFilter?.value || '';
-  const cards = appState.cards.filter((card) => !filter || card.family === filter);
-  catalogEl.innerHTML = cards.map((card) => `
-    <article class="card">
-      ${buildCardImageMarkup(card.image, card.name, 'card-image-catalog')}
-      <h4>${card.name}</h4>
-      <div class="meta">
-        <span class="badge">${card.family}</span>
-        <span class="badge">${card.stage}</span>
-        <span class="badge">Coste ${card.summon_cost}</span>
-      </div>
-      <p>${card.description || ''}</p>
-    </article>
-  `).join('') || '<div class="small">No hay cartas disponibles.</div>';
+  const filteredCards = appState.cards.filter((card) => !filter || card.family === filter);
+
+  if (!filteredCards.length) {
+    renderEmptyState(catalogEl, EMPTY_MESSAGES.catalog);
+    return;
+  }
+
+  filteredCards.forEach((card) => {
+    const article = document.createElement('article');
+    article.className = 'card';
+    article.appendChild(createCardImageElement(card.image, card.name, 'card-image-catalog'));
+    appendTextElement(article, 'h4', card.name);
+    appendBadgeRow(article, [card.family, card.stage, `Coste ${card.summon_cost}`]);
+    appendTextElement(article, 'p', card.description || '');
+    catalogEl.appendChild(article);
+  });
+
   installCardImageFallbacks(catalogEl);
 }
 
@@ -212,9 +260,7 @@ function computeMoveTargets(selectedUnit, meUnits, enemyUnits, boardWidth = DEFA
   if (!selectedUnit || selectedUnit.pm_current <= 0 || !selectedUnit.can_move) return new Map();
 
   if (Array.isArray(selectedUnit.reachable_cells)) {
-    return new Map(
-      selectedUnit.reachable_cells.map((cell) => [`${cell.x},${cell.y}`, cell.distance])
-    );
+    return new Map(selectedUnit.reachable_cells.map((cell) => [`${cell.x},${cell.y}`, cell.distance]));
   }
 
   const occupied = new Set(
@@ -309,46 +355,164 @@ function getSelectionSummary({ selectedHandCard, selectedUnit, canPlay }) {
     : 'Esperá la respuesta de la IA. Podés inspeccionar el tablero y tu mano.';
 }
 
+function summarizeCardStats(card = {}) {
+  const hp = card.hp ?? card.health ?? '-';
+  const actionPoints = card.action_points ?? card.pa ?? '-';
+  const movePoints = card.move_points ?? card.pm ?? '-';
+  return `PdV ${hp} · PA ${actionPoints} · PM ${movePoints}`;
+}
+
+function estimateSummonCost(card = {}) {
+  return card.summon_cost ?? card.cost ?? card.energy_cost ?? '?';
+}
+
+function shortenUnitName(name = '') {
+  const trimmed = String(name).trim();
+  if (!trimmed) return 'Sin nombre';
+  if (trimmed.length <= 16) return trimmed;
+  const compact = trimmed.split(/\s+/).slice(0, 2).join(' ');
+  return compact.length <= 16 ? compact : `${compact.slice(0, 13).trimEnd()}…`;
+}
+
+function createSummaryField(label, value, className = '') {
+  const item = document.createElement('div');
+  item.className = ['summary-field', className].filter(Boolean).join(' ');
+  const strong = document.createElement('strong');
+  strong.textContent = `${label}:`;
+  item.appendChild(strong);
+  item.append(` ${value}`);
+  return item;
+}
+
+function createUnitListEntry(unit) {
+  const item = document.createElement('div');
+  item.className = 'unit-entry';
+  item.textContent = `${unit.card.name} (${buildCoordinateLabel(unit.x, unit.y)}) · PdV ${unit.hp_current} · Esc ${unit.shell_current}`;
+  return item;
+}
+
 function renderMatchLog(logEntries = []) {
   const logEl = $('#match-log');
   if (!logEl) return;
 
+  clearElement(logEl);
   if (!Array.isArray(logEntries) || !logEntries.length) {
-    logEl.innerHTML = '<div class="small">Todavía no hay eventos registrados.</div>';
+    renderEmptyState(logEl, EMPTY_MESSAGES.matchLog);
     return;
   }
 
-  logEl.innerHTML = `
-    <ol class="match-log-list">
-      ${logEntries.map((entry, index) => `
-        <li class="match-log-item">
-          <span class="match-log-order">${String(index + 1).padStart(2, '0')}</span>
-          <p>${entry}</p>
-        </li>
-      `).join('')}
-    </ol>
-  `;
+  const list = document.createElement('ol');
+  list.className = 'match-log-list';
+
+  logEntries.forEach((entry, index) => {
+    const item = document.createElement('li');
+    item.className = 'match-log-item';
+    appendTextElement(item, 'span', String(index + 1).padStart(2, '0'), 'match-log-order');
+    appendTextElement(item, 'p', entry);
+    list.appendChild(item);
+  });
+
+  logEl.appendChild(list);
   logEl.scrollTop = logEl.scrollHeight;
+}
+
+function createCellCoordinate(x, y) {
+  const coord = document.createElement('span');
+  coord.className = 'cell-coord';
+  coord.textContent = buildCoordinateLabel(x, y);
+  return coord;
+}
+
+function createPreviewCell(x, y) {
+  const cell = document.createElement('div');
+  cell.className = `cell ${(x + y) % 2 === 0 ? 'square-light' : 'square-dark'} empty preview-cell`;
+  cell.appendChild(createCellCoordinate(x, y));
+  const layer = document.createElement('div');
+  layer.className = 'cell-layer';
+  cell.appendChild(layer);
+  return cell;
+}
+
+function createTokenStat(label, value, modifierClass = '') {
+  const stat = document.createElement('span');
+  stat.className = ['token-stat', modifierClass].filter(Boolean).join(' ');
+  appendTextElement(stat, 'strong', label);
+  appendTextElement(stat, 'span', value);
+  return stat;
+}
+
+function createUnitToken(unit, isOwnUnit, isSelected) {
+  const token = document.createElement('div');
+  token.className = ['token', isOwnUnit ? 'token-ally' : 'token-enemy', isSelected ? 'token-selected' : ''].filter(Boolean).join(' ');
+
+  const top = document.createElement('div');
+  top.className = 'token-topline';
+  appendTextElement(top, 'span', isOwnUnit ? 'Tuya' : 'IA', `token-owner ${isOwnUnit ? 'token-owner-ally' : 'token-owner-enemy'}`);
+  appendTextElement(top, 'span', shortenUnitName(unit.card.name), 'token-name');
+
+  const body = document.createElement('div');
+  body.className = 'token-body';
+  const portraitWrap = document.createElement('div');
+  portraitWrap.className = 'token-portrait-wrap';
+  portraitWrap.appendChild(createCardImageElement(unit.card.image, unit.card.name, 'card-image-token'));
+
+  const metrics = document.createElement('div');
+  metrics.className = 'token-metrics';
+  metrics.append(
+    createTokenStat('PdV', unit.hp_current, 'token-stat-hp'),
+    createTokenStat('PA', unit.pa_current, 'token-stat-pa'),
+    createTokenStat('PM', unit.pm_current, 'token-stat-pm')
+  );
+
+  body.append(portraitWrap, metrics);
+  token.append(top, body);
+  return token;
+}
+
+function createBoardCell({ x, y, ownUnit, enemyUnit, selectedUnit, selectedHandCard, canPlay, myDeployment, enemyDeployment, moveTargets, attackTargets }) {
+  const unit = ownUnit || enemyUnit;
+  const key = `${x},${y}`;
+  const canSummon = Boolean(selectedHandCard) && myDeployment.has(key) && !unit && canPlay;
+  const canMove = moveTargets.has(key) && canPlay;
+  const canAttack = enemyUnit && attackTargets.has(enemyUnit.id) && canPlay;
+  const deployClass = myDeployment.has(key) ? 'deploy-ally' : (enemyDeployment.has(key) ? 'deploy-enemy' : '');
+  const hintClass = canSummon ? 'hint-summon' : (canMove ? 'hint-move' : (canAttack ? 'hint-attack' : ''));
+  const isSelected = Boolean(ownUnit && selectedUnit?.id === ownUnit.id);
+  const interactiveClass = canSummon || canMove || canAttack || ownUnit ? 'is-actionable' : '';
+  const stateClass = ownUnit ? 'ally has-unit' : enemyUnit ? 'enemy has-unit' : 'empty';
+
+  const cell = document.createElement('button');
+  cell.type = 'button';
+  cell.className = ['cell', (x + y) % 2 === 0 ? 'square-light' : 'square-dark', stateClass, deployClass, hintClass, isSelected ? 'selected' : '', interactiveClass].filter(Boolean).join(' ');
+  cell.dataset.x = x;
+  cell.dataset.y = y;
+  cell.setAttribute('aria-label', `Casilla ${buildCoordinateLabel(x, y)}`);
+  cell.appendChild(createCellCoordinate(x, y));
+
+  const layer = document.createElement('div');
+  layer.className = 'cell-layer';
+  layer.appendChild(unit ? createUnitToken(unit, Boolean(ownUnit), isSelected) : (() => {
+    const empty = document.createElement('div');
+    empty.className = 'cell-empty-state';
+    return empty;
+  })());
+
+  cell.appendChild(layer);
+  return cell;
 }
 
 function renderStaticBoard() {
   setActionFeedback(appState.actionFeedback.message, appState.actionFeedback.tone);
   const boardEl = $('#board');
   if (!boardEl) return;
-  const cells = [];
+
+  clearElement(boardEl);
   for (let y = 0; y < DEFAULT_BOARD_HEIGHT; y += 1) {
     for (let x = 0; x < DEFAULT_BOARD_WIDTH; x += 1) {
-      const squareClass = (x + y) % 2 === 0 ? 'square-light' : 'square-dark';
-      cells.push(`
-        <div class="cell ${squareClass} empty preview-cell">
-          <span class="cell-coord">${buildCoordinateLabel(x, y)}</span>
-          <div class="cell-layer"></div>
-        </div>
-      `);
+      boardEl.appendChild(createPreviewCell(x, y));
     }
   }
   boardEl.style.gridTemplateColumns = `repeat(${DEFAULT_BOARD_WIDTH}, minmax(40px, 1fr))`;
-  boardEl.innerHTML = cells.join('');
 }
 
 async function sendAction(actionPayload, failureMessage = 'La acción no pudo resolverse.') {
@@ -440,13 +604,145 @@ async function onCellClick(x, y) {
   setActionFeedback(`${selectedUnit.card.name} se movió a ${buildCoordinateLabel(x, y)}.`, 'success');
 }
 
+function renderHand(hand = [], canPlay = false) {
+  const handEl = $('#hand');
+  if (!handEl) return;
+  clearElement(handEl);
+
+  if (!hand.length) {
+    renderEmptyState(handEl, EMPTY_MESSAGES.hand);
+    return;
+  }
+
+  hand.forEach((card, index) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = `card hand-card ${appState.selectedHandIndex === index ? 'selected' : ''}`.trim();
+    button.dataset.handIndex = index;
+    button.appendChild(createCardImageElement(card.image, card.name, 'card-image-hand'));
+
+    const header = document.createElement('div');
+    header.className = 'hand-card-header';
+    appendTextElement(header, 'span', `#${index + 1}`, 'hand-card-index');
+    appendTextElement(header, 'h4', card.name, 'hand-card-title');
+
+    const details = document.createElement('div');
+    details.className = 'hand-card-details';
+    details.append(
+      createSummaryField('Familia', card.family || '-'),
+      createSummaryField('Stage', card.stage || '-'),
+      createSummaryField('Invocación', estimateSummonCost(card)),
+      createSummaryField('Stats', summarizeCardStats(card))
+    );
+
+    button.append(header, details);
+    button.addEventListener('click', () => {
+      if (!canPlay) {
+        setActionFeedback('Todavía no es tu turno. Esperá a que la IA termine de jugar.', 'error');
+        return;
+      }
+      const isSameCard = appState.selectedHandIndex === index;
+      appState.selectedHandIndex = isSameCard ? null : index;
+      appState.selectedUnitId = null;
+      if (isSameCard) {
+        setActionFeedback('Carta deseleccionada. Elegí otra carta o una unidad propia.', 'normal');
+      } else {
+        setActionFeedback(`Carta seleccionada: ${hand[index].name}. Elegí una casilla verde para invocar.`, 'normal');
+      }
+      renderBoard();
+    });
+
+    handEl.appendChild(button);
+  });
+
+  installCardImageFallbacks(handEl);
+}
+
+function renderMatchSummary({ me, enemy, selectedHandCard, selectedUnit, canPlay }) {
+  const summaryEl = $('#match-summary');
+  if (!summaryEl) return;
+  clearElement(summaryEl);
+
+  if (!appState.match) {
+    renderEmptyState(summaryEl, EMPTY_MESSAGES.summary);
+    return;
+  }
+
+  summaryEl.append(
+    createSummaryField('Turno', appState.match.turn?.number || 1),
+    createSummaryField('Activo', appState.match.turn?.active_side || '-'),
+    createSummaryField('Energía', `${me?.energy ?? '-'}/${me?.max_energy ?? '-'}`),
+    createSummaryField('IA', `${enemy?.energy ?? '-'}/${enemy?.max_energy ?? '-'}`),
+    createSummaryField('Mano / mazo', `${me?.hand_count ?? '-'} / ${me?.library_count ?? '-'}`),
+    createSummaryField('Ganador', appState.match.winner || 'sin definir')
+  );
+
+  const selection = createSummaryField('Selección', getSelectionSummary({ selectedHandCard, selectedUnit, canPlay }), 'selection-summary');
+  summaryEl.appendChild(selection);
+}
+
+function renderUnitList(ownUnits = [], enemyUnits = []) {
+  const unitListEl = $('#unit-list');
+  if (!unitListEl) return;
+  clearElement(unitListEl);
+
+  appendTextElement(unitListEl, 'strong', 'Tus unidades');
+  if (ownUnits.length) {
+    ownUnits.forEach((unit) => unitListEl.appendChild(createUnitListEntry(unit)));
+  } else {
+    appendTextElement(unitListEl, 'div', EMPTY_MESSAGES.units);
+  }
+
+  unitListEl.appendChild(document.createElement('hr'));
+  appendTextElement(unitListEl, 'strong', 'Unidades IA');
+  if (enemyUnits.length) {
+    enemyUnits.forEach((unit) => unitListEl.appendChild(createUnitListEntry(unit)));
+  } else {
+    appendTextElement(unitListEl, 'div', EMPTY_MESSAGES.units);
+  }
+}
+
+function renderBoardGrid({ me, enemy, selectedUnit, selectedHandCard, canPlay, width, height, moveTargets, attackTargets, myDeployment, enemyDeployment }) {
+  const boardEl = $('#board');
+  if (!boardEl) return;
+
+  clearElement(boardEl);
+  boardEl.style.gridTemplateColumns = `repeat(${width}, minmax(40px, 1fr))`;
+
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) {
+      const ownUnit = findUnitAt(me?.units, x, y);
+      const enemyUnit = findUnitAt(enemy?.units, x, y);
+      const cell = createBoardCell({
+        x,
+        y,
+        ownUnit,
+        enemyUnit,
+        selectedUnit,
+        selectedHandCard,
+        canPlay,
+        myDeployment,
+        enemyDeployment,
+        moveTargets,
+        attackTargets,
+      });
+      cell.addEventListener('click', () => {
+        onCellClick(x, y).catch((err) => setStatus(err.message, true));
+      });
+      boardEl.appendChild(cell);
+    }
+  }
+
+  installCardImageFallbacks(boardEl);
+}
+
 function renderBoard() {
   setActionFeedback(appState.actionFeedback.message, appState.actionFeedback.tone);
   if (!appState.match) {
     renderStaticBoard();
-    $('#hand').innerHTML = '<div class="small">Tu mano aparecerá acá.</div>';
-    $('#match-summary').innerHTML = '<div class="small">Iniciá una partida contra la IA para comenzar.</div>';
-    $('#unit-list').innerHTML = '<div class="small">Sin unidades.</div>';
+    renderEmptyState($('#hand'), EMPTY_MESSAGES.handPreview);
+    renderEmptyState($('#match-summary'), EMPTY_MESSAGES.summary);
+    renderEmptyState($('#unit-list'), EMPTY_MESSAGES.units);
     renderMatchLog();
     return;
   }
@@ -462,109 +758,40 @@ function renderBoard() {
   const myDeployment = deploymentCellsForSide(mySide, width, height);
   const enemyDeployment = deploymentCellsForSide('guest', width, height);
 
-  const cells = [];
-  for (let y = 0; y < height; y += 1) {
-    for (let x = 0; x < width; x += 1) {
-      const ownUnit = findUnitAt(me?.units, x, y);
-      const enemyUnit = findUnitAt(enemy?.units, x, y);
-      const unit = ownUnit || enemyUnit;
-      const squareClass = (x + y) % 2 === 0 ? 'square-light' : 'square-dark';
-      const key = `${x},${y}`;
-      const canSummon = Boolean(selectedHandCard) && myDeployment.has(key) && !unit && canPlay;
-      const canMove = moveTargets.has(key) && canPlay;
-      const canAttack = enemyUnit && attackTargets.has(enemyUnit.id) && canPlay;
-      const deployClass = myDeployment.has(key) ? 'deploy-ally' : (enemyDeployment.has(key) ? 'deploy-enemy' : '');
-      const hintClass = canSummon ? 'hint-summon' : (canMove ? 'hint-move' : (canAttack ? 'hint-attack' : ''));
-      const selectedClass = ownUnit && selectedUnit?.id === ownUnit.id ? 'selected' : '';
-      const interactiveClass = canSummon || canMove || canAttack || ownUnit ? 'is-actionable' : '';
-      const coordinate = buildCoordinateLabel(x, y);
-
-      cells.push(`
-        <button class="cell ${squareClass} ${ownUnit ? 'ally has-unit' : enemyUnit ? 'enemy has-unit' : 'empty'} ${deployClass} ${hintClass} ${selectedClass} ${interactiveClass}" data-x="${x}" data-y="${y}" aria-label="Casilla ${coordinate}">
-          <span class="cell-coord">${coordinate}</span>
-          <div class="cell-layer">
-            ${unit
-              ? `
-                <div class="token ${ownUnit ? 'token-ally' : 'token-enemy'} ${selectedClass ? 'token-selected' : ''}">
-                  <div class="token-portrait-wrap">
-                    ${buildCardImageMarkup(unit.card.image, unit.card.name, 'card-image-token')}
-                  </div>
-                  <strong class="token-name">${unit.card.name}</strong>
-                  <div class="token-stats">
-                    <span>PdV ${unit.hp_current}</span>
-                    <span>Esc ${unit.shell_current}</span>
-                    <span>PA ${unit.pa_current}</span>
-                    <span>PM ${unit.pm_current}</span>
-                  </div>
-                </div>
-              `
-              : '<div class="cell-empty-state"></div>'}
-          </div>
-        </button>
-      `);
-    }
-  }
-
-  const boardEl = $('#board');
-  boardEl.style.gridTemplateColumns = `repeat(${width}, minmax(40px, 1fr))`;
-  boardEl.innerHTML = cells.join('');
-  installCardImageFallbacks(boardEl);
-
-  boardEl.querySelectorAll('.cell').forEach((cell) => {
-    cell.addEventListener('click', () => {
-      onCellClick(Number(cell.dataset.x), Number(cell.dataset.y)).catch((err) => setStatus(err.message, true));
-    });
+  renderBoardGrid({
+    me,
+    enemy,
+    selectedUnit,
+    selectedHandCard,
+    canPlay,
+    width,
+    height,
+    moveTargets,
+    attackTargets,
+    myDeployment,
+    enemyDeployment,
   });
-
-  const handEl = $('#hand');
-  handEl.innerHTML = (me?.hand || []).map((card, index) => `
-    <button class="card hand-card ${appState.selectedHandIndex === index ? 'selected' : ''}" data-hand-index="${index}">
-      ${buildCardImageMarkup(card.image, card.name, 'card-image-hand')}
-      <h4>#${index + 1} · ${card.name}</h4>
-      <div class="meta"><span class="badge">Coste ${card.summon_cost}</span><span class="badge">${card.stage}</span></div>
-    </button>
-  `).join('') || '<div class="small">No quedan cartas en mano.</div>';
-  installCardImageFallbacks(handEl);
-
-  document.querySelectorAll('.hand-card').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      if (!canPlay) {
-        setActionFeedback('Todavía no es tu turno. Esperá a que la IA termine de jugar.', 'error');
-        return;
-      }
-      const index = Number(btn.dataset.handIndex);
-      const isSameCard = appState.selectedHandIndex === index;
-      appState.selectedHandIndex = isSameCard ? null : index;
-      appState.selectedUnitId = null;
-      if (isSameCard) {
-        setActionFeedback('Carta deseleccionada. Elegí otra carta o una unidad propia.', 'normal');
-      } else {
-        setActionFeedback(`Carta seleccionada: ${me.hand[index].name}. Elegí una casilla verde para invocar.`, 'normal');
-      }
-      renderBoard();
-    });
-  });
-
-  $('#match-summary').innerHTML = `
-    <div><strong>Turno:</strong> ${appState.match.turn?.number || 1}</div>
-    <div><strong>Activo:</strong> ${appState.match.turn?.active_side || '-'}</div>
-    <div><strong>Energía:</strong> ${me?.energy ?? '-'}/${me?.max_energy ?? '-'}</div>
-    <div><strong>IA:</strong> ${enemy?.energy ?? '-'}/${enemy?.max_energy ?? '-'}</div>
-    <div><strong>Mano / mazo:</strong> ${me?.hand_count ?? '-'} / ${me?.library_count ?? '-'}</div>
-    <div><strong>Ganador:</strong> ${appState.match.winner || 'sin definir'}</div>
-    <div class="selection-summary"><strong>Selección:</strong> ${getSelectionSummary({ selectedHandCard, selectedUnit, canPlay })}</div>
-  `;
-
-  const ownUnits = me?.units || [];
-  const enemyUnits = enemy?.units || [];
+  renderHand(me?.hand || [], canPlay);
+  renderMatchSummary({ me, enemy, selectedHandCard, selectedUnit, canPlay });
+  renderUnitList(me?.units || [], enemy?.units || []);
   renderMatchLog(appState.match.log || []);
-  $('#unit-list').innerHTML = `
-    <strong>Tus unidades</strong>
-    ${ownUnits.map((u) => `<div>${u.card.name} (${buildCoordinateLabel(u.x, u.y)}) · PdV ${u.hp_current} · Esc ${u.shell_current}</div>`).join('') || '<div>Sin unidades.</div>'}
-    <hr />
-    <strong>Unidades IA</strong>
-    ${enemyUnits.map((u) => `<div>${u.card.name} (${buildCoordinateLabel(u.x, u.y)}) · PdV ${u.hp_current} · Esc ${u.shell_current}</div>`).join('') || '<div>Sin unidades.</div>'}
-  `;
+}
+
+function populateFamilyFilter(cards = []) {
+  if (!familyFilter) return;
+  clearElement(familyFilter);
+
+  const defaultOption = document.createElement('option');
+  defaultOption.value = '';
+  defaultOption.textContent = 'Todas las familias';
+  familyFilter.appendChild(defaultOption);
+
+  [...new Set(cards.map((card) => card.family).filter(Boolean))].forEach((family) => {
+    const option = document.createElement('option');
+    option.value = family;
+    option.textContent = family;
+    familyFilter.appendChild(option);
+  });
 }
 
 async function loadCards() {
@@ -577,10 +804,7 @@ async function loadCards() {
   }
   if (!cards.length) cards = localSeedCards();
   appState.cards = cards;
-  if (familyFilter) {
-    const families = [...new Set(cards.map((card) => card.family))];
-    familyFilter.innerHTML = '<option value="">Todas las familias</option>' + families.map((f) => `<option value="${f}">${f}</option>`).join('');
-  }
+  populateFamilyFilter(cards);
   renderCatalog();
 }
 

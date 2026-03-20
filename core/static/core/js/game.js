@@ -1,6 +1,6 @@
 const DEFAULT_BOARD_WIDTH = 11;
 const DEFAULT_BOARD_HEIGHT = 11;
-const CARD_IMAGE_PLACEHOLDER = '/static/core/images/card-placeholder.svg';
+const CARD_IMAGE_PLACEHOLDER = '/static/core/img/placeholders/card-placeholder.svg';
 
 const appState = {
   cards: [],

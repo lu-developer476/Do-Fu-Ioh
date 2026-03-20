@@ -30,7 +30,17 @@ SUMMON_COST_BY_STAGE = {
     "fusion": 3,
     "evolution": 5,
 }
+STAGE_RANK = {"base": 0, "fusion": 1, "evolution": 2}
+SUPPORTED_ACTIONS = {"summon", "move", "attack", "end_turn"}
+ACTION_FIELD_TYPES = {
+    "summon": {"hand_index": int, "x": int, "y": int},
+    "move": {"unit_id": str, "to_x": int, "to_y": int},
+    "attack": {"attacker_id": str, "target_id": str},
+    "end_turn": {},
+}
 
+
+# Payload / response helpers
 
 def _slugify(value: str) -> str:
     value = (
@@ -54,6 +64,8 @@ def _json_error(message, status=400):
 def _state_error(message, status=500):
     return _json_error(f"Estado de partida inválido: {message}", status=status)
 
+
+# Card serialization / loading
 
 def _resolve_card_image(image):
     raw = (image or "").strip()
@@ -89,6 +101,10 @@ def _serialize_card(card):
     }
 
 
+def _serialized_cards_queryset():
+    return [_serialize_card(card) for card in MonsterCard.objects.all()]
+
+
 def _ensure_cards_seeded():
     if not CARDS_DATA_PATH.exists():
         return
@@ -118,6 +134,8 @@ def _ensure_cards_seeded():
             },
         )
 
+
+# Match building
 
 def _player_state(side, deck_cards):
     random.shuffle(deck_cards)
@@ -159,30 +177,32 @@ def _normalize_ai_difficulty(value):
     return difficulty if difficulty in AI_DIFFICULTIES else "normal"
 
 
-def _build_new_match_state(cards, difficulty="normal"):
-    difficulty = _normalize_ai_difficulty(difficulty)
-    serialized = [_serialize_card(card) for card in cards]
-    if not serialized:
-        return {
-            "mode": "vs_ai",
-            "ai_difficulty": difficulty,
-            "board": {"width": BOARD_WIDTH, "height": BOARD_HEIGHT},
-            "turn": {"number": 1, "active_side": "host"},
-            "host": _player_state("host", []),
-            "guest": _player_state("guest", []),
-            "winner": None,
-            "log": ["No hay cartas cargadas en la base de datos."],
-        }
-
-    host_deck = _build_deck(serialized)
-    guest_deck = _build_deck(serialized)
+def _empty_match_state(difficulty):
     return {
         "mode": "vs_ai",
         "ai_difficulty": difficulty,
         "board": {"width": BOARD_WIDTH, "height": BOARD_HEIGHT},
         "turn": {"number": 1, "active_side": "host"},
-        "host": _player_state("host", host_deck),
-        "guest": _player_state("guest", guest_deck),
+        "host": _player_state("host", []),
+        "guest": _player_state("guest", []),
+        "winner": None,
+        "log": ["No hay cartas cargadas en la base de datos."],
+    }
+
+
+def _build_new_match_state(cards, difficulty="normal"):
+    difficulty = _normalize_ai_difficulty(difficulty)
+    serialized = [_serialize_card(card) for card in cards]
+    if not serialized:
+        return _empty_match_state(difficulty)
+
+    return {
+        "mode": "vs_ai",
+        "ai_difficulty": difficulty,
+        "board": {"width": BOARD_WIDTH, "height": BOARD_HEIGHT},
+        "turn": {"number": 1, "active_side": "host"},
+        "host": _player_state("host", _build_deck(serialized)),
+        "guest": _player_state("guest", _build_deck(serialized)),
         "winner": None,
         "log": ["Partida iniciada: jugador vs IA."],
     }
@@ -196,6 +216,8 @@ def _get_or_create_system_user(username):
     user.save(update_fields=["password"])
     return user
 
+
+# Validation helpers
 
 def _draw_one(player):
     if not player["library"]:
@@ -213,8 +235,7 @@ def _validate_card_payload(card, context):
     if not isinstance(card, dict):
         return f"{context} debe ser un objeto."
 
-    required_string_fields = ("name", "stage")
-    for field in required_string_fields:
+    for field in ("name", "stage"):
         if not isinstance(card.get(field), str) or not card[field].strip():
             return f"{context}.{field} es obligatorio."
 
@@ -257,7 +278,6 @@ def _validate_unit_payload(unit, side, index, width, height):
 def _validate_player_state(player, side, width, height):
     if not isinstance(player, dict):
         return f"{side} debe ser un objeto."
-
     if player.get("side") != side:
         return f"{side}.side debe ser '{side}'."
 
@@ -333,17 +353,10 @@ def _validate_action_payload(payload):
         return "El cuerpo de la acción debe ser un objeto JSON."
 
     action = payload.get("action")
-    if action not in {"summon", "move", "attack", "end_turn"}:
+    if action not in SUPPORTED_ACTIONS:
         return "Acción no soportada."
 
-    action_fields = {
-        "summon": {"hand_index": int, "x": int, "y": int},
-        "move": {"unit_id": str, "to_x": int, "to_y": int},
-        "attack": {"attacker_id": str, "target_id": str},
-        "end_turn": {},
-    }
-
-    for field, expected_type in action_fields[action].items():
+    for field, expected_type in ACTION_FIELD_TYPES[action].items():
         value = payload.get(field)
         if expected_type is int and not isinstance(value, int):
             return f"El campo '{field}' debe ser un entero."
@@ -352,6 +365,8 @@ def _validate_action_payload(payload):
 
     return None
 
+
+# Board helpers / derived state
 
 def _in_bounds(x, y, width, height):
     return 0 <= x < width and 0 <= y < height
@@ -379,8 +394,8 @@ def _find_unit(player, unit_id):
 
 def _occupied(state, x, y):
     return any(
-        u["x"] == x and u["y"] == y
-        for u in state["host"]["units"] + state["guest"]["units"]
+        unit["x"] == x and unit["y"] == y
+        for unit in state["host"]["units"] + state["guest"]["units"]
     )
 
 
@@ -417,11 +432,8 @@ def _reachable_cells(state, unit):
                 continue
 
             next_distance = current_distance + 1
-            if next_distance > max_steps:
-                continue
-
             previous = distances.get((nx, ny))
-            if previous is None or next_distance < previous:
+            if next_distance <= max_steps and (previous is None or next_distance < previous):
                 distances[(nx, ny)] = next_distance
                 queue.append((nx, ny))
 
@@ -440,7 +452,6 @@ def _serialize_reachable_cells(state, unit):
 
 
 def _attack_range(unit):
-    # Regla única de rango: base = 1, no-base = 2, más PA/2 redondeado hacia abajo.
     base_range = 1 if unit["card"]["stage"] == "base" else 2
     return min(5, base_range + unit["card"]["action_points"] // 2)
 
@@ -473,10 +484,30 @@ def _state_for_client(state):
 
 
 def _can_attack(state, attacker, target):
-    return target["id"] in _attackable_unit_ids(
-        state, attacker, enemy_side=target["owner"]
-    )
+    return target["id"] in _attackable_unit_ids(state, attacker, enemy_side=target["owner"])
 
+
+def _distance(a, b):
+    return abs(a["x"] - b["x"]) + abs(a["y"] - b["y"])
+
+
+def _threatened_by_enemy_count(position, enemy_units):
+    x, y = position
+    threatened = 0
+    for enemy in enemy_units:
+        if abs(enemy["x"] - x) + abs(enemy["y"] - y) <= _attack_range(enemy):
+            threatened += 1
+    return threatened
+
+
+def _enemy_pressure(position, enemy_units):
+    x, y = position
+    if not enemy_units:
+        return 0
+    return min(abs(enemy["x"] - x) + abs(enemy["y"] - y) for enemy in enemy_units)
+
+
+# Match state mutations
 
 def _refresh_counts(state):
     for side in ("host", "guest"):
@@ -512,152 +543,150 @@ def _reset_turn_state(player):
         unit["can_move"] = True
 
 
-def _distance(a, b):
-    return abs(a["x"] - b["x"]) + abs(a["y"] - b["y"])
+def _append_log(state, message):
+    state["log"].append(message)
+    state["log"] = state["log"][-12:]
+
+
+def _build_unit_from_card(state, side, card, x, y):
+    return {
+        "id": secrets.token_hex(6),
+        "owner": side,
+        "x": x,
+        "y": y,
+        "card": card,
+        "hp_current": card["hp"],
+        "shell_current": card["shell"],
+        "pa_current": card["action_points"],
+        "pm_current": card["movement_points"],
+        "can_act": True,
+        "can_move": True,
+        "summoned_turn": state["turn"]["number"],
+    }
+
+
+def _apply_summon_action(state, side, actor, payload):
+    width = state["board"]["width"]
+    height = state["board"]["height"]
+    hand_index = payload.get("hand_index")
+    x, y = payload.get("x"), payload.get("y")
+
+    if not isinstance(hand_index, int) or hand_index < 0 or hand_index >= len(actor["hand"]):
+        return "Carta inválida."
+    if not isinstance(x, int) or not isinstance(y, int) or not _in_bounds(x, y, width, height):
+        return "Casilla inválida."
+    if (x, y) not in _deployment_cells(side, width, height):
+        return "Sólo podés invocar en tu zona azul."
+    if _occupied(state, x, y):
+        return "Esa casilla ya está ocupada."
+    if actor["summons_this_turn"] >= 1:
+        return "Ya invocaste este turno."
+
+    card = actor["hand"].pop(hand_index)
+    cost = _summon_cost(card)
+    if actor["energy"] < cost:
+        actor["hand"].insert(hand_index, card)
+        return "No alcanza la energía para invocar."
+
+    actor["energy"] -= cost
+    actor["summons_this_turn"] += 1
+    actor["units"].append(_build_unit_from_card(state, side, card, x, y))
+    _append_log(state, f"{side} invocó {card['name']} en ({x}, {y}).")
+    return None
+
+
+def _apply_move_action(state, side, actor, payload):
+    width = state["board"]["width"]
+    height = state["board"]["height"]
+    unit = _find_unit(actor, payload.get("unit_id"))
+    x, y = payload.get("to_x"), payload.get("to_y")
+
+    if not unit:
+        return "Unidad inválida."
+    if not unit["can_move"] or unit["pm_current"] <= 0:
+        return "La unidad no puede moverse."
+    if not isinstance(x, int) or not isinstance(y, int) or not _in_bounds(x, y, width, height):
+        return "Destino inválido."
+
+    distance = _reachable_cells(state, unit).get((x, y))
+    if distance is None:
+        return "Movimiento fuera de rango."
+
+    unit["x"], unit["y"] = x, y
+    unit["pm_current"] = max(0, unit["pm_current"] - distance)
+    unit["can_move"] = unit["pm_current"] > 0
+    _append_log(state, f"{side} movió {unit['card']['name']} a ({x}, {y}).")
+    return None
+
+
+def _apply_attack_action(state, side, actor, enemy, payload):
+    attacker = _find_unit(actor, payload.get("attacker_id"))
+    target = _find_unit(enemy, payload.get("target_id"))
+    if not attacker or not target:
+        return "Ataque inválido."
+    if not _can_attack(state, attacker, target):
+        return "Objetivo fuera de rango o sin PA."
+
+    attacker["pa_current"] -= 1
+    attacker["can_act"] = attacker["pa_current"] > 0
+    attack_power = attacker["card"]["action_points"] + 2
+    absorbed = min(target["shell_current"], max(0, attack_power - 1))
+    target["shell_current"] = max(0, target["shell_current"] - absorbed)
+    damage = max(1, attack_power - absorbed)
+    target["hp_current"] -= damage
+    _append_log(
+        state,
+        f"{side} atacó con {attacker['card']['name']} e infligió {damage} de daño.",
+    )
+    if target["hp_current"] <= 0:
+        enemy["units"] = [unit for unit in enemy["units"] if unit["id"] != target["id"]]
+        _append_log(state, f"{target['card']['name']} fue derrotado.")
+    return None
+
+
+def _apply_end_turn_action(state, side, enemy_side, enemy):
+    state["turn"]["active_side"] = enemy_side
+    if enemy_side == "host":
+        state["turn"]["number"] += 1
+    enemy["max_energy"] = min(MAX_ENERGY, enemy["max_energy"] + 1)
+    enemy["energy"] = enemy["max_energy"]
+    _draw_one(enemy)
+    _reset_turn_state(enemy)
+    _append_log(state, f"Fin del turno de {side}.")
+    return None
 
 
 def _apply_action(state, side, payload):
     if state["winner"]:
         return "La partida ya terminó."
-
     if state["turn"]["active_side"] != side:
         return "No es tu turno."
 
-    action = payload.get("action")
     actor = state[side]
     enemy_side = "guest" if side == "host" else "host"
     enemy = state[enemy_side]
-    width = state["board"]["width"]
-    height = state["board"]["height"]
+    action = payload.get("action")
 
-    if action == "summon":
-        hand_index = payload.get("hand_index")
-        x, y = payload.get("x"), payload.get("y")
-        if (
-            not isinstance(hand_index, int)
-            or hand_index < 0
-            or hand_index >= len(actor["hand"])
-        ):
-            return "Carta inválida."
-        if (
-            not isinstance(x, int)
-            or not isinstance(y, int)
-            or not _in_bounds(x, y, width, height)
-        ):
-            return "Casilla inválida."
-        if (x, y) not in _deployment_cells(side, width, height):
-            return "Sólo podés invocar en tu zona azul."
-        if _occupied(state, x, y):
-            return "Esa casilla ya está ocupada."
-        if actor["summons_this_turn"] >= 1:
-            return "Ya invocaste este turno."
-
-        card = actor["hand"].pop(hand_index)
-        cost = _summon_cost(card)
-        if actor["energy"] < cost:
-            actor["hand"].insert(hand_index, card)
-            return "No alcanza la energía para invocar."
-        actor["energy"] -= cost
-        actor["summons_this_turn"] += 1
-        actor["units"].append(
-            {
-                "id": secrets.token_hex(6),
-                "owner": side,
-                "x": x,
-                "y": y,
-                "card": card,
-                "hp_current": card["hp"],
-                "shell_current": card["shell"],
-                "pa_current": card["action_points"],
-                "pm_current": card["movement_points"],
-                "can_act": True,
-                "can_move": True,
-                "summoned_turn": state["turn"]["number"],
-            }
-        )
-        state["log"].append(f"{side} invocó {card['name']} en ({x}, {y}).")
-
-    elif action == "move":
-        unit = _find_unit(actor, payload.get("unit_id"))
-        x, y = payload.get("to_x"), payload.get("to_y")
-        if not unit:
-            return "Unidad inválida."
-        if not unit["can_move"] or unit["pm_current"] <= 0:
-            return "La unidad no puede moverse."
-        if (
-            not isinstance(x, int)
-            or not isinstance(y, int)
-            or not _in_bounds(x, y, width, height)
-        ):
-            return "Destino inválido."
-
-        reachable_cells = _reachable_cells(state, unit)
-        distance = reachable_cells.get((x, y))
-        if distance is None:
-            return "Movimiento fuera de rango."
-
-        unit["x"], unit["y"] = x, y
-        unit["pm_current"] = max(0, unit["pm_current"] - distance)
-        unit["can_move"] = unit["pm_current"] > 0
-        state["log"].append(f"{side} movió {unit['card']['name']} a ({x}, {y}).")
-
-    elif action == "attack":
-        attacker = _find_unit(actor, payload.get("attacker_id"))
-        target = _find_unit(enemy, payload.get("target_id"))
-        if not attacker or not target:
-            return "Ataque inválido."
-        if not _can_attack(state, attacker, target):
-            return "Objetivo fuera de rango o sin PA."
-
-        attacker["pa_current"] -= 1
-        attacker["can_act"] = attacker["pa_current"] > 0
-        attack_power = attacker["card"]["action_points"] + 2
-        absorbed = min(target["shell_current"], max(0, attack_power - 1))
-        target["shell_current"] = max(0, target["shell_current"] - absorbed)
-        damage = max(1, attack_power - absorbed)
-        target["hp_current"] -= damage
-        state["log"].append(
-            f"{side} atacó con {attacker['card']['name']} e infligió {damage} de daño."
-        )
-        if target["hp_current"] <= 0:
-            enemy["units"] = [u for u in enemy["units"] if u["id"] != target["id"]]
-            state["log"].append(f"{target['card']['name']} fue derrotado.")
-
-    elif action == "end_turn":
-        state["turn"]["active_side"] = enemy_side
-        if enemy_side == "host":
-            state["turn"]["number"] += 1
-        enemy["max_energy"] = min(MAX_ENERGY, enemy["max_energy"] + 1)
-        enemy["energy"] = enemy["max_energy"]
-        _draw_one(enemy)
-        _reset_turn_state(enemy)
-        state["log"].append(f"Fin del turno de {side}.")
-
-    else:
+    handlers = {
+        "summon": lambda: _apply_summon_action(state, side, actor, payload),
+        "move": lambda: _apply_move_action(state, side, actor, payload),
+        "attack": lambda: _apply_attack_action(state, side, actor, enemy, payload),
+        "end_turn": lambda: _apply_end_turn_action(state, side, enemy_side, enemy),
+    }
+    handler = handlers.get(action)
+    if handler is None:
         return "Acción no soportada."
+
+    error = handler()
+    if error:
+        return error
 
     _update_winner_for_current_mode(state, side)
     _refresh_counts(state)
-    state["log"] = state["log"][-12:]
     return None
 
 
-def _threatened_by_enemy_count(position, enemy_units):
-    x, y = position
-    threatened = 0
-    for enemy in enemy_units:
-        attack_range = _attack_range(enemy)
-        if abs(enemy["x"] - x) + abs(enemy["y"] - y) <= attack_range:
-            threatened += 1
-    return threatened
-
-
-def _enemy_pressure(position, enemy_units):
-    x, y = position
-    if not enemy_units:
-        return 0
-    return min(abs(enemy["x"] - x) + abs(enemy["y"] - y) for enemy in enemy_units)
-
+# AI helpers
 
 def _select_attack_target(state, unit, difficulty):
     attackable_ids = _attackable_unit_ids(state, unit, enemy_side="host")
@@ -671,9 +700,9 @@ def _select_attack_target(state, unit, difficulty):
         shell_after_block = max(0, attack_power - target["shell_current"])
         potential_damage = max(1, shell_after_block)
         lethal = target["hp_current"] <= potential_damage
-        score = [1 if lethal else 0]
+        base_score = [1 if lethal else 0]
         if difficulty == "extremo":
-            score.extend(
+            base_score.extend(
                 [
                     potential_damage,
                     target["card"]["action_points"],
@@ -682,14 +711,10 @@ def _select_attack_target(state, unit, difficulty):
                 ]
             )
         else:
-            score.extend(
-                [
-                    potential_damage,
-                    -_distance(unit, target),
-                    -target["hp_current"],
-                ]
+            base_score.extend(
+                [potential_damage, -_distance(unit, target), -target["hp_current"]]
             )
-        return tuple(score)
+        return tuple(base_score)
 
     return max((host_units[target_id] for target_id in attackable_ids), key=score)
 
@@ -699,18 +724,9 @@ def _nearest_enemy(unit, enemy_units, difficulty="normal"):
         return None
 
     def score(target):
-        base = (
-            _distance(unit, target),
-            -target["card"]["action_points"],
-            target["hp_current"],
-        )
+        base = (_distance(unit, target), -target["card"]["action_points"], target["hp_current"])
         if difficulty == "extremo":
-            return (
-                _distance(unit, target),
-                -target["card"]["action_points"],
-                target["hp_current"],
-                -target["card"]["movement_points"],
-            )
+            return base + (-target["card"]["movement_points"],)
         return base
 
     return min(enemy_units, key=score)
@@ -728,9 +744,7 @@ def _best_summon_action(state, difficulty):
 
     open_cells = [
         cell
-        for cell in _deployment_cells(
-            "guest", state["board"]["width"], state["board"]["height"]
-        )
+        for cell in _deployment_cells("guest", state["board"]["width"], state["board"]["height"])
         if not _occupied(state, *cell)
     ]
     if not open_cells:
@@ -740,16 +754,15 @@ def _best_summon_action(state, difficulty):
 
     def card_priority(item):
         _, card = item
-        stage_rank = {"base": 0, "fusion": 1, "evolution": 2}.get(card["stage"], 0)
         priority = (
-            stage_rank,
+            STAGE_RANK.get(card["stage"], 0),
             card["action_points"],
             card["hp"],
             card["movement_points"],
         )
         if difficulty == "extremo":
-            priority = (
-                stage_rank,
+            return (
+                STAGE_RANK.get(card["stage"], 0),
                 card["action_points"],
                 card["movement_points"],
                 card["hp"],
@@ -757,22 +770,17 @@ def _best_summon_action(state, difficulty):
             )
         return priority
 
-    hand_index, _ = max(affordable_cards, key=card_priority)
-
     def cell_priority(cell):
         x, y = cell
         pressure = _enemy_pressure(cell, enemy_units)
         threatened = _threatened_by_enemy_count(cell, enemy_units)
         advance = -y
+        center_bias = -abs(x - state["board"]["width"] // 2)
         if difficulty == "extremo":
-            return (
-                advance,
-                -threatened,
-                -pressure,
-                -abs(x - state["board"]["width"] // 2),
-            )
-        return (advance, -pressure, -threatened, -abs(x - state["board"]["width"] // 2))
+            return (advance, -threatened, -pressure, center_bias)
+        return (advance, -pressure, -threatened, center_bias)
 
+    hand_index, _ = max(affordable_cards, key=card_priority)
     x, y = max(open_cells, key=cell_priority)
     return {"action": "summon", "hand_index": hand_index, "x": x, "y": y}
 
@@ -788,11 +796,11 @@ def _best_step_towards(unit, target, state, difficulty):
     for (nx, ny), steps in reachable_cells.items():
         candidate = {"x": nx, "y": ny}
         distance_to_target = _distance(candidate, target)
-        attack_options = 0
-        attack_range = _attack_range(unit)
-        for enemy in enemy_units:
-            if abs(nx - enemy["x"]) + abs(ny - enemy["y"]) <= attack_range:
-                attack_options += 1
+        attack_options = sum(
+            1
+            for enemy in enemy_units
+            if abs(nx - enemy["x"]) + abs(ny - enemy["y"]) <= _attack_range(unit)
+        )
         threatened = _threatened_by_enemy_count((nx, ny), enemy_units)
         forward_progress = unit["y"] - ny
         score = [1 if distance_to_target < current_distance else 0]
@@ -809,23 +817,47 @@ def _best_step_towards(unit, target, state, difficulty):
             )
         else:
             score.extend(
-                [
-                    -distance_to_target,
-                    attack_options,
-                    forward_progress,
-                    -steps,
-                    -threatened,
-                ]
+                [-distance_to_target, attack_options, forward_progress, -steps, -threatened]
             )
         candidates.append((tuple(score), steps, nx, ny))
 
     best = max(candidates, key=lambda item: item[0])
-    if best[0][0] <= 0 and _enemy_pressure(
-        (best[2], best[3]), enemy_units
-    ) >= _enemy_pressure((unit["x"], unit["y"]), enemy_units):
+    if best[0][0] <= 0 and _enemy_pressure((best[2], best[3]), enemy_units) >= _enemy_pressure(
+        (unit["x"], unit["y"]), enemy_units
+    ):
         return None
     _, steps, nx, ny = best
     return steps, nx, ny
+
+
+def _ai_attack_phase(state, unit, difficulty):
+    while True:
+        target = _select_attack_target(state, unit, difficulty)
+        if not target or not unit["can_act"]:
+            break
+        _apply_action(
+            state,
+            "guest",
+            {"action": "attack", "attacker_id": unit["id"], "target_id": target["id"]},
+        )
+        if state.get("winner"):
+            return True
+    return False
+
+
+def _ai_move_phase(state, unit, difficulty):
+    if not unit["can_move"] or unit["pm_current"] <= 0 or not state["host"]["units"]:
+        return
+
+    nearest = _nearest_enemy(unit, state["host"]["units"], difficulty=difficulty)
+    move = _best_step_towards(unit, nearest, state, difficulty)
+    if move:
+        _, nx, ny = move
+        _apply_action(
+            state,
+            "guest",
+            {"action": "move", "unit_id": unit["id"], "to_x": nx, "to_y": ny},
+        )
 
 
 def _ai_turn(state):
@@ -833,79 +865,33 @@ def _ai_turn(state):
         return
 
     difficulty = _normalize_ai_difficulty(state.get("ai_difficulty"))
-
     summon_action = _best_summon_action(state, difficulty)
     if summon_action:
         _apply_action(state, "guest", summon_action)
 
     for unit in list(state["guest"]["units"]):
-        while True:
-            target = _select_attack_target(state, unit, difficulty)
-            if not target or not unit["can_act"]:
-                break
-            _apply_action(
-                state,
-                "guest",
-                {
-                    "action": "attack",
-                    "attacker_id": unit["id"],
-                    "target_id": target["id"],
-                },
-            )
-            if state.get("winner"):
-                break
+        if _ai_attack_phase(state, unit, difficulty):
+            break
+        if state.get("winner"):
+            break
+        _ai_move_phase(state, unit, difficulty)
+        if _ai_attack_phase(state, unit, difficulty):
+            break
         if state.get("winner"):
             break
 
-        if (
-            not unit["can_move"]
-            or unit["pm_current"] <= 0
-            or not state["host"]["units"]
-        ):
-            continue
+    if not state["winner"]:
+        _apply_action(state, "guest", {"action": "end_turn"})
 
-        nearest = _nearest_enemy(unit, state["host"]["units"], difficulty=difficulty)
-        move = _best_step_towards(unit, nearest, state, difficulty)
-        if move:
-            _, nx, ny = move
-            _apply_action(
-                state,
-                "guest",
-                {"action": "move", "unit_id": unit["id"], "to_x": nx, "to_y": ny},
-            )
 
-        while True:
-            target = _select_attack_target(state, unit, difficulty)
-            if not target or not unit["can_act"]:
-                break
-            _apply_action(
-                state,
-                "guest",
-                {
-                    "action": "attack",
-                    "attacker_id": unit["id"],
-                    "target_id": target["id"],
-                },
-            )
-            if state.get("winner"):
-                break
-        if state.get("winner"):
-            break
-
-    if state["winner"]:
-        return
-    _apply_action(state, "guest", {"action": "end_turn"})
-
+# Match persistence / responses
 
 def _match_payload(record):
     state = _state_for_client(record.game_state or {})
     return {
         "room_code": record.room_code,
         "status": record.status,
-        "match": {
-            "room_code": record.room_code,
-            **state,
-        },
+        "match": {"room_code": record.room_code, **state},
     }
 
 
@@ -920,12 +906,30 @@ def _active_match_from_session(request):
         return None
 
 
+def _get_session_match_or_error(request, room_code):
+    session_room = request.session.get(SESSION_MATCH_KEY)
+    if not session_room or session_room != room_code:
+        return None, _json_error("Partida no disponible para esta sesión.", status=404)
+
+    try:
+        return MatchRecord.objects.get(room_code=room_code, status="active"), None
+    except MatchRecord.DoesNotExist:
+        return None, _json_error("La partida no existe o ya no está activa.", status=404)
+
+
+def _validated_record_state(record):
+    state = record.game_state or {}
+    state_error = _validate_match_state(state)
+    if state_error:
+        return None, _state_error(state_error)
+    return state, None
+
+
 @require_GET
 @ensure_csrf_cookie
 def index(request):
     _ensure_cards_seeded()
-    cards = [_serialize_card(card) for card in MonsterCard.objects.all()]
-    return render(request, "core/index.html", {"cards_seed_json": cards})
+    return render(request, "core/index.html", {"cards_seed_json": _serialized_cards_queryset()})
 
 
 @require_GET
@@ -936,8 +940,7 @@ def health(request):
 @require_GET
 def cards_catalog(request):
     _ensure_cards_seeded()
-    cards = [_serialize_card(card) for card in MonsterCard.objects.all()]
-    return JsonResponse({"ok": True, "cards": cards})
+    return JsonResponse({"ok": True, "cards": _serialized_cards_queryset()})
 
 
 @require_GET
@@ -945,9 +948,9 @@ def get_active_match(request):
     record = _active_match_from_session(request)
     if not record:
         return JsonResponse({"ok": True, "room_code": None, "match": None})
-    state_error = _validate_match_state(record.game_state)
-    if state_error:
-        return _state_error(state_error)
+    _, error_response = _validated_record_state(record)
+    if error_response:
+        return error_response
     return JsonResponse({"ok": True, **_match_payload(record)})
 
 
@@ -966,9 +969,7 @@ def create_match_vs_ai(request):
         record.status = "active"
         record.guest = ai_user
         record.winner = None
-        record.save(
-            update_fields=["game_state", "status", "guest", "winner", "updated_at"]
-        )
+        record.save(update_fields=["game_state", "status", "guest", "winner", "updated_at"])
     else:
         record = MatchRecord.objects.create(
             host=solo_system_user,
@@ -984,34 +985,24 @@ def create_match_vs_ai(request):
 
 @require_GET
 def get_match(request, room_code):
-    session_room = request.session.get(SESSION_MATCH_KEY)
-    if not session_room or session_room != room_code:
-        return _json_error("Partida no disponible para esta sesión.", status=404)
-    try:
-        record = MatchRecord.objects.get(room_code=room_code, status="active")
-    except MatchRecord.DoesNotExist:
-        return _json_error("La partida no existe o ya no está activa.", status=404)
-    state_error = _validate_match_state(record.game_state)
+    record, error_response = _get_session_match_or_error(request, room_code)
+    if error_response:
+        return error_response
+    _, state_error = _validated_record_state(record)
     if state_error:
-        return _state_error(state_error)
+        return state_error
     return JsonResponse({"ok": True, **_match_payload(record)})
 
 
 @require_http_methods(["POST"])
 def match_action(request, room_code):
-    session_room = request.session.get(SESSION_MATCH_KEY)
-    if not session_room or session_room != room_code:
-        return _json_error("Partida no disponible para esta sesión.", status=404)
+    record, error_response = _get_session_match_or_error(request, room_code)
+    if error_response:
+        return error_response
 
-    try:
-        record = MatchRecord.objects.get(room_code=room_code, status="active")
-    except MatchRecord.DoesNotExist:
-        return _json_error("La partida no existe o ya no está activa.", status=404)
-
-    state = record.game_state or {}
-    state_error = _validate_match_state(state)
+    state, state_error = _validated_record_state(record)
     if state_error:
-        return _state_error(state_error)
+        return state_error
 
     payload = _payload(request)
     payload_error = _validate_action_payload(payload)

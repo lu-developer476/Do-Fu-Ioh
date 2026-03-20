@@ -258,6 +258,24 @@ def _reachable_cells(state, unit):
     return distances
 
 
+def _serialize_reachable_cells(state, unit):
+    return [
+        {'x': x, 'y': y, 'distance': distance}
+        for (x, y), distance in sorted(
+            _reachable_cells(state, unit).items(),
+            key=lambda item: (item[1], item[0][1], item[0][0]),
+        )
+    ]
+
+
+def _state_for_client(state):
+    payload = json.loads(json.dumps(state))
+    for side in ('host', 'guest'):
+        for unit in payload.get(side, {}).get('units', []):
+            unit['reachable_cells'] = _serialize_reachable_cells(payload, unit)
+    return payload
+
+
 def _can_attack(attacker, target):
     if attacker['pa_current'] <= 0 or not attacker['can_act']:
         return False
@@ -461,7 +479,7 @@ def _ai_turn(state):
 
 
 def _match_payload(record):
-    state = record.game_state or {}
+    state = _state_for_client(record.game_state or {})
     return {
         'room_code': record.room_code,
         'status': record.status,

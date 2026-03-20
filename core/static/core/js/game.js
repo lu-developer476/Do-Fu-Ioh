@@ -122,6 +122,12 @@ function deploymentCellsForSide(side, boardWidth, boardHeight) {
 function computeMoveTargets(selectedUnit, meUnits, enemyUnits, boardWidth = DEFAULT_BOARD_WIDTH, boardHeight = DEFAULT_BOARD_HEIGHT) {
   if (!selectedUnit || selectedUnit.pm_current <= 0 || !selectedUnit.can_move) return new Map();
 
+  if (Array.isArray(selectedUnit.reachable_cells)) {
+    return new Map(
+      selectedUnit.reachable_cells.map((cell) => [`${cell.x},${cell.y}`, cell.distance])
+    );
+  }
+
   const occupied = new Set(
     [...meUnits, ...enemyUnits]
       .filter((u) => u.id !== selectedUnit.id)

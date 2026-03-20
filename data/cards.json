@@ -38,7 +38,7 @@
     "action_points": 5,
     "movement_points": 5,
     "description": "Ave pequeña pero testaruda que suele anidar en campos abiertos. Los aventureros la reconocen por su agresividad desproporcionada para su tamaño.",
-    "image": "public/images/pios/base/pio-castano.png",
+    "image": "public/images/pios/base/pio-castaño.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg"
   },
   {
@@ -66,7 +66,7 @@
     "action_points": 5,
     "movement_points": 5,
     "description": "Resultado de una fusión mágica entre el Pío anaranjado y el Pío castaño. La energía del Wakfu alteró su plumaje creando tonos similares a los de las hojas en otoño. Su patrón recuerda a las hojas secas y su carácter es más impredecible.",
-    "image": "public/images/pios/fusions/pio-otonal.png",
+    "image": "public/images/pios/fusions/pio-otoñal.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg"
   },
   {
@@ -150,7 +150,7 @@
     "action_points": 9,
     "movement_points": 6,
     "description": "Kitsu oscuro que canaliza energías sombrías del Mundo de los Doce.",
-    "image": "public/images/kitsus/base/kitsu-dakuburakku.png",
+    "image": "public/images/kitsus/base/kitsu-dākuburakku.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg"
   },
   {

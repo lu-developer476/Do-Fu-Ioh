@@ -20,6 +20,7 @@ const appState = {
     message: 'Seleccioná una carta o unidad para ver el feedback táctico acá.',
     tone: 'normal',
   },
+  clientLog: [],
 };
 
 const $ = (sel) => document.querySelector(sel);
@@ -32,8 +33,17 @@ function setStatus(message, isError = false) {
   status.classList.toggle('status-error', isError);
 }
 
-function setActionFeedback(message, tone = 'normal') {
+function pushClientLog(message, tone = 'info') {
+  if (!message) return;
+  appState.clientLog = [
+    `${new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })} · ${message}`,
+    ...appState.clientLog,
+  ].slice(0, 12);
+}
+
+function setActionFeedback(message, tone = 'normal', options = {}) {
   appState.actionFeedback = { message, tone };
+  if (!options.silentLog) pushClientLog(message, tone);
   const feedback = $('#action-feedback');
   if (!feedback) return;
   feedback.textContent = message;
@@ -98,6 +108,33 @@ function appendBadgeRow(parent, values = []) {
   return row;
 }
 
+function updateBoardContext(message = '') {
+  const context = $('#board-context');
+  if (!context) return;
+  if (!message) {
+    context.classList.remove('is-live');
+    context.querySelectorAll('.board-context-step').forEach((step) => {
+      step.hidden = false;
+    });
+    let live = context.querySelector('.board-context-live');
+    if (live) live.remove();
+    return;
+  }
+
+  context.classList.add('is-live');
+  context.querySelectorAll('.board-context-step').forEach((step) => {
+    step.hidden = true;
+  });
+
+  let live = context.querySelector('.board-context-live');
+  if (!live) {
+    live = document.createElement('div');
+    live.className = 'board-context-live';
+    context.appendChild(live);
+  }
+  live.textContent = message;
+}
+
 function createCardImageElement(image, name, className = '') {
   const frame = document.createElement('span');
   frame.className = `card-image-frame${className ? ` ${className}` : ''}`;
@@ -155,11 +192,18 @@ function installCardImageFallbacks(scope = document) {
       frame?.classList.add('is-fallback');
       img.classList.add('is-fallback');
 
-      if (img.dataset.fallbackApplied === 'true') return;
+      if (img.dataset.fallbackApplied === 'true') {
+        img.style.visibility = 'hidden';
+        return;
+      }
 
       img.dataset.fallbackApplied = 'true';
       img.src = CARD_IMAGE_PLACEHOLDER;
     });
+
+    if (!img.getAttribute('src')) {
+      img.dispatchEvent(new Event('error'));
+    }
 
     img.addEventListener('load', () => {
       if (img.currentSrc && !img.currentSrc.endsWith(CARD_IMAGE_PLACEHOLDER)) {
@@ -407,7 +451,8 @@ function renderMatchLog(logEntries = []) {
   if (!logEl) return;
 
   clearElement(logEl);
-  if (!Array.isArray(logEntries) || !logEntries.length) {
+  const mergedEntries = [...(appState.clientLog || []), ...((Array.isArray(logEntries) ? logEntries : []).map((entry) => String(entry)))];
+  if (!mergedEntries.length) {
     renderEmptyState(logEl, EMPTY_MESSAGES.matchLog);
     return;
   }
@@ -415,7 +460,7 @@ function renderMatchLog(logEntries = []) {
   const list = document.createElement('ol');
   list.className = 'match-log-list';
 
-  logEntries.forEach((entry, index) => {
+  mergedEntries.forEach((entry, index) => {
     const item = document.createElement('li');
     item.className = 'match-log-item';
     appendTextElement(item, 'span', String(index + 1).padStart(2, '0'), 'match-log-order');
@@ -434,12 +479,23 @@ function createCellCoordinate(x, y) {
   return coord;
 }
 
+function createZoneBadge(label, modifier = '') {
+  const badge = document.createElement('span');
+  badge.className = ['cell-zone-badge', modifier].filter(Boolean).join(' ');
+  badge.textContent = label;
+  return badge;
+}
+
 function createPreviewCell(x, y) {
   const cell = document.createElement('div');
   cell.className = `cell ${(x + y) % 2 === 0 ? 'square-light' : 'square-dark'} empty preview-cell`;
   cell.appendChild(createCellCoordinate(x, y));
+
   const layer = document.createElement('div');
   layer.className = 'cell-layer';
+  const empty = document.createElement('div');
+  empty.className = 'cell-empty-state';
+  layer.appendChild(empty);
   cell.appendChild(layer);
   return cell;
 }
@@ -473,7 +529,7 @@ function createUnitToken(unit, isOwnUnit, isSelected) {
   return token;
 }
 
-function createBoardCell({ x, y, ownUnit, enemyUnit, selectedUnit, selectedHandCard, canPlay, myDeployment, enemyDeployment, moveTargets, attackTargets }) {
+function createBoardCell({ x, y, ownUnit, enemyUnit, selectedUnit, selectedHandCard, canPlay, myDeployment, enemyDeployment, moveTargets, attackTargets, boardWidth, boardHeight }) {
   const unit = ownUnit || enemyUnit;
   const key = `${x},${y}`;
   const canSummon = Boolean(selectedHandCard) && myDeployment.has(key) && !unit && canPlay;
@@ -490,8 +546,14 @@ function createBoardCell({ x, y, ownUnit, enemyUnit, selectedUnit, selectedHandC
   cell.className = ['cell', (x + y) % 2 === 0 ? 'square-light' : 'square-dark', stateClass, deployClass, hintClass, isSelected ? 'selected' : '', interactiveClass].filter(Boolean).join(' ');
   cell.dataset.x = x;
   cell.dataset.y = y;
+  const boardCenterX = Math.floor(boardWidth / 2);
+  const boardCenterY = Math.floor(boardHeight / 2);
   cell.setAttribute('aria-label', `Casilla ${buildCoordinateLabel(x, y)}`);
   cell.appendChild(createCellCoordinate(x, y));
+
+  if (!unit && myDeployment.has(key)) cell.appendChild(createZoneBadge('Tu zona', 'zone-ally'));
+  if (!unit && enemyDeployment.has(key)) cell.appendChild(createZoneBadge('IA', 'zone-enemy'));
+  if (!unit && x === boardCenterX && y === boardCenterY) cell.appendChild(createZoneBadge('Centro', 'zone-center'));
 
   const layer = document.createElement('div');
   layer.className = 'cell-layer';
@@ -731,6 +793,8 @@ function renderBoardGrid({ me, enemy, selectedUnit, selectedHandCard, canPlay, w
         enemyDeployment,
         moveTargets,
         attackTargets,
+        boardWidth: width,
+        boardHeight: height,
       });
       cell.addEventListener('click', () => {
         onCellClick(x, y).catch((err) => setStatus(err.message, true));
@@ -743,8 +807,9 @@ function renderBoardGrid({ me, enemy, selectedUnit, selectedHandCard, canPlay, w
 }
 
 function renderBoard() {
-  setActionFeedback(appState.actionFeedback.message, appState.actionFeedback.tone);
+  setActionFeedback(appState.actionFeedback.message, appState.actionFeedback.tone, { silentLog: true });
   if (!appState.match) {
+    updateBoardContext('Tablero listo: iniciá una partida para habilitar zonas de invocación, mano y objetivos.');
     renderStaticBoard();
     renderEmptyState($('#hand'), EMPTY_MESSAGES.handPreview);
     renderEmptyState($('#match-summary'), EMPTY_MESSAGES.summary);
@@ -763,6 +828,8 @@ function renderBoard() {
   const attackTargets = computeAttackTargets(selectedUnit, enemy?.units || []);
   const myDeployment = deploymentCellsForSide(mySide, width, height);
   const enemyDeployment = deploymentCellsForSide('guest', width, height);
+
+  updateBoardContext(getSelectionSummary({ selectedHandCard, selectedUnit, canPlay }));
 
   renderBoardGrid({
     me,
@@ -830,6 +897,7 @@ async function createAIMatch() {
   appState.selectedHandIndex = null;
   appState.selectedUnitId = null;
   setActionFeedback('Partida lista. Seleccioná una carta o unidad para empezar tu turno.', 'normal');
+  pushClientLog('Partida creada correctamente.');
   renderBoard();
   setStatus('Partida nueva creada en esta sesión.');
 }
@@ -872,6 +940,7 @@ function bindAsyncButton(selector, handler) {
 
 function boot() {
   renderStaticBoard();
+  updateBoardContext('Tablero listo: iniciá una partida para habilitar zonas de invocación, mano y objetivos.');
   bindAsyncButton('#create-ai-match', createAIMatch);
   bindAsyncButton('#refresh-state', refreshMatch);
   bindAsyncButton('#end-turn-btn', endTurn);

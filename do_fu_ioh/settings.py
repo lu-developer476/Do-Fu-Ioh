@@ -87,6 +87,7 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+# `.staticfiles/` is the single collectstatic artifact directory used across the repo.
 STATIC_ROOT = BASE_DIR / '.staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'public']
 STORAGES = {

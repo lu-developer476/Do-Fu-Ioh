@@ -64,7 +64,7 @@ Abrir: `http://127.0.0.1:8000/`
 ## Static files
 
 - `STATIC_URL` es `/static/`.
-- `STATIC_ROOT` es `.staticfiles/` en la raíz del repo y se genera sólo como artefacto de build.
+- `STATIC_ROOT` es `.staticfiles/` en la raíz del repo y es el único destino válido de `collectstatic`.
 - `STATICFILES_DIRS` incluye `public/` y `core/static/` aporta los assets por app; todo se resuelve vía `collectstatic`.
 - En producción se usa `whitenoise.storage.CompressedManifestStaticFilesStorage`.
 - `collectstatic` corre durante el build de Render, antes del deploy.
@@ -79,8 +79,8 @@ Configuración efectiva del deploy:
 
 ### Qué hace cada paso
 
-1. `build.sh` actualiza `pip`, instala dependencias y ejecuta `python manage.py collectstatic --noinput`.
+1. `build.sh` actualiza `pip`, instala dependencias, elimina cualquier artefacto legado `staticfiles/` o `.staticfiles/` y luego ejecuta `python manage.py collectstatic --noinput`.
 2. `preDeployCommand` corre las migraciones una vez por deploy, antes de arrancar la nueva versión.
 3. `startCommand` sólo inicia Gunicorn, sin mezclar tareas de build o migración.
 
-Esto deja alineados build, migraciones y archivos estáticos con la configuración real de Django y Render. `staticfiles/` no debe versionarse: el código fuente vive en `public/` y `core/static/`, mientras que `.staticfiles/` se reconstruye en cada build con `collectstatic`.
+Esto deja alineados build, migraciones y archivos estáticos con la configuración real de Django y Render. La convención oficial del repo es: fuentes en `public/` y `core/static/`, artefacto compilado en `.staticfiles/`, y cualquier `staticfiles/` sin punto se considera legado y se elimina en cada build.

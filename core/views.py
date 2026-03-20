@@ -7,7 +7,11 @@ from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_GET, require_http_methods
 
-from .card_catalog import serialized_cards_queryset, serialize_card, summon_cost
+from .card_catalog import (
+    resolve_card_image as catalog_resolve_card_image,
+    serialized_cards_queryset,
+    summon_cost,
+)
 from .models import MatchRecord, MonsterCard
 from .system_users import get_single_player_system_users
 
@@ -100,9 +104,32 @@ def _empty_match_state(difficulty):
     }
 
 
+def _resolve_card_image(image):
+    return catalog_resolve_card_image(image)
+
+
+def _serialize_card(card):
+    return {
+        "id": card.id,
+        "name": card.name,
+        "slug": card.slug,
+        "family": card.family,
+        "stage": card.stage,
+        "level_min": card.level_min,
+        "level_max": card.level_max,
+        "hp": card.hp,
+        "shell": card.shell,
+        "action_points": card.action_points,
+        "movement_points": card.movement_points,
+        "description": card.description,
+        "image": _resolve_card_image(card.image),
+        "summon_cost": summon_cost({"stage": card.stage}),
+    }
+
+
 def _build_new_match_state(cards, difficulty="normal"):
     difficulty = _normalize_ai_difficulty(difficulty)
-    serialized = [serialize_card(card) for card in cards]
+    serialized = [_serialize_card(card) for card in cards]
     if not serialized:
         return _empty_match_state(difficulty)
 

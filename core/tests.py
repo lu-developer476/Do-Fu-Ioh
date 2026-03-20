@@ -2,13 +2,13 @@ import json
 
 from django.core.management import call_command
 from django.middleware.csrf import _get_new_csrf_string
-from django.test import Client, TestCase
+from django.test import Client, SimpleTestCase, TestCase
 
 from django.contrib.auth.models import User
 
 from .models import MatchRecord, MonsterCard
 from .system_users import AI_USERNAME, SOLO_PLAYER_USERNAME, get_single_player_system_users
-from .views import _ai_turn
+from .views import _ai_turn, _resolve_card_image, _serialize_card, _validate_match_state
 
 
 class CardsCatalogSeedTests(TestCase):
@@ -1007,3 +1007,164 @@ class SoloAIModeTests(TestCase):
             response.json()["message"],
             "El campo 'attacker_id' debe ser un texto no vacío.",
         )
+
+
+class AIBehaviorUnitTests(SimpleTestCase):
+    def _card(self, *, card_id=1, name="Carta Test", stage="base", image=""):
+        return {
+            "id": card_id,
+            "name": name,
+            "slug": name.lower().replace(" ", "-"),
+            "family": "Tests",
+            "stage": stage,
+            "level_min": 1,
+            "level_max": 1,
+            "hp": 6,
+            "shell": 0,
+            "action_points": 2,
+            "movement_points": 2,
+            "description": "test",
+            "image": image,
+            "summon_cost": 1 if stage == "base" else 3 if stage == "fusion" else 5,
+        }
+
+    def _unit(self, *, unit_id, owner, x, y, card=None):
+        card = card or self._card()
+        return {
+            "id": unit_id,
+            "owner": owner,
+            "x": x,
+            "y": y,
+            "card": card,
+            "hp_current": card["hp"],
+            "shell_current": card["shell"],
+            "pa_current": card["action_points"],
+            "pm_current": card["movement_points"],
+            "can_act": True,
+            "can_move": True,
+            "summoned_turn": 1,
+        }
+
+    def _state(self):
+        return {
+            "mode": "vs_ai",
+            "ai_difficulty": "normal",
+            "board": {"width": 11, "height": 11},
+            "turn": {"number": 2, "active_side": "guest"},
+            "host": {
+                "side": "host",
+                "energy": 1,
+                "max_energy": 1,
+                "hand": [],
+                "library": [],
+                "library_count": 0,
+                "hand_count": 0,
+                "units": [],
+                "summons_this_turn": 0,
+            },
+            "guest": {
+                "side": "guest",
+                "energy": 1,
+                "max_energy": 1,
+                "hand": [],
+                "library": [],
+                "library_count": 0,
+                "hand_count": 0,
+                "units": [],
+                "summons_this_turn": 0,
+            },
+            "winner": None,
+            "log": [],
+        }
+
+    def test_ai_summons_when_it_has_energy_and_cards_in_hand(self):
+        state = self._state()
+        state["host"]["units"] = [self._unit(unit_id="host-front", owner="host", x=5, y=0)]
+        state["guest"]["hand"] = [self._card(card_id=2, name="Invocable")]
+        state["guest"]["hand_count"] = 1
+
+        _ai_turn(state)
+
+        self.assertEqual(len(state["guest"]["units"]), 1)
+        self.assertEqual(state["guest"]["energy"], 0)
+        self.assertEqual(state["guest"]["hand_count"], 0)
+        self.assertTrue(any("guest invocó Invocable" in item for item in state["log"]))
+
+    def test_ai_attacks_when_target_is_in_range(self):
+        state = self._state()
+        state["host"]["units"] = [self._unit(unit_id="host-front", owner="host", x=5, y=3)]
+        state["guest"]["units"] = [
+            self._unit(unit_id="guest-front", owner="guest", x=5, y=5, card=self._card(card_id=2, name="Atacante"))
+        ]
+
+        _ai_turn(state)
+
+        host_units = state["host"]["units"]
+        if host_units:
+            self.assertLess(host_units[0]["hp_current"], 6)
+        else:
+            self.assertEqual(state["winner"], "guest")
+        self.assertTrue(any("guest atacó con Atacante" in item for item in state["log"]))
+
+    def test_ai_ends_turn_and_returns_control_to_host(self):
+        state = self._state()
+
+        _ai_turn(state)
+
+        self.assertEqual(state["turn"]["active_side"], "host")
+        self.assertEqual(state["turn"]["number"], 3)
+        self.assertTrue(any(item == "Fin del turno de guest." for item in state["log"]))
+
+    def test_ai_turn_keeps_match_state_valid(self):
+        state = self._state()
+        state["host"]["units"] = [self._unit(unit_id="host-front", owner="host", x=5, y=1)]
+        state["guest"]["hand"] = [self._card(card_id=2, name="Invocable")]
+        state["guest"]["hand_count"] = 1
+
+        _ai_turn(state)
+
+        self.assertIsNone(_validate_match_state(state))
+
+
+class ViewCardSerializationHelpersTests(SimpleTestCase):
+    def test_resolve_card_image_supports_relative_absolute_remote_public_and_empty_paths(self):
+        self.assertEqual(_resolve_card_image("images/card.png"), "/static/images/card.png")
+        self.assertEqual(_resolve_card_image("/images/card.png"), "/images/card.png")
+        self.assertEqual(_resolve_card_image("http://cdn.example.com/card.png"), "http://cdn.example.com/card.png")
+        self.assertEqual(_resolve_card_image("https://cdn.example.com/card.png"), "https://cdn.example.com/card.png")
+        self.assertEqual(_resolve_card_image("public/images/card.png"), "/static/images/card.png")
+        self.assertEqual(_resolve_card_image(""), "")
+
+    def test_serialize_card_resolves_supported_image_variants(self):
+        variants = [
+            ("images/card.png", "/static/images/card.png"),
+            ("/images/card.png", "/images/card.png"),
+            ("http://cdn.example.com/card.png", "http://cdn.example.com/card.png"),
+            ("https://cdn.example.com/card.png", "https://cdn.example.com/card.png"),
+            ("public/images/card.png", "/static/images/card.png"),
+            ("", ""),
+        ]
+
+        for index, (raw_image, expected_image) in enumerate(variants, start=1):
+            with self.subTest(raw_image=raw_image):
+                card = MonsterCard(
+                    id=index,
+                    family="Tests",
+                    name=f"Carta {index}",
+                    slug=f"carta-{index}",
+                    stage="base",
+                    level_min=1,
+                    level_max=1,
+                    hp=6,
+                    shell=1,
+                    action_points=2,
+                    movement_points=2,
+                    description="test",
+                    image=raw_image,
+                )
+
+                payload = _serialize_card(card)
+
+                self.assertEqual(payload["image"], expected_image)
+                self.assertEqual(payload["summon_cost"], 1)
+                self.assertEqual(payload["name"], card.name)

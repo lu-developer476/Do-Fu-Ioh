@@ -309,6 +309,25 @@ def _refresh_counts(state):
         state[side]['hand_count'] = len(state[side]['hand'])
 
 
+def _player_has_remaining_resources(player):
+    return bool(player['units'] or player['hand'] or player['library'])
+
+
+def _update_winner_for_current_mode(state, acting_side):
+    host_still_in_game = _player_has_remaining_resources(state['host'])
+    guest_still_in_game = _player_has_remaining_resources(state['guest'])
+
+    if host_still_in_game and guest_still_in_game:
+        return
+    if host_still_in_game:
+        state['winner'] = 'host'
+        return
+    if guest_still_in_game:
+        state['winner'] = 'guest'
+        return
+    state['winner'] = acting_side
+
+
 def _reset_turn_state(player):
     player['summons_this_turn'] = 0
     for unit in player['units']:
@@ -428,8 +447,7 @@ def _apply_action(state, side, payload):
     else:
         return 'Acción no soportada.'
 
-    if not enemy['units'] and not enemy['hand'] and not enemy['library']:
-        state['winner'] = side
+    _update_winner_for_current_mode(state, side)
     _refresh_counts(state)
     state['log'] = state['log'][-12:]
     return None

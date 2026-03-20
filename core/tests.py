@@ -216,3 +216,110 @@ class SoloAIModeTests(TestCase):
 
         self.assertNotIn((center_x, 2), reachable_cells)
         self.assertIn((center_x - 1, 0), reachable_cells)
+
+    def test_game_does_not_end_if_enemy_has_cards_left_to_play(self):
+        created = self.client.post('/api/match/create-vs-ai/', data='{}', content_type='application/json').json()
+        room_code = created['room_code']
+        center_x = created['match']['board']['width'] // 2
+        playable_index = next(
+            index for index, card in enumerate(created['match']['host']['hand']) if card['summon_cost'] <= 1
+        )
+
+        summon = self.client.post(
+            f'/api/match/{room_code}/action/',
+            data=json.dumps({'action': 'summon', 'hand_index': playable_index, 'x': center_x, 'y': 0}),
+            content_type='application/json',
+        )
+        self.assertEqual(summon.status_code, 200)
+
+        record = MatchRecord.objects.get(room_code=room_code)
+        state = record.game_state
+        host_unit = state['host']['units'][0]
+        host_unit['x'] = center_x
+        host_unit['y'] = state['board']['height'] - 2
+        host_unit['pa_current'] = 3
+        host_unit['can_act'] = True
+        state['guest']['units'] = [{
+            'id': 'guest-frontliner',
+            'owner': 'guest',
+            'x': center_x,
+            'y': state['board']['height'] - 1,
+            'card': host_unit['card'],
+            'hp_current': 1,
+            'shell_current': 0,
+            'pa_current': 0,
+            'pm_current': 0,
+            'can_act': False,
+            'can_move': False,
+            'summoned_turn': 1,
+        }]
+        state['guest']['hand'] = [state['guest']['hand'][0]]
+        state['guest']['library'] = []
+        record.game_state = state
+        record.save(update_fields=['game_state'])
+
+        attack = self.client.post(
+            f'/api/match/{room_code}/action/',
+            data=json.dumps({'action': 'attack', 'attacker_id': host_unit['id'], 'target_id': 'guest-frontliner'}),
+            content_type='application/json',
+        )
+
+        self.assertEqual(attack.status_code, 200)
+        payload = attack.json()
+        self.assertIsNone(payload['match']['winner'])
+        self.assertEqual(payload['status'], 'active')
+
+    def test_game_ends_when_ai_removes_last_host_resource(self):
+        created = self.client.post('/api/match/create-vs-ai/', data='{}', content_type='application/json').json()
+        room_code = created['room_code']
+
+        record = MatchRecord.objects.get(room_code=room_code)
+        state = record.game_state
+        state['turn']['active_side'] = 'host'
+        state['host']['hand'] = []
+        state['host']['library'] = []
+        state['host']['units'] = []
+        state['guest']['hand'] = []
+        state['guest']['library'] = []
+        state['guest']['units'] = [{
+            'id': 'guest-survivor',
+            'owner': 'guest',
+            'x': state['board']['width'] // 2,
+            'y': state['board']['height'] - 2,
+            'card': {
+                'id': 999,
+                'name': 'Test Guest',
+                'slug': 'test-guest',
+                'family': 'Tests',
+                'stage': 'base',
+                'level_min': 1,
+                'level_max': 1,
+                'hp': 6,
+                'shell': 0,
+                'action_points': 2,
+                'movement_points': 2,
+                'description': 'test',
+                'image': '',
+                'summon_cost': 1,
+            },
+            'hp_current': 6,
+            'shell_current': 0,
+            'pa_current': 2,
+            'pm_current': 2,
+            'can_act': True,
+            'can_move': True,
+            'summoned_turn': 1,
+        }]
+        record.game_state = state
+        record.save(update_fields=['game_state'])
+
+        end_turn = self.client.post(
+            f'/api/match/{room_code}/action/',
+            data=json.dumps({'action': 'end_turn'}),
+            content_type='application/json',
+        )
+
+        self.assertEqual(end_turn.status_code, 200)
+        payload = end_turn.json()
+        self.assertEqual(payload['match']['winner'], 'guest')
+        self.assertEqual(payload['status'], 'finished')

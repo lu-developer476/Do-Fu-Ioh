@@ -447,14 +447,8 @@ function createUnitToken(unit, isOwnUnit, isSelected) {
 
   const top = document.createElement('div');
   top.className = 'token-topline';
-  appendTextElement(top, 'span', isOwnUnit ? 'Tuya' : 'IA', `token-owner ${isOwnUnit ? 'token-owner-ally' : 'token-owner-enemy'}`);
   appendTextElement(top, 'span', shortenUnitName(unit.card.name), 'token-name');
-
-  const body = document.createElement('div');
-  body.className = 'token-body';
-  const portraitWrap = document.createElement('div');
-  portraitWrap.className = 'token-portrait-wrap';
-  portraitWrap.appendChild(createCardImageElement(unit.card.image, unit.card.name, 'card-image-token'));
+  appendTextElement(top, 'span', isOwnUnit ? 'Tuya' : 'IA', `token-owner ${isOwnUnit ? 'token-owner-ally' : 'token-owner-enemy'}`);
 
   const metrics = document.createElement('div');
   metrics.className = 'token-metrics';
@@ -464,8 +458,7 @@ function createUnitToken(unit, isOwnUnit, isSelected) {
     createTokenStat('PM', unit.pm_current, 'token-stat-pm')
   );
 
-  body.append(portraitWrap, metrics);
-  token.append(top, body);
+  token.append(top, metrics);
   return token;
 }
 

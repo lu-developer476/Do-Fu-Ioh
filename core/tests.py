@@ -4,322 +4,563 @@ from django.middleware.csrf import _get_new_csrf_string
 from django.test import Client, TestCase
 
 from .models import MatchRecord, MonsterCard
+from .views import _ai_turn
 
 
 class SoloAIModeTests(TestCase):
     def setUp(self):
-        for family in ['Pios', 'Escarahojas', 'Gelatinas', 'Kitsus']:
+        for family in ["Pios", "Escarahojas", "Gelatinas", "Kitsus"]:
             for idx in range(3):
                 MonsterCard.objects.create(
                     family=family,
-                    name=f'{family} Carta {idx}',
-                    slug=f'{family.lower()}-carta-{idx}',
-                    stage='base' if idx == 0 else 'fusion' if idx == 1 else 'evolution',
+                    name=f"{family} Carta {idx}",
+                    slug=f"{family.lower()}-carta-{idx}",
+                    stage="base" if idx == 0 else "fusion" if idx == 1 else "evolution",
                     level_min=1,
                     level_max=2,
                     hp=6,
                     shell=1,
                     action_points=2,
                     movement_points=2,
-                    description='test',
-                    image='public/images/pios/base/pio-albino.png',
+                    description="test",
+                    image="public/images/pios/base/pio-albino.png",
                 )
 
     def test_create_match_and_recover_from_session(self):
-        created = self.client.post('/api/match/create-vs-ai/', data='{}', content_type='application/json')
+        created = self.client.post(
+            "/api/match/create-vs-ai/", data="{}", content_type="application/json"
+        )
         self.assertEqual(created.status_code, 200)
         payload = created.json()
-        self.assertEqual(payload['match']['mode'], 'vs_ai')
-        self.assertEqual(payload['match']['turn']['active_side'], 'host')
+        self.assertEqual(payload["match"]["mode"], "vs_ai")
+        self.assertEqual(payload["match"]["turn"]["active_side"], "host")
 
-        active = self.client.get('/api/match/active/')
+        active = self.client.get("/api/match/active/")
         self.assertEqual(active.status_code, 200)
-        self.assertEqual(active.json()['room_code'], payload['room_code'])
+        self.assertEqual(active.json()["room_code"], payload["room_code"])
 
     def test_session_is_required_for_match_access(self):
-        created = self.client.post('/api/match/create-vs-ai/', data='{}', content_type='application/json').json()
-        room_code = created['room_code']
+        created = self.client.post(
+            "/api/match/create-vs-ai/", data="{}", content_type="application/json"
+        ).json()
+        room_code = created["room_code"]
 
-        ok = self.client.get(f'/api/match/{room_code}/')
+        ok = self.client.get(f"/api/match/{room_code}/")
         self.assertEqual(ok.status_code, 200)
 
         other_client = self.client_class()
-        denied = other_client.get(f'/api/match/{room_code}/')
+        denied = other_client.get(f"/api/match/{room_code}/")
         self.assertEqual(denied.status_code, 404)
 
     def test_turn_actions_work_without_user_login(self):
-        created = self.client.post('/api/match/create-vs-ai/', data='{}', content_type='application/json').json()
-        room_code = created['room_code']
-        center_x = created['match']['board']['width'] // 2
-        hand = created['match']['host']['hand']
-        playable_index = next(index for index, card in enumerate(hand) if card['summon_cost'] <= 1)
+        created = self.client.post(
+            "/api/match/create-vs-ai/", data="{}", content_type="application/json"
+        ).json()
+        room_code = created["room_code"]
+        center_x = created["match"]["board"]["width"] // 2
+        hand = created["match"]["host"]["hand"]
+        playable_index = next(
+            index for index, card in enumerate(hand) if card["summon_cost"] <= 1
+        )
 
         summon = self.client.post(
-            f'/api/match/{room_code}/action/',
-            data=json.dumps({'action': 'summon', 'hand_index': playable_index, 'x': center_x, 'y': 0}),
-            content_type='application/json',
+            f"/api/match/{room_code}/action/",
+            data=json.dumps(
+                {
+                    "action": "summon",
+                    "hand_index": playable_index,
+                    "x": center_x,
+                    "y": 0,
+                }
+            ),
+            content_type="application/json",
         )
         self.assertEqual(summon.status_code, 200)
 
         end_turn = self.client.post(
-            f'/api/match/{room_code}/action/',
-            data=json.dumps({'action': 'end_turn'}),
-            content_type='application/json',
+            f"/api/match/{room_code}/action/",
+            data=json.dumps({"action": "end_turn"}),
+            content_type="application/json",
         )
         self.assertEqual(end_turn.status_code, 200)
-        state = end_turn.json()['match']
-        self.assertEqual(state['turn']['active_side'], 'host')
-        self.assertTrue(any('Fin del turno' in item for item in state['log']))
+        state = end_turn.json()["match"]
+        self.assertEqual(state["turn"]["active_side"], "host")
+        self.assertTrue(any("Fin del turno" in item for item in state["log"]))
 
     def test_cards_expose_resolved_images_and_summon_cost(self):
-        response = self.client.get('/api/cards/')
+        response = self.client.get("/api/cards/")
         self.assertEqual(response.status_code, 200)
-        card = response.json()['cards'][0]
-        self.assertTrue(card['image'].startswith('/static/'))
-        self.assertIn(card['summon_cost'], {1, 3, 5})
+        card = response.json()["cards"][0]
+        self.assertTrue(card["image"].startswith("/static/"))
+        self.assertIn(card["summon_cost"], {1, 3, 5})
 
     def test_match_actions_require_csrf(self):
         client = Client(enforce_csrf_checks=True)
-        without_csrf = client.post('/api/match/create-vs-ai/', data='{}', content_type='application/json')
+        without_csrf = client.post(
+            "/api/match/create-vs-ai/", data="{}", content_type="application/json"
+        )
         self.assertEqual(without_csrf.status_code, 403)
 
         csrf_token = _get_new_csrf_string()
-        client.cookies['csrftoken'] = csrf_token
+        client.cookies["csrftoken"] = csrf_token
         with_csrf = client.post(
-            '/api/match/create-vs-ai/',
-            data='{}',
-            content_type='application/json',
+            "/api/match/create-vs-ai/",
+            data="{}",
+            content_type="application/json",
             HTTP_X_CSRFTOKEN=csrf_token,
         )
         self.assertEqual(with_csrf.status_code, 200)
 
     def test_move_rejects_destination_behind_occupied_cells(self):
-        created = self.client.post('/api/match/create-vs-ai/', data='{}', content_type='application/json').json()
-        room_code = created['room_code']
-        center_x = created['match']['board']['width'] // 2
+        created = self.client.post(
+            "/api/match/create-vs-ai/", data="{}", content_type="application/json"
+        ).json()
+        room_code = created["room_code"]
+        center_x = created["match"]["board"]["width"] // 2
         playable_index = next(
-            index for index, card in enumerate(created['match']['host']['hand']) if card['summon_cost'] <= 1
+            index
+            for index, card in enumerate(created["match"]["host"]["hand"])
+            if card["summon_cost"] <= 1
         )
 
         summon = self.client.post(
-            f'/api/match/{room_code}/action/',
-            data=json.dumps({'action': 'summon', 'hand_index': playable_index, 'x': center_x, 'y': 0}),
-            content_type='application/json',
+            f"/api/match/{room_code}/action/",
+            data=json.dumps(
+                {
+                    "action": "summon",
+                    "hand_index": playable_index,
+                    "x": center_x,
+                    "y": 0,
+                }
+            ),
+            content_type="application/json",
         )
         self.assertEqual(summon.status_code, 200)
 
         record = MatchRecord.objects.get(room_code=room_code)
         state = record.game_state
-        unit = state['host']['units'][0]
-        unit['pm_current'] = 3
-        unit['card']['movement_points'] = 3
-        state['host']['units'].extend([
-            {
-                'id': 'block-left',
-                'owner': 'host',
-                'x': center_x - 1,
-                'y': 0,
-                'card': unit['card'],
-                'hp_current': 6,
-                'shell_current': 1,
-                'pa_current': 2,
-                'pm_current': 0,
-                'can_act': False,
-                'can_move': False,
-                'summoned_turn': 1,
-            },
-            {
-                'id': 'block-right',
-                'owner': 'host',
-                'x': center_x + 1,
-                'y': 0,
-                'card': unit['card'],
-                'hp_current': 6,
-                'shell_current': 1,
-                'pa_current': 2,
-                'pm_current': 0,
-                'can_act': False,
-                'can_move': False,
-                'summoned_turn': 1,
-            },
-            {
-                'id': 'block-front',
-                'owner': 'host',
-                'x': center_x,
-                'y': 1,
-                'card': unit['card'],
-                'hp_current': 6,
-                'shell_current': 1,
-                'pa_current': 2,
-                'pm_current': 0,
-                'can_act': False,
-                'can_move': False,
-                'summoned_turn': 1,
-            },
-        ])
+        unit = state["host"]["units"][0]
+        unit["pm_current"] = 3
+        unit["card"]["movement_points"] = 3
+        state["host"]["units"].extend(
+            [
+                {
+                    "id": "block-left",
+                    "owner": "host",
+                    "x": center_x - 1,
+                    "y": 0,
+                    "card": unit["card"],
+                    "hp_current": 6,
+                    "shell_current": 1,
+                    "pa_current": 2,
+                    "pm_current": 0,
+                    "can_act": False,
+                    "can_move": False,
+                    "summoned_turn": 1,
+                },
+                {
+                    "id": "block-right",
+                    "owner": "host",
+                    "x": center_x + 1,
+                    "y": 0,
+                    "card": unit["card"],
+                    "hp_current": 6,
+                    "shell_current": 1,
+                    "pa_current": 2,
+                    "pm_current": 0,
+                    "can_act": False,
+                    "can_move": False,
+                    "summoned_turn": 1,
+                },
+                {
+                    "id": "block-front",
+                    "owner": "host",
+                    "x": center_x,
+                    "y": 1,
+                    "card": unit["card"],
+                    "hp_current": 6,
+                    "shell_current": 1,
+                    "pa_current": 2,
+                    "pm_current": 0,
+                    "can_act": False,
+                    "can_move": False,
+                    "summoned_turn": 1,
+                },
+            ]
+        )
         record.game_state = state
-        record.save(update_fields=['game_state'])
+        record.save(update_fields=["game_state"])
 
         blocked_move = self.client.post(
-            f'/api/match/{room_code}/action/',
-            data=json.dumps({'action': 'move', 'unit_id': unit['id'], 'to_x': center_x, 'to_y': 2}),
-            content_type='application/json',
+            f"/api/match/{room_code}/action/",
+            data=json.dumps(
+                {"action": "move", "unit_id": unit["id"], "to_x": center_x, "to_y": 2}
+            ),
+            content_type="application/json",
         )
 
         self.assertEqual(blocked_move.status_code, 400)
-        self.assertEqual(blocked_move.json()['message'], 'Movimiento fuera de rango.')
+        self.assertEqual(blocked_move.json()["message"], "Movimiento fuera de rango.")
 
         record.refresh_from_db()
-        moved_unit = record.game_state['host']['units'][0]
-        self.assertEqual((moved_unit['x'], moved_unit['y']), (center_x, 0))
+        moved_unit = record.game_state["host"]["units"][0]
+        self.assertEqual((moved_unit["x"], moved_unit["y"]), (center_x, 0))
 
     def test_active_match_payload_exposes_only_reachable_destinations(self):
-        created = self.client.post('/api/match/create-vs-ai/', data='{}', content_type='application/json').json()
-        room_code = created['room_code']
-        center_x = created['match']['board']['width'] // 2
+        created = self.client.post(
+            "/api/match/create-vs-ai/", data="{}", content_type="application/json"
+        ).json()
+        room_code = created["room_code"]
+        center_x = created["match"]["board"]["width"] // 2
         playable_index = next(
-            index for index, card in enumerate(created['match']['host']['hand']) if card['summon_cost'] <= 1
+            index
+            for index, card in enumerate(created["match"]["host"]["hand"])
+            if card["summon_cost"] <= 1
         )
 
         summon = self.client.post(
-            f'/api/match/{room_code}/action/',
-            data=json.dumps({'action': 'summon', 'hand_index': playable_index, 'x': center_x, 'y': 0}),
-            content_type='application/json',
+            f"/api/match/{room_code}/action/",
+            data=json.dumps(
+                {
+                    "action": "summon",
+                    "hand_index": playable_index,
+                    "x": center_x,
+                    "y": 0,
+                }
+            ),
+            content_type="application/json",
         )
         self.assertEqual(summon.status_code, 200)
 
         record = MatchRecord.objects.get(room_code=room_code)
         state = record.game_state
-        unit = state['host']['units'][0]
-        unit['pm_current'] = 3
-        state['host']['units'].append({
-            'id': 'block-front',
-            'owner': 'host',
-            'x': center_x,
-            'y': 1,
-            'card': unit['card'],
-            'hp_current': 6,
-            'shell_current': 1,
-            'pa_current': 2,
-            'pm_current': 0,
-            'can_act': False,
-            'can_move': False,
-            'summoned_turn': 1,
-        })
+        unit = state["host"]["units"][0]
+        unit["pm_current"] = 3
+        state["host"]["units"].append(
+            {
+                "id": "block-front",
+                "owner": "host",
+                "x": center_x,
+                "y": 1,
+                "card": unit["card"],
+                "hp_current": 6,
+                "shell_current": 1,
+                "pa_current": 2,
+                "pm_current": 0,
+                "can_act": False,
+                "can_move": False,
+                "summoned_turn": 1,
+            }
+        )
         record.game_state = state
-        record.save(update_fields=['game_state'])
+        record.save(update_fields=["game_state"])
 
-        active = self.client.get(f'/api/match/{room_code}/')
+        active = self.client.get(f"/api/match/{room_code}/")
         self.assertEqual(active.status_code, 200)
-        host_unit = active.json()['match']['host']['units'][0]
-        reachable_cells = {(cell['x'], cell['y']) for cell in host_unit['reachable_cells']}
+        host_unit = active.json()["match"]["host"]["units"][0]
+        reachable_cells = {
+            (cell["x"], cell["y"]) for cell in host_unit["reachable_cells"]
+        }
 
         self.assertNotIn((center_x, 2), reachable_cells)
         self.assertIn((center_x - 1, 0), reachable_cells)
 
     def test_game_does_not_end_if_enemy_has_cards_left_to_play(self):
-        created = self.client.post('/api/match/create-vs-ai/', data='{}', content_type='application/json').json()
-        room_code = created['room_code']
-        center_x = created['match']['board']['width'] // 2
+        created = self.client.post(
+            "/api/match/create-vs-ai/", data="{}", content_type="application/json"
+        ).json()
+        room_code = created["room_code"]
+        center_x = created["match"]["board"]["width"] // 2
         playable_index = next(
-            index for index, card in enumerate(created['match']['host']['hand']) if card['summon_cost'] <= 1
+            index
+            for index, card in enumerate(created["match"]["host"]["hand"])
+            if card["summon_cost"] <= 1
         )
 
         summon = self.client.post(
-            f'/api/match/{room_code}/action/',
-            data=json.dumps({'action': 'summon', 'hand_index': playable_index, 'x': center_x, 'y': 0}),
-            content_type='application/json',
+            f"/api/match/{room_code}/action/",
+            data=json.dumps(
+                {
+                    "action": "summon",
+                    "hand_index": playable_index,
+                    "x": center_x,
+                    "y": 0,
+                }
+            ),
+            content_type="application/json",
         )
         self.assertEqual(summon.status_code, 200)
 
         record = MatchRecord.objects.get(room_code=room_code)
         state = record.game_state
-        host_unit = state['host']['units'][0]
-        host_unit['x'] = center_x
-        host_unit['y'] = state['board']['height'] - 2
-        host_unit['pa_current'] = 3
-        host_unit['can_act'] = True
-        state['guest']['units'] = [{
-            'id': 'guest-frontliner',
-            'owner': 'guest',
-            'x': center_x,
-            'y': state['board']['height'] - 1,
-            'card': host_unit['card'],
-            'hp_current': 1,
-            'shell_current': 0,
-            'pa_current': 0,
-            'pm_current': 0,
-            'can_act': False,
-            'can_move': False,
-            'summoned_turn': 1,
-        }]
-        state['guest']['hand'] = [state['guest']['hand'][0]]
-        state['guest']['library'] = []
+        host_unit = state["host"]["units"][0]
+        host_unit["x"] = center_x
+        host_unit["y"] = state["board"]["height"] - 2
+        host_unit["pa_current"] = 3
+        host_unit["can_act"] = True
+        state["guest"]["units"] = [
+            {
+                "id": "guest-frontliner",
+                "owner": "guest",
+                "x": center_x,
+                "y": state["board"]["height"] - 1,
+                "card": host_unit["card"],
+                "hp_current": 1,
+                "shell_current": 0,
+                "pa_current": 0,
+                "pm_current": 0,
+                "can_act": False,
+                "can_move": False,
+                "summoned_turn": 1,
+            }
+        ]
+        state["guest"]["hand"] = [state["guest"]["hand"][0]]
+        state["guest"]["library"] = []
         record.game_state = state
-        record.save(update_fields=['game_state'])
+        record.save(update_fields=["game_state"])
 
         attack = self.client.post(
-            f'/api/match/{room_code}/action/',
-            data=json.dumps({'action': 'attack', 'attacker_id': host_unit['id'], 'target_id': 'guest-frontliner'}),
-            content_type='application/json',
+            f"/api/match/{room_code}/action/",
+            data=json.dumps(
+                {
+                    "action": "attack",
+                    "attacker_id": host_unit["id"],
+                    "target_id": "guest-frontliner",
+                }
+            ),
+            content_type="application/json",
         )
 
         self.assertEqual(attack.status_code, 200)
         payload = attack.json()
-        self.assertIsNone(payload['match']['winner'])
-        self.assertEqual(payload['status'], 'active')
+        self.assertIsNone(payload["match"]["winner"])
+        self.assertEqual(payload["status"], "active")
 
     def test_game_ends_when_ai_removes_last_host_resource(self):
-        created = self.client.post('/api/match/create-vs-ai/', data='{}', content_type='application/json').json()
-        room_code = created['room_code']
+        created = self.client.post(
+            "/api/match/create-vs-ai/", data="{}", content_type="application/json"
+        ).json()
+        room_code = created["room_code"]
 
         record = MatchRecord.objects.get(room_code=room_code)
         state = record.game_state
-        state['turn']['active_side'] = 'host'
-        state['host']['hand'] = []
-        state['host']['library'] = []
-        state['host']['units'] = []
-        state['guest']['hand'] = []
-        state['guest']['library'] = []
-        state['guest']['units'] = [{
-            'id': 'guest-survivor',
-            'owner': 'guest',
-            'x': state['board']['width'] // 2,
-            'y': state['board']['height'] - 2,
-            'card': {
-                'id': 999,
-                'name': 'Test Guest',
-                'slug': 'test-guest',
-                'family': 'Tests',
-                'stage': 'base',
-                'level_min': 1,
-                'level_max': 1,
-                'hp': 6,
-                'shell': 0,
-                'action_points': 2,
-                'movement_points': 2,
-                'description': 'test',
-                'image': '',
-                'summon_cost': 1,
-            },
-            'hp_current': 6,
-            'shell_current': 0,
-            'pa_current': 2,
-            'pm_current': 2,
-            'can_act': True,
-            'can_move': True,
-            'summoned_turn': 1,
-        }]
+        state["turn"]["active_side"] = "host"
+        state["host"]["hand"] = []
+        state["host"]["library"] = []
+        state["host"]["units"] = []
+        state["guest"]["hand"] = []
+        state["guest"]["library"] = []
+        state["guest"]["units"] = [
+            {
+                "id": "guest-survivor",
+                "owner": "guest",
+                "x": state["board"]["width"] // 2,
+                "y": state["board"]["height"] - 2,
+                "card": {
+                    "id": 999,
+                    "name": "Test Guest",
+                    "slug": "test-guest",
+                    "family": "Tests",
+                    "stage": "base",
+                    "level_min": 1,
+                    "level_max": 1,
+                    "hp": 6,
+                    "shell": 0,
+                    "action_points": 2,
+                    "movement_points": 2,
+                    "description": "test",
+                    "image": "",
+                    "summon_cost": 1,
+                },
+                "hp_current": 6,
+                "shell_current": 0,
+                "pa_current": 2,
+                "pm_current": 2,
+                "can_act": True,
+                "can_move": True,
+                "summoned_turn": 1,
+            }
+        ]
         record.game_state = state
-        record.save(update_fields=['game_state'])
+        record.save(update_fields=["game_state"])
 
         end_turn = self.client.post(
-            f'/api/match/{room_code}/action/',
-            data=json.dumps({'action': 'end_turn'}),
-            content_type='application/json',
+            f"/api/match/{room_code}/action/",
+            data=json.dumps({"action": "end_turn"}),
+            content_type="application/json",
         )
 
         self.assertEqual(end_turn.status_code, 200)
         payload = end_turn.json()
-        self.assertEqual(payload['match']['winner'], 'guest')
-        self.assertEqual(payload['status'], 'finished')
+        self.assertEqual(payload["match"]["winner"], "guest")
+        self.assertEqual(payload["status"], "finished")
+
+    def test_create_match_accepts_ai_difficulty_levels(self):
+        created = self.client.post(
+            "/api/match/create-vs-ai/",
+            data=json.dumps({"difficulty": "extremo"}),
+            content_type="application/json",
+        )
+
+        self.assertEqual(created.status_code, 200)
+        self.assertEqual(created.json()["match"]["ai_difficulty"], "extremo")
+
+    def test_ai_attacks_before_ending_turn_when_target_is_in_range(self):
+        created = self.client.post(
+            "/api/match/create-vs-ai/", data="{}", content_type="application/json"
+        ).json()
+        room_code = created["room_code"]
+
+        record = MatchRecord.objects.get(room_code=room_code)
+        state = record.game_state
+        state["turn"]["active_side"] = "guest"
+        state["turn"]["number"] = 2
+        state["ai_difficulty"] = "normal"
+        state["host"]["hand"] = []
+        state["host"]["library"] = []
+        state["guest"]["hand"] = []
+        state["guest"]["library"] = []
+        state["host"]["hand_count"] = 0
+        state["host"]["library_count"] = 0
+        state["guest"]["hand_count"] = 0
+        state["guest"]["library_count"] = 0
+        card = {
+            "id": 501,
+            "name": "Host Dummy",
+            "slug": "host-dummy",
+            "family": "Tests",
+            "stage": "base",
+            "level_min": 1,
+            "level_max": 1,
+            "hp": 6,
+            "shell": 0,
+            "action_points": 2,
+            "movement_points": 2,
+            "description": "test",
+            "image": "",
+            "summon_cost": 1,
+        }
+        state["host"]["units"] = [
+            {
+                "id": "host-front",
+                "owner": "host",
+                "x": 5,
+                "y": 3,
+                "card": card,
+                "hp_current": 6,
+                "shell_current": 0,
+                "pa_current": 2,
+                "pm_current": 2,
+                "can_act": True,
+                "can_move": True,
+                "summoned_turn": 1,
+            }
+        ]
+        state["guest"]["units"] = [
+            {
+                "id": "guest-front",
+                "owner": "guest",
+                "x": 5,
+                "y": 5,
+                "card": {**card, "id": 502, "name": "Guest Dummy"},
+                "hp_current": 6,
+                "shell_current": 0,
+                "pa_current": 2,
+                "pm_current": 2,
+                "can_act": True,
+                "can_move": True,
+                "summoned_turn": 1,
+            }
+        ]
+        record.game_state = state
+        record.save(update_fields=["game_state"])
+
+        _ai_turn(state)
+
+        payload = state
+        self.assertIn(payload["turn"]["active_side"], {"guest", "host"})
+        self.assertTrue(payload["winner"] in {None, "guest"})
+        host_units = payload["host"]["units"]
+        if host_units:
+            self.assertLess(host_units[0]["hp_current"], 6)
+        else:
+            self.assertEqual(payload["winner"], "guest")
+        self.assertTrue(any("guest atacó" in item for item in payload["log"]))
+
+    def test_ai_moves_towards_enemy_instead_of_wasting_turn(self):
+        created = self.client.post(
+            "/api/match/create-vs-ai/",
+            data=json.dumps({"difficulty": "extremo"}),
+            content_type="application/json",
+        ).json()
+        room_code = created["room_code"]
+
+        record = MatchRecord.objects.get(room_code=room_code)
+        state = record.game_state
+        state["turn"]["active_side"] = "guest"
+        state["turn"]["number"] = 2
+        state["host"]["hand"] = []
+        state["host"]["library"] = []
+        state["guest"]["hand"] = []
+        state["guest"]["library"] = []
+        state["host"]["hand_count"] = 0
+        state["host"]["library_count"] = 0
+        state["guest"]["hand_count"] = 0
+        state["guest"]["library_count"] = 0
+        card = {
+            "id": 601,
+            "name": "Mover",
+            "slug": "mover",
+            "family": "Tests",
+            "stage": "base",
+            "level_min": 1,
+            "level_max": 1,
+            "hp": 6,
+            "shell": 0,
+            "action_points": 2,
+            "movement_points": 2,
+            "description": "test",
+            "image": "",
+            "summon_cost": 1,
+        }
+        state["host"]["units"] = [
+            {
+                "id": "host-far",
+                "owner": "host",
+                "x": 5,
+                "y": 0,
+                "card": card,
+                "hp_current": 6,
+                "shell_current": 0,
+                "pa_current": 2,
+                "pm_current": 2,
+                "can_act": True,
+                "can_move": True,
+                "summoned_turn": 1,
+            }
+        ]
+        state["guest"]["units"] = [
+            {
+                "id": "guest-mover",
+                "owner": "guest",
+                "x": 5,
+                "y": 8,
+                "card": {**card, "id": 602, "name": "Guest Mover"},
+                "hp_current": 6,
+                "shell_current": 0,
+                "pa_current": 2,
+                "pm_current": 2,
+                "can_act": True,
+                "can_move": True,
+                "summoned_turn": 1,
+            }
+        ]
+        record.game_state = state
+        record.save(update_fields=["game_state"])
+
+        _ai_turn(state)
+
+        payload = state
+        moved_guest = payload["guest"]["units"][0]
+        self.assertLess(moved_guest["y"], 8)
+        self.assertTrue(any("guest movió" in item for item in payload["log"]))

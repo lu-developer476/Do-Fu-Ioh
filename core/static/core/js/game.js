@@ -19,11 +19,29 @@ function setStatus(message, isError = false) {
   status.classList.toggle('status-error', isError);
 }
 
+function getCookie(name) {
+  const prefix = `${name}=`;
+  return document.cookie
+    .split(';')
+    .map((entry) => entry.trim())
+    .find((entry) => entry.startsWith(prefix))
+    ?.slice(prefix.length) || '';
+}
+
 async function api(url, options = {}) {
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(options.headers || {}),
+  };
+  if ((options.method || 'GET').toUpperCase() !== 'GET') {
+    const csrfToken = getCookie('csrftoken');
+    if (csrfToken) headers['X-CSRFToken'] = csrfToken;
+  }
+
   const response = await fetch(url, {
-    headers: { 'Content-Type': 'application/json' },
     credentials: 'same-origin',
     ...options,
+    headers,
   });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(data.message || `Error HTTP ${response.status}`);
@@ -53,7 +71,7 @@ function renderCatalog() {
       <div class="meta">
         <span class="badge">${card.family}</span>
         <span class="badge">${card.stage}</span>
-        <span class="badge">Niv ${card.level_min}-${card.level_max}</span>
+        <span class="badge">Coste ${card.summon_cost}</span>
       </div>
       <p>${card.description || ''}</p>
     </article>
@@ -204,11 +222,12 @@ function renderBoard() {
       const canAttack = enemyUnit && attackTargets.has(enemyUnit.id) && isMyTurn(mySide);
       const deployClass = myDeployment.has(key) ? 'deploy-ally' : (enemyDeployment.has(key) ? 'deploy-enemy' : '');
       const hintClass = canSummon ? 'hint-summon' : (canMove ? 'hint-move' : (canAttack ? 'hint-attack' : ''));
+      const selectedClass = ownUnit && selectedUnit?.id === ownUnit.id ? 'selected' : '';
 
       cells.push(`
-        <button class="cell ${squareClass} ${ownUnit ? 'ally' : enemyUnit ? 'enemy' : 'empty'} ${deployClass} ${hintClass}" data-x="${x}" data-y="${y}">
+        <button class="cell ${squareClass} ${ownUnit ? 'ally' : enemyUnit ? 'enemy' : 'empty'} ${deployClass} ${hintClass} ${selectedClass}" data-x="${x}" data-y="${y}">
           ${unit
-            ? `<div class="token"><strong>${unit.card.name}</strong><span>PdV ${unit.hp_current}</span><span>PA ${unit.pa_current} · PM ${unit.pm_current}</span></div>`
+            ? `<div class="token ${ownUnit ? 'token-ally' : 'token-enemy'}"><img src="${unit.card.image}" alt="${unit.card.name}" /><strong>${unit.card.name}</strong><span>PdV ${unit.hp_current}</span><span>Esc ${unit.shell_current} · PA ${unit.pa_current} · PM ${unit.pm_current}</span></div>`
             : '<div class="small"></div>'}
         </button>
       `);
@@ -229,6 +248,7 @@ function renderBoard() {
     <button class="card hand-card ${appState.selectedHandIndex === index ? 'selected' : ''}" data-hand-index="${index}">
       <img src="${card.image}" alt="${card.name}" />
       <h4>#${index + 1} · ${card.name}</h4>
+      <div class="meta"><span class="badge">Coste ${card.summon_cost}</span><span class="badge">${card.stage}</span></div>
     </button>
   `).join('') || '<div class="small">No quedan cartas en mano.</div>';
 
@@ -245,9 +265,9 @@ function renderBoard() {
   $('#match-summary').innerHTML = `
     <div><strong>Turno:</strong> ${appState.match.turn?.number || 1}</div>
     <div><strong>Activo:</strong> ${appState.match.turn?.active_side || '-'}</div>
-    <div><strong>Tu vida:</strong> ${me?.life ?? '-'}</div>
-    <div><strong>Vida IA:</strong> ${enemy?.life ?? '-'}</div>
     <div><strong>Energía:</strong> ${me?.energy ?? '-'}/${me?.max_energy ?? '-'}</div>
+    <div><strong>IA:</strong> ${enemy?.energy ?? '-'}/${enemy?.max_energy ?? '-'}</div>
+    <div><strong>Mano / mazo:</strong> ${me?.hand_count ?? '-'} / ${me?.library_count ?? '-'}</div>
     <div><strong>Ganador:</strong> ${appState.match.winner || 'sin definir'}</div>
   `;
 
@@ -255,10 +275,10 @@ function renderBoard() {
   const enemyUnits = enemy?.units || [];
   $('#unit-list').innerHTML = `
     <strong>Tus unidades</strong>
-    ${ownUnits.map((u) => `<div>${u.card.name} (${u.x},${u.y}) PdV ${u.hp_current}</div>`).join('') || '<div>Sin unidades.</div>'}
+    ${ownUnits.map((u) => `<div>${u.card.name} (${u.x},${u.y}) · PdV ${u.hp_current} · Esc ${u.shell_current}</div>`).join('') || '<div>Sin unidades.</div>'}
     <hr />
     <strong>Unidades IA</strong>
-    ${enemyUnits.map((u) => `<div>${u.card.name} (${u.x},${u.y}) PdV ${u.hp_current}</div>`).join('') || '<div>Sin unidades.</div>'}
+    ${enemyUnits.map((u) => `<div>${u.card.name} (${u.x},${u.y}) · PdV ${u.hp_current} · Esc ${u.shell_current}</div>`).join('') || '<div>Sin unidades.</div>'}
   `;
 }
 

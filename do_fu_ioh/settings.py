@@ -1,10 +1,14 @@
 import os
 from pathlib import Path
+
 import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+DEBUG = os.getenv('DJANGO_DEBUG', 'False').lower() == 'true'
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'dev-secret-key-change-me')
-DEBUG = os.getenv('DJANGO_DEBUG', 'True').lower() == 'true'
+if not DEBUG and SECRET_KEY == 'dev-secret-key-change-me':
+    raise RuntimeError('DJANGO_SECRET_KEY must be configured when DEBUG=False')
+
 
 def _split_env_list(value):
     return [item.strip() for item in value.split(',') if item.strip()]
@@ -29,12 +33,12 @@ def _merge_unique(*groups):
 
 ALLOWED_HOSTS = _merge_unique(
     _split_env_list(_sanitize_env_value(os.getenv('DJANGO_ALLOWED_HOSTS', ''), 'DJANGO_ALLOWED_HOSTS')),
-    ['do-fu-ioh.onrender.com', '.onrender.com', '127.0.0.1', 'localhost'],
+    ['do-fu-ioh.onrender.com', '127.0.0.1', 'localhost'],
 )
 
 CSRF_TRUSTED_ORIGINS = _split_env_list(_sanitize_env_value(os.getenv(
     'CSRF_TRUSTED_ORIGINS',
-    'https://do-fu-ioh.onrender.com,https://*.onrender.com,http://127.0.0.1:8000,http://localhost:8000',
+    'https://do-fu-ioh.onrender.com,http://127.0.0.1:8000,http://localhost:8000',
 ), 'CSRF_TRUSTED_ORIGINS'))
 
 INSTALLED_APPS = [
@@ -100,6 +104,10 @@ SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SAMESITE = 'Lax'
 X_FRAME_OPTIONS = 'DENY'
 SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_SSL_REDIRECT = os.getenv('DJANGO_SECURE_SSL_REDIRECT', str(not DEBUG)).lower() == 'true'
+SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
+SECURE_HSTS_PRELOAD = not DEBUG
 
 LOGGING = {
     'version': 1,

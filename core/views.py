@@ -9,7 +9,6 @@ from django.contrib.auth.models import User
 from django.db.utils import OperationalError, ProgrammingError
 from django.http import JsonResponse
 from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_http_methods
 
 from .models import MatchRecord, MonsterCard
@@ -17,10 +16,17 @@ from .models import MatchRecord, MonsterCard
 BOARD_WIDTH = 11
 BOARD_HEIGHT = 11
 HAND_SIZE = 5
+DECK_SIZE = 12
+MAX_ENERGY = 10
 SESSION_MATCH_KEY = 'active_ai_match_room_code'
 AI_USERNAME = '__dojo_ai__'
 SOLO_SYSTEM_USERNAME = '__solo_player__'
 CARDS_DATA_PATH = Path(settings.BASE_DIR) / 'data' / 'cards.json'
+SUMMON_COST_BY_STAGE = {
+    'base': 1,
+    'fusion': 3,
+    'evolution': 5,
+}
 
 
 def _slugify(value: str) -> str:
@@ -50,6 +56,11 @@ def _resolve_card_image(image):
     return f'/static/{cleaned}'
 
 
+def _summon_cost(card_like):
+    stage = card_like.get('stage', 'base')
+    return SUMMON_COST_BY_STAGE.get(stage, 1)
+
+
 def _serialize_card(card):
     return {
         'id': card.id,
@@ -65,6 +76,7 @@ def _serialize_card(card):
         'movement_points': card.movement_points,
         'description': card.description,
         'image': _resolve_card_image(card.image),
+        'summon_cost': _summon_cost({'stage': card.stage}),
     }
 
 
@@ -76,7 +88,6 @@ def _ensure_cards_seeded():
         if MonsterCard.objects.exists():
             return
     except (ProgrammingError, OperationalError):
-        # Puede ocurrir al bootear en entornos donde las migraciones aún no corrieron.
         return
 
     cards = json.loads(CARDS_DATA_PATH.read_text(encoding='utf-8'))
@@ -105,7 +116,6 @@ def _player_state(side, deck_cards):
     library = deck_cards[HAND_SIZE:]
     return {
         'side': side,
-        'life': 30,
         'energy': 1,
         'max_energy': 1,
         'hand': hand,
@@ -115,6 +125,20 @@ def _player_state(side, deck_cards):
         'units': [],
         'summons_this_turn': 0,
     }
+
+
+def _build_deck(serialized_cards):
+    if not serialized_cards:
+        return []
+    base_cards = [card for card in serialized_cards if card['stage'] == 'base']
+    non_base_cards = [card for card in serialized_cards if card['stage'] != 'base']
+    guaranteed = random.choices(base_cards or serialized_cards, k=min(HAND_SIZE, DECK_SIZE))
+    remaining_pool = non_base_cards or serialized_cards
+    weights = [2 if card['stage'] == 'fusion' else 1 for card in remaining_pool]
+    remaining = random.choices(remaining_pool, weights=weights, k=max(0, DECK_SIZE - len(guaranteed)))
+    deck = guaranteed + remaining
+    random.shuffle(deck)
+    return deck
 
 
 def _build_new_match_state(cards):
@@ -130,8 +154,8 @@ def _build_new_match_state(cards):
             'log': ['No hay cartas cargadas en la base de datos.'],
         }
 
-    host_deck = [random.choice(serialized) for _ in range(12)]
-    guest_deck = [random.choice(serialized) for _ in range(12)]
+    host_deck = _build_deck(serialized)
+    guest_deck = _build_deck(serialized)
     return {
         'mode': 'vs_ai',
         'board': {'width': BOARD_WIDTH, 'height': BOARD_HEIGHT},
@@ -203,6 +227,19 @@ def _refresh_counts(state):
         state[side]['hand_count'] = len(state[side]['hand'])
 
 
+def _reset_turn_state(player):
+    player['summons_this_turn'] = 0
+    for unit in player['units']:
+        unit['pa_current'] = unit['card']['action_points']
+        unit['pm_current'] = unit['card']['movement_points']
+        unit['can_act'] = True
+        unit['can_move'] = True
+
+
+def _distance(a, b):
+    return abs(a['x'] - b['x']) + abs(a['y'] - b['y'])
+
+
 def _apply_action(state, side, payload):
     if state['winner']:
         return 'La partida ya terminó.'
@@ -232,7 +269,7 @@ def _apply_action(state, side, payload):
             return 'Ya invocaste este turno.'
 
         card = actor['hand'].pop(hand_index)
-        cost = max(1, int(card['level_min']))
+        cost = _summon_cost(card)
         if actor['energy'] < cost:
             actor['hand'].insert(hand_index, card)
             return 'No alcanza la energía para invocar.'
@@ -283,7 +320,10 @@ def _apply_action(state, side, payload):
 
         attacker['pa_current'] -= 1
         attacker['can_act'] = attacker['pa_current'] > 0
-        damage = max(1, attacker['card']['action_points'] + 2 - target['shell_current'])
+        attack_power = attacker['card']['action_points'] + 2
+        absorbed = min(target['shell_current'], max(0, attack_power - 1))
+        target['shell_current'] = max(0, target['shell_current'] - absorbed)
+        damage = max(1, attack_power - absorbed)
         target['hp_current'] -= damage
         state['log'].append(
             f"{side} atacó con {attacker['card']['name']} e infligió {damage} de daño."
@@ -296,21 +336,16 @@ def _apply_action(state, side, payload):
         state['turn']['active_side'] = enemy_side
         if enemy_side == 'host':
             state['turn']['number'] += 1
-        enemy['max_energy'] = min(10, enemy['max_energy'] + 1)
+        enemy['max_energy'] = min(MAX_ENERGY, enemy['max_energy'] + 1)
         enemy['energy'] = enemy['max_energy']
-        enemy['summons_this_turn'] = 0
         _draw_one(enemy)
-        for unit in enemy['units']:
-            unit['pa_current'] = unit['card']['action_points']
-            unit['pm_current'] = unit['card']['movement_points']
-            unit['can_act'] = True
-            unit['can_move'] = True
+        _reset_turn_state(enemy)
         state['log'].append(f"Fin del turno de {side}.")
 
     else:
         return 'Acción no soportada.'
 
-    if enemy['life'] <= 0 or not enemy['units'] and not enemy['hand'] and not enemy['library']:
+    if not enemy['units'] and not enemy['hand'] and not enemy['library']:
         state['winner'] = side
     _refresh_counts(state)
     state['log'] = state['log'][-12:]
@@ -320,7 +355,28 @@ def _apply_action(state, side, payload):
 def _nearest_enemy(unit, enemy_units):
     if not enemy_units:
         return None
-    return min(enemy_units, key=lambda target: abs(unit['x'] - target['x']) + abs(unit['y'] - target['y']))
+    return min(enemy_units, key=lambda target: _distance(unit, target))
+
+
+def _best_step_towards(unit, nearest, state):
+    best_move = None
+    best_distance = _distance(unit, nearest)
+    max_steps = unit['pm_current']
+    for dx in range(-max_steps, max_steps + 1):
+        for dy in range(-max_steps, max_steps + 1):
+            steps = abs(dx) + abs(dy)
+            if steps == 0 or steps > max_steps:
+                continue
+            nx, ny = unit['x'] + dx, unit['y'] + dy
+            if not _in_bounds(nx, ny, state['board']['width'], state['board']['height']):
+                continue
+            if _occupied(state, nx, ny):
+                continue
+            candidate_distance = abs(nx - nearest['x']) + abs(ny - nearest['y'])
+            if candidate_distance < best_distance:
+                best_distance = candidate_distance
+                best_move = (steps, nx, ny)
+    return best_move
 
 
 def _ai_turn(state):
@@ -333,7 +389,7 @@ def _ai_turn(state):
 
     if ai['hand']:
         for index, card in enumerate(list(ai['hand'])):
-            if ai['energy'] < max(1, card['level_min']):
+            if ai['energy'] < _summon_cost(card):
                 continue
             for x, y in _deployment_cells('guest', width, height):
                 if not _occupied(state, x, y):
@@ -346,17 +402,21 @@ def _ai_turn(state):
         if not nearest:
             continue
 
-        if _can_attack(unit, nearest):
+        while unit['can_act'] and nearest and _can_attack(unit, nearest):
             _apply_action(state, 'guest', {'action': 'attack', 'attacker_id': unit['id'], 'target_id': nearest['id']})
+            nearest = _nearest_enemy(unit, state['host']['units'])
+
+        if not nearest or not unit['can_move'] or unit['pm_current'] <= 0:
             continue
 
-        for dx, dy in ((0, -1), (0, 1), (-1, 0), (1, 0)):
-            nx, ny = unit['x'] + dx, unit['y'] + dy
-            if not _in_bounds(nx, ny, width, height) or _occupied(state, nx, ny):
-                continue
-            if abs(nx - nearest['x']) + abs(ny - nearest['y']) < abs(unit['x'] - nearest['x']) + abs(unit['y'] - nearest['y']):
-                _apply_action(state, 'guest', {'action': 'move', 'unit_id': unit['id'], 'to_x': nx, 'to_y': ny})
-                break
+        move = _best_step_towards(unit, nearest, state)
+        if move:
+            _, nx, ny = move
+            _apply_action(state, 'guest', {'action': 'move', 'unit_id': unit['id'], 'to_x': nx, 'to_y': ny})
+            nearest = _nearest_enemy(unit, state['host']['units'])
+            while unit['can_act'] and nearest and _can_attack(unit, nearest):
+                _apply_action(state, 'guest', {'action': 'attack', 'attacker_id': unit['id'], 'target_id': nearest['id']})
+                nearest = _nearest_enemy(unit, state['host']['units'])
 
     _apply_action(state, 'guest', {'action': 'end_turn'})
 
@@ -411,7 +471,6 @@ def get_active_match(request):
     return JsonResponse({'ok': True, **_match_payload(record)})
 
 
-@csrf_exempt
 @require_http_methods(['POST'])
 def create_match_vs_ai(request):
     _ensure_cards_seeded()
@@ -451,7 +510,6 @@ def get_match(request, room_code):
     return JsonResponse({'ok': True, **_match_payload(record)})
 
 
-@csrf_exempt
 @require_http_methods(['POST'])
 def match_action(request, room_code):
     session_room = request.session.get(SESSION_MATCH_KEY)

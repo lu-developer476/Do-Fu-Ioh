@@ -10,7 +10,7 @@
     "action_points": 5,
     "movement_points": 5,
     "description": "Variante extremadamente rara de los Píos que habitan las llanuras de Amakna. Su plumaje pálido es producto de una anomalía mágica del Wakfu. Aunque parecen frágiles, estos Píos son territoriales y atacan con sorprendente ferocidad a cualquier intruso.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/pios/base/pio-albino.png"
   },
   {
     "name": "Pío anaranjado",
@@ -23,7 +23,7 @@
     "action_points": 5,
     "movement_points": 5,
     "description": "Pariente cercano del famoso Pío rojo del Mundo de los Doce. Esta variante presenta tonos cálidos en su plumaje y suele encontrarse cerca de zonas templadas donde abundan semillas y pequeños insectos.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/pios/base/pio-anaranjado.png"
   },
   {
     "name": "Pío castaño",
@@ -36,7 +36,7 @@
     "action_points": 5,
     "movement_points": 5,
     "description": "Ave pequeña pero testaruda que suele anidar en campos abiertos. Los aventureros la reconocen por su agresividad desproporcionada para su tamaño.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/pios/base/pio-castaño.png"
   },
   {
     "name": "Pío negruzco",
@@ -49,7 +49,7 @@
     "action_points": 5,
     "movement_points": 5,
     "description": "Una variante oscura de los Píos que prefiere ambientes más sombríos. Su plumaje oscuro le permite camuflarse entre rocas y troncos caídos.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/pios/base/pio-negruzco.png"
   },
   {
     "name": "Pío otoñal",
@@ -62,7 +62,7 @@
     "action_points": 5,
     "movement_points": 5,
     "description": "Resultado de una fusión mágica entre el Pío anaranjado y el Pío castaño. La energía del Wakfu alteró su plumaje creando tonos similares a los de las hojas en otoño. Su patrón recuerda a las hojas secas y su carácter es más impredecible.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/pios/fusions/pio-otoñal.png"
   },
   {
     "name": "Pío combinado",
@@ -75,7 +75,7 @@
     "action_points": 5,
     "movement_points": 5,
     "description": "Criatura surgida de la mezcla entre el Pío albino y el Pío negruzco. Su plumaje contrastado refleja la combinación de energías opuestas. Su instinto es mucho más feroz.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/pios/fusions/pio-combinado.png"
   },
   {
     "name": "Píoloro",
@@ -88,7 +88,7 @@
     "action_points": 7,
     "movement_points": 6,
     "description": "Evolución poco común del Pío otoñal. Estas aves desarrollan un plumaje más vistoso y un comportamiento más astuto tras sobrevivir múltiples combates. Gana porte, astucia y una presencia más dominante que la de cualquier pío corriente.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/pios/evolutions/pioloro.png"
   },
   {
     "name": "Kitsu amatista",
@@ -101,7 +101,7 @@
     "action_points": 9,
     "movement_points": 6,
     "description": "Espíritu kitsune de tonalidades violetas vinculado a las energías arcanas de Pandala.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/kitsus/base/kitsu-amatista.png"
   },
   {
     "name": "Kitsu anaranjado",
@@ -114,7 +114,7 @@
     "action_points": 9,
     "movement_points": 6,
     "description": "Variante ardiente de los Kitsus cuya energía recuerda a las brasas de un fuego controlado.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/kitsus/base/kitsu-naranja.png"
   },
   {
     "name": "Kitsu carmine",
@@ -127,7 +127,7 @@
     "action_points": 9,
     "movement_points": 6,
     "description": "Espíritu kitsu de tonalidad rojiza profunda asociado con la intensidad del Wakfu.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/kitsus/base/kitsu-carmine.png"
   },
   {
     "name": "Kitsu dākuburakku",
@@ -140,7 +140,7 @@
     "action_points": 9,
     "movement_points": 6,
     "description": "Kitsu oscuro que canaliza energías sombrías del Mundo de los Doce.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/kitsus/base/kitsu-dākuburakku.png"
   },
   {
     "name": "Kitsu junsuina hikari",
@@ -153,7 +153,7 @@
     "action_points": 9,
     "movement_points": 6,
     "description": "Manifestación espiritual del kitsu ligada a la pureza y la luz.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/kitsus/base/kitsu-junsuina-hikari.png"
   },
   {
     "name": "Kitsu magenta",
@@ -166,7 +166,7 @@
     "action_points": 9,
     "movement_points": 6,
     "description": "Espíritu kitsune de energía vibrante, errática y caótica. Su coloración intensa delata una afinidad con corrientes mágicas difíciles de controlar.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/kitsus/base/kitsu-magenta.png"
   },
   {
     "name": "Kitsu midori no mizu",
@@ -179,7 +179,7 @@
     "action_points": 9,
     "movement_points": 6,
     "description": "Rara manifestación kitsune de la energía del agua como un manantial cargado de vida. Su presencia sugiere equilibrio entre fluidez y naturaleza, reflejando tonalidades esmeraldas.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/kitsus/base/kitsu-midori-no-mizu.png"
   },
   {
     "name": "Kitsu mizu",
@@ -192,7 +192,7 @@
     "action_points": 9,
     "movement_points": 6,
     "description": "Variante acuática inspirada en los antiguos Kitsus de Pandala. Su pelaje azul concentra una energía fluida, fría y constante, propia de los espíritus del agua.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/kitsus/base/kitsu-mizu.png"
   },
   {
     "name": "Kitsu silvestre",
@@ -205,7 +205,7 @@
     "action_points": 9,
     "movement_points": 6,
     "description": "Forma más salvaje y agresiva del linaje que habita zonas naturales. Conserva el misticismo de Pandala, pero con un instinto más salvaje y territorial.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/kitsus/base/kitsu-silvestre.png"
   },
   {
     "name": "Kitsu nishiki",
@@ -218,7 +218,7 @@
     "action_points": 8,
     "movement_points": 5,
     "description": "Fusión espiritual entre Kitsu Mizu y Kitsu Midori no Mizu. Su pelaje de 2 colores recuerda a los koi ornamentales y refleja una armonía acuática poco frecuente.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/kitsus/fusions/kitsu-nishiki-merged.png"
   },
   {
     "name": "Kitsu penta",
@@ -231,7 +231,7 @@
     "action_points": 8,
     "movement_points": 5,
     "description": "Manifestación extremadamente inestable surgida de la unión de cinco energías kitsu. Su energía es enorme, pero también inestable, como si varias voluntades convivieran en un mismo cuerpo.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/kitsus/fusions/kitsu-penta-merged.png"
   },
   {
     "name": "Kitsu yin yang",
@@ -244,7 +244,7 @@
     "action_points": 8,
     "movement_points": 5,
     "description": "Fusión nacida del equilibrio entre la oscuridad del Kitsu dākuburakku y la pureza del Kitsu junsuina hikari. En él conviven dos corrientes opuestas de una misma esencia.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/kitsus/fusions/kitsu-yinyang-merged.png"
   },
   {
     "name": "Kitsu silvestre evolucionado",
@@ -257,7 +257,7 @@
     "action_points": 10,
     "movement_points": 7,
     "description": "Evolución base del Kitsu silvestre. Al madurar, su vínculo con Pandala se refuerza y su instinto cazador se vuelve más preciso y dominante.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/kitsus/evolutions/kitsu-silvestre-evolved.png"
   },
   {
     "name": "Kitsu kumiawase",
@@ -270,7 +270,7 @@
     "action_points": 10,
     "movement_points": 7,
     "description": "Evolución base del Kitsu amatista y magenta que representa la armonía entre 2 energías complementarias. Su nombre refleja la unión en una forma más estable y poderosa.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/kitsus/evolutions/kitsu-kumiawase-evolved.png"
   },
   {
     "name": "Kitsu nishiki evolucionado",
@@ -283,7 +283,7 @@
     "action_points": 10,
     "movement_points": 7,
     "description": "Evolución de la fusión Kitsu nishiki. Su pelaje gana brillo ceremonial y su cuerpo canaliza con más estabilidad las corrientes espirituales del agua.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/kitsus/evolutions/kitsu-nishiki-evolved.png"
   },
   {
     "name": "Kitsu penta evolucionado",
@@ -296,7 +296,7 @@
     "action_points": 10,
     "movement_points": 7,
     "description": "Evolución de la fusión Kitsu penta. La enorme mezcla de energías deja de ser caótica y se transforma en una presencia majestuosa y peligrosa.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/kitsus/evolutions/kitsu-penta-evolved.png"
   },
   {
     "name": "Kitsu yin yang evolucionado",
@@ -309,7 +309,7 @@
     "action_points": 10,
     "movement_points": 7,
     "description": "Evolución de la fusión Kitsu yin yang. Su cuerpo domina mejor la tensión entre luz y sombra, convirtiendo ese equilibrio en una fuerza propia.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/kitsus/evolutions/kitsu-yinyang-evolved.png"
   },
   {
     "name": "Gelatina de durazno",
@@ -322,7 +322,7 @@
     "action_points": 9,
     "movement_points": 4,
     "description": "Variante inspirada en las gelatinas de la Península de las Gelatinas. Su masa suave y dulzona esconde la elasticidad y voracidad propias de su familia.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/gelatinas/base/gelatina-durazno.png"
   },
   {
     "name": "Gelatina de frambuesa",
@@ -335,7 +335,7 @@
     "action_points": 9,
     "movement_points": 4,
     "description": "Gelatina de color rojizo y aroma intenso. Como las demás de su especie, parece inofensiva hasta que envuelve a su presa con movimientos pegajosos.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/gelatinas/base/gelatina-frambuesa.png"
   },
   {
     "name": "Gelatina lactosada",
@@ -348,7 +348,7 @@
     "action_points": 9,
     "movement_points": 4,
     "description": "Subespecie espesa de gelatina que parece haber absorbido nutrientes de productos lácteos. Su consistencia cremosa le da un aspecto blando, pero resiste más de lo que aparenta.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/gelatinas/base/gelatina-lactosada.png"
   },
   {
     "name": "Gelatina moka",
@@ -361,7 +361,7 @@
     "action_points": 9,
     "movement_points": 4,
     "description": "Gelatina acaramelada con aroma a granos tostados y una textura más compacta. Se mueve despacio, pero golpea con la inercia viscosa típica de su linaje.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/gelatinas/base/gelatina-moka.png"
   },
   {
     "name": "Gelatina nociva",
@@ -374,7 +374,7 @@
     "action_points": 9,
     "movement_points": 4,
     "description": "Gelatina peligrosa impregnada de sustancias tóxicas del entorno. Su masa corrompida irrita y desgasta a cualquiera que quede atrapado en ella.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/gelatinas/base/gelatina-nociva.png"
   },
   {
     "name": "Gelatina obscura",
@@ -387,7 +387,7 @@
     "action_points": 9,
     "movement_points": 4,
     "description": "Variante sombría que habita lugares húmedos, poco iluminados u oscuros. Su pigmentación le permite absorber la luz y se vuelve más difícil anticipar sus movimientos.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/gelatinas/base/gelatina-obscura.png"
   },
   {
     "name": "Gelatina de uva",
@@ -400,7 +400,7 @@
     "action_points": 9,
     "movement_points": 4,
     "description": "Subespecie púrpura que parece haber absorbido jugos frutales fermentados. Conserva la elasticidad clásica de las gelatinas, pero con un temperamento más caprichoso.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/gelatinas/base/gelatina-uva.png"
   },
   {
     "name": "Gelatina de durazno Real",
@@ -413,7 +413,7 @@
     "action_points": 10,
     "movement_points": 5,
     "description": "Evolución madura de la Gelatina de durazno. Su masa concentra más energía mágica y responde con mayor fuerza cuando la acorralan.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/gelatinas/evolutions/gelatina-durazno-real.png"
   },
   {
     "name": "Gelatina de frambuesa Real",
@@ -426,7 +426,7 @@
     "action_points": 10,
     "movement_points": 5,
     "description": "Evolución de la Gelatina de frambuesa. Desprende un aroma más intenso y logra defenderse con más presión.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/gelatinas/evolutions/gelatina-frambuesa-real.png"
   },
   {
     "name": "Gelatina lactosada Real",
@@ -439,7 +439,7 @@
     "action_points": 10,
     "movement_points": 5,
     "description": "Evolución de la Gelatina lactosada. Su cuerpo se vuelve más denso y resistente, como si hubiera compactado toda su materia gelatinosa.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/gelatinas/evolutions/gelatina-lactosada-real.png"
   },
   {
     "name": "Gelatina moka Real",
@@ -452,7 +452,7 @@
     "action_points": 10,
     "movement_points": 5,
     "description": "Evolución de la Gelatina moka cuya consistencia se vuelve más sólida, otorgándole mayor robustez en combate.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/gelatinas/evolutions/gelatina-moka-real.png"
   },
   {
     "name": "Gelatina nociva Real",
@@ -465,7 +465,7 @@
     "action_points": 10,
     "movement_points": 5,
     "description": "Evolución de Gelatina nociva. La corrupción de su masa alcanza un punto en que su sola presencia es capaz de contaminar el terreno alrededor.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/gelatinas/evolutions/gelatina-nociva-real.png"
   },
   {
     "name": "Gelatina obscura Real",
@@ -478,7 +478,7 @@
     "action_points": 10,
     "movement_points": 5,
     "description": "Evolución de Gelatina obscura. Domina ambientes sombríos y usa esa ventaja para ocultar sus ataques.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/gelatinas/evolutions/gelatina-obscura-real.png"
   },
   {
     "name": "Gelatina de uva Real",
@@ -491,7 +491,7 @@
     "action_points": 10,
     "movement_points": 5,
     "description": "Evolución de Gelatina de uva. Su madurez y energía frutal condensada se intensifican en una masa más poderosa.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/gelatinas/evolutions/gelatina-uva-real.png"
   },
   {
     "name": "Escarahoja anaranjada",
@@ -504,7 +504,7 @@
     "action_points": 7,
     "movement_points": 4,
     "description": "Escarabajo elemental con caparazón brillante que habita campos abiertos. Protege un temperamento obstinado y agresivo.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/escarahojas/base/escarahoja-anaranjada.png"
   },
   {
     "name": "Escarahoja limonada",
@@ -517,7 +517,7 @@
     "action_points": 7,
     "movement_points": 4,
     "description": "Escarahoja de tonos amarillos adaptado a zonas secas y soleadas. Su caparazón refleja la luz y lo vuelve fácil de distinguir.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/escarahojas/base/escarahoja-limonada.png"
   },
   {
     "name": "Escarahoja sonrosada",
@@ -530,7 +530,7 @@
     "action_points": 7,
     "movement_points": 4,
     "description": "Subespecie de color rosado que destaca entre la fauna de su familia. Bajo ese tono extraño conserva la dureza típica de los escarahojas.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/escarahojas/base/escarahoja-sonrosada.png"
   },
   {
     "name": "Escarahoja tostada",
@@ -543,7 +543,7 @@
     "action_points": 7,
     "movement_points": 4,
     "description": "Variante de tonos marrones endurecida por el clima y el terreno. Su caparazón parece curtido por el polvo, el calor y el combate constante.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/escarahojas/base/escarahoja-tostada.png"
   },
   {
     "name": "Escarahoja violeta",
@@ -556,7 +556,7 @@
     "action_points": 7,
     "movement_points": 4,
     "description": "Escarahoja poco común cuyo caparazón oscuro sugiere una afinidad mayor con energías arcaicas. Suele intimidar más de lo que su tamaño sugiere.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/escarahojas/base/escarahoja-violeta.png"
   },
   {
     "name": "Escarahoja duocromada",
@@ -569,7 +569,7 @@
     "action_points": 8,
     "movement_points": 5,
     "description": "Fusión entre la Escarahoja anaranjada y la Escarahoja tostada. Su caparazón mezcla ambos tonos en una coraza más llamativa y resistente.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/escarahojas/fusions/escarahoja-duocromada.png"
   },
   {
     "name": "Escarahoja mecanizada",
@@ -582,7 +582,7 @@
     "action_points": 8,
     "movement_points": 5,
     "description": "Mutación nacida de la unión entre la Escarahoja limonada y la Escarahoja tostada. Su coraza se endurece hasta parecer metálica.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/escarahojas/fusions/escarahoja-mecanizada.png"
   },
   {
     "name": "Escarahoja tricolor",
@@ -595,7 +595,7 @@
     "action_points": 8,
     "movement_points": 5,
     "description": "Fusión de la Escarahoja sonrosada y la Escarahoja violeta. La mezcla de pigmentos deja un caparazón extraño y una presencia más amenazante.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/escarahojas/fusions/escarahoja-tricolor.png"
   },
   {
     "name": "Escarahoja variopinta",
@@ -608,7 +608,7 @@
     "action_points": 8,
     "movement_points": 5,
     "description": "Fusión mayor nacida de varias líneas escarahoja. Su coraza concentra múltiples tonalidades y una resistencia superior.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/escarahojas/fusions/escarahoja-variopinta.png"
   },
   {
     "name": "Escarasubjefe Bronce",
@@ -621,6 +621,6 @@
     "action_points": 10,
     "movement_points": 6,
     "description": "Cuando una fusión de escarahojas completa su ciclo puede ascender, dando como resultado una presencia indiscutible y dominante.",
-    "image": "core/img/placeholders/card-placeholder.svg"
+    "image": "public/images/escarahojas/evolutions/escarasubjefe-bronce.png"
   }
 ]

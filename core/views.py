@@ -1,17 +1,13 @@
 import json
 import random
 import secrets
-import unicodedata
 from collections import deque
-from pathlib import Path
-
-from django.conf import settings
-from django.db.utils import OperationalError, ProgrammingError
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_GET, require_http_methods
 
+from .card_catalog import serialized_cards_queryset, serialize_card, summon_cost
 from .models import MatchRecord, MonsterCard
 from .system_users import get_single_player_system_users
 
@@ -22,12 +18,6 @@ DECK_SIZE = 12
 MAX_ENERGY = 10
 AI_DIFFICULTIES = {"normal", "extremo"}
 SESSION_MATCH_KEY = "active_ai_match_room_code"
-CARDS_DATA_PATH = Path(settings.BASE_DIR) / "data" / "cards.json"
-SUMMON_COST_BY_STAGE = {
-    "base": 1,
-    "fusion": 3,
-    "evolution": 5,
-}
 STAGE_RANK = {"base": 0, "fusion": 1, "evolution": 2}
 SUPPORTED_ACTIONS = {"summon", "move", "attack", "end_turn"}
 ACTION_FIELD_TYPES = {
@@ -39,14 +29,6 @@ ACTION_FIELD_TYPES = {
 
 
 # Payload / response helpers
-
-def _slugify(value: str) -> str:
-    value = (
-        unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode("ascii")
-    )
-    value = "".join(ch.lower() if ch.isalnum() else "-" for ch in value)
-    return "-".join(part for part in value.split("-") if part)[:140]
-
 
 def _payload(request):
     try:
@@ -61,76 +43,6 @@ def _json_error(message, status=400):
 
 def _state_error(message, status=500):
     return _json_error(f"Estado de partida inválido: {message}", status=status)
-
-
-# Card serialization / loading
-
-def _resolve_card_image(image):
-    raw = (image or "").strip()
-    if not raw:
-        return ""
-    if raw.startswith(("http://", "https://", "/")):
-        return raw
-    cleaned = raw[7:] if raw.startswith("public/") else raw
-    return f"/static/{cleaned}"
-
-
-def _summon_cost(card_like):
-    stage = card_like.get("stage", "base")
-    return SUMMON_COST_BY_STAGE.get(stage, 1)
-
-
-def _serialize_card(card):
-    return {
-        "id": card.id,
-        "name": card.name,
-        "slug": card.slug,
-        "family": card.family,
-        "stage": card.stage,
-        "level_min": card.level_min,
-        "level_max": card.level_max,
-        "hp": card.hp,
-        "shell": card.shell,
-        "action_points": card.action_points,
-        "movement_points": card.movement_points,
-        "description": card.description,
-        "image": _resolve_card_image(card.image),
-        "summon_cost": _summon_cost({"stage": card.stage}),
-    }
-
-
-def _serialized_cards_queryset():
-    return [_serialize_card(card) for card in MonsterCard.objects.all()]
-
-
-def _ensure_cards_seeded():
-    if not CARDS_DATA_PATH.exists():
-        return
-
-    try:
-        if MonsterCard.objects.exists():
-            return
-    except (ProgrammingError, OperationalError):
-        return
-
-    cards = json.loads(CARDS_DATA_PATH.read_text(encoding="utf-8"))
-    for item in cards:
-        MonsterCard.objects.update_or_create(
-            slug=_slugify(item["name"]),
-            defaults={
-                "family": item["family"],
-                "name": item["name"],
-                "stage": item["stage"],
-                "level_min": item["level_min"],
-                "level_max": item["level_max"],
-                "hp": item["hp"],
-                "shell": item["shell"],
-                "action_points": item["action_points"],
-                "movement_points": item["movement_points"],
-                "description": item.get("description", ""),
-                "image": item.get("image", ""),
-            },
-        )
 
 
 # Match building
@@ -190,7 +102,7 @@ def _empty_match_state(difficulty):
 
 def _build_new_match_state(cards, difficulty="normal"):
     difficulty = _normalize_ai_difficulty(difficulty)
-    serialized = [_serialize_card(card) for card in cards]
+    serialized = [serialize_card(card) for card in cards]
     if not serialized:
         return _empty_match_state(difficulty)
 
@@ -574,7 +486,7 @@ def _apply_summon_action(state, side, actor, payload):
         return "Ya invocaste este turno."
 
     card = actor["hand"].pop(hand_index)
-    cost = _summon_cost(card)
+    cost = summon_cost(card)
     if actor["energy"] < cost:
         actor["hand"].insert(hand_index, card)
         return "No alcanza la energía para invocar."
@@ -728,7 +640,7 @@ def _best_summon_action(state, difficulty):
     affordable_cards = [
         (index, card)
         for index, card in enumerate(ai["hand"])
-        if _summon_cost(card) <= ai["energy"]
+        if summon_cost(card) <= ai["energy"]
     ]
     if not affordable_cards or ai["summons_this_turn"] >= 1:
         return None
@@ -757,7 +669,7 @@ def _best_summon_action(state, difficulty):
                 card["action_points"],
                 card["movement_points"],
                 card["hp"],
-                -_summon_cost(card),
+                -summon_cost(card),
             )
         return priority
 
@@ -919,8 +831,7 @@ def _validated_record_state(record):
 @require_GET
 @ensure_csrf_cookie
 def index(request):
-    _ensure_cards_seeded()
-    return render(request, "core/index.html", {"cards_seed_json": _serialized_cards_queryset()})
+    return render(request, "core/index.html", {"cards_seed_json": serialized_cards_queryset()})
 
 
 @require_GET
@@ -930,8 +841,7 @@ def health(request):
 
 @require_GET
 def cards_catalog(request):
-    _ensure_cards_seeded()
-    return JsonResponse({"ok": True, "cards": _serialized_cards_queryset()})
+    return JsonResponse({"ok": True, "cards": serialized_cards_queryset()})
 
 
 @require_GET
@@ -947,7 +857,6 @@ def get_active_match(request):
 
 @require_http_methods(["POST"])
 def create_match_vs_ai(request):
-    _ensure_cards_seeded()
     payload = _payload(request)
     difficulty = _normalize_ai_difficulty(payload.get("difficulty"))
     cards = list(MonsterCard.objects.all())

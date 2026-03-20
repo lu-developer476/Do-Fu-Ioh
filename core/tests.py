@@ -1,5 +1,6 @@
 import json
 
+from django.core.management import call_command
 from django.middleware.csrf import _get_new_csrf_string
 from django.test import Client, TestCase
 
@@ -8,6 +9,22 @@ from django.contrib.auth.models import User
 from .models import MatchRecord, MonsterCard
 from .system_users import AI_USERNAME, SOLO_PLAYER_USERNAME, get_single_player_system_users
 from .views import _ai_turn
+
+
+class CardsCatalogSeedTests(TestCase):
+    def test_catalog_is_available_without_view_level_seeding(self):
+        response = self.client.get('/api/cards/')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()['cards'])
+
+    def test_management_command_seeds_when_catalog_is_empty(self):
+        MonsterCard.objects.all().delete()
+
+        call_command('seed_cards_catalog')
+
+        self.assertTrue(MonsterCard.objects.exists())
+
 
 
 class UserProfileSignalTests(TestCase):

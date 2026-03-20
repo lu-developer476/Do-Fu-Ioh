@@ -66,6 +66,34 @@ class SoloAIModeTests(TestCase):
                     image="public/images/pios/base/pio-albino.png",
                 )
 
+    def _create_match(self):
+        response = self.client.post(
+            "/api/match/create-vs-ai/", data="{}", content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+        return response.json()
+
+    def _summon_first_affordable_host_unit(self, room_code, match_payload, x=None, y=0):
+        center_x = match_payload["match"]["board"]["width"] // 2
+        summon_x = center_x if x is None else x
+        playable_index = next(
+            index
+            for index, card in enumerate(match_payload["match"]["host"]["hand"])
+            if card["summon_cost"] <= 1
+        )
+        response = self.client.post(
+            f"/api/match/{room_code}/action/",
+            data=json.dumps(
+                {
+                    "action": "summon",
+                    "hand_index": playable_index,
+                    "x": summon_x,
+                    "y": y,
+                }
+            ),
+            content_type="application/json",
+        )
+        return response, summon_x
 
     def test_single_player_uses_reserved_system_users_only_as_internal_actors(self):
         solo_user, ai_user = get_single_player_system_users()
@@ -470,6 +498,283 @@ class SoloAIModeTests(TestCase):
         payload = end_turn.json()
         self.assertEqual(payload["match"]["winner"], "guest")
         self.assertEqual(payload["status"], "finished")
+
+    def test_summon_rejects_cells_outside_deployment_zone(self):
+        created = self._create_match()
+        room_code = created["room_code"]
+
+        response, center_x = self._summon_first_affordable_host_unit(
+            room_code, created, y=3
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["message"], "Sólo podés invocar en tu zona azul.")
+
+        record = MatchRecord.objects.get(room_code=room_code)
+        self.assertEqual(record.game_state["host"]["units"], [])
+        self.assertEqual(record.game_state["host"]["energy"], 1)
+        self.assertFalse(any(str((center_x, 3)) in item for item in record.game_state["log"]))
+
+    def test_summon_rejects_when_energy_is_insufficient(self):
+        created = self._create_match()
+        room_code = created["room_code"]
+        center_x = created["match"]["board"]["width"] // 2
+        costly_index = next(
+            index
+            for index, card in enumerate(created["match"]["host"]["hand"])
+            if card["summon_cost"] > created["match"]["host"]["energy"]
+        )
+
+        response = self.client.post(
+            f"/api/match/{room_code}/action/",
+            data=json.dumps(
+                {"action": "summon", "hand_index": costly_index, "x": center_x, "y": 0}
+            ),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["message"], "No alcanza la energía para invocar.")
+
+        record = MatchRecord.objects.get(room_code=room_code)
+        self.assertEqual(record.game_state["host"]["units"], [])
+        self.assertEqual(record.game_state["host"]["energy"], 1)
+        self.assertEqual(len(record.game_state["host"]["hand"]), len(created["match"]["host"]["hand"]))
+
+    def test_move_rejects_destination_outside_board(self):
+        created = self._create_match()
+        room_code = created["room_code"]
+        summon, center_x = self._summon_first_affordable_host_unit(room_code, created)
+        self.assertEqual(summon.status_code, 200)
+
+        record = MatchRecord.objects.get(room_code=room_code)
+        state = record.game_state
+        unit = state["host"]["units"][0]
+        unit["pm_current"] = 3
+        unit["can_move"] = True
+        record.game_state = state
+        record.save(update_fields=["game_state"])
+
+        response = self.client.post(
+            f"/api/match/{room_code}/action/",
+            data=json.dumps(
+                {"action": "move", "unit_id": unit["id"], "to_x": center_x, "to_y": -1}
+            ),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["message"], "Destino inválido.")
+
+        record.refresh_from_db()
+        moved_unit = record.game_state["host"]["units"][0]
+        self.assertEqual((moved_unit["x"], moved_unit["y"]), (center_x, 0))
+
+    def test_move_rejects_occupied_destination(self):
+        created = self._create_match()
+        room_code = created["room_code"]
+        summon, center_x = self._summon_first_affordable_host_unit(room_code, created)
+        self.assertEqual(summon.status_code, 200)
+
+        record = MatchRecord.objects.get(room_code=room_code)
+        state = record.game_state
+        unit = state["host"]["units"][0]
+        unit["pm_current"] = 3
+        unit["can_move"] = True
+        state["host"]["units"].append(
+            {
+                "id": "friendly-blocker",
+                "owner": "host",
+                "x": center_x + 1,
+                "y": 0,
+                "card": unit["card"],
+                "hp_current": 6,
+                "shell_current": 1,
+                "pa_current": 0,
+                "pm_current": 0,
+                "can_act": False,
+                "can_move": False,
+                "summoned_turn": 1,
+            }
+        )
+        record.game_state = state
+        record.save(update_fields=["game_state"])
+
+        response = self.client.post(
+            f"/api/match/{room_code}/action/",
+            data=json.dumps(
+                {
+                    "action": "move",
+                    "unit_id": unit["id"],
+                    "to_x": center_x + 1,
+                    "to_y": 0,
+                }
+            ),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["message"], "Movimiento fuera de rango.")
+
+        record.refresh_from_db()
+        moved_unit = record.game_state["host"]["units"][0]
+        self.assertEqual((moved_unit["x"], moved_unit["y"]), (center_x, 0))
+
+    def test_attack_rejects_target_out_of_range(self):
+        created = self._create_match()
+        room_code = created["room_code"]
+        summon, center_x = self._summon_first_affordable_host_unit(room_code, created)
+        self.assertEqual(summon.status_code, 200)
+
+        record = MatchRecord.objects.get(room_code=room_code)
+        state = record.game_state
+        attacker = state["host"]["units"][0]
+        attacker["pa_current"] = 2
+        attacker["can_act"] = True
+        state["guest"]["units"] = [
+            {
+                "id": "far-target",
+                "owner": "guest",
+                "x": center_x,
+                "y": 4,
+                "card": attacker["card"],
+                "hp_current": 6,
+                "shell_current": 1,
+                "pa_current": 0,
+                "pm_current": 0,
+                "can_act": False,
+                "can_move": False,
+                "summoned_turn": 1,
+            }
+        ]
+        record.game_state = state
+        record.save(update_fields=["game_state"])
+
+        response = self.client.post(
+            f"/api/match/{room_code}/action/",
+            data=json.dumps(
+                {
+                    "action": "attack",
+                    "attacker_id": attacker["id"],
+                    "target_id": "far-target",
+                }
+            ),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["message"], "Objetivo fuera de rango o sin PA.")
+
+        record.refresh_from_db()
+        self.assertEqual(record.game_state["guest"]["units"][0]["hp_current"], 6)
+
+    def test_match_from_other_session_remains_inaccessible_after_actions(self):
+        created = self._create_match()
+        room_code = created["room_code"]
+        summon, _ = self._summon_first_affordable_host_unit(room_code, created)
+        self.assertEqual(summon.status_code, 200)
+
+        other_client = self.client_class()
+        direct = other_client.get(f"/api/match/{room_code}/")
+        active = other_client.get("/api/match/active/")
+
+        self.assertEqual(direct.status_code, 404)
+        self.assertEqual(direct.json()["message"], "Partida no disponible para esta sesión.")
+        self.assertEqual(active.status_code, 200)
+        self.assertIsNone(active.json()["room_code"])
+        self.assertIsNone(active.json()["match"])
+
+    def test_game_ends_correctly_when_host_removes_last_guest_resource(self):
+        created = self._create_match()
+        room_code = created["room_code"]
+        summon, center_x = self._summon_first_affordable_host_unit(room_code, created)
+        self.assertEqual(summon.status_code, 200)
+
+        record = MatchRecord.objects.get(room_code=room_code)
+        state = record.game_state
+        attacker = state["host"]["units"][0]
+        attacker["x"] = center_x
+        attacker["y"] = state["board"]["height"] - 2
+        attacker["pa_current"] = 2
+        attacker["can_act"] = True
+        state["guest"]["hand"] = []
+        state["guest"]["library"] = []
+        state["guest"]["units"] = [
+            {
+                "id": "guest-last-unit",
+                "owner": "guest",
+                "x": center_x,
+                "y": state["board"]["height"] - 1,
+                "card": attacker["card"],
+                "hp_current": 1,
+                "shell_current": 0,
+                "pa_current": 0,
+                "pm_current": 0,
+                "can_act": False,
+                "can_move": False,
+                "summoned_turn": 1,
+            }
+        ]
+        record.game_state = state
+        record.save(update_fields=["game_state"])
+
+        response = self.client.post(
+            f"/api/match/{room_code}/action/",
+            data=json.dumps(
+                {
+                    "action": "attack",
+                    "attacker_id": attacker["id"],
+                    "target_id": "guest-last-unit",
+                }
+            ),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["match"]["winner"], "host")
+        self.assertEqual(payload["status"], "finished")
+        self.assertEqual(payload["match"]["guest"]["units"], [])
+        self.assertTrue(any("fue derrotado" in item for item in payload["match"]["log"]))
+
+    def test_state_persists_after_turn_actions(self):
+        created = self._create_match()
+        room_code = created["room_code"]
+        summon, center_x = self._summon_first_affordable_host_unit(room_code, created)
+        self.assertEqual(summon.status_code, 200)
+        summon_payload = summon.json()
+        host_unit = summon_payload["match"]["host"]["units"][0]
+
+        move = self.client.post(
+            f"/api/match/{room_code}/action/",
+            data=json.dumps(
+                {
+                    "action": "move",
+                    "unit_id": host_unit["id"],
+                    "to_x": center_x + 1,
+                    "to_y": 0,
+                }
+            ),
+            content_type="application/json",
+        )
+        self.assertEqual(move.status_code, 200)
+
+        end_turn = self.client.post(
+            f"/api/match/{room_code}/action/",
+            data=json.dumps({"action": "end_turn"}),
+            content_type="application/json",
+        )
+        self.assertEqual(end_turn.status_code, 200)
+
+        record = MatchRecord.objects.get(room_code=room_code)
+        persisted_unit = next(
+            unit for unit in record.game_state["host"]["units"] if unit["id"] == host_unit["id"]
+        )
+        self.assertEqual((persisted_unit["x"], persisted_unit["y"]), (center_x + 1, 0))
+        self.assertEqual(record.game_state["turn"]["active_side"], "host")
+        self.assertEqual(record.status, "active")
+        self.assertTrue(any("host movió" in item for item in record.game_state["log"]))
+        self.assertTrue(any("Fin del turno de host." == item for item in record.game_state["log"]))
 
     def test_create_match_accepts_ai_difficulty_levels(self):
         created = self.client.post(

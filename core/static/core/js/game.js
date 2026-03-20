@@ -106,7 +106,7 @@ function deploymentCellsForSide(side, boardWidth, boardHeight) {
   ]);
 }
 
-function computeMoveTargets(selectedUnit, meUnits, enemyUnits) {
+function computeMoveTargets(selectedUnit, meUnits, enemyUnits, boardWidth = DEFAULT_BOARD_WIDTH, boardHeight = DEFAULT_BOARD_HEIGHT) {
   if (!selectedUnit || selectedUnit.pm_current <= 0 || !selectedUnit.can_move) return new Set();
   const occupied = new Set([...meUnits, ...enemyUnits].map((u) => `${u.x},${u.y}`));
   const targets = new Set();
@@ -116,6 +116,7 @@ function computeMoveTargets(selectedUnit, meUnits, enemyUnits) {
       if (dist === 0 || dist > selectedUnit.pm_current) continue;
       const x = selectedUnit.x + dx;
       const y = selectedUnit.y + dy;
+      if (x < 0 || y < 0 || x >= boardWidth || y >= boardHeight) continue;
       if (occupied.has(`${x},${y}`)) continue;
       targets.add(`${x},${y}`);
     }
@@ -132,6 +133,28 @@ function computeAttackTargets(selectedUnit, enemyUnits) {
     .map((enemy) => enemy.id));
 }
 
+function buildCoordinateLabel(x, y) {
+  return `${String.fromCharCode(65 + x)}${y + 1}`;
+}
+
+function getSelectionSummary({ selectedHandCard, selectedUnit, canPlay }) {
+  if (selectedHandCard) {
+    return canPlay
+      ? `Carta seleccionada: ${selectedHandCard.name}. Elegí una casilla verde para invocar.`
+      : `Carta seleccionada: ${selectedHandCard.name}. Esperá tu turno para invocar.`;
+  }
+
+  if (selectedUnit) {
+    return canPlay
+      ? `Unidad seleccionada: ${selectedUnit.card.name}. Azul = movimiento, rojo = ataque.`
+      : `Unidad seleccionada: ${selectedUnit.card.name}. Esperá tu turno para actuar.`;
+  }
+
+  return canPlay
+    ? 'Seleccioná una carta de tu mano o una de tus unidades para ver opciones tácticas.'
+    : 'Esperá la respuesta de la IA. Podés inspeccionar el tablero y tu mano.';
+}
+
 function renderStaticBoard() {
   const boardEl = $('#board');
   if (!boardEl) return;
@@ -139,7 +162,12 @@ function renderStaticBoard() {
   for (let y = 0; y < DEFAULT_BOARD_HEIGHT; y += 1) {
     for (let x = 0; x < DEFAULT_BOARD_WIDTH; x += 1) {
       const squareClass = (x + y) % 2 === 0 ? 'square-light' : 'square-dark';
-      cells.push(`<div class="cell ${squareClass} empty preview-cell"><div class="small"></div></div>`);
+      cells.push(`
+        <div class="cell ${squareClass} empty preview-cell">
+          <span class="cell-coord">${buildCoordinateLabel(x, y)}</span>
+          <div class="cell-layer"></div>
+        </div>
+      `);
     }
   }
   boardEl.style.gridTemplateColumns = `repeat(${DEFAULT_BOARD_WIDTH}, minmax(40px, 1fr))`;
@@ -185,7 +213,9 @@ async function onCellClick(x, y) {
     return;
   }
 
-  const moveTargets = computeMoveTargets(selectedUnit, me.units || [], enemy.units || []);
+  const boardWidth = appState.match.board?.width || DEFAULT_BOARD_WIDTH;
+  const boardHeight = appState.match.board?.height || DEFAULT_BOARD_HEIGHT;
+  const moveTargets = computeMoveTargets(selectedUnit, me.units || [], enemy.units || [], boardWidth, boardHeight);
   if (!moveTargets.has(`${x},${y}`)) return;
   await sendAction({ action: 'move', unit_id: selectedUnit.id, to_x: x, to_y: y });
 }
@@ -202,9 +232,10 @@ function renderBoard() {
   const { me, enemy, mySide } = resolveSides();
   const width = appState.match.board?.width || DEFAULT_BOARD_WIDTH;
   const height = appState.match.board?.height || DEFAULT_BOARD_HEIGHT;
+  const canPlay = isMyTurn(mySide);
   const selectedUnit = me?.units?.find((u) => u.id === appState.selectedUnitId) || null;
   const selectedHandCard = me?.hand?.[appState.selectedHandIndex] || null;
-  const moveTargets = computeMoveTargets(selectedUnit, me?.units || [], enemy?.units || []);
+  const moveTargets = computeMoveTargets(selectedUnit, me?.units || [], enemy?.units || [], width, height);
   const attackTargets = computeAttackTargets(selectedUnit, enemy?.units || []);
   const myDeployment = deploymentCellsForSide(mySide, width, height);
   const enemyDeployment = deploymentCellsForSide('guest', width, height);
@@ -217,18 +248,36 @@ function renderBoard() {
       const unit = ownUnit || enemyUnit;
       const squareClass = (x + y) % 2 === 0 ? 'square-light' : 'square-dark';
       const key = `${x},${y}`;
-      const canSummon = Boolean(selectedHandCard) && myDeployment.has(key) && !unit && isMyTurn(mySide);
-      const canMove = moveTargets.has(key) && isMyTurn(mySide);
-      const canAttack = enemyUnit && attackTargets.has(enemyUnit.id) && isMyTurn(mySide);
+      const canSummon = Boolean(selectedHandCard) && myDeployment.has(key) && !unit && canPlay;
+      const canMove = moveTargets.has(key) && canPlay;
+      const canAttack = enemyUnit && attackTargets.has(enemyUnit.id) && canPlay;
       const deployClass = myDeployment.has(key) ? 'deploy-ally' : (enemyDeployment.has(key) ? 'deploy-enemy' : '');
       const hintClass = canSummon ? 'hint-summon' : (canMove ? 'hint-move' : (canAttack ? 'hint-attack' : ''));
       const selectedClass = ownUnit && selectedUnit?.id === ownUnit.id ? 'selected' : '';
+      const interactiveClass = canSummon || canMove || canAttack || ownUnit ? 'is-actionable' : '';
+      const coordinate = buildCoordinateLabel(x, y);
 
       cells.push(`
-        <button class="cell ${squareClass} ${ownUnit ? 'ally' : enemyUnit ? 'enemy' : 'empty'} ${deployClass} ${hintClass} ${selectedClass}" data-x="${x}" data-y="${y}">
-          ${unit
-            ? `<div class="token ${ownUnit ? 'token-ally' : 'token-enemy'}"><img src="${unit.card.image}" alt="${unit.card.name}" /><strong>${unit.card.name}</strong><span>PdV ${unit.hp_current}</span><span>Esc ${unit.shell_current} · PA ${unit.pa_current} · PM ${unit.pm_current}</span></div>`
-            : '<div class="small"></div>'}
+        <button class="cell ${squareClass} ${ownUnit ? 'ally' : enemyUnit ? 'enemy' : 'empty'} ${deployClass} ${hintClass} ${selectedClass} ${interactiveClass}" data-x="${x}" data-y="${y}" aria-label="Casilla ${coordinate}">
+          <span class="cell-coord">${coordinate}</span>
+          <div class="cell-layer">
+            ${unit
+              ? `
+                <div class="token ${ownUnit ? 'token-ally' : 'token-enemy'}">
+                  <div class="token-portrait-wrap">
+                    <img src="${unit.card.image}" alt="${unit.card.name}" />
+                  </div>
+                  <strong class="token-name">${unit.card.name}</strong>
+                  <div class="token-stats">
+                    <span>PdV ${unit.hp_current}</span>
+                    <span>Esc ${unit.shell_current}</span>
+                    <span>PA ${unit.pa_current}</span>
+                    <span>PM ${unit.pm_current}</span>
+                  </div>
+                </div>
+              `
+              : '<div class="cell-empty-state"></div>'}
+          </div>
         </button>
       `);
     }
@@ -254,7 +303,7 @@ function renderBoard() {
 
   document.querySelectorAll('.hand-card').forEach((btn) => {
     btn.addEventListener('click', () => {
-      if (!isMyTurn(mySide)) return;
+      if (!canPlay) return;
       const index = Number(btn.dataset.handIndex);
       appState.selectedHandIndex = appState.selectedHandIndex === index ? null : index;
       appState.selectedUnitId = null;
@@ -269,16 +318,17 @@ function renderBoard() {
     <div><strong>IA:</strong> ${enemy?.energy ?? '-'}/${enemy?.max_energy ?? '-'}</div>
     <div><strong>Mano / mazo:</strong> ${me?.hand_count ?? '-'} / ${me?.library_count ?? '-'}</div>
     <div><strong>Ganador:</strong> ${appState.match.winner || 'sin definir'}</div>
+    <div class="selection-summary"><strong>Selección:</strong> ${getSelectionSummary({ selectedHandCard, selectedUnit, canPlay })}</div>
   `;
 
   const ownUnits = me?.units || [];
   const enemyUnits = enemy?.units || [];
   $('#unit-list').innerHTML = `
     <strong>Tus unidades</strong>
-    ${ownUnits.map((u) => `<div>${u.card.name} (${u.x},${u.y}) · PdV ${u.hp_current} · Esc ${u.shell_current}</div>`).join('') || '<div>Sin unidades.</div>'}
+    ${ownUnits.map((u) => `<div>${u.card.name} (${buildCoordinateLabel(u.x, u.y)}) · PdV ${u.hp_current} · Esc ${u.shell_current}</div>`).join('') || '<div>Sin unidades.</div>'}
     <hr />
     <strong>Unidades IA</strong>
-    ${enemyUnits.map((u) => `<div>${u.card.name} (${u.x},${u.y}) · PdV ${u.hp_current} · Esc ${u.shell_current}</div>`).join('') || '<div>Sin unidades.</div>'}
+    ${enemyUnits.map((u) => `<div>${u.card.name} (${buildCoordinateLabel(u.x, u.y)}) · PdV ${u.hp_current} · Esc ${u.shell_current}</div>`).join('') || '<div>Sin unidades.</div>'}
   `;
 }
 

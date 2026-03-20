@@ -825,6 +825,11 @@ def _match_payload(record):
     }
 
 
+def _clear_active_match_session(request):
+    request.session.pop(SESSION_MATCH_KEY, None)
+    request.session.modified = True
+
+
 def _active_match_from_session(request):
     room_code = request.session.get(SESSION_MATCH_KEY)
     if not room_code:
@@ -832,18 +837,21 @@ def _active_match_from_session(request):
     try:
         return MatchRecord.objects.get(room_code=room_code, status="active")
     except MatchRecord.DoesNotExist:
-        request.session.pop(SESSION_MATCH_KEY, None)
+        _clear_active_match_session(request)
         return None
 
 
 def _get_session_match_or_error(request, room_code):
     session_room = request.session.get(SESSION_MATCH_KEY)
     if not session_room or session_room != room_code:
+        if session_room and session_room != room_code:
+            _clear_active_match_session(request)
         return None, _json_error("Partida no disponible para esta sesión.", status=404)
 
     try:
         return MatchRecord.objects.get(room_code=room_code, status="active"), None
     except MatchRecord.DoesNotExist:
+        _clear_active_match_session(request)
         return None, _json_error("La partida no existe o ya no está activa.", status=404)
 
 
@@ -878,6 +886,7 @@ def get_active_match(request):
         return JsonResponse({"ok": True, "room_code": None, "match": None})
     _, error_response = _validated_record_state(record)
     if error_response:
+        _clear_active_match_session(request)
         return error_response
     return JsonResponse({"ok": True, **_match_payload(record)})
 
@@ -916,6 +925,7 @@ def get_match(request, room_code):
         return error_response
     _, state_error = _validated_record_state(record)
     if state_error:
+        _clear_active_match_session(request)
         return state_error
     return JsonResponse({"ok": True, **_match_payload(record)})
 
@@ -928,6 +938,7 @@ def match_action(request, room_code):
 
     state, state_error = _validated_record_state(record)
     if state_error:
+        _clear_active_match_session(request)
         return state_error
 
     payload = _payload(request)

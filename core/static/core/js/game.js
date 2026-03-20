@@ -41,6 +41,49 @@ function setActionFeedback(message, tone = 'normal') {
   feedback.classList.add(`feedback-${tone}`);
 }
 
+function resetSelections() {
+  appState.selectedHandIndex = null;
+  appState.selectedUnitId = null;
+}
+
+function resetMatchState({
+  roomCode = null,
+  match = null,
+  feedbackMessage = 'Seleccioná una carta o unidad para ver el feedback táctico acá.',
+  feedbackTone = 'normal',
+} = {}) {
+  appState.roomCode = roomCode;
+  appState.match = match;
+  resetSelections();
+  setActionFeedback(feedbackMessage, feedbackTone);
+}
+
+function applyMatchPayload(data, {
+  emptyFeedbackMessage = EMPTY_MESSAGES.summary,
+  emptyFeedbackTone = 'normal',
+} = {}) {
+  const match = data?.match ?? null;
+  const roomCode = match ? (data?.room_code ?? match.room_code ?? null) : null;
+
+  if (!match || !roomCode) {
+    resetMatchState({
+      roomCode: null,
+      match: null,
+      feedbackMessage: emptyFeedbackMessage,
+      feedbackTone: emptyFeedbackTone,
+    });
+    return false;
+  }
+
+  resetMatchState({
+    roomCode,
+    match,
+    feedbackMessage: 'Partida lista. Seleccioná una carta o unidad para empezar tu turno.',
+    feedbackTone: 'normal',
+  });
+  return true;
+}
+
 function getCookie(name) {
   const prefix = `${name}=`;
   return document.cookie
@@ -525,10 +568,20 @@ async function sendAction(actionPayload, failureMessage = 'La acción no pudo re
       method: 'POST',
       body: JSON.stringify(actionPayload),
     });
-    appState.match = data.match;
+    applyMatchPayload(data, {
+      emptyFeedbackMessage: 'La partida activa ya no existe. Creá una nueva con "Jugar vs IA".',
+      emptyFeedbackTone: 'error',
+    });
     renderBoard();
   } catch (err) {
     const message = err.message || failureMessage;
+    if (/Partida no disponible para esta sesión|no existe o ya no está activa/i.test(message)) {
+      resetMatchState({
+        feedbackMessage: 'La partida activa dejó de estar disponible. Reiniciá con "Jugar vs IA".',
+        feedbackTone: 'error',
+      });
+      renderBoard();
+    }
     setActionFeedback(`${failureMessage} ${message}`.trim(), 'error');
     throw err;
   }
@@ -816,20 +869,15 @@ async function loadCards() {
 
 async function loadActiveMatch() {
   const data = await api('/api/match/active/');
-  appState.roomCode = data.room_code;
-  appState.match = data.match;
-  appState.selectedHandIndex = null;
-  appState.selectedUnitId = null;
+  applyMatchPayload(data, {
+    emptyFeedbackMessage: 'No hay partida activa en esta sesión. Hacé clic en "Jugar vs IA" para iniciar.',
+  });
   renderBoard();
 }
 
 async function createAIMatch() {
   const data = await api('/api/match/create-vs-ai/', { method: 'POST', body: '{}' });
-  appState.roomCode = data.room_code;
-  appState.match = data.match;
-  appState.selectedHandIndex = null;
-  appState.selectedUnitId = null;
-  setActionFeedback('Partida lista. Seleccioná una carta o unidad para empezar tu turno.', 'normal');
+  applyMatchPayload(data);
   renderBoard();
   setStatus('Partida nueva creada en esta sesión.');
 }
@@ -840,16 +888,34 @@ async function refreshMatch() {
     if (!appState.roomCode) throw new Error('No hay partida activa en esta sesión.');
     return;
   }
-  const data = await api(`/api/match/${appState.roomCode}/`);
-  appState.match = data.match;
-  renderBoard();
+  try {
+    const data = await api(`/api/match/${appState.roomCode}/`);
+    const hasMatch = applyMatchPayload(data, {
+      emptyFeedbackMessage: 'La partida activa ya no existe. Podés crear una nueva con "Jugar vs IA".',
+      emptyFeedbackTone: 'error',
+    });
+    renderBoard();
+    if (!hasMatch) {
+      setStatus('La partida activa ya no estaba disponible. Se limpió la sesión local.', true);
+      throw new Error('La partida activa ya no existe.');
+    }
+  } catch (err) {
+    if (/Partida no disponible para esta sesión|no existe o ya no está activa/i.test(err.message || '')) {
+      resetMatchState({
+        feedbackMessage: 'La partida activa ya no existe o la sesión quedó desincronizada. Creá una nueva con "Jugar vs IA".',
+        feedbackTone: 'error',
+      });
+      renderBoard();
+      setStatus('Se limpió la partida activa inválida de la sesión.', true);
+    }
+    throw err;
+  }
 }
 
 async function endTurn() {
   if (!appState.roomCode) throw new Error('No hay partida activa.');
   await sendAction({ action: 'end_turn' });
-  appState.selectedHandIndex = null;
-  appState.selectedUnitId = null;
+  resetSelections();
   setActionFeedback('Turno terminado. La IA está pensando su respuesta.', 'success');
   renderBoard();
 }

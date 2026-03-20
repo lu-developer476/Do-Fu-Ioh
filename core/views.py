@@ -2,6 +2,7 @@ import json
 import random
 import secrets
 import unicodedata
+from collections import deque
 from pathlib import Path
 
 from django.conf import settings
@@ -212,6 +213,51 @@ def _occupied(state, x, y):
     return any(u['x'] == x and u['y'] == y for u in state['host']['units'] + state['guest']['units'])
 
 
+def _occupied_positions(state, ignore_unit_id=None):
+    positions = set()
+    for unit in state['host']['units'] + state['guest']['units']:
+        if ignore_unit_id and unit['id'] == ignore_unit_id:
+            continue
+        positions.add((unit['x'], unit['y']))
+    return positions
+
+
+def _reachable_cells(state, unit):
+    max_steps = unit.get('pm_current', 0)
+    if not unit.get('can_move') or max_steps <= 0:
+        return {}
+
+    width = state['board']['width']
+    height = state['board']['height']
+    blocked = _occupied_positions(state, ignore_unit_id=unit['id'])
+    origin = (unit['x'], unit['y'])
+    distances = {origin: 0}
+    queue = deque([origin])
+
+    while queue:
+        cx, cy = queue.popleft()
+        current_distance = distances[(cx, cy)]
+        if current_distance >= max_steps:
+            continue
+
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            nx, ny = cx + dx, cy + dy
+            if not _in_bounds(nx, ny, width, height) or (nx, ny) in blocked:
+                continue
+
+            next_distance = current_distance + 1
+            if next_distance > max_steps:
+                continue
+
+            previous = distances.get((nx, ny))
+            if previous is None or next_distance < previous:
+                distances[(nx, ny)] = next_distance
+                queue.append((nx, ny))
+
+    distances.pop(origin, None)
+    return distances
+
+
 def _can_attack(attacker, target):
     if attacker['pa_current'] <= 0 or not attacker['can_act']:
         return False
@@ -300,11 +346,12 @@ def _apply_action(state, side, payload):
             return 'La unidad no puede moverse.'
         if not isinstance(x, int) or not isinstance(y, int) or not _in_bounds(x, y, width, height):
             return 'Destino inválido.'
-        distance = abs(unit['x'] - x) + abs(unit['y'] - y)
-        if distance == 0 or distance > unit['pm_current']:
+
+        reachable_cells = _reachable_cells(state, unit)
+        distance = reachable_cells.get((x, y))
+        if distance is None:
             return 'Movimiento fuera de rango.'
-        if _occupied(state, x, y):
-            return 'Casilla ocupada.'
+
         unit['x'], unit['y'] = x, y
         unit['pm_current'] = max(0, unit['pm_current'] - distance)
         unit['can_move'] = unit['pm_current'] > 0
@@ -361,21 +408,13 @@ def _nearest_enemy(unit, enemy_units):
 def _best_step_towards(unit, nearest, state):
     best_move = None
     best_distance = _distance(unit, nearest)
-    max_steps = unit['pm_current']
-    for dx in range(-max_steps, max_steps + 1):
-        for dy in range(-max_steps, max_steps + 1):
-            steps = abs(dx) + abs(dy)
-            if steps == 0 or steps > max_steps:
-                continue
-            nx, ny = unit['x'] + dx, unit['y'] + dy
-            if not _in_bounds(nx, ny, state['board']['width'], state['board']['height']):
-                continue
-            if _occupied(state, nx, ny):
-                continue
-            candidate_distance = abs(nx - nearest['x']) + abs(ny - nearest['y'])
-            if candidate_distance < best_distance:
-                best_distance = candidate_distance
-                best_move = (steps, nx, ny)
+    reachable_cells = _reachable_cells(state, unit)
+
+    for (nx, ny), steps in reachable_cells.items():
+        candidate_distance = abs(nx - nearest['x']) + abs(ny - nearest['y'])
+        if candidate_distance < best_distance or (candidate_distance == best_distance and best_move and steps < best_move[0]):
+            best_distance = candidate_distance
+            best_move = (steps, nx, ny)
     return best_move
 
 

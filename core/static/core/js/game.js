@@ -120,21 +120,42 @@ function deploymentCellsForSide(side, boardWidth, boardHeight) {
 }
 
 function computeMoveTargets(selectedUnit, meUnits, enemyUnits, boardWidth = DEFAULT_BOARD_WIDTH, boardHeight = DEFAULT_BOARD_HEIGHT) {
-  if (!selectedUnit || selectedUnit.pm_current <= 0 || !selectedUnit.can_move) return new Set();
-  const occupied = new Set([...meUnits, ...enemyUnits].map((u) => `${u.x},${u.y}`));
-  const targets = new Set();
-  for (let dx = -selectedUnit.pm_current; dx <= selectedUnit.pm_current; dx += 1) {
-    for (let dy = -selectedUnit.pm_current; dy <= selectedUnit.pm_current; dy += 1) {
-      const dist = Math.abs(dx) + Math.abs(dy);
-      if (dist === 0 || dist > selectedUnit.pm_current) continue;
-      const x = selectedUnit.x + dx;
-      const y = selectedUnit.y + dy;
-      if (x < 0 || y < 0 || x >= boardWidth || y >= boardHeight) continue;
-      if (occupied.has(`${x},${y}`)) continue;
-      targets.add(`${x},${y}`);
-    }
+  if (!selectedUnit || selectedUnit.pm_current <= 0 || !selectedUnit.can_move) return new Map();
+
+  const occupied = new Set(
+    [...meUnits, ...enemyUnits]
+      .filter((u) => u.id !== selectedUnit.id)
+      .map((u) => `${u.x},${u.y}`)
+  );
+  const originKey = `${selectedUnit.x},${selectedUnit.y}`;
+  const distances = new Map([[originKey, 0]]);
+  const queue = [[selectedUnit.x, selectedUnit.y]];
+
+  while (queue.length) {
+    const [currentX, currentY] = queue.shift();
+    const currentKey = `${currentX},${currentY}`;
+    const currentDistance = distances.get(currentKey) || 0;
+    if (currentDistance >= selectedUnit.pm_current) continue;
+
+    [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dx, dy]) => {
+      const nextX = currentX + dx;
+      const nextY = currentY + dy;
+      const nextKey = `${nextX},${nextY}`;
+      if (!isWithinBoard(nextX, nextY, boardWidth, boardHeight) || occupied.has(nextKey)) return;
+
+      const nextDistance = currentDistance + 1;
+      if (nextDistance > selectedUnit.pm_current) return;
+
+      const previousDistance = distances.get(nextKey);
+      if (previousDistance !== undefined && previousDistance <= nextDistance) return;
+
+      distances.set(nextKey, nextDistance);
+      queue.push([nextX, nextY]);
+    });
   }
-  return targets;
+
+  distances.delete(originKey);
+  return distances;
 }
 
 function computeAttackTargets(selectedUnit, enemyUnits) {

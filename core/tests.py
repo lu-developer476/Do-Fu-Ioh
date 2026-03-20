@@ -10,6 +10,14 @@ from .system_users import AI_USERNAME, SOLO_PLAYER_USERNAME, get_single_player_s
 from .views import _ai_turn
 
 
+class UserProfileSignalTests(TestCase):
+    def test_creates_profile_for_new_users(self):
+        user = User.objects.create_user(username="signal-user", password="secret123")
+
+        self.assertTrue(hasattr(user, "profile"))
+        self.assertEqual(user.profile.user, user)
+
+
 class SoloAIModeTests(TestCase):
     def setUp(self):
         for family in ["Pios", "Escarahojas", "Gelatinas", "Kitsus"]:

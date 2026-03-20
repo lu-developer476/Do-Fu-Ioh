@@ -161,6 +161,28 @@ function getSelectionSummary({ selectedHandCard, selectedUnit, canPlay }) {
     : 'Esperá la respuesta de la IA. Podés inspeccionar el tablero y tu mano.';
 }
 
+function renderMatchLog(logEntries = []) {
+  const logEl = $('#match-log');
+  if (!logEl) return;
+
+  if (!Array.isArray(logEntries) || !logEntries.length) {
+    logEl.innerHTML = '<div class="small">Todavía no hay eventos registrados.</div>';
+    return;
+  }
+
+  logEl.innerHTML = `
+    <ol class="match-log-list">
+      ${logEntries.map((entry, index) => `
+        <li class="match-log-item">
+          <span class="match-log-order">${String(index + 1).padStart(2, '0')}</span>
+          <p>${entry}</p>
+        </li>
+      `).join('')}
+    </ol>
+  `;
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
 function renderStaticBoard() {
   const boardEl = $('#board');
   if (!boardEl) return;
@@ -232,6 +254,7 @@ function renderBoard() {
     $('#hand').innerHTML = '<div class="small">Tu mano aparecerá acá.</div>';
     $('#match-summary').innerHTML = '<div class="small">Iniciá una partida contra la IA para comenzar.</div>';
     $('#unit-list').innerHTML = '<div class="small">Sin unidades.</div>';
+    renderMatchLog();
     return;
   }
 
@@ -329,6 +352,7 @@ function renderBoard() {
 
   const ownUnits = me?.units || [];
   const enemyUnits = enemy?.units || [];
+  renderMatchLog(appState.match.log || []);
   $('#unit-list').innerHTML = `
     <strong>Tus unidades</strong>
     ${ownUnits.map((u) => `<div>${u.card.name} (${buildCoordinateLabel(u.x, u.y)}) · PdV ${u.hp_current} · Esc ${u.shell_current}</div>`).join('') || '<div>Sin unidades.</div>'}

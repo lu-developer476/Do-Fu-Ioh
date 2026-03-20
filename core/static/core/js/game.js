@@ -7,6 +7,10 @@ const appState = {
   match: null,
   selectedHandIndex: null,
   selectedUnitId: null,
+  actionFeedback: {
+    message: 'Seleccioná una carta o unidad para ver el feedback táctico acá.',
+    tone: 'normal',
+  },
 };
 
 const $ = (sel) => document.querySelector(sel);
@@ -17,6 +21,15 @@ function setStatus(message, isError = false) {
   if (!status) return;
   status.textContent = message;
   status.classList.toggle('status-error', isError);
+}
+
+function setActionFeedback(message, tone = 'normal') {
+  appState.actionFeedback = { message, tone };
+  const feedback = $('#action-feedback');
+  if (!feedback) return;
+  feedback.textContent = message;
+  feedback.classList.remove('feedback-normal', 'feedback-error', 'feedback-success');
+  feedback.classList.add(`feedback-${tone}`);
 }
 
 function getCookie(name) {
@@ -184,6 +197,7 @@ function renderMatchLog(logEntries = []) {
 }
 
 function renderStaticBoard() {
+  setActionFeedback(appState.actionFeedback.message, appState.actionFeedback.tone);
   const boardEl = $('#board');
   if (!boardEl) return;
   const cells = [];
@@ -214,7 +228,11 @@ async function sendAction(actionPayload) {
 async function onCellClick(x, y) {
   if (!appState.match || !appState.roomCode) return;
   const { me, enemy, mySide } = resolveSides();
-  if (!me || !enemy || !isMyTurn(mySide)) return;
+  if (!me || !enemy) return;
+  if (!isMyTurn(mySide)) {
+    setActionFeedback('Todavía no es tu turno. Esperá a que la IA termine de jugar.', 'error');
+    return;
+  }
 
   const myUnit = findUnitAt(me.units || [], x, y);
   const enemyUnit = findUnitAt(enemy.units || [], x, y);
@@ -224,31 +242,53 @@ async function onCellClick(x, y) {
   if (myUnit) {
     appState.selectedUnitId = myUnit.id;
     appState.selectedHandIndex = null;
+    setActionFeedback(`Unidad seleccionada: ${myUnit.card.name}. Azul = movimiento, rojo = ataque.`, 'normal');
     renderBoard();
     return;
   }
   if (selectedHandCard) {
+    const boardWidth = appState.match.board?.width || DEFAULT_BOARD_WIDTH;
+    const boardHeight = appState.match.board?.height || DEFAULT_BOARD_HEIGHT;
+    const deploymentCells = deploymentCellsForSide(mySide, boardWidth, boardHeight);
+    const summonKey = `${x},${y}`;
+    if (!deploymentCells.has(summonKey) || myUnit || enemyUnit) {
+      setActionFeedback(`Casilla inválida para invocar ${selectedHandCard.name}. Elegí una casilla verde libre de tu zona.`, 'error');
+      return;
+    }
     await sendAction({ action: 'summon', hand_index: appState.selectedHandIndex, x, y });
     appState.selectedHandIndex = null;
+    setActionFeedback(`${selectedHandCard.name} fue invocada correctamente.`, 'success');
     return;
   }
-  if (!selectedUnit) return;
+  if (!selectedUnit) {
+    setActionFeedback('Casilla inválida: primero seleccioná una carta o una unidad propia.', 'error');
+    return;
+  }
 
   if (enemyUnit) {
     const attackTargets = computeAttackTargets(selectedUnit, enemy.units || []);
-    if (!attackTargets.has(enemyUnit.id)) return;
+    if (!attackTargets.has(enemyUnit.id)) {
+      setActionFeedback(`Ataque fuera de rango para ${selectedUnit.card.name}. Elegí un objetivo resaltado en rojo.`, 'error');
+      return;
+    }
     await sendAction({ action: 'attack', attacker_id: selectedUnit.id, target_id: enemyUnit.id });
+    setActionFeedback(`${selectedUnit.card.name} atacó a ${enemyUnit.card.name}.`, 'success');
     return;
   }
 
   const boardWidth = appState.match.board?.width || DEFAULT_BOARD_WIDTH;
   const boardHeight = appState.match.board?.height || DEFAULT_BOARD_HEIGHT;
   const moveTargets = computeMoveTargets(selectedUnit, me.units || [], enemy.units || [], boardWidth, boardHeight);
-  if (!moveTargets.has(`${x},${y}`)) return;
+  if (!moveTargets.has(`${x},${y}`)) {
+    setActionFeedback(`Casilla inválida para mover ${selectedUnit.card.name}. Elegí una casilla azul disponible.`, 'error');
+    return;
+  }
   await sendAction({ action: 'move', unit_id: selectedUnit.id, to_x: x, to_y: y });
+  setActionFeedback(`${selectedUnit.card.name} se movió a ${buildCoordinateLabel(x, y)}.`, 'success');
 }
 
 function renderBoard() {
+  setActionFeedback(appState.actionFeedback.message, appState.actionFeedback.tone);
   if (!appState.match) {
     renderStaticBoard();
     $('#hand').innerHTML = '<div class="small">Tu mano aparecerá acá.</div>';
@@ -332,10 +372,19 @@ function renderBoard() {
 
   document.querySelectorAll('.hand-card').forEach((btn) => {
     btn.addEventListener('click', () => {
-      if (!canPlay) return;
+      if (!canPlay) {
+        setActionFeedback('Todavía no es tu turno. Esperá a que la IA termine de jugar.', 'error');
+        return;
+      }
       const index = Number(btn.dataset.handIndex);
-      appState.selectedHandIndex = appState.selectedHandIndex === index ? null : index;
+      const isSameCard = appState.selectedHandIndex === index;
+      appState.selectedHandIndex = isSameCard ? null : index;
       appState.selectedUnitId = null;
+      if (isSameCard) {
+        setActionFeedback('Carta deseleccionada. Elegí otra carta o una unidad propia.', 'normal');
+      } else {
+        setActionFeedback(`Carta seleccionada: ${me.hand[index].name}. Elegí una casilla verde para invocar.`, 'normal');
+      }
       renderBoard();
     });
   });
@@ -394,6 +443,7 @@ async function createAIMatch() {
   appState.match = data.match;
   appState.selectedHandIndex = null;
   appState.selectedUnitId = null;
+  setActionFeedback('Partida lista. Seleccioná una carta o unidad para empezar tu turno.', 'normal');
   renderBoard();
   setStatus('Partida nueva creada en esta sesión.');
 }
@@ -412,6 +462,10 @@ async function refreshMatch() {
 async function endTurn() {
   if (!appState.roomCode) throw new Error('No hay partida activa.');
   await sendAction({ action: 'end_turn' });
+  appState.selectedHandIndex = null;
+  appState.selectedUnitId = null;
+  setActionFeedback('Turno terminado. La IA está pensando su respuesta.', 'success');
+  renderBoard();
 }
 
 function bindAsyncButton(selector, handler) {
@@ -441,6 +495,7 @@ function boot() {
     .then(loadActiveMatch)
     .catch((err) => {
       setStatus(err.message || 'No se pudo iniciar el juego.', true);
+      setActionFeedback('No se pudo cargar la partida. Probá reiniciar con "Jugar vs IA".', 'error');
       renderBoard();
     })
     .finally(() => {

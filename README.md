@@ -44,13 +44,15 @@ MVP actual: **juego táctico single-player contra IA** con Django + sesiones.
 ### Opcional
 
 - `PYTHON_VERSION=3.12.8`
+- `DJANGO_SECURE_SSL_REDIRECT=True`
 
 ## Desarrollo local
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
 export DJANGO_DEBUG=True
 export DJANGO_SECRET_KEY=dev-only-secret
 python manage.py migrate
@@ -59,9 +61,26 @@ python manage.py runserver
 
 Abrir: `http://127.0.0.1:8000/`
 
+## Static files
+
+- `STATIC_URL` es `/static/`.
+- `STATIC_ROOT` es `staticfiles/` en la raíz del repo.
+- `STATICFILES_DIRS` incluye `public/` para assets versionados del proyecto.
+- En producción se usa `whitenoise.storage.CompressedManifestStaticFilesStorage`.
+- `collectstatic` corre durante el build de Render, antes del deploy.
+
 ## Render
 
-- **Build Command:** `./build.sh`
-- **Start Command:** `python manage.py migrate --noinput --fake-initial && gunicorn do_fu_ioh.wsgi:application --bind 0.0.0.0:$PORT`
+Configuración efectiva del deploy:
 
-`build.sh` instala dependencias y ejecuta `collectstatic`. Las migraciones corren al iniciar el servicio web en Render.
+- **Build Command:** `./build.sh`
+- **Pre-Deploy Command:** `python manage.py migrate --noinput --fake-initial`
+- **Start Command:** `gunicorn do_fu_ioh.wsgi:application --bind 0.0.0.0:$PORT`
+
+### Qué hace cada paso
+
+1. `build.sh` actualiza `pip`, instala dependencias y ejecuta `python manage.py collectstatic --noinput`.
+2. `preDeployCommand` corre las migraciones una vez por deploy, antes de arrancar la nueva versión.
+3. `startCommand` sólo inicia Gunicorn, sin mezclar tareas de build o migración.
+
+Esto deja alineados build, migraciones y archivos estáticos con la configuración real de Django y Render.

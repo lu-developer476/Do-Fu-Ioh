@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.db.utils import OperationalError, ProgrammingError
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_GET, require_http_methods
 
 from .models import MatchRecord, MonsterCard
@@ -768,6 +769,7 @@ def _active_match_from_session(request):
 
 
 @require_GET
+@ensure_csrf_cookie
 def index(request):
     _ensure_cards_seeded()
     cards = [_serialize_card(card) for card in MonsterCard.objects.all()]

@@ -94,6 +94,21 @@ class SoloAIModeTests(TestCase):
         self.assertTrue(card["image"].startswith("/static/"))
         self.assertIn(card["summon_cost"], {1, 3, 5})
 
+    def test_index_bootstrap_sets_csrf_cookie_for_fetch_requests(self):
+        client = Client(enforce_csrf_checks=True)
+        response = client.get("/")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("csrftoken", client.cookies)
+
+        csrf_token = client.cookies["csrftoken"].value
+        created = client.post(
+            "/api/match/create-vs-ai/",
+            data="{}",
+            content_type="application/json",
+            HTTP_X_CSRFTOKEN=csrf_token,
+        )
+        self.assertEqual(created.status_code, 200)
+
     def test_match_actions_require_csrf(self):
         client = Client(enforce_csrf_checks=True)
         without_csrf = client.post(

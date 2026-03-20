@@ -42,6 +42,12 @@ function getCookie(name) {
     ?.slice(prefix.length) || '';
 }
 
+function getCsrfToken() {
+  const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')?.trim();
+  if (metaToken && metaToken !== 'NOTPROVIDED') return metaToken;
+  return getCookie('csrftoken');
+}
+
 function escapeHtml(value) {
   return String(value ?? '')
     .replaceAll('&', '&amp;')
@@ -129,7 +135,7 @@ async function api(url, options = {}) {
     ...(options.headers || {}),
   };
   if ((options.method || 'GET').toUpperCase() !== 'GET') {
-    const csrfToken = getCookie('csrftoken');
+    const csrfToken = getCsrfToken();
     if (csrfToken) headers['X-CSRFToken'] = csrfToken;
   }
 

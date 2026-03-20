@@ -119,6 +119,34 @@ input, select {
 .legend-chip.attack { color: var(--attack); }
 .legend-chip.selected { color: var(--selected); }
 
+.action-feedback {
+  border-radius: 14px;
+  border: 1px solid rgba(232, 213, 181, .22);
+  padding: .85rem 1rem;
+  font-weight: 700;
+  line-height: 1.35;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+  transition: border-color .16s ease, background-color .16s ease, color .16s ease;
+}
+
+.feedback-normal {
+  background: rgba(20, 34, 24, .72);
+  border-color: rgba(184, 147, 100, .58);
+  color: var(--text);
+}
+
+.feedback-error {
+  background: rgba(117, 34, 29, .4);
+  border-color: rgba(255, 143, 107, .75);
+  color: #ffe7dd;
+}
+
+.feedback-success {
+  background: rgba(34, 92, 56, .42);
+  border-color: rgba(119, 242, 162, .76);
+  color: #eafff0;
+}
+
 .board {
   display: grid;
   grid-template-columns: repeat(11, minmax(48px, 1fr));

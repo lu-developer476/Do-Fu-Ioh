@@ -33,6 +33,7 @@ REQUIRED_CARD_FIELDS = (
     'level_max',
     'hp',
 )
+VALID_CARD_STAGES = frozenset(SUMMON_COST_BY_STAGE)
 
 
 @dataclass
@@ -41,6 +42,10 @@ class CardImportStats:
     created: int = 0
     updated: int = 0
     skipped: int = 0
+
+
+class CardSeedDataError(ValueError):
+    """Raised when the cards seed source cannot be parsed safely."""
 
 
 def slugify_card_name(value: str) -> str:
@@ -89,18 +94,34 @@ def load_cards_seed_data(path=CARDS_DATA_PATH):
     if not path.exists():
         logger.warning('Cards seed file not found at %s', path)
         return []
-    return json.loads(path.read_text(encoding='utf-8'))
+
+    try:
+        payload = json.loads(path.read_text(encoding='utf-8'))
+    except json.JSONDecodeError as exc:
+        raise CardSeedDataError(f'JSON inválido en {path}: {exc.msg}.') from exc
+
+    if not isinstance(payload, list):
+        raise CardSeedDataError('El archivo de cartas debe contener una lista JSON.')
+
+    return payload
 
 
 def _normalized_card_payload(item):
+    if not isinstance(item, dict):
+        raise ValueError('cada carta debe ser un objeto JSON')
+
     missing_fields = [field for field in REQUIRED_CARD_FIELDS if item.get(field) in (None, '')]
     if missing_fields:
         raise ValueError(f"faltan campos requeridos: {', '.join(missing_fields)}")
 
+    stage = str(item['stage']).strip()
+    if stage not in VALID_CARD_STAGES:
+        raise ValueError(f"stage inválido: {stage}")
+
     payload = {
-        'family': item['family'],
-        'name': item['name'],
-        'stage': item['stage'],
+        'family': str(item['family']).strip(),
+        'name': str(item['name']).strip(),
+        'stage': stage,
         'level_min': item['level_min'],
         'level_max': item['level_max'],
         'hp': item['hp'],
@@ -110,6 +131,15 @@ def _normalized_card_payload(item):
         'description': item.get('description', OPTIONAL_CARD_DEFAULTS['description']),
         'image': item.get('image', OPTIONAL_CARD_DEFAULTS['image']),
     }
+
+    integer_fields = ('level_min', 'level_max', 'hp', 'shell', 'action_points', 'movement_points')
+    for field in integer_fields:
+        if not isinstance(payload[field], int) or payload[field] < 0:
+            raise ValueError(f'{field} debe ser un entero mayor o igual a 0')
+
+    if payload['level_max'] < payload['level_min']:
+        raise ValueError('level_max no puede ser menor que level_min')
+
     slug = slugify_card_name(payload['name'])
     if not slug:
         raise ValueError('no se pudo generar un slug válido')
@@ -124,7 +154,8 @@ def import_monster_cards(*, using=DEFAULT_DB_ALIAS, path=CARDS_DATA_PATH, stdout
     except (ProgrammingError, OperationalError):
         return stats
 
-    for index, item in enumerate(load_cards_seed_data(path=path), start=1):
+    source_data = load_cards_seed_data(path=path)
+    for index, item in enumerate(source_data, start=1):
         try:
             slug, defaults = _normalized_card_payload(item)
         except ValueError as exc:

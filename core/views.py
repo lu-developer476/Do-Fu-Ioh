@@ -1,7 +1,9 @@
 import json
 import random
 import secrets
-from collections import deque
+from collections import Counter, deque
+
+from django.db import transaction
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -36,9 +38,9 @@ ACTION_FIELD_TYPES = {
 
 def _payload(request):
     try:
-        return json.loads((request.body or b"{}").decode("utf-8"))
+        return json.loads((request.body or b"{}").decode("utf-8")), None
     except json.JSONDecodeError:
-        return {}
+        return None, _json_error('JSON inválido.', status=400)
 
 
 def _json_error(message, status=400):
@@ -219,6 +221,11 @@ def _validate_player_state(player, side, width, height):
         if not isinstance(player.get(field), list):
             return f"{side}.{field} debe ser una lista."
 
+    if player['hand_count'] != len(player['hand']):
+        return f"{side}.hand_count no coincide con hand."
+    if player['library_count'] != len(player['library']):
+        return f"{side}.library_count no coincide con library."
+
     for index, card in enumerate(player["hand"]):
         card_error = _validate_card_payload(card, f"{side}.hand[{index}]")
         if card_error:
@@ -266,6 +273,23 @@ def _validate_match_state(state):
         player_error = _validate_player_state(state.get(side), side, width, height)
         if player_error:
             return player_error
+
+    occupied_cells = Counter(
+        (unit['x'], unit['y'])
+        for side in ('host', 'guest')
+        for unit in state[side]['units']
+    )
+    overlapping_cell = next((cell for cell, count in occupied_cells.items() if count > 1), None)
+    if overlapping_cell:
+        return f'unidades superpuestas en {overlapping_cell}.'
+
+    unit_ids = [
+        unit['id']
+        for side in ('host', 'guest')
+        for unit in state[side]['units']
+    ]
+    if len(unit_ids) != len(set(unit_ids)):
+        return 'hay unidades con id duplicado.'
 
     if state.get("winner") not in {None, "host", "guest"}:
         return "winner debe ser null, 'host' o 'guest'."
@@ -855,6 +879,14 @@ def _validated_record_state(record):
     return state, None
 
 
+def _persist_record_state(record, state):
+    record.game_state = state
+    record.status = 'finished' if state.get('winner') else 'active'
+    winner_side = state.get('winner')
+    record.winner = getattr(record, winner_side, None) if winner_side in {'host', 'guest'} else None
+    record.save(update_fields=['game_state', 'status', 'winner', 'updated_at'])
+
+
 @require_GET
 @ensure_csrf_cookie
 def index(request):
@@ -884,25 +916,29 @@ def get_active_match(request):
 
 @require_http_methods(["POST"])
 def create_match_vs_ai(request):
-    payload = _payload(request)
+    payload, payload_error = _payload(request)
+    if payload_error:
+        return payload_error
+
     difficulty = _normalize_ai_difficulty(payload.get("difficulty"))
     cards = list(MonsterCard.objects.all())
     solo_system_user, ai_user = get_single_player_system_users()
 
-    record = _active_match_from_session(request)
-    if record:
-        record.game_state = _build_new_match_state(cards, difficulty=difficulty)
-        record.status = "active"
-        record.guest = ai_user
-        record.winner = None
-        record.save(update_fields=["game_state", "status", "guest", "winner", "updated_at"])
-    else:
-        record = MatchRecord.objects.create(
-            host=solo_system_user,
-            guest=ai_user,
-            status="active",
-            game_state=_build_new_match_state(cards, difficulty=difficulty),
-        )
+    with transaction.atomic():
+        record = _active_match_from_session(request)
+        if record:
+            record.game_state = _build_new_match_state(cards, difficulty=difficulty)
+            record.status = "active"
+            record.guest = ai_user
+            record.winner = None
+            record.save(update_fields=["game_state", "status", "guest", "winner", "updated_at"])
+        else:
+            record = MatchRecord.objects.create(
+                host=solo_system_user,
+                guest=ai_user,
+                status="active",
+                game_state=_build_new_match_state(cards, difficulty=difficulty),
+            )
 
     request.session[SESSION_MATCH_KEY] = record.room_code
     request.session.modified = True
@@ -930,18 +966,19 @@ def match_action(request, room_code):
     if state_error:
         return state_error
 
-    payload = _payload(request)
+    payload, payload_error_response = _payload(request)
+    if payload_error_response:
+        return payload_error_response
+
     payload_error = _validate_action_payload(payload)
     if payload_error:
         return _json_error(payload_error)
 
-    error = _apply_action(state, "host", payload)
-    if error:
-        return _json_error(error)
+    with transaction.atomic():
+        error = _apply_action(state, "host", payload)
+        if error:
+            return _json_error(error)
 
-    _ai_turn(state)
-    if state.get("winner"):
-        record.status = "finished"
-    record.game_state = state
-    record.save(update_fields=["game_state", "status", "updated_at"])
+        _ai_turn(state)
+        _persist_record_state(record, state)
     return JsonResponse({"ok": True, **_match_payload(record)})

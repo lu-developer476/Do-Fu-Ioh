@@ -925,15 +925,22 @@ async function endTurn() {
 function bindAsyncButton(selector, handler) {
   const button = $(selector);
   if (!button) return;
+  const idleLabel = button.textContent;
+  const loadingLabel = button.dataset.loadingLabel || 'Procesando...';
+
   button.addEventListener('click', async () => {
     if (button.disabled) return;
     button.disabled = true;
+    button.setAttribute('aria-busy', 'true');
+    button.textContent = loadingLabel;
     try {
       await handler();
     } catch (err) {
       setStatus(err.message || 'Error inesperado', true);
     } finally {
       button.disabled = false;
+      button.setAttribute('aria-busy', 'false');
+      button.textContent = idleLabel;
     }
   });
 }

@@ -579,3 +579,65 @@ class SoloAIModeTests(TestCase):
         moved_guest = payload["guest"]["units"][0]
         self.assertLess(moved_guest["y"], 8)
         self.assertTrue(any("guest movió" in item for item in payload["log"]))
+
+    def test_match_action_returns_clear_json_for_corrupt_state(self):
+        created = self.client.post(
+            "/api/match/create-vs-ai/", data="{}", content_type="application/json"
+        ).json()
+        room_code = created["room_code"]
+
+        record = MatchRecord.objects.get(room_code=room_code)
+        state = record.game_state
+        del state["turn"]["active_side"]
+        record.game_state = state
+        record.save(update_fields=["game_state"])
+
+        response = self.client.post(
+            f"/api/match/{room_code}/action/",
+            data=json.dumps({"action": "end_turn"}),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(
+            response.json()["message"],
+            "Estado de partida inválido: turn.active_side debe ser 'host' o 'guest'.",
+        )
+
+    def test_get_match_returns_clear_json_for_partial_state(self):
+        created = self.client.post(
+            "/api/match/create-vs-ai/", data="{}", content_type="application/json"
+        ).json()
+        room_code = created["room_code"]
+
+        record = MatchRecord.objects.get(room_code=room_code)
+        state = record.game_state
+        state["host"] = {"side": "host"}
+        record.game_state = state
+        record.save(update_fields=["game_state"])
+
+        response = self.client.get(f"/api/match/{room_code}/")
+
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(
+            response.json()["message"],
+            "Estado de partida inválido: host.energy debe ser un entero mayor o igual a 0.",
+        )
+
+    def test_match_action_rejects_unexpected_action_payload_types(self):
+        created = self.client.post(
+            "/api/match/create-vs-ai/", data="{}", content_type="application/json"
+        ).json()
+        room_code = created["room_code"]
+
+        response = self.client.post(
+            f"/api/match/{room_code}/action/",
+            data=json.dumps({"action": "attack", "attacker_id": ["bad"], "target_id": 1}),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json()["message"],
+            "El campo 'attacker_id' debe ser un texto no vacío.",
+        )

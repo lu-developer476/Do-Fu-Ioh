@@ -51,6 +51,10 @@ def _json_error(message, status=400):
     return JsonResponse({"ok": False, "message": message}, status=status)
 
 
+def _state_error(message, status=500):
+    return _json_error(f"Estado de partida inválido: {message}", status=status)
+
+
 def _resolve_card_image(image):
     raw = (image or "").strip()
     if not raw:
@@ -199,6 +203,154 @@ def _draw_one(player):
     player["hand"].append(player["library"].pop(0))
     player["library_count"] = len(player["library"])
     player["hand_count"] = len(player["hand"])
+
+
+def _is_non_negative_int(value):
+    return isinstance(value, int) and value >= 0
+
+
+def _validate_card_payload(card, context):
+    if not isinstance(card, dict):
+        return f"{context} debe ser un objeto."
+
+    required_string_fields = ("name", "stage")
+    for field in required_string_fields:
+        if not isinstance(card.get(field), str) or not card[field].strip():
+            return f"{context}.{field} es obligatorio."
+
+    for field in ("hp", "shell", "action_points", "movement_points"):
+        if not _is_non_negative_int(card.get(field)):
+            return f"{context}.{field} debe ser un entero mayor o igual a 0."
+
+    return None
+
+
+def _validate_unit_payload(unit, side, index, width, height):
+    context = f"{side}.units[{index}]"
+    if not isinstance(unit, dict):
+        return f"{context} debe ser un objeto."
+
+    if not isinstance(unit.get("id"), str) or not unit["id"].strip():
+        return f"{context}.id es obligatorio."
+    if unit.get("owner") != side:
+        return f"{context}.owner debe ser '{side}'."
+    if not _is_non_negative_int(unit.get("x")) or not _is_non_negative_int(unit.get("y")):
+        return f"{context} debe incluir coordenadas válidas."
+    if not _in_bounds(unit["x"], unit["y"], width, height):
+        return f"{context} está fuera del tablero."
+
+    card_error = _validate_card_payload(unit.get("card"), f"{context}.card")
+    if card_error:
+        return card_error
+
+    for field in ("hp_current", "shell_current", "pa_current", "pm_current", "summoned_turn"):
+        if not _is_non_negative_int(unit.get(field)):
+            return f"{context}.{field} debe ser un entero mayor o igual a 0."
+
+    for field in ("can_act", "can_move"):
+        if not isinstance(unit.get(field), bool):
+            return f"{context}.{field} debe ser booleano."
+
+    return None
+
+
+def _validate_player_state(player, side, width, height):
+    if not isinstance(player, dict):
+        return f"{side} debe ser un objeto."
+
+    if player.get("side") != side:
+        return f"{side}.side debe ser '{side}'."
+
+    for field in ("energy", "max_energy", "library_count", "hand_count", "summons_this_turn"):
+        if not _is_non_negative_int(player.get(field)):
+            return f"{side}.{field} debe ser un entero mayor o igual a 0."
+
+    for field in ("hand", "library", "units"):
+        if not isinstance(player.get(field), list):
+            return f"{side}.{field} debe ser una lista."
+
+    for index, card in enumerate(player["hand"]):
+        card_error = _validate_card_payload(card, f"{side}.hand[{index}]")
+        if card_error:
+            return card_error
+
+    for index, card in enumerate(player["library"]):
+        card_error = _validate_card_payload(card, f"{side}.library[{index}]")
+        if card_error:
+            return card_error
+
+    for index, unit in enumerate(player["units"]):
+        unit_error = _validate_unit_payload(unit, side, index, width, height)
+        if unit_error:
+            return unit_error
+
+    if player["energy"] > player["max_energy"]:
+        return f"{side}.energy no puede superar max_energy."
+
+    return None
+
+
+def _validate_match_state(state):
+    if not isinstance(state, dict):
+        return "la raíz debe ser un objeto JSON."
+
+    board = state.get("board")
+    if not isinstance(board, dict):
+        return "board debe ser un objeto."
+    width = board.get("width")
+    height = board.get("height")
+    if not _is_non_negative_int(width) or width <= 0:
+        return "board.width debe ser un entero positivo."
+    if not _is_non_negative_int(height) or height <= 0:
+        return "board.height debe ser un entero positivo."
+
+    turn = state.get("turn")
+    if not isinstance(turn, dict):
+        return "turn debe ser un objeto."
+    if not _is_non_negative_int(turn.get("number")) or turn["number"] <= 0:
+        return "turn.number debe ser un entero positivo."
+    if turn.get("active_side") not in {"host", "guest"}:
+        return "turn.active_side debe ser 'host' o 'guest'."
+
+    for side in ("host", "guest"):
+        player_error = _validate_player_state(state.get(side), side, width, height)
+        if player_error:
+            return player_error
+
+    if state.get("winner") not in {None, "host", "guest"}:
+        return "winner debe ser null, 'host' o 'guest'."
+
+    if not isinstance(state.get("log"), list):
+        return "log debe ser una lista."
+    if any(not isinstance(item, str) for item in state["log"]):
+        return "log sólo puede contener textos."
+
+    return None
+
+
+def _validate_action_payload(payload):
+    if not isinstance(payload, dict):
+        return "El cuerpo de la acción debe ser un objeto JSON."
+
+    action = payload.get("action")
+    if action not in {"summon", "move", "attack", "end_turn"}:
+        return "Acción no soportada."
+
+    action_fields = {
+        "summon": {"hand_index": int, "x": int, "y": int},
+        "move": {"unit_id": str, "to_x": int, "to_y": int},
+        "attack": {"attacker_id": str, "target_id": str},
+        "end_turn": {},
+    }
+
+    for field, expected_type in action_fields[action].items():
+        value = payload.get(field)
+        if expected_type is int and not isinstance(value, int):
+            return f"El campo '{field}' debe ser un entero."
+        if expected_type is str and (not isinstance(value, str) or not value.strip()):
+            return f"El campo '{field}' debe ser un texto no vacío."
+
+    return None
 
 
 def _in_bounds(x, y, width, height):
@@ -793,6 +945,9 @@ def get_active_match(request):
     record = _active_match_from_session(request)
     if not record:
         return JsonResponse({"ok": True, "room_code": None, "match": None})
+    state_error = _validate_match_state(record.game_state)
+    if state_error:
+        return _state_error(state_error)
     return JsonResponse({"ok": True, **_match_payload(record)})
 
 
@@ -836,6 +991,9 @@ def get_match(request, room_code):
         record = MatchRecord.objects.get(room_code=room_code, status="active")
     except MatchRecord.DoesNotExist:
         return _json_error("La partida no existe o ya no está activa.", status=404)
+    state_error = _validate_match_state(record.game_state)
+    if state_error:
+        return _state_error(state_error)
     return JsonResponse({"ok": True, **_match_payload(record)})
 
 
@@ -851,7 +1009,16 @@ def match_action(request, room_code):
         return _json_error("La partida no existe o ya no está activa.", status=404)
 
     state = record.game_state or {}
-    error = _apply_action(state, "host", _payload(request))
+    state_error = _validate_match_state(state)
+    if state_error:
+        return _state_error(state_error)
+
+    payload = _payload(request)
+    payload_error = _validate_action_payload(payload)
+    if payload_error:
+        return _json_error(payload_error)
+
+    error = _apply_action(state, "host", payload)
     if error:
         return _json_error(error)
 

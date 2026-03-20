@@ -1,5 +1,6 @@
 const DEFAULT_BOARD_WIDTH = 11;
 const DEFAULT_BOARD_HEIGHT = 11;
+const CARD_IMAGE_PLACEHOLDER = '/static/core/images/card-placeholder.svg';
 
 const appState = {
   cards: [],
@@ -41,6 +42,87 @@ function getCookie(name) {
     ?.slice(prefix.length) || '';
 }
 
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+function resolveCardImage(image) {
+  const raw = String(image ?? '').trim();
+  if (!raw) return CARD_IMAGE_PLACEHOLDER;
+  if (raw.startsWith('data:') || raw.startsWith('blob:')) return raw;
+
+  if (/^https?:\/\//i.test(raw)) {
+    try {
+      return new URL(raw).href;
+    } catch {
+      return CARD_IMAGE_PLACEHOLDER;
+    }
+  }
+
+  if (/^[a-z]+:/i.test(raw)) return CARD_IMAGE_PLACEHOLDER;
+
+  const normalized = raw
+    .replace(/^\.\//, '')
+    .replace(/^public\//, '/static/')
+    .replace(/^static\//, '/static/');
+
+  if (normalized.startsWith('/')) return normalized;
+  return `/static/${normalized}`;
+}
+
+function buildCardImageMarkup(image, name, className = '') {
+  const safeName = escapeHtml(name || 'Carta sin nombre');
+  const resolvedSrc = escapeHtml(resolveCardImage(image));
+  const classes = ['card-image'];
+  if (className) classes.push(className);
+
+  return `
+    <span class="card-image-frame ${escapeHtml(className)}" data-card-image-frame>
+      <img
+        class="${classes.join(' ')}"
+        src="${resolvedSrc}"
+        alt="${safeName}"
+        loading="lazy"
+        decoding="async"
+        data-card-image
+        data-original-src="${resolvedSrc}"
+      />
+      <span class="card-image-fallback" aria-hidden="true">Sin imagen</span>
+    </span>
+  `;
+}
+
+function installCardImageFallbacks(scope = document) {
+  scope.querySelectorAll('img[data-card-image]').forEach((img) => {
+    if (img.dataset.fallbackBound === 'true') return;
+    img.dataset.fallbackBound = 'true';
+
+    img.addEventListener('error', () => {
+      const frame = img.closest('[data-card-image-frame]');
+      frame?.classList.add('is-fallback');
+      img.classList.add('is-fallback');
+
+      if (img.dataset.fallbackApplied === 'true') return;
+
+      img.dataset.fallbackApplied = 'true';
+      img.src = CARD_IMAGE_PLACEHOLDER;
+    });
+
+    img.addEventListener('load', () => {
+      if (img.currentSrc && !img.currentSrc.endsWith(CARD_IMAGE_PLACEHOLDER)) {
+        const frame = img.closest('[data-card-image-frame]');
+        frame?.classList.remove('is-fallback');
+        img.classList.remove('is-fallback');
+      }
+    });
+  });
+}
+
 async function api(url, options = {}) {
   const headers = {
     'Content-Type': 'application/json',
@@ -79,7 +161,7 @@ function renderCatalog() {
   const cards = appState.cards.filter((card) => !filter || card.family === filter);
   catalogEl.innerHTML = cards.map((card) => `
     <article class="card">
-      <img src="${card.image}" alt="${card.name}" />
+      ${buildCardImageMarkup(card.image, card.name, 'card-image-catalog')}
       <h4>${card.name}</h4>
       <div class="meta">
         <span class="badge">${card.family}</span>
@@ -89,6 +171,7 @@ function renderCatalog() {
       <p>${card.description || ''}</p>
     </article>
   `).join('') || '<div class="small">No hay cartas disponibles.</div>';
+  installCardImageFallbacks(catalogEl);
 }
 
 function resolveSides() {
@@ -166,7 +249,6 @@ function computeMoveTargets(selectedUnit, meUnits, enemyUnits, boardWidth = DEFA
 
 function computeAttackRange(selectedUnit) {
   if (!selectedUnit) return 0;
-  // Misma regla que backend: base = 1, no-base = 2, más PA/2 redondeado hacia abajo.
   const baseRange = selectedUnit.card.stage === 'base' ? 1 : 2;
   return Math.min(5, baseRange + Math.floor(selectedUnit.card.action_points / 2));
 }
@@ -174,7 +256,6 @@ function computeAttackRange(selectedUnit) {
 function computeAttackTargets(selectedUnit, enemyUnits) {
   if (!selectedUnit || selectedUnit.pa_current <= 0 || !selectedUnit.can_act) return new Set();
 
-  // Si el backend ya resolvió los blancos, el cliente usa exactamente esa lista.
   if (Array.isArray(selectedUnit.attackable_unit_ids)) {
     return new Set(selectedUnit.attackable_unit_ids);
   }
@@ -400,7 +481,7 @@ function renderBoard() {
               ? `
                 <div class="token ${ownUnit ? 'token-ally' : 'token-enemy'} ${selectedClass ? 'token-selected' : ''}">
                   <div class="token-portrait-wrap">
-                    <img src="${unit.card.image}" alt="${unit.card.name}" />
+                    ${buildCardImageMarkup(unit.card.image, unit.card.name, 'card-image-token')}
                   </div>
                   <strong class="token-name">${unit.card.name}</strong>
                   <div class="token-stats">
@@ -421,6 +502,7 @@ function renderBoard() {
   const boardEl = $('#board');
   boardEl.style.gridTemplateColumns = `repeat(${width}, minmax(40px, 1fr))`;
   boardEl.innerHTML = cells.join('');
+  installCardImageFallbacks(boardEl);
 
   boardEl.querySelectorAll('.cell').forEach((cell) => {
     cell.addEventListener('click', () => {
@@ -428,13 +510,15 @@ function renderBoard() {
     });
   });
 
-  $('#hand').innerHTML = (me?.hand || []).map((card, index) => `
+  const handEl = $('#hand');
+  handEl.innerHTML = (me?.hand || []).map((card, index) => `
     <button class="card hand-card ${appState.selectedHandIndex === index ? 'selected' : ''}" data-hand-index="${index}">
-      <img src="${card.image}" alt="${card.name}" />
+      ${buildCardImageMarkup(card.image, card.name, 'card-image-hand')}
       <h4>#${index + 1} · ${card.name}</h4>
       <div class="meta"><span class="badge">Coste ${card.summon_cost}</span><span class="badge">${card.stage}</span></div>
     </button>
   `).join('') || '<div class="small">No quedan cartas en mano.</div>';
+  installCardImageFallbacks(handEl);
 
   document.querySelectorAll('.hand-card').forEach((btn) => {
     btn.addEventListener('click', () => {

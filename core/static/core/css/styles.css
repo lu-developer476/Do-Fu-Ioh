@@ -1,6 +1,8 @@
 * { box-sizing: border-box; }
 
 :root {
+  --board-cell-size: clamp(3rem, 6.4vw, 5.1rem);
+  --board-gap: 4px;
   --bg: #1b2d1f;
   --panel: #2f4a35;
   --panel-soft: #48674e;
@@ -147,23 +149,39 @@ input, select {
   color: #eafff0;
 }
 
+.board-frame {
+  width: 100%;
+  min-width: 0;
+}
+
+.board-scroll {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 4px;
+  scrollbar-gutter: stable both-edges;
+  overscroll-behavior-x: contain;
+}
+
 .board {
   display: grid;
-  grid-template-columns: repeat(11, minmax(48px, 1fr));
-  gap: 4px;
+  grid-template-columns: repeat(11, minmax(0, var(--board-cell-size)));
+  gap: var(--board-gap);
   border: 6px solid #263221;
   border-radius: 18px;
   background: linear-gradient(180deg, rgba(17, 26, 18, .8), rgba(33, 45, 24, .96));
   padding: 12px;
-  width: min(100%, 860px);
+  width: max-content;
+  min-width: 100%;
   margin: 0 auto;
-  overflow: auto;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.05), 0 18px 35px rgba(0,0,0,.25);
 }
 
 .cell {
   position: relative;
-  min-height: clamp(72px, 8vw, 96px);
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  min-height: auto;
   border: 1px solid rgba(33, 53, 39, .42);
   padding: 3px;
   color: #f7f3dc;
@@ -227,20 +245,23 @@ input, select {
 }
 
 .cell-layer {
-  min-height: 100%;
+  min-height: 0;
+  height: 100%;
   display: grid;
   align-items: stretch;
 }
 
 .cell-empty-state {
-  min-height: 100%;
+  min-height: 0;
+  height: 100%;
   border-radius: 8px;
 }
 
 .token {
   position: relative;
   z-index: 1;
-  min-height: 100%;
+  min-height: 0;
+  height: 100%;
   display: grid;
   grid-template-rows: auto auto 1fr;
   gap: 4px;
@@ -289,11 +310,15 @@ input, select {
 }
 
 .token-name {
-  display: block;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   text-align: center;
   font-size: .74rem;
-  line-height: 1;
+  line-height: 1.05;
   text-wrap: balance;
+  overflow-wrap: anywhere;
   text-shadow: 0 1px 0 rgba(0,0,0,.35);
 }
 
@@ -432,6 +457,7 @@ input, select {
 .board-footer {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 10px;
   border-top: 1px solid rgba(232, 213, 181, .35);
   padding-top: 8px;
@@ -465,14 +491,16 @@ hr { border: 0; border-top: 1px solid #b89364; }
 
 @media (max-width: 1300px) {
   .arcade-shell { grid-template-columns: 1fr; }
-  .board {
-    width: 100%;
-    grid-template-columns: repeat(11, minmax(40px, 1fr));
-  }
+  .board-panel { overflow: hidden; }
   .board-footer { flex-direction: column; }
 }
 
 @media (max-width: 860px) {
+  :root {
+    --board-cell-size: clamp(2.85rem, 10vw, 4.2rem);
+    --board-gap: 3px;
+  }
+
   .board-header {
     flex-direction: column;
     align-items: stretch;
@@ -484,15 +512,18 @@ hr { border: 0; border-top: 1px solid #b89364; }
 
   .board {
     padding: 8px;
-    gap: 3px;
   }
 
-  .cell {
-    min-height: clamp(64px, 16vw, 88px);
+  .board-scroll {
+    margin-inline: -2px;
   }
 
   .token {
-    padding-top: 16px;
+    padding: 16px 3px 3px;
+  }
+
+  .token img {
+    width: clamp(32px, 62%, 48px);
   }
 
   .token-stats {
@@ -512,4 +543,30 @@ body, .panel, .card, .board-header, .board-footer, .log-item, .small, input, sel
 #auth-status.status-error {
   color: #ffe3d6;
   font-weight: 700;
+}
+
+@media (max-width: 560px) {
+  :root {
+    --board-cell-size: clamp(2.55rem, 11vw, 3.4rem);
+  }
+
+  .panel {
+    padding: 12px;
+  }
+
+  .cell-coord {
+    top: 4px;
+    right: 4px;
+    padding: 1px 5px;
+    font-size: .54rem;
+  }
+
+  .token-name {
+    font-size: .68rem;
+  }
+
+  .token-stats span {
+    min-height: 18px;
+    padding: 1px 3px;
+  }
 }

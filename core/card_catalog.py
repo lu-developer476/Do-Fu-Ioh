@@ -86,8 +86,29 @@ def serialize_card(card: MonsterCard) -> dict:
     }
 
 
+def serialize_seed_card(item: dict, card_id: int) -> dict:
+    slug, payload = _normalized_card_payload(item)
+    return {
+        'id': card_id,
+        'slug': slug,
+        **payload,
+        'image': resolve_card_image(payload['image']),
+        'summon_cost': summon_cost(payload),
+    }
+
+
 def serialized_cards_queryset():
     return [serialize_card(card) for card in MonsterCard.objects.all()]
+
+
+def serialized_cards_seed_data(path=CARDS_DATA_PATH):
+    cards = []
+    for index, item in enumerate(load_cards_seed_data(path=path), start=1):
+        try:
+            cards.append(serialize_seed_card(item, index))
+        except ValueError as exc:
+            logger.warning('Skipping invalid seed card #%s: %s', index, exc)
+    return cards
 
 
 def load_cards_seed_data(path=CARDS_DATA_PATH):

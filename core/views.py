@@ -3,12 +3,18 @@ import random
 import secrets
 
 from django.db import connection, transaction
+from django.db.utils import OperationalError, ProgrammingError
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_GET, require_http_methods
 
-from .card_catalog import resolve_card_image as catalog_resolve_card_image, serialized_cards_queryset, summon_cost
+from .card_catalog import (
+    resolve_card_image as catalog_resolve_card_image,
+    serialized_cards_queryset,
+    serialized_cards_seed_data,
+    summon_cost,
+)
 from .models import MatchRecord, MonsterCard
 from .system_users import get_single_player_system_users
 
@@ -540,7 +546,11 @@ def _persist_record_state(record, state):
 @require_GET
 @ensure_csrf_cookie
 def index(request):
-    return render(request, "core/index.html", {"cards_seed_json": serialized_cards_queryset()})
+    try:
+        cards_seed_json = serialized_cards_queryset()
+    except (OperationalError, ProgrammingError):
+        cards_seed_json = serialized_cards_seed_data()
+    return render(request, "core/index.html", {"cards_seed_json": cards_seed_json})
 
 
 @require_GET
@@ -558,7 +568,13 @@ def health(request):
 
 @require_GET
 def cards_catalog(request):
-    return JsonResponse({"ok": True, "cards": serialized_cards_queryset()})
+    try:
+        cards = serialized_cards_queryset()
+        source = "database"
+    except (OperationalError, ProgrammingError):
+        cards = serialized_cards_seed_data()
+        source = "seed"
+    return JsonResponse({"ok": True, "cards": cards, "source": source})
 
 
 @require_GET

@@ -9,18 +9,18 @@
   <link rel="stylesheet" href="{% static 'core/css/styles.css' %}" />
 </head>
 <body>
-  <main class="arcade-shell">
+  <main class="arcade-shell card-game-shell">
     <aside class="side-column left-column">
       <section class="panel intro-panel">
-        <p class="kicker">Arcade Protocols</p>
+        <p class="kicker">Card Duel Protocols</p>
         <h1>DO-FU-IÓH</h1>
-        <p>Jugá partidas tácticas sólo contra la IA, sin registro, salas ni código de unión.</p>
+        <p>Duelo de cartas contra la IA: invocá monstruos, compará estadísticas y atacá sin tablero táctico.</p>
       </section>
 
       <section class="panel compact-panel">
         <h2>Modo directo</h2>
         <div class="stack auth-box">
-          <p id="auth-status">Modo single-player por sesión. Hacé clic en "Jugar vs IA" para iniciar o reiniciar tu partida.</p>
+          <p id="auth-status">Modo single-player por sesión. Hacé clic en "Jugar vs IA" para iniciar o reiniciar tu duelo.</p>
         </div>
       </section>
 
@@ -35,73 +35,50 @@
       </section>
     </aside>
 
-    <section class="center-column panel board-panel">
-      <header class="board-header">
+    <section class="center-column panel duel-panel">
+      <header class="duel-header">
         <div>
-          <h2>Tablero</h2>
-          <p>Mapa táctico estilo Dofus · Elegí una carta o unidad y seguí los resaltados para invocar, mover o atacar.</p>
+          <h2>Arena de cartas</h2>
+          <p>Sin tablero: cada jugador tiene cinco slots de invocación y las decisiones dependen de PdV, Escudo, PA, coste y etapa.</p>
         </div>
-        <div class="board-legend" aria-label="Leyenda del tablero">
-          <span class="legend-chip summon">Invocación</span>
-          <span class="legend-chip move">Movimiento</span>
-          <span class="legend-chip attack">Ataque</span>
-          <span class="legend-chip selected">Selección</span>
+        <div class="duel-rules">
+          <span>1 invocación/turno</span><span>PA = ataques</span><span>Escudo absorbe daño</span>
         </div>
       </header>
-      <div id="action-feedback" class="action-feedback feedback-normal" aria-live="polite" aria-atomic="true">Seleccioná una carta o unidad para ver el feedback táctico acá.</div>
-      <div id="board-context" class="board-context" aria-live="polite">
-        <div class="board-context-step"><strong>1.</strong><span>Iniciá la partida con <em>Jugar vs IA</em>.</span></div>
-        <div class="board-context-step"><strong>2.</strong><span>Elegí una carta de tu mano: las casillas verdes marcan dónde podés invocar.</span></div>
-        <div class="board-context-step"><strong>3.</strong><span>Elegí una unidad propia: azul mueve, rojo ataca, dorado indica selección.</span></div>
-      </div>
-      <div class="board-frame">
-        <div class="board-scroll">
-          <div id="board" class="board" aria-label="Tablero táctico"></div>
+      <div id="action-feedback" class="action-feedback feedback-normal" aria-live="polite" aria-atomic="true">Seleccioná una carta o monstruo para jugar.</div>
+
+      <section class="duel-board" aria-label="Arena de cartas sin tablero">
+        <div class="duel-side enemy-side">
+          <h3>IA</h3>
+          <div id="enemy-arena" class="arena-row"></div>
         </div>
-      </div>
-      <footer class="board-footer">
-        <div><strong>Objetivo:</strong> derrotar al equipo de la IA.</div>
-        <div><strong>Modo:</strong> solo contra IA.</div>
-      </footer>
+        <div class="versus-strip"><span>VS</span></div>
+        <div class="duel-side player-side">
+          <h3>Jugador</h3>
+          <div id="player-arena" class="arena-row"></div>
+        </div>
+      </section>
+
+      <section class="panel compact-panel hand-zone">
+        <div class="panel-heading"><h2>Tu mano</h2><span class="panel-caption">Elegí una carta y después un slot libre</span></div>
+        <div id="hand" class="card-row"></div>
+      </section>
     </section>
 
     <aside class="side-column right-column">
       <section class="panel compact-panel">
         <h2>Consola rápida</h2>
         <div class="stack">
-          <button id="create-ai-match" data-loading-label="Creando partida...">Jugar vs IA</button>
-          <button id="refresh-state" class="ghost" data-loading-label="Refrescando...">Refrescar partida</button>
+          <button id="create-ai-match" data-loading-label="Creando duelo...">Jugar vs IA</button>
+          <button id="refresh-state" class="ghost" data-loading-label="Refrescando...">Refrescar duelo</button>
           <button id="end-turn-btn" class="ghost" data-loading-label="Procesando turno...">Terminar turno</button>
         </div>
       </section>
 
-      <section class="panel compact-panel">
-        <h2>Resumen de partida</h2>
-        <div id="match-summary" class="stack small"></div>
-      </section>
-
-      <section class="panel compact-panel event-log-panel">
-        <div class="panel-heading">
-          <h2>Eventos de partida</h2>
-          <span class="panel-caption">Orden cronológico</span>
-        </div>
-        <div id="match-log" class="match-log" aria-live="polite">
-          <div class="small">Los eventos de la partida aparecerán acá.</div>
-        </div>
-      </section>
-
-      <section class="panel compact-panel">
-        <h2>Tu mano</h2>
-        <div id="hand" class="card-row"></div>
-      </section>
-
-      <section class="panel compact-panel">
-        <h2>Unidades en juego</h2>
-        <div id="unit-list" class="stack small"></div>
-      </section>
+      <section class="panel compact-panel"><h2>Resumen del duelo</h2><div id="match-summary" class="stack small"></div></section>
+      <section class="panel compact-panel"><h2>Detalle seleccionado</h2><div id="selection-detail" class="stack small"></div></section>
+      <section class="panel compact-panel event-log-panel"><div class="panel-heading"><h2>Eventos</h2><span class="panel-caption">Últimos sucesos</span></div><div id="match-log" class="match-log" aria-live="polite"><div class="small">Los eventos aparecerán acá.</div></div></section>
     </aside>
-
-
   </main>
   {{ cards_seed_json|json_script:"cards-seed" }}
   <script src="{% static 'core/js/game.js' %}"></script>

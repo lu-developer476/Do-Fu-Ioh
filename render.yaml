@@ -3,7 +3,7 @@ services:
     name: do-fu-ioh
     env: python
     buildCommand: "./build.sh"
-    preDeployCommand: "python manage.py migrate --noinput --fake-initial"
+    preDeployCommand: "python manage.py migrate --noinput --fake-initial && python manage.py seed_cards_catalog"
     startCommand: "gunicorn do_fu_ioh.wsgi:application --bind 0.0.0.0:$PORT"
     envVars:
       - key: DJANGO_SECRET_KEY

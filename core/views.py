@@ -2,7 +2,7 @@ import json
 import random
 import secrets
 
-from django.db import transaction
+from django.db import connection, transaction
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -13,6 +13,8 @@ from .models import MatchRecord, MonsterCard
 from .system_users import get_single_player_system_users
 
 ARENA_SLOTS = 5
+LEGACY_BOARD_WIDTH = ARENA_SLOTS
+LEGACY_BOARD_HEIGHT = 9
 HAND_SIZE = 5
 DECK_SIZE = 12
 MAX_ENERGY = 10
@@ -198,6 +200,7 @@ def _coerce_legacy_card_arena_state(state):
     if not isinstance(state, dict):
         return state
     state.setdefault("arena", {"slots": ARENA_SLOTS})
+    state.setdefault("board", {"width": LEGACY_BOARD_WIDTH, "height": LEGACY_BOARD_HEIGHT})
     if "slots" not in state["arena"]:
         state["arena"]["slots"] = ARENA_SLOTS
     slots = state["arena"]["slots"]
@@ -260,6 +263,8 @@ def _validate_action_payload(payload):
     if action not in SUPPORTED_ACTIONS:
         return "Acción no soportada."
     for field, expected_type in ACTION_FIELD_TYPES[action].items():
+        if action == "summon" and field == "slot" and "slot" not in payload and isinstance(payload.get("x"), int):
+            continue
         value = payload.get(field)
         if expected_type is int and not isinstance(value, int):
             return f"El campo '{field}' debe ser un entero."
@@ -309,6 +314,7 @@ def _attackable_unit_ids(state, attacker, enemy_side=None):
 def _state_for_client(state):
     state = _coerce_legacy_card_arena_state(state)
     payload = json.loads(json.dumps(state))
+    payload.setdefault("board", {"width": LEGACY_BOARD_WIDTH, "height": LEGACY_BOARD_HEIGHT})
     for side in ("host", "guest"):
         enemy_side = "guest" if side == "host" else "host"
         for unit in payload.get(side, {}).get("units", []):
@@ -322,6 +328,8 @@ def _build_unit_from_card(state, side, card, slot):
         "id": secrets.token_hex(6),
         "owner": side,
         "slot": slot,
+        "x": slot,
+        "y": 0 if side == "host" else LEGACY_BOARD_HEIGHT - 1,
         "card": card,
         "hp_current": card["hp"],
         "shell_current": card["shell"],
@@ -335,6 +343,8 @@ def _apply_summon_action(state, side, actor, payload):
     hand_index = payload.get("hand_index")
     slot = payload.get("slot")
     slots = state["arena"]["slots"]
+    if slot is None and isinstance(payload.get("x"), int):
+        slot = payload["x"] % slots
     if hand_index < 0 or hand_index >= len(actor["hand"]):
         return "Carta inválida."
     if slot < 0 or slot >= slots:
@@ -535,7 +545,15 @@ def index(request):
 
 @require_GET
 def health(request):
-    return JsonResponse({"ok": True})
+    checks = {"app": True, "database": False}
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1")
+            checks["database"] = cursor.fetchone()[0] == 1
+    except Exception:
+        checks["database"] = False
+    status = 200 if all(checks.values()) else 503
+    return JsonResponse({"ok": status == 200, "checks": checks}, status=status)
 
 
 @require_GET

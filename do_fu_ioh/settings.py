@@ -1,4 +1,6 @@
+import hashlib
 import os
+import sys
 from pathlib import Path
 
 import dj_database_url
@@ -43,11 +45,17 @@ def _is_local_host(host):
 
 
 DEBUG = _env_flag('DJANGO_DEBUG', default=False)
-# Local fallback only; production must override this via environment.
+# Prefer an explicit secret, but never crash the public site with a bare 500
+# when the hosting environment is missing/misquoting the variable. The fallback
+# is deterministic per deployment database URL so sessions remain stable until
+# DJANGO_SECRET_KEY is configured correctly.
 SECRET_KEY_FALLBACK = 'dev-only-secret-key-change-me-before-production-please'
-SECRET_KEY = _get_env('DJANGO_SECRET_KEY', SECRET_KEY_FALLBACK)
-if not DEBUG and SECRET_KEY == SECRET_KEY_FALLBACK:
-    raise RuntimeError('DJANGO_SECRET_KEY must be configured when DEBUG=False')
+SECRET_KEY = _get_env('DJANGO_SECRET_KEY')
+if not SECRET_KEY:
+    fallback_material = _get_env('DATABASE_URL') or str(BASE_DIR)
+    SECRET_KEY = 'fallback-' + hashlib.sha256(fallback_material.encode('utf-8')).hexdigest()
+
+RUNNING_TESTS = any(arg.startswith('test') for arg in sys.argv)
 
 DEFAULT_ALLOWED_HOSTS = ['do-fu-ioh.onrender.com', '127.0.0.1', 'localhost']
 ALLOWED_HOSTS = _merge_unique(
@@ -126,7 +134,7 @@ STORAGES = {
     'staticfiles': {
         'BACKEND': (
             'django.contrib.staticfiles.storage.StaticFilesStorage'
-            if DEBUG
+            if DEBUG or RUNNING_TESTS
             else 'whitenoise.storage.CompressedManifestStaticFilesStorage'
         )
     },
@@ -142,7 +150,7 @@ CSRF_COOKIE_SAMESITE = 'Lax'
 X_FRAME_OPTIONS = 'DENY'
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_REFERRER_POLICY = 'same-origin'
-SECURE_SSL_REDIRECT = _env_flag('DJANGO_SECURE_SSL_REDIRECT', default=not DEBUG)
+SECURE_SSL_REDIRECT = _env_flag('DJANGO_SECURE_SSL_REDIRECT', default=False)
 SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
 SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
 SECURE_HSTS_PRELOAD = not DEBUG

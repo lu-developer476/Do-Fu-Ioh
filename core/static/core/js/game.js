@@ -81,8 +81,9 @@ async function api(url, options = {}) {
     if (csrfToken) headers['X-CSRFToken'] = csrfToken;
   }
   const response = await fetch(url, { credentials: 'same-origin', ...options, headers });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(data.message || `Error HTTP ${response.status}`);
+  const contentType = response.headers.get('content-type') || '';
+  const data = contentType.includes('application/json') ? await response.json().catch(() => ({})) : {};
+  if (!response.ok) throw new Error(data.message || `El servidor respondió con error ${response.status}. Probá refrescar el duelo.`);
   return data;
 }
 

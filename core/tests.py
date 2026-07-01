@@ -2,8 +2,10 @@ import json
 
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from unittest.mock import patch
 
 from django.core.management import call_command
+from django.db.utils import OperationalError
 from django.middleware.csrf import _get_new_csrf_string
 from django.test import Client, SimpleTestCase, TestCase
 
@@ -37,6 +39,16 @@ class CardsCatalogSeedTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['cards'], [])
         self.assertFalse(MonsterCard.objects.exists())
+
+    def test_cards_endpoint_falls_back_to_seed_data_when_database_is_unavailable(self):
+        with patch('core.views.serialized_cards_queryset', side_effect=OperationalError):
+            response = self.client.get('/api/cards/')
+
+        payload = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(payload['source'], 'seed')
+        self.assertGreater(len(payload['cards']), 0)
+        self.assertIn('summon_cost', payload['cards'][0])
 
     def test_management_command_seeds_when_catalog_is_empty(self):
         MonsterCard.objects.all().delete()
@@ -214,6 +226,13 @@ class SoloAIModeTests(TestCase):
             HTTP_X_CSRFTOKEN=csrf_token,
         )
         self.assertEqual(created.status_code, 200)
+
+    def test_index_uses_seed_bootstrap_when_database_is_unavailable(self):
+        with patch('core.views.serialized_cards_queryset', side_effect=OperationalError):
+            response = self.client.get("/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'cards-seed')
 
     def test_match_actions_require_csrf(self):
         client = Client(enforce_csrf_checks=True)

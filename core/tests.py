@@ -15,6 +15,29 @@ class CardSeedSourceValidationTests(SimpleTestCase):
             with self.assertRaises(CardSeedDataError):
                 load_cards_seed_data(path=path)
 
+    def test_base_escarahojas_match_reference_stats(self):
+        cards = {card['name']: card for card in load_cards_seed_data()}
+        names = [
+            'Escarahoja anaranjada',
+            'Escarahoja limonada',
+            'Escarahoja sonrosada',
+            'Escarahoja tostada',
+            'Escarahoja violeta',
+        ]
+
+        for name in names:
+            with self.subTest(name=name):
+                card = cards[name]
+                self.assertEqual(card['stage'], 'base')
+                self.assertEqual(card['level_min'], 36)
+                self.assertEqual(card['level_max'], 48)
+                self.assertEqual(card['hp_min'], 320)
+                self.assertEqual(card['hp_max'], 450)
+                self.assertEqual(card['hp'], 450)
+                self.assertEqual(card['shell'], 120)
+                self.assertEqual(card['action_points'], 7)
+                self.assertEqual(card['movement_points'], 4)
+
 
 class BackendlessModeTests(TestCase):
     def test_index_bootstraps_seed_cards_for_local_gameplay(self):
@@ -48,7 +71,6 @@ class BackendlessModeTests(TestCase):
         self.assertEqual(payload['source'], 'seed')
         self.assertGreater(len(payload['cards']), 0)
         self.assertIn('summon_cost', payload['cards'][0])
-
 
     def test_seed_catalog_marks_summons_as_free(self):
         response = self.client.get('/api/cards/')

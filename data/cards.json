@@ -699,8 +699,10 @@
     "shell": 630,
     "action_points": 10,
     "movement_points": 6,
-    "description": "Cuando una fusión de escarahojas completa su ciclo puede ascender, dando como resultado una presencia indiscutible y dominante.",
+    "description": "Cuando una fusión de escarahojas completa su ciclo, puede ascender una vez más, dando como resultado la presencia indiscutible del Virrey de la familia. Su caparazón bronceado marca un rango superior dentro del enjambre, como si fuera un jefe militar del nido. Dominante e imponente, simboliza la jerarquía y el pináculo de poder.",
     "image": "public/images/escarahojas/evolutions/escarasubjefe-bronce.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 1800,
+    "hp_max": 2575
   }
 ]

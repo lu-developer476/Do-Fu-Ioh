@@ -851,3 +851,15 @@ body, .panel, .card, .board-header, .board-footer, .log-item, .small, input, sel
   .arena-row { grid-template-columns: repeat(5, 150px); }
   .arena-slot, .arena-card { min-height: 220px; }
 }
+
+.catalog-select-button {
+  width: 100%;
+  padding: .55rem .65rem;
+  font-size: .85rem;
+}
+
+.catalog-select-button[aria-pressed="true"] {
+  border-color: rgba(119, 242, 162, .9);
+  background: rgba(34, 92, 56, .62);
+  color: #eafff0;
+}

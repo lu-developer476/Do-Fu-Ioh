@@ -174,6 +174,21 @@ class SoloAIModeTests(TestCase):
             list(MonsterCard.objects.values_list("id", flat=True)),
         )
 
+    def test_create_match_can_prioritize_manually_selected_cards(self):
+        selected_ids = list(
+            MonsterCard.objects.order_by("id").values_list("id", flat=True)[:2]
+        )
+
+        created = self.client.post(
+            "/api/match/create-vs-ai/",
+            data=json.dumps({"selected_card_ids": selected_ids}),
+            content_type="application/json",
+        )
+
+        self.assertEqual(created.status_code, 200)
+        hand_ids = [card["id"] for card in created.json()["match"]["host"]["hand"]]
+        self.assertEqual(hand_ids[:2], selected_ids)
+
     def test_session_is_required_for_match_access(self):
         created = self.client.post(
             "/api/match/create-vs-ai/", data="{}", content_type="application/json"

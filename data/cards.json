@@ -123,7 +123,9 @@
     "movement_points": 6,
     "description": "Espíritu kitsune de tonalidades violetas vinculado a las energías arcanas de Pandala.",
     "image": "public/images/kitsus/base/kitsu-amatista.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 1500,
+    "hp_max": 1500
   },
   {
     "name": "Kitsu anaranjado",
@@ -137,7 +139,9 @@
     "movement_points": 6,
     "description": "Variante ardiente de los Kitsus cuya energía recuerda a las brasas de un fuego controlado.",
     "image": "public/images/kitsus/base/kitsu-naranja.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 1500,
+    "hp_max": 1500
   },
   {
     "name": "Kitsu carmine",
@@ -151,7 +155,9 @@
     "movement_points": 6,
     "description": "Espíritu kitsu de tonalidad rojiza profunda asociado con la intensidad del Wakfu.",
     "image": "public/images/kitsus/base/kitsu-carmine.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 1500,
+    "hp_max": 1500
   },
   {
     "name": "Kitsu dākuburakku",
@@ -165,7 +171,9 @@
     "movement_points": 6,
     "description": "Kitsu oscuro que canaliza energías sombrías del Mundo de los Doce.",
     "image": "public/images/kitsus/base/kitsu-dākuburakku.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 1500,
+    "hp_max": 1500
   },
   {
     "name": "Kitsu junsuina hikari",
@@ -179,7 +187,9 @@
     "movement_points": 6,
     "description": "Manifestación espiritual del kitsu ligada a la pureza y la luz.",
     "image": "public/images/kitsus/base/kitsu-junsuina-hikari.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 1500,
+    "hp_max": 1500
   },
   {
     "name": "Kitsu magenta",
@@ -193,7 +203,9 @@
     "movement_points": 6,
     "description": "Espíritu kitsune de energía vibrante, errática y caótica. Su coloración intensa delata una afinidad con corrientes mágicas difíciles de controlar.",
     "image": "public/images/kitsus/base/kitsu-magenta.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 1500,
+    "hp_max": 1500
   },
   {
     "name": "Kitsu midori no mizu",
@@ -207,7 +219,9 @@
     "movement_points": 6,
     "description": "Rara manifestación kitsune de la energía del agua como un manantial cargado de vida. Su presencia sugiere equilibrio entre fluidez y naturaleza, reflejando tonalidades esmeraldas.",
     "image": "public/images/kitsus/base/kitsu-midori-no-mizu.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 1500,
+    "hp_max": 1500
   },
   {
     "name": "Kitsu mizu",
@@ -221,7 +235,9 @@
     "movement_points": 6,
     "description": "Variante acuática inspirada en los antiguos Kitsus de Pandala. Su pelaje azul concentra una energía fluida, fría y constante, propia de los espíritus del agua.",
     "image": "public/images/kitsus/base/kitsu-mizu.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 1500,
+    "hp_max": 1500
   },
   {
     "name": "Kitsu silvestre",
@@ -235,7 +251,9 @@
     "movement_points": 6,
     "description": "Forma más salvaje y agresiva del linaje que habita zonas naturales. Conserva el misticismo de Pandala, pero con un instinto más salvaje y territorial.",
     "image": "public/images/kitsus/base/kitsu-silvestre.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 1500,
+    "hp_max": 1500
   },
   {
     "name": "Kitsu nishiki",

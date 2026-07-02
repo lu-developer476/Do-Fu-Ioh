@@ -568,117 +568,30 @@ def _persist_record_state(record, state):
 @require_GET
 @ensure_csrf_cookie
 def index(request):
-    try:
-        cards_seed_json = serialized_cards_queryset()
-    except (OperationalError, ProgrammingError):
-        cards_seed_json = serialized_cards_seed_data()
-    return render(request, "core/index.html", {"cards_seed_json": cards_seed_json})
+    return render(request, "core/index.html", {"cards_seed_json": serialized_cards_seed_data()})
 
 
 @require_GET
 def health(request):
-    checks = {"app": True, "database": False}
-    try:
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT 1")
-            checks["database"] = cursor.fetchone()[0] == 1
-    except Exception:
-        checks["database"] = False
-    status = 200 if all(checks.values()) else 503
-    return JsonResponse({"ok": status == 200, "checks": checks}, status=status)
+    return JsonResponse({"ok": True, "mode": "backendless", "checks": {"app": True, "database": "disabled"}})
 
 
 @require_GET
 def cards_catalog(request):
-    try:
-        cards = serialized_cards_queryset()
-        source = "database"
-    except (DatabaseError, OperationalError, ProgrammingError):
-        cards = serialized_cards_seed_data()
-        source = "seed"
-    return JsonResponse({"ok": True, "cards": cards, "source": source})
+    return JsonResponse({"ok": True, "cards": serialized_cards_seed_data(), "source": "seed"})
 
 
-@require_GET
-def get_active_match(request):
-    record = _active_match_from_session(request)
-    if not record:
-        return JsonResponse({"ok": True, "room_code": None, "match": None})
-    _, error_response = _validated_record_state(record)
-    if error_response:
-        _clear_active_match_session(request)
-        return error_response
-    return JsonResponse({"ok": True, **_match_payload(record)})
-
-
-@require_http_methods(["POST"])
-def create_match_vs_ai(request):
-    payload, payload_error = _payload(request)
-    if payload_error:
-        return payload_error
-    difficulty = _normalize_ai_difficulty(payload.get("difficulty"))
-    selected_card_ids = (
-        payload.get("selected_card_ids")
-        if isinstance(payload.get("selected_card_ids"), list)
-        else []
+def _backendless_api_disabled(*_args, **_kwargs):
+    return JsonResponse(
+        {
+            "ok": False,
+            "message": "El duelo vs IA ahora corre 100% en el navegador; esta API ya no persiste partidas.",
+        },
+        status=410,
     )
-    cards = _available_serialized_cards()
-    solo_system_user, ai_user = get_single_player_system_users()
-    with transaction.atomic():
-        record = _active_match_from_session(request)
-        if record:
-            record.game_state = _build_new_match_state(
-                cards, difficulty=difficulty, selected_card_ids=selected_card_ids
-            )
-            record.status = "active"
-            record.guest = ai_user
-            record.winner = None
-            record.save(update_fields=["game_state", "status", "guest", "winner", "updated_at"])
-        else:
-            record = MatchRecord.objects.create(
-                host=solo_system_user,
-                guest=ai_user,
-                status="active",
-                game_state=_build_new_match_state(
-                    cards, difficulty=difficulty, selected_card_ids=selected_card_ids
-                ),
-            )
-    request.session[SESSION_MATCH_KEY] = record.room_code
-    request.session.modified = True
-    return JsonResponse({"ok": True, **_match_payload(record)})
 
 
-@require_GET
-def get_match(request, room_code):
-    record, error_response = _get_session_match_or_error(request, room_code)
-    if error_response:
-        return error_response
-    _, state_error = _validated_record_state(record)
-    if state_error:
-        _clear_active_match_session(request)
-        return state_error
-    return JsonResponse({"ok": True, **_match_payload(record)})
-
-
-@require_http_methods(["POST"])
-def match_action(request, room_code):
-    record, error_response = _get_session_match_or_error(request, room_code)
-    if error_response:
-        return error_response
-    state, state_error = _validated_record_state(record)
-    if state_error:
-        _clear_active_match_session(request)
-        return state_error
-    payload, payload_error_response = _payload(request)
-    if payload_error_response:
-        return payload_error_response
-    payload_error = _validate_action_payload(payload)
-    if payload_error:
-        return _json_error(payload_error)
-    with transaction.atomic():
-        error = _apply_action(state, "host", payload)
-        if error:
-            return _json_error(error)
-        _ai_turn(state)
-        _persist_record_state(record, state)
-    return JsonResponse({"ok": True, **_match_payload(record)})
+get_active_match = _backendless_api_disabled
+create_match_vs_ai = _backendless_api_disabled
+get_match = _backendless_api_disabled
+match_action = _backendless_api_disabled

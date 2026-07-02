@@ -267,7 +267,8 @@
     "movement_points": 5,
     "description": "Fusión espiritual entre Kitsu Mizu y Kitsu Midori no Mizu. Su pelaje de 2 colores recuerda a los koi ornamentales y refleja una armonía acuática poco frecuente.",
     "image": "public/images/kitsus/fusions/kitsu-nishiki-merged.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": []
   },
   {
     "name": "Kitsu penta",
@@ -281,7 +282,8 @@
     "movement_points": 5,
     "description": "Manifestación extremadamente inestable surgida de la unión de cinco energías kitsu. Su energía es enorme, pero también inestable, como si varias voluntades convivieran en un mismo cuerpo.",
     "image": "public/images/kitsus/fusions/kitsu-penta-merged.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": []
   },
   {
     "name": "Kitsu yin yang",
@@ -295,7 +297,8 @@
     "movement_points": 5,
     "description": "Fusión nacida del equilibrio entre la oscuridad del Kitsu dākuburakku y la pureza del Kitsu junsuina hikari. En él conviven dos corrientes opuestas de una misma esencia.",
     "image": "public/images/kitsus/fusions/kitsu-yinyang-merged.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": []
   },
   {
     "name": "Kitsu silvestre evolucionado",
@@ -309,7 +312,8 @@
     "movement_points": 7,
     "description": "Evolución base del Kitsu silvestre. Al madurar, su vínculo con Pandala se refuerza y su instinto cazador se vuelve más preciso y dominante.",
     "image": "public/images/kitsus/evolutions/kitsu-silvestre-evolved.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": []
   },
   {
     "name": "Kitsu kumiawase",
@@ -323,7 +327,8 @@
     "movement_points": 7,
     "description": "Evolución base del Kitsu amatista y magenta que representa la armonía entre 2 energías complementarias. Su nombre refleja la unión en una forma más estable y poderosa.",
     "image": "public/images/kitsus/evolutions/kitsu-kumiawase-evolved.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": []
   },
   {
     "name": "Kitsu nishiki evolucionado",
@@ -337,7 +342,8 @@
     "movement_points": 7,
     "description": "Evolución de la fusión Kitsu nishiki. Su pelaje gana brillo ceremonial y su cuerpo canaliza con más estabilidad las corrientes espirituales del agua.",
     "image": "public/images/kitsus/evolutions/kitsu-nishiki-evolved.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": []
   },
   {
     "name": "Kitsu penta evolucionado",
@@ -351,7 +357,8 @@
     "movement_points": 7,
     "description": "Evolución de la fusión Kitsu penta. La enorme mezcla de energías deja de ser caótica y se transforma en una presencia majestuosa y peligrosa.",
     "image": "public/images/kitsus/evolutions/kitsu-penta-evolved.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": []
   },
   {
     "name": "Kitsu yin yang evolucionado",
@@ -365,7 +372,8 @@
     "movement_points": 7,
     "description": "Evolución de la fusión Kitsu yin yang. Su cuerpo domina mejor la tensión entre luz y sombra, convirtiendo ese equilibrio en una fuerza propia.",
     "image": "public/images/kitsus/evolutions/kitsu-yinyang-evolved.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": []
   },
   {
     "name": "Gelatina de durazno",

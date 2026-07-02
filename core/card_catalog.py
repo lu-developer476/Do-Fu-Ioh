@@ -26,6 +26,7 @@ OPTIONAL_CARD_DEFAULTS = {
     'movement_points': 1,
     'hp_min': None,
     'hp_max': None,
+    'spells': [],
 }
 REQUIRED_CARD_FIELDS = (
     'name',
@@ -157,7 +158,11 @@ def _normalized_card_payload(item):
         'movement_points': item.get('movement_points', OPTIONAL_CARD_DEFAULTS['movement_points']),
         'description': item.get('description', OPTIONAL_CARD_DEFAULTS['description']),
         'image': item.get('image', OPTIONAL_CARD_DEFAULTS['image']),
+        'spells': item.get('spells', OPTIONAL_CARD_DEFAULTS['spells']),
     }
+
+    if not isinstance(payload['spells'], list):
+        raise ValueError('spells debe ser una lista')
 
     integer_fields = ('level_min', 'level_max', 'hp', 'shell', 'action_points', 'movement_points')
     for field in integer_fields:
@@ -207,7 +212,7 @@ def import_monster_cards(*, using=DEFAULT_DB_ALIAS, path=CARDS_DATA_PATH, stdout
         stats.processed += 1
         card, created = MonsterCard.objects.using(using).update_or_create(
             slug=slug,
-            defaults={key: value for key, value in defaults.items() if key not in ('hp_min', 'hp_max')},
+            defaults={key: value for key, value in defaults.items() if key not in ('hp_min', 'hp_max', 'spells')},
         )
         if created:
             stats.created += 1

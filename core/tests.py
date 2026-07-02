@@ -25,6 +25,14 @@ class BackendlessModeTests(TestCase):
         self.assertContains(response, 'Modo sin Backend activo')
         self.assertContains(response, 'Nuevo duelo local vs IA')
 
+    def test_frontend_keeps_catalog_and_arena_renderers(self):
+        script = Path(__file__).resolve().parent / 'static' / 'core' / 'js' / 'game.js'
+        source = script.read_text(encoding='utf-8')
+
+        self.assertIn('function renderCatalog()', source)
+        self.assertIn('function renderArenaRow(', source)
+        self.assertIn('function renderArenaCard(', source)
+
     def test_health_does_not_depend_on_database(self):
         response = self.client.get('/health/')
 

@@ -22,7 +22,13 @@ function localSeedCards() { const seedTag = document.getElementById('cards-seed'
 function resolveCardImage(image) { const raw = String(image ?? '').trim(); if (!raw) return CARD_IMAGE_PLACEHOLDER; if (raw.startsWith('data:') || raw.startsWith('blob:')) return raw; if (/^https?:\/\//i.test(raw)) { try { return new URL(raw).href; } catch { return CARD_IMAGE_PLACEHOLDER; } } if (/^[a-z]+:/i.test(raw)) return CARD_IMAGE_PLACEHOLDER; const normalized = raw.replace(/^\.\//, '').replace(/^public\//, '/static/').replace(/^static\//, '/static/'); return normalized.startsWith('/') ? normalized : `/static/${normalized}`; }
 function createCardImageElement(image, name, className = '') { const frame = document.createElement('span'); frame.className = `card-image-frame${className ? ` ${className}` : ''}`; const img = document.createElement('img'); img.className = ['card-image', className].filter(Boolean).join(' '); img.src = resolveCardImage(image); img.alt = name || 'Carta sin nombre'; img.loading = 'lazy'; img.decoding = 'async'; const fallback = document.createElement('span'); fallback.className = 'card-image-fallback'; fallback.textContent = 'Imagen no disponible'; img.addEventListener('error', () => { frame.classList.add('is-fallback'); img.src = CARD_IMAGE_PLACEHOLDER; }); frame.append(img, fallback); return frame; }
 function cardImage(card = {}) { return card.image || card.image_fallback || CARD_IMAGE_PLACEHOLDER; }
-function summarizeCardStats(card = {}) { return `PdV ${card.hp ?? '-'} · Esc ${card.shell ?? 0} · PA ${card.action_points ?? '-'} · Invocación gratis`; }
+function hpLabel(card = {}) {
+  const hpMin = Number.isInteger(card.hp_min) ? card.hp_min : card.hp;
+  const hpMax = Number.isInteger(card.hp_max) ? card.hp_max : card.hp;
+  if (!Number.isInteger(hpMin) && !Number.isInteger(hpMax)) return '-';
+  return hpMin === hpMax ? `${hpMax}` : `${hpMin}-${hpMax}`;
+}
+function summarizeCardStats(card = {}) { return `PdV ${hpLabel(card)} · Esc ${card.shell ?? 0} · PA ${card.action_points ?? '-'} · Invocación gratis`; }
 function stageLabel(stage) { return { base: 'Base', fusion: 'Fusión', evolution: 'Evolución' }[stage] || stage || '-'; }
 function formatSideLabel(side) { return side === 'host' ? 'Jugador' : side === 'guest' ? 'IA' : side || '-'; }
 function estimateDamage(card = {}) { return (card.action_points || 0) + 2 + (STAGE_RANK[card.stage] || 0); }

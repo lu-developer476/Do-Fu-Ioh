@@ -11,7 +11,9 @@
     "movement_points": 5,
     "description": "Variante extremadamente rara de los Píos que habitan las llanuras de Amakna. Su plumaje pálido es producto de una anomalía mágica del Wakfu. Aunque parecen frágiles, estos Píos son territoriales y atacan con sorprendente ferocidad a cualquier intruso.",
     "image": "public/images/pios/base/pio-albino.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 50,
+    "hp_max": 85
   },
   {
     "name": "Pío anaranjado",
@@ -25,7 +27,9 @@
     "movement_points": 5,
     "description": "Pariente cercano del famoso Pío rojo del Mundo de los Doce. Esta variante presenta tonos cálidos en su plumaje y suele encontrarse cerca de zonas templadas donde abundan semillas y pequeños insectos.",
     "image": "public/images/pios/base/pio-anaranjado.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 50,
+    "hp_max": 85
   },
   {
     "name": "Pío castaño",
@@ -39,7 +43,9 @@
     "movement_points": 5,
     "description": "Ave pequeña pero testaruda que suele anidar en campos abiertos. Los aventureros la reconocen por su agresividad desproporcionada para su tamaño.",
     "image": "public/images/pios/base/pio-castaño.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 50,
+    "hp_max": 85
   },
   {
     "name": "Pío negruzco",
@@ -53,7 +59,9 @@
     "movement_points": 5,
     "description": "Una variante oscura de los Píos que prefiere ambientes más sombríos. Su plumaje oscuro le permite camuflarse entre rocas y troncos caídos.",
     "image": "public/images/pios/base/pio-negruzco.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 50,
+    "hp_max": 85
   },
   {
     "name": "Pío otoñal",
@@ -67,7 +75,9 @@
     "movement_points": 5,
     "description": "Resultado de una fusión mágica entre el Pío anaranjado y el Pío castaño. La energía del Wakfu alteró su plumaje creando tonos similares a los de las hojas en otoño. Su patrón recuerda a las hojas secas y su carácter es más impredecible.",
     "image": "public/images/pios/fusions/pio-otoñal.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 75,
+    "hp_max": 105
   },
   {
     "name": "Pío combinado",
@@ -81,7 +91,9 @@
     "movement_points": 5,
     "description": "Criatura surgida de la mezcla entre el Pío albino y el Pío negruzco. Su plumaje contrastado refleja la combinación de energías opuestas. Su instinto es mucho más feroz.",
     "image": "public/images/pios/fusions/pio-combinado.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 75,
+    "hp_max": 105
   },
   {
     "name": "Píoloro",

@@ -497,7 +497,7 @@
     "shell": 500,
     "action_points": 10,
     "movement_points": 5,
-    "description": "Evolución madura de la Gelatina de durazno. Su masa concentra más energía mágica y responde con mayor fuerza cuando la acorralan.",
+    "description": "Evolución madura de la Gelatina de durazno. Su masa concentra más energía mágica y responde con mayor fuerza cuando la acorralan. Y más dulces.",
     "image": "public/images/gelatinas/evolutions/gelatina-durazno-real.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg"
   },
@@ -511,7 +511,7 @@
     "shell": 500,
     "action_points": 10,
     "movement_points": 5,
-    "description": "Evolución de la Gelatina de frambuesa. Desprende un aroma más intenso y logra defenderse con más presión.",
+    "description": "Evolución de la Gelatina de frambuesa. Siendo poderosa, desprende un aroma más intenso, propio de su típico sabor, logrando defenderse con más presión.",
     "image": "public/images/gelatinas/evolutions/gelatina-frambuesa-real.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg"
   },
@@ -525,7 +525,7 @@
     "shell": 500,
     "action_points": 10,
     "movement_points": 5,
-    "description": "Evolución de la Gelatina lactosada. Su cuerpo se vuelve más denso y resistente, como si hubiera compactado toda su materia gelatinosa.",
+    "description": "Evolución de la Gelatina lactosada. Su cuerpo se vuelve más denso y resistente, como si hubiera compactado toda su materia gelatinosa. Puede resistir ataques más tiempo.",
     "image": "public/images/gelatinas/evolutions/gelatina-lactosada-real.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg"
   },
@@ -539,7 +539,7 @@
     "shell": 500,
     "action_points": 10,
     "movement_points": 5,
-    "description": "Evolución de la Gelatina moka cuya consistencia se vuelve más sólida, otorgándole mayor robustez en combate.",
+    "description": "Evolución de la Gelatina morena cuya consistencia se vuelve más sólida, otorgándole mayor robustez en combate. Manteniendo su tono oscuro, adquiere una firmeza poco común para una criatura de esta familia.",
     "image": "public/images/gelatinas/evolutions/gelatina-moka-real.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg"
   },
@@ -553,7 +553,7 @@
     "shell": 500,
     "action_points": 10,
     "movement_points": 5,
-    "description": "Evolución de Gelatina nociva. La corrupción de su masa alcanza un punto en que su sola presencia es capaz de contaminar el terreno alrededor.",
+    "description": "Evolución de Gelatina nociva. La corrupción de su masa alcanza un punto en que su sola presencia es capaz de contaminar el terreno alrededor donde sea que se encuentre, pudriéndose para nunca más sanar.",
     "image": "public/images/gelatinas/evolutions/gelatina-nociva-real.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg"
   },
@@ -567,7 +567,7 @@
     "shell": 500,
     "action_points": 10,
     "movement_points": 5,
-    "description": "Evolución de Gelatina obscura. Domina ambientes sombríos y usa esa ventaja para ocultar sus ataques.",
+    "description": "Evolución de Gelatina obscura. Domina aquellos ambientes sombríos, donde se encuentra tanto para jugadores como otros monstruos. Usa esa ventaja para ocultar sus ataques y mantener el sigilo.",
     "image": "public/images/gelatinas/evolutions/gelatina-obscura-real.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg"
   },
@@ -581,7 +581,7 @@
     "shell": 500,
     "action_points": 10,
     "movement_points": 5,
-    "description": "Evolución de Gelatina de uva. Su madurez y energía frutal condensada se intensifican en una masa más poderosa.",
+    "description": "Evolución de Gelatina de uva. Su madurez y energía frutal condensada se ha intensificado extremadamente en una masa más poderosa, volviéndola tan vistosa como peligrosa.",
     "image": "public/images/gelatinas/evolutions/gelatina-uva-real.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg"
   },

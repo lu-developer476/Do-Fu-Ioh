@@ -1,254 +1,54 @@
 const CARD_IMAGE_PLACEHOLDER = '/static/core/img/placeholders/card-placeholder.svg';
-const EMPTY_MESSAGES = {
-  catalog: 'No hay cartas disponibles para mostrar.',
-  matchLog: 'Aún no hay actividad registrada.',
-  hand: 'No quedan cartas en la mano.',
-  handPreview: 'La mano se mostrará al iniciar el duelo.',
-  summary: 'Iniciá un duelo contra la IA para ver el estado.',
-  arena: 'Espacio libre',
-};
-
-const appState = {
-  cards: [],
-  roomCode: null,
-  match: null,
-  selectedHandIndex: null,
-  selectedUnitId: null,
-  selectedCatalogCardIds: new Set(),
-  actionFeedback: { message: 'Seleccioná una carta o una unidad para continuar.', tone: 'normal' },
-  clientLog: [],
-};
-
+const STORAGE_KEY = 'do_fu_ioh_backendless_match_v1';
+const EMPTY_MESSAGES = { catalog: 'No hay cartas disponibles para mostrar.', matchLog: 'Aún no hay actividad registrada.', hand: 'No quedan cartas en la mano.', handPreview: 'La mano se mostrará al iniciar el duelo.', summary: 'Iniciá un duelo local contra la IA para ver el estado.', arena: 'Espacio libre' };
+const STAGE_RANK = { base: 0, fusion: 1, evolution: 2 };
+const MAX_ENERGY = 10;
+const appState = { cards: [], roomCode: null, match: null, selectedHandIndex: null, selectedUnitId: null, selectedCatalogCardIds: new Set(), actionFeedback: { message: 'Modo local activo: seleccioná una carta o una unidad para continuar.', tone: 'normal' }, clientLog: [] };
 const $ = (sel) => document.querySelector(sel);
 const familyFilter = $('#family-filter');
-
-function setStatus(message, isError = false) {
-  const status = $('#auth-status');
-  if (!status) return;
-  status.textContent = message;
-  status.classList.toggle('status-error', isError);
-}
-
-function pushClientLog(message) {
-  if (!message) return;
-  appState.clientLog = [`${new Date().toLocaleTimeString('es-AR')} · ${message}`, ...appState.clientLog].slice(0, 8);
-}
-
-function setActionFeedback(message, tone = 'normal', options = {}) {
-  appState.actionFeedback = { message, tone };
-  if (!options.silentLog) pushClientLog(message);
-  const feedback = $('#action-feedback');
-  if (!feedback) return;
-  feedback.textContent = message;
-  feedback.classList.remove('feedback-normal', 'feedback-error', 'feedback-success');
-  feedback.classList.add(`feedback-${tone}`);
-}
-
+function setStatus(message, isError = false) { const status = $('#auth-status'); if (!status) return; status.textContent = message; status.classList.toggle('status-error', isError); }
+function pushClientLog(message) { if (!message) return; appState.clientLog = [`${new Date().toLocaleTimeString('es-AR')} · ${message}`, ...appState.clientLog].slice(0, 8); }
+function setActionFeedback(message, tone = 'normal', options = {}) { appState.actionFeedback = { message, tone }; if (!options.silentLog) pushClientLog(message); const feedback = $('#action-feedback'); if (!feedback) return; feedback.textContent = message; feedback.classList.remove('feedback-normal', 'feedback-error', 'feedback-success'); feedback.classList.add(`feedback-${tone}`); }
 function clearElement(element) { if (element) element.replaceChildren(); }
-function appendTextElement(parent, tagName, text, className = '') {
-  const element = document.createElement(tagName);
-  if (className) element.className = className;
-  element.textContent = text;
-  parent.appendChild(element);
-  return element;
-}
-function renderEmptyState(element, message, className = 'small') {
-  if (!element) return;
-  const empty = document.createElement('div');
-  empty.className = className;
-  empty.textContent = message;
-  element.replaceChildren(empty);
-}
-function appendBadgeRow(parent, values = []) {
-  const row = document.createElement('div');
-  row.className = 'meta';
-  values.forEach((value) => appendTextElement(row, 'span', value, 'badge'));
-  parent.appendChild(row);
-  return row;
-}
-
-function getCookie(name) {
-  const prefix = `${name}=`;
-  return document.cookie.split(';').map((entry) => entry.trim()).find((entry) => entry.startsWith(prefix))?.slice(prefix.length) || '';
-}
-function getCsrfToken() {
-  const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')?.trim();
-  return metaToken && metaToken !== 'NOTPROVIDED' ? metaToken : getCookie('csrftoken');
-}
-async function api(url, options = {}) {
-  const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
-  if ((options.method || 'GET').toUpperCase() !== 'GET') {
-    const csrfToken = getCsrfToken();
-    if (csrfToken) headers['X-CSRFToken'] = csrfToken;
-  }
-  const response = await fetch(url, { credentials: 'same-origin', ...options, headers });
-  const contentType = response.headers.get('content-type') || '';
-  const data = contentType.includes('application/json') ? await response.json().catch(() => ({})) : {};
-  if (!response.ok) throw new Error(data.message || `No se pudo completar la operación (código ${response.status}). Actualizá el estado o iniciá un nuevo duelo.`);
-  return data;
-}
-
-function localSeedCards() {
-  const seedTag = document.getElementById('cards-seed');
-  if (!seedTag) return [];
-  try { const parsed = JSON.parse(seedTag.textContent || '[]'); return Array.isArray(parsed) ? parsed : []; } catch { return []; }
-}
-function resolveCardImage(image) {
-  const raw = String(image ?? '').trim();
-  if (!raw) return CARD_IMAGE_PLACEHOLDER;
-  if (raw.startsWith('data:') || raw.startsWith('blob:')) return raw;
-  if (/^https?:\/\//i.test(raw)) { try { return new URL(raw).href; } catch { return CARD_IMAGE_PLACEHOLDER; } }
-  if (/^[a-z]+:/i.test(raw)) return CARD_IMAGE_PLACEHOLDER;
-  const normalized = raw.replace(/^\.\//, '').replace(/^public\//, '/static/').replace(/^static\//, '/static/');
-  return normalized.startsWith('/') ? normalized : `/static/${normalized}`;
-}
-function createCardImageElement(image, name, className = '') {
-  const frame = document.createElement('span');
-  frame.className = `card-image-frame${className ? ` ${className}` : ''}`;
-  const img = document.createElement('img');
-  img.className = ['card-image', className].filter(Boolean).join(' ');
-  img.src = resolveCardImage(image);
-  img.alt = name || 'Carta sin nombre';
-  img.loading = 'lazy';
-  img.decoding = 'async';
-  const fallback = document.createElement('span');
-  fallback.className = 'card-image-fallback';
-  fallback.textContent = 'Imagen no disponible';
-  img.addEventListener('error', () => { frame.classList.add('is-fallback'); img.src = CARD_IMAGE_PLACEHOLDER; });
-  frame.append(img, fallback);
-  return frame;
-}
-
-function summarizeCardStats(card = {}) {
-  return `PdV ${card.hp ?? '-'} · Esc ${card.shell ?? 0} · PA ${card.action_points ?? '-'} · Coste ${card.summon_cost ?? '?'}`;
-}
+function appendTextElement(parent, tagName, text, className = '') { const element = document.createElement(tagName); if (className) element.className = className; element.textContent = text; parent.appendChild(element); return element; }
+function renderEmptyState(element, message, className = 'small') { if (!element) return; const empty = document.createElement('div'); empty.className = className; empty.textContent = message; element.replaceChildren(empty); }
+function appendBadgeRow(parent, values = []) { const row = document.createElement('div'); row.className = 'meta'; values.forEach((value) => appendTextElement(row, 'span', value, 'badge')); parent.appendChild(row); return row; }
+function localSeedCards() { const seedTag = document.getElementById('cards-seed'); if (!seedTag) return []; try { const parsed = JSON.parse(seedTag.textContent || '[]'); return Array.isArray(parsed) ? parsed : []; } catch { return []; } }
+function resolveCardImage(image) { const raw = String(image ?? '').trim(); if (!raw) return CARD_IMAGE_PLACEHOLDER; if (raw.startsWith('data:') || raw.startsWith('blob:')) return raw; if (/^https?:\/\//i.test(raw)) { try { return new URL(raw).href; } catch { return CARD_IMAGE_PLACEHOLDER; } } if (/^[a-z]+:/i.test(raw)) return CARD_IMAGE_PLACEHOLDER; const normalized = raw.replace(/^\.\//, '').replace(/^public\//, '/static/').replace(/^static\//, '/static/'); return normalized.startsWith('/') ? normalized : `/static/${normalized}`; }
+function createCardImageElement(image, name, className = '') { const frame = document.createElement('span'); frame.className = `card-image-frame${className ? ` ${className}` : ''}`; const img = document.createElement('img'); img.className = ['card-image', className].filter(Boolean).join(' '); img.src = resolveCardImage(image); img.alt = name || 'Carta sin nombre'; img.loading = 'lazy'; img.decoding = 'async'; const fallback = document.createElement('span'); fallback.className = 'card-image-fallback'; fallback.textContent = 'Imagen no disponible'; img.addEventListener('error', () => { frame.classList.add('is-fallback'); img.src = CARD_IMAGE_PLACEHOLDER; }); frame.append(img, fallback); return frame; }
+function summarizeCardStats(card = {}) { return `PdV ${card.hp ?? '-'} · Esc ${card.shell ?? 0} · PA ${card.action_points ?? '-'} · Coste ${card.summon_cost ?? summonCost(card)}`; }
 function stageLabel(stage) { return { base: 'Base', fusion: 'Fusión', evolution: 'Evolución' }[stage] || stage || '-'; }
 function formatSideLabel(side) { return side === 'host' ? 'Jugador' : side === 'guest' ? 'IA' : side || '-'; }
-function estimateDamage(card = {}) {
-  const rank = { base: 0, fusion: 1, evolution: 2 }[card.stage] || 0;
-  return (card.action_points || 0) + 2 + rank;
-}
-function calculatePlayerLife(player = {}) {
-  return (player.units || []).reduce((total, unit) => total + Math.max(0, Number(unit.hp_current) || 0), 0);
-}
-function createSummaryField(label, value, className = '') {
-  const item = document.createElement('div');
-  item.className = ['summary-field', className].filter(Boolean).join(' ');
-  appendTextElement(item, 'strong', `${label}:`);
-  item.append(` ${value}`);
-  return item;
-}
+function estimateDamage(card = {}) { return (card.action_points || 0) + 2 + (STAGE_RANK[card.stage] || 0); }
+function calculatePlayerLife(player = {}) { return (player.units || []).reduce((total, unit) => total + Math.max(0, Number(unit.hp_current) || 0), 0); }
+function createSummaryField(label, value, className = '') { const item = document.createElement('div'); item.className = ['summary-field', className].filter(Boolean).join(' '); appendTextElement(item, 'strong', `${label}:`); item.append(` ${value}`); return item; }
 function resolveSides() { return appState.match ? { me: appState.match.host, enemy: appState.match.guest, mySide: 'host' } : { me: null, enemy: null, mySide: null }; }
 function isMyTurn(mySide) { return Boolean(appState.match && mySide && appState.match.turn?.active_side === mySide); }
-function syncSelectedUnit(me) {
-  const selected = me?.units?.find((u) => u.id === appState.selectedUnitId) || null;
-  if (!selected) appState.selectedUnitId = null;
-  return selected;
-}
+function syncSelectedUnit(me) { const selected = me?.units?.find((u) => u.id === appState.selectedUnitId) || null; if (!selected) appState.selectedUnitId = null; return selected; }
 function getSelectedEnemy(enemy) { return enemy?.units?.find((u) => u.id === appState.selectedUnitId) || null; }
-
 function resetSelections() { appState.selectedHandIndex = null; appState.selectedUnitId = null; }
-function resetMatchState({ roomCode = null, match = null, feedbackMessage = EMPTY_MESSAGES.summary, feedbackTone = 'normal' } = {}) {
-  appState.roomCode = roomCode; appState.match = match; resetSelections(); setActionFeedback(feedbackMessage, feedbackTone);
-}
-function applyMatchPayload(data, opts = {}) {
-  const match = data?.match ?? null;
-  const roomCode = match ? (data?.room_code ?? match.room_code ?? null) : null;
-  if (!match || !roomCode) { resetMatchState({ feedbackMessage: opts.emptyFeedbackMessage || EMPTY_MESSAGES.summary, feedbackTone: opts.emptyFeedbackTone || 'normal' }); return false; }
-  resetMatchState({ roomCode, match, feedbackMessage: 'Duelo listo. Seleccioná una carta o una unidad.', feedbackTone: 'normal' });
-  return true;
-}
-
-function renderCatalog() {
-  const catalogEl = $('#catalog'); if (!catalogEl) return;
-  clearElement(catalogEl);
-  const filter = familyFilter?.value || '';
-  const filteredCards = appState.cards.filter((card) => !filter || card.family === filter);
-  if (!filteredCards.length) return renderEmptyState(catalogEl, EMPTY_MESSAGES.catalog);
-  filteredCards.forEach((card) => {
-    const article = document.createElement('article');
-    article.className = 'card';
-    article.appendChild(createCardImageElement(card.image, card.name, 'card-image-catalog'));
-    appendTextElement(article, 'h4', card.name);
-    appendBadgeRow(article, [card.family, stageLabel(card.stage), summarizeCardStats(card)]);
-    appendTextElement(article, 'p', card.description || 'Carta disponible para el duelo.');
-    const selectButton = document.createElement('button');
-    selectButton.type = 'button';
-    selectButton.className = 'catalog-select-button ghost';
-    const isSelected = appState.selectedCatalogCardIds.has(String(card.id));
-    selectButton.textContent = isSelected ? 'Quitar selección' : 'Seleccionar';
-    selectButton.setAttribute('aria-pressed', String(isSelected));
-    selectButton.addEventListener('click', () => toggleCatalogSelection(card));
-    article.appendChild(selectButton);
-    catalogEl.appendChild(article);
-  });
-}
-
-function createMonsterCard(unit, side, selectedUnit) {
-  const button = document.createElement('button');
-  button.type = 'button';
-  button.className = ['arena-card', side === 'host' ? 'ally-card' : 'enemy-card', selectedUnit?.id === unit.id ? 'selected' : ''].filter(Boolean).join(' ');
-  button.appendChild(createCardImageElement(unit.card.image, unit.card.name, 'card-image-arena'));
-  appendTextElement(button, 'strong', unit.card.name, 'arena-card-name');
-  appendBadgeRow(button, [stageLabel(unit.card.stage), unit.card.family, `Espacio ${unit.slot + 1}`]);
-  const stats = document.createElement('div');
-  stats.className = 'stat-grid';
-  [['PdV', unit.hp_current], ['Esc', unit.shell_current], ['PA', unit.pa_current], ['Daño', estimateDamage(unit.card)]].forEach(([label, value]) => stats.appendChild(createSummaryField(label, value)));
-  button.appendChild(stats);
-  button.addEventListener('click', () => onArenaCardClick(unit, side));
-  return button;
-}
-
-function createEmptySlot(slot, side, canPlay, selectedHandCard) {
-  const button = document.createElement('button');
-  button.type = 'button';
-  button.className = ['arena-slot', side === 'host' ? 'ally-slot' : 'enemy-slot', selectedHandCard && side === 'host' && canPlay ? 'summon-ready' : ''].filter(Boolean).join(' ');
-  appendTextElement(button, 'span', `Espacio ${slot + 1}`, 'slot-label');
-  appendTextElement(button, 'strong', EMPTY_MESSAGES.arena);
-  if (side === 'host') button.addEventListener('click', () => onSlotClick(slot));
-  return button;
-}
-
-function renderArenaRow(selector, units = [], side, canPlay, selectedUnit, selectedHandCard) {
-  const el = $(selector); if (!el) return;
-  clearElement(el);
-  const slots = appState.match?.arena?.slots || 5;
-  for (let slot = 0; slot < slots; slot += 1) {
-    const unit = units.find((item) => item.slot === slot);
-    el.appendChild(unit ? createMonsterCard(unit, side, selectedUnit) : createEmptySlot(slot, side, canPlay, selectedHandCard));
-  }
-}
-
-async function sendAction(actionPayload, failureMessage = 'La acción no pudo resolverse.') {
-  const data = await api(`/api/match/${appState.roomCode}/action/`, { method: 'POST', body: JSON.stringify(actionPayload) });
-  applyMatchPayload(data, { emptyFeedbackMessage: 'La partida activa ya no existe.', emptyFeedbackTone: 'error' });
-  renderGame();
-}
-async function onSlotClick(slot) {
-  const { me, mySide } = resolveSides();
-  if (!appState.match || !isMyTurn(mySide)) return setActionFeedback('El turno activo corresponde a la IA.', 'error');
-  const selectedHandCard = me?.hand?.[appState.selectedHandIndex] || null;
-  if (!selectedHandCard) return setActionFeedback('Seleccioná una carta de la mano antes de invocar.', 'error');
-  await sendAction({ action: 'summon', hand_index: appState.selectedHandIndex, slot }, `No se pudo invocar ${selectedHandCard.name}.`);
-  appState.selectedHandIndex = null;
-  setActionFeedback(`${selectedHandCard.name} fue invocada en el espacio ${slot + 1}.`, 'success');
-}
-async function onArenaCardClick(unit, side) {
-  const { me, enemy, mySide } = resolveSides();
-  if (!me || !enemy) return;
-  if (side === 'host') {
-    appState.selectedUnitId = unit.id; appState.selectedHandIndex = null;
-    setActionFeedback(`${unit.card.name} seleccionado. Elegí una unidad rival para atacar.`, 'normal');
-    renderGame(); return;
-  }
-  const attacker = me.units?.find((item) => item.id === appState.selectedUnitId);
-  if (!attacker) return setActionFeedback('Seleccioná primero una unidad propia para atacar.', 'error');
-  if (!isMyTurn(mySide)) return setActionFeedback('El turno activo corresponde a la IA.', 'error');
-  if (!attacker.attackable_unit_ids?.includes(unit.id)) return setActionFeedback(`${attacker.card.name} no puede atacar ahora.`, 'error');
-  await sendAction({ action: 'attack', attacker_id: attacker.id, target_id: unit.id }, 'No se pudo concretar el ataque.');
-  setActionFeedback(`${attacker.card.name} atacó a ${unit.card.name}.`, 'success');
-}
-
+function shuffle(items) { return [...items].sort(() => Math.random() - 0.5); }
+function summonCost(card = {}) { return { base: 1, fusion: 3, evolution: 5 }[card.stage] || 1; }
+function normalizeCard(card, index) { return { id: card.id ?? index + 1, summon_cost: card.summon_cost ?? summonCost(card), ...card }; }
+function createPlayer(side, cards) { const hand = cards.map((card, index) => normalizeCard(card, index)); return { side, energy: 1, max_energy: 1, hand, library: [], library_count: 0, hand_count: hand.length, units: [], summons_this_turn: 0 }; }
+function persistMatch() { if (appState.match) localStorage.setItem(STORAGE_KEY, JSON.stringify({ roomCode: appState.roomCode, match: appState.match })); else localStorage.removeItem(STORAGE_KEY); }
+function loadStoredMatch() { try { const payload = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); if (payload?.match) { appState.roomCode = payload.roomCode || payload.match.room_code; appState.match = payload.match; return true; } } catch { localStorage.removeItem(STORAGE_KEY); } return false; }
+function refreshCounts() { ['host', 'guest'].forEach((side) => { const p = appState.match[side]; p.hand_count = p.hand.length; p.library_count = p.library.length; }); }
+function appendLog(message) { appState.match.log.push(message); appState.match.log = appState.match.log.slice(-12); }
+function buildUnit(side, card, slot) { return { id: crypto.randomUUID?.() || `${side}-${Date.now()}-${Math.random()}`, owner: side, slot, x: slot, y: side === 'host' ? 0 : 8, card, hp_current: card.hp, shell_current: card.shell || 0, pa_current: card.action_points || 1, can_act: true, summoned_turn: appState.match.turn.number, attack_range: Math.min(5, 1 + (STAGE_RANK[card.stage] || 0) + Math.floor((card.action_points || 0) / 2)), attackable_unit_ids: [] }; }
+function openSlots(player) { const occupied = new Set(player.units.map((unit) => unit.slot)); return [0, 1, 2, 3, 4].filter((slot) => !occupied.has(slot)); }
+function updateDerivedCombat() { if (!appState.match) return; ['host', 'guest'].forEach((side) => { const enemy = side === 'host' ? appState.match.guest : appState.match.host; appState.match[side].units.forEach((unit) => { unit.attack_range = Math.min(5, 1 + (STAGE_RANK[unit.card.stage] || 0) + Math.floor((unit.card.action_points || 0) / 2)); unit.attackable_unit_ids = unit.can_act && unit.pa_current > 0 ? enemy.units.map((target) => target.id).sort() : []; }); }); }
+function checkWinner(actingSide) { const alive = (p) => Boolean(p.units.length || p.hand.length || p.library.length); const host = alive(appState.match.host); const guest = alive(appState.match.guest); if (!host || !guest) appState.match.winner = host ? 'host' : guest ? 'guest' : actingSide; }
+function resetTurn(player) { player.summons_this_turn = 0; player.max_energy = Math.min(MAX_ENERGY, player.max_energy + 1); player.energy = player.max_energy; player.units.forEach((unit) => { unit.pa_current = unit.card.action_points || 1; unit.can_act = true; }); }
+function startLocalMatch(selectedIds = []) { const selected = new Set(selectedIds.map(String)); const ordered = [...appState.cards].sort((a, b) => Number(selected.has(String(b.id))) - Number(selected.has(String(a.id)))); const roomCode = `local-${Date.now()}`; appState.roomCode = roomCode; appState.match = { room_code: roomCode, mode: 'local_vs_ai', ai_difficulty: 'normal', arena: { slots: 5 }, board: { width: 5, height: 9 }, turn: { number: 1, active_side: 'host' }, host: createPlayer('host', ordered), guest: createPlayer('guest', shuffle(appState.cards)), winner: null, log: ['Duelo local iniciado. Todo el estado vive en este navegador.', 'No se usa Supabase, Postgres, sesiones ni endpoints de acciones.'] }; resetSelections(); updateDerivedCombat(); persistMatch(); }
+function applySummon(side, handIndex, slot) { const player = appState.match[side]; if (player.summons_this_turn >= 1) throw new Error('Ya invocaste este turno.'); if (!openSlots(player).includes(slot)) throw new Error('Ese espacio ya está ocupado.'); const card = player.hand[handIndex]; if (!card) throw new Error('Carta inválida.'); const cost = summonCost(card); if (player.energy < cost) throw new Error('No alcanza la energía para invocar.'); player.hand.splice(handIndex, 1); player.energy -= cost; player.summons_this_turn += 1; player.units.push(buildUnit(side, card, slot)); appendLog(`${formatSideLabel(side)} invocó ${card.name} en el espacio ${slot + 1}.`); }
+function applyAttack(side, attackerId, targetId) { const actor = appState.match[side]; const enemySide = side === 'host' ? 'guest' : 'host'; const enemy = appState.match[enemySide]; const attacker = actor.units.find((unit) => unit.id === attackerId); const target = enemy.units.find((unit) => unit.id === targetId); if (!attacker || !target || attacker.pa_current <= 0 || !attacker.can_act) throw new Error('Ataque inválido.'); attacker.pa_current -= 1; attacker.can_act = attacker.pa_current > 0; const power = estimateDamage(attacker.card); const absorbed = Math.min(target.shell_current, Math.max(0, power - 1)); target.shell_current = Math.max(0, target.shell_current - absorbed); const damage = Math.max(1, power - absorbed); target.hp_current -= damage; appendLog(`${formatSideLabel(side)} atacó con ${attacker.card.name} e infligió ${damage} de daño.`); if (target.hp_current <= 0) { enemy.units = enemy.units.filter((unit) => unit.id !== target.id); appendLog(`${target.card.name} fue derrotado.`); } }
+function endSideTurn(side) { const nextSide = side === 'host' ? 'guest' : 'host'; appState.match.turn.active_side = nextSide; if (nextSide === 'host') appState.match.turn.number += 1; resetTurn(appState.match[nextSide]); appendLog(`Fin del turno de ${formatSideLabel(side)}.`); }
+function runAiTurn() { if (appState.match.winner || appState.match.turn.active_side !== 'guest') return; const ai = appState.match.guest; const affordableIndex = ai.hand.findIndex((card) => summonCost(card) <= ai.energy); const slot = openSlots(ai)[0]; if (affordableIndex >= 0 && slot !== undefined) applySummon('guest', affordableIndex, slot); [...ai.units].forEach((unit) => { while (!appState.match.winner && unit.can_act && appState.match.host.units.length) { const target = [...appState.match.host.units].sort((a, b) => a.hp_current - b.hp_current)[0]; applyAttack('guest', unit.id, target.id); checkWinner('guest'); } }); if (!appState.match.winner) endSideTurn('guest'); }
+function applyLocalAction(payload) { if (!appState.match || appState.match.winner) throw new Error('La partida ya terminó o no existe.'); if (appState.match.turn.active_side !== 'host') throw new Error('El turno activo corresponde a la IA.'); if (payload.action === 'summon') applySummon('host', payload.hand_index, payload.slot); else if (payload.action === 'attack') applyAttack('host', payload.attacker_id, payload.target_id); else if (payload.action === 'end_turn') endSideTurn('host'); checkWinner('host'); if (appState.match.turn.active_side === 'guest' && !appState.match.winner) runAiTurn(); refreshCounts(); updateDerivedCombat(); persistMatch(); }
+async function sendAction(actionPayload) { applyLocalAction(actionPayload); renderGame(); }
+async function onSlotClick(slot) { const { me, mySide } = resolveSides(); if (!appState.match || !isMyTurn(mySide)) return setActionFeedback('El turno activo corresponde a la IA.', 'error'); const selectedHandCard = me?.hand?.[appState.selectedHandIndex] || null; if (!selectedHandCard) return setActionFeedback('Seleccioná una carta de la mano antes de invocar.', 'error'); try { await sendAction({ action: 'summon', hand_index: appState.selectedHandIndex, slot }); appState.selectedHandIndex = null; setActionFeedback(`${selectedHandCard.name} fue invocada en el espacio ${slot + 1}.`, 'success'); } catch (err) { setActionFeedback(err.message, 'error'); } }
+async function onArenaCardClick(unit, side) { const { me, enemy, mySide } = resolveSides(); if (!me || !enemy) return; if (side === 'host') { appState.selectedUnitId = unit.id; appState.selectedHandIndex = null; setActionFeedback(`${unit.card.name} seleccionado. Elegí una unidad rival para atacar.`, 'normal'); renderGame(); return; } const attacker = me.units?.find((item) => item.id === appState.selectedUnitId); if (!attacker) return setActionFeedback('Seleccioná primero una unidad propia para atacar.', 'error'); if (!isMyTurn(mySide)) return setActionFeedback('El turno activo corresponde a la IA.', 'error'); try { await sendAction({ action: 'attack', attacker_id: attacker.id, target_id: unit.id }); setActionFeedback(`${attacker.card.name} atacó a ${unit.card.name}.`, 'success'); } catch (err) { setActionFeedback(err.message, 'error'); } }
 function renderHand(hand = [], canPlay = false) {
   const handEl = $('#hand'); if (!handEl) return;
   clearElement(handEl);
@@ -326,21 +126,13 @@ function populateFamilyFilter(cards = []) {
   const defaultOption = document.createElement('option'); defaultOption.value = ''; defaultOption.textContent = 'Todas las familias'; familyFilter.appendChild(defaultOption);
   [...new Set(cards.map((card) => card.family).filter(Boolean))].forEach((family) => { const option = document.createElement('option'); option.value = family; option.textContent = family; familyFilter.appendChild(option); });
 }
-async function loadCards() {
-  let cards = [];
-  try { const data = await api('/api/cards/'); cards = data.cards || []; } catch { cards = localSeedCards(); }
-  if (!cards.length) cards = localSeedCards();
-  appState.cards = cards; populateFamilyFilter(cards); renderCatalog();
-}
-async function loadActiveMatch() {
-  const data = await api('/api/match/active/');
-  applyMatchPayload(data, { emptyFeedbackMessage: 'No hay duelo activo. Iniciá un nuevo enfrentamiento para comenzar.' }); renderGame();
-}
-async function createAIMatch(selectedCardIds = []) { const data = await api('/api/match/create-vs-ai/', { method: 'POST', body: JSON.stringify({ selected_card_ids: selectedCardIds }) }); applyMatchPayload(data); renderGame(); setStatus(selectedCardIds.length ? 'Duelo creado con la selección priorizada en la mano.' : 'Duelo nuevo creado con el catálogo disponible.'); }
+function loadCards() { appState.cards = localSeedCards(); populateFamilyFilter(appState.cards); renderCatalog(); return Promise.resolve(); }
+function loadActiveMatch() { loadStoredMatch(); updateDerivedCombat(); renderGame(); return Promise.resolve(); }
+async function createAIMatch(selectedCardIds = []) { startLocalMatch(selectedCardIds); renderGame(); setStatus(selectedCardIds.length ? 'Duelo local creado con la selección priorizada en la mano.' : 'Duelo local creado con el catálogo embebido.'); }
 async function shuffleMonsters() { await createAIMatch(); setActionFeedback('Cartas barajadas. La mano inicial incluye el catálogo disponible.', 'success'); }
 async function createSelectedMatch() { const ids = [...appState.selectedCatalogCardIds]; if (!ids.length) return setActionFeedback('Seleccioná al menos una carta del catálogo.', 'error'); await createAIMatch(ids); setActionFeedback('Selección aplicada. Las cartas elegidas aparecen primero en la mano.', 'success'); }
-async function refreshMatch() { if (!appState.roomCode) return loadActiveMatch(); const data = await api(`/api/match/${appState.roomCode}/`); applyMatchPayload(data); renderGame(); }
-async function endTurn() { if (!appState.roomCode) throw new Error('No hay duelo activo.'); await sendAction({ action: 'end_turn' }); resetSelections(); setActionFeedback('Turno terminado. La IA resolvió su respuesta.', 'success'); renderGame(); }
+async function refreshMatch() { loadStoredMatch(); updateDerivedCombat(); renderGame(); setStatus(appState.match ? 'Estado local recuperado desde este navegador.' : 'Sin duelo local guardado.'); }
+async function endTurn() { if (!appState.roomCode) throw new Error('No hay duelo activo.'); try { await sendAction({ action: 'end_turn' }); resetSelections(); setActionFeedback('Turno terminado. La IA local resolvió su respuesta.', 'success'); renderGame(); } catch (err) { setActionFeedback(err.message, 'error'); } }
 function toggleCatalogSelection(card) {
   const id = String(card.id);
   if (appState.selectedCatalogCardIds.has(id)) {
@@ -359,6 +151,6 @@ function bindAsyncButton(selector, handler) {
 }
 function boot() {
   renderGame(); bindAsyncButton('#create-ai-match', () => createAIMatch()); bindAsyncButton('#shuffle-monsters', shuffleMonsters); bindAsyncButton('#create-selected-match', createSelectedMatch); bindAsyncButton('#refresh-state', refreshMatch); bindAsyncButton('#end-turn-btn', endTurn); familyFilter?.addEventListener('change', renderCatalog);
-  loadCards().then(loadActiveMatch).catch((err) => { setStatus(err.message || 'No se pudo iniciar el juego.', true); setActionFeedback('No se pudo cargar el duelo. Iniciá un nuevo enfrentamiento o usá la selección manual.', 'error'); renderGame(); }).finally(() => { if (!appState.match) setStatus('Sin duelo activo. Iniciá uno nuevo o prepará una selección manual.'); });
+  loadCards().then(loadActiveMatch).catch((err) => { setStatus(err.message || 'No se pudo iniciar el juego.', true); setActionFeedback('No se pudo cargar el duelo. Iniciá un nuevo enfrentamiento o usá la selección manual.', 'error'); renderGame(); }).finally(() => { if (!appState.match) setStatus('Sin duelo local activo. Iniciá uno nuevo o prepará una selección manual.'); });
 }
 document.addEventListener('DOMContentLoaded', boot, { once: true });

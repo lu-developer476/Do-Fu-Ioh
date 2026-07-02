@@ -878,6 +878,16 @@ body, .panel, .card, .board-header, .board-footer, .log-item, .small, input, sel
   margin-bottom: 10px;
 }
 
+.collapsible-section {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.collapsible-panel:not([open]) > .collapsible-section {
+  display: none;
+}
+
 .collapsible-panel > summary::-webkit-details-marker { display: none; }
 .collapsible-panel > summary::after,
 .catalog-details summary::after { content: "▾"; margin-left: 8px; color: var(--accent-soft); }

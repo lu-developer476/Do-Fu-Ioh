@@ -1025,3 +1025,69 @@ body, .panel, .card, .board-header, .board-footer, .log-item, .small, input, sel
   .token-stat-pm { display: none; }
   .modal-actions { grid-template-columns: 1fr; }
 }
+
+/* Dofus-like combat feedback shared by player and IA actions. */
+.combat-fx-stack {
+  position: absolute;
+  inset: 0;
+  z-index: 12;
+  display: grid;
+  place-items: center;
+  gap: 2px;
+  pointer-events: none;
+}
+
+.combat-fx {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
+  max-width: calc(100% + 42px);
+  padding: 2px 7px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.34);
+  color: #fff7d3;
+  background: rgba(18, 24, 16, .88);
+  font-size: clamp(.58rem, .95vw, .86rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: .02em;
+  text-shadow: 0 2px 2px rgba(0,0,0,.5);
+  box-shadow: 0 7px 14px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.18);
+  animation: dofus-float-damage 1.1s ease-out both;
+}
+
+.combat-fx-damage { color: #ffe0d5; border-color: rgba(255, 143, 107, .8); background: rgba(112, 35, 29, .9); }
+.combat-fx-hp { color: #fff3b3; border-color: rgba(255, 224, 130, .9); background: rgba(105, 67, 18, .92); transform: translateY(16px); }
+.combat-fx-shield { color: #d9ecff; border-color: rgba(99, 198, 255, .75); background: rgba(24, 69, 103, .9); }
+.combat-fx-cast, .combat-fx-move { color: #dcffea; border-color: rgba(119, 242, 162, .8); background: rgba(26, 83, 49, .9); }
+.combat-fx-ghost, .combat-fx.ghost { opacity: .72; }
+
+@keyframes dofus-float-damage {
+  0% { opacity: 0; transform: translateY(12px) scale(.82); }
+  18% { opacity: 1; transform: translateY(-4px) scale(1.08); }
+  78% { opacity: 1; transform: translateY(-18px) scale(1); }
+  100% { opacity: 0; transform: translateY(-34px) scale(.96); }
+}
+
+/* Mobile keeps the information columns as side drop-down panels instead of stacking them below the board. */
+@media (max-width: 640px) {
+  body { overflow-x: auto; }
+  .arcade-shell.card-game-shell {
+    align-items: start;
+    grid-template-columns: 190px minmax(430px, 1fr) 190px;
+    min-width: 830px;
+  }
+  .side-column {
+    position: sticky;
+    top: 8px;
+    max-height: calc(100vh - 16px);
+    overflow-y: auto;
+    align-content: start;
+  }
+  .intro-panel { display: none; }
+  .collapsible-panel, .catalog-details { max-height: calc(100vh - 24px); overflow: auto; }
+  .catalog { grid-template-columns: 1fr; }
+  .card { padding: 8px; }
+  .card-image-catalog { height: 88px; }
+}

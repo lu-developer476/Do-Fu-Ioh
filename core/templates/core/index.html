@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="csrf-token" content="{{ csrf_token }}" />
   <title>Do-Fu-Ióh</title>
+  <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}" />
   <link rel="stylesheet" href="{% static 'core/css/styles.css' %}" />
 </head>
 <body>
@@ -39,24 +40,26 @@
       <header class="duel-header">
         <div>
           <h2>Arena de combate</h2>
-          <p>Cada jugador dispone de cinco espacios. Evaluá PdV, Escudo, PA, coste y etapa antes de actuar.</p>
+          <p>Tablero táctico 25 × 25: invocá, mové tus monstruos y lanzá hechizos contra la IA.</p>
         </div>
         <div class="duel-rules">
-          <span>1 invocación por turno</span><span>PA disponible para atacar</span><span>Escudo defensivo</span>
+          <span>Elegí 1, 2 o 5 cartas iniciales</span><span>Movimientos en tablero</span><span>Hechizos por rango</span>
         </div>
       </header>
       <div id="action-feedback" class="action-feedback feedback-normal" aria-live="polite" aria-atomic="true">Seleccioná una carta o una unidad para continuar.</div>
 
-      <section class="duel-board" aria-label="Arena de combate sin tablero">
-        <div class="duel-side enemy-side">
-          <h3>IA</h3>
-          <div id="enemy-arena" class="arena-row"></div>
+      <section class="board-panel tactical-preview" aria-label="Vista previa del tablero táctico 25 por 25">
+        <div class="board-header">
+          <div>
+            <h2>Tablero 25 × 25</h2>
+            <p>Las filas superiores son zona IA, las inferiores zona Jugador. Seleccioná una unidad para ver movimiento y rango de hechizo.</p>
+          </div>
+          <div class="board-legend">
+            <span class="legend-chip summon">Invocación</span><span class="legend-chip move">Movimiento</span><span class="legend-chip attack">Hechizo</span><span class="legend-chip selected">Selección</span>
+          </div>
         </div>
-        <div class="versus-strip"><span>VS</span></div>
-        <div class="duel-side player-side">
-          <h3>Jugador</h3>
-          <div id="player-arena" class="arena-row"></div>
-        </div>
+        <div class="board-context" id="board-context">Seleccioná una carta de Mano Disponible para invocarla en una celda verde, o una unidad propia para moverla/atacar.</div>
+        <div class="board-frame"><div class="board-scroll"><div id="tactical-board" class="board tactical-board"></div></div></div>
       </section>
 
       <section class="panel compact-panel hand-zone">
@@ -69,6 +72,8 @@
       <section class="panel compact-panel">
         <h2>Panel de control</h2>
         <div class="stack">
+          <label class="control-label" for="initial-hand-size">Cartas iniciales contra IA</label>
+          <select id="initial-hand-size"><option value="1">1 carta</option><option value="2">2 cartas</option><option value="5" selected>5 cartas</option></select>
           <button id="create-ai-match" data-loading-label="Creando duelo...">Nuevo duelo local vs IA</button>
           <button id="shuffle-monsters" class="ghost" data-loading-label="Barajando cartas...">Barajar cartas</button>
           <button id="create-selected-match" class="ghost" data-loading-label="Preparando selección...">Usar selección</button>

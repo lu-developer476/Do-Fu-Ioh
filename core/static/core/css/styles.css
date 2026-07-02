@@ -863,3 +863,26 @@ body, .panel, .card, .board-header, .board-footer, .log-item, .small, input, sel
   background: rgba(34, 92, 56, .62);
   color: #eafff0;
 }
+
+/* Tactical 25x25 board preview and interaction layer. */
+:root { --board-cell-size: clamp(2.25rem, 3.2vw, 3.6rem); }
+.tactical-board { grid-template-columns: repeat(25, minmax(0, var(--board-cell-size))); }
+.tactical-preview .board-scroll { max-height: 72vh; overflow: auto; border-radius: 18px; }
+.control-label { display: block; color: var(--accent-soft); font-size: .76rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.token, .hand-card, .arena-card { animation: card-enter .28s ease both; }
+.cell.hint-move::after, .cell.hint-attack::after, .cell.hint-summon::after {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border-radius: 999px;
+  pointer-events: none;
+  animation: board-pulse 1.15s ease-in-out infinite;
+}
+.cell.hint-move::after { background: rgba(99, 198, 255, .2); }
+.cell.hint-attack::after { background: rgba(255, 143, 107, .22); }
+.cell.hint-summon::after { background: rgba(119, 242, 162, .2); }
+.token-selected { animation: selected-float 1.05s ease-in-out infinite alternate; }
+@keyframes card-enter { from { opacity: 0; transform: translateY(12px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes board-pulse { 0%, 100% { transform: scale(.55); opacity: .35; } 50% { transform: scale(1); opacity: .75; } }
+@keyframes selected-float { from { transform: translateY(-2px) scale(1.01); } to { transform: translateY(-6px) scale(1.04); } }
+@media (max-width: 860px) { :root { --board-cell-size: clamp(2rem, 9vw, 2.8rem); } }

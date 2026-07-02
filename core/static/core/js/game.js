@@ -16,6 +16,7 @@ function appendBadgeRow(parent, values = []) { const row = document.createElemen
 function localSeedCards() { const seedTag = document.getElementById('cards-seed'); if (!seedTag) return []; try { const parsed = JSON.parse(seedTag.textContent || '[]'); return Array.isArray(parsed) ? parsed : []; } catch { return []; } }
 function resolveCardImage(image) { const raw = String(image ?? '').trim(); if (!raw) return CARD_IMAGE_PLACEHOLDER; if (raw.startsWith('data:') || raw.startsWith('blob:')) return raw; if (/^https?:\/\//i.test(raw)) { try { return new URL(raw).href; } catch { return CARD_IMAGE_PLACEHOLDER; } } if (/^[a-z]+:/i.test(raw)) return CARD_IMAGE_PLACEHOLDER; const normalized = raw.replace(/^\.\//, '').replace(/^public\//, '/static/').replace(/^static\//, '/static/'); return normalized.startsWith('/') ? normalized : `/static/${normalized}`; }
 function createCardImageElement(image, name, className = '') { const frame = document.createElement('span'); frame.className = `card-image-frame${className ? ` ${className}` : ''}`; const img = document.createElement('img'); img.className = ['card-image', className].filter(Boolean).join(' '); img.src = resolveCardImage(image); img.alt = name || 'Carta sin nombre'; img.loading = 'lazy'; img.decoding = 'async'; const fallback = document.createElement('span'); fallback.className = 'card-image-fallback'; fallback.textContent = 'Imagen no disponible'; img.addEventListener('error', () => { frame.classList.add('is-fallback'); img.src = CARD_IMAGE_PLACEHOLDER; }); frame.append(img, fallback); return frame; }
+function cardImage(card = {}) { return card.image || card.image_fallback || CARD_IMAGE_PLACEHOLDER; }
 function summarizeCardStats(card = {}) { return `PdV ${card.hp ?? '-'} · Esc ${card.shell ?? 0} · PA ${card.action_points ?? '-'} · Coste ${card.summon_cost ?? summonCost(card)}`; }
 function stageLabel(stage) { return { base: 'Base', fusion: 'Fusión', evolution: 'Evolución' }[stage] || stage || '-'; }
 function formatSideLabel(side) { return side === 'host' ? 'Jugador' : side === 'guest' ? 'IA' : side || '-'; }
@@ -35,7 +36,8 @@ function persistMatch() { if (appState.match) localStorage.setItem(STORAGE_KEY, 
 function loadStoredMatch() { try { const payload = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); if (payload?.match) { appState.roomCode = payload.roomCode || payload.match.room_code; appState.match = payload.match; return true; } } catch { localStorage.removeItem(STORAGE_KEY); } return false; }
 function refreshCounts() { ['host', 'guest'].forEach((side) => { const p = appState.match[side]; p.hand_count = p.hand.length; p.library_count = p.library.length; }); }
 function appendLog(message) { appState.match.log.push(message); appState.match.log = appState.match.log.slice(-12); }
-function buildUnit(side, card, slot) { return { id: crypto.randomUUID?.() || `${side}-${Date.now()}-${Math.random()}`, owner: side, slot, x: slot, y: side === 'host' ? 0 : 8, card, hp_current: card.hp, shell_current: card.shell || 0, pa_current: card.action_points || 1, can_act: true, summoned_turn: appState.match.turn.number, attack_range: Math.min(5, 1 + (STAGE_RANK[card.stage] || 0) + Math.floor((card.action_points || 0) / 2)), attackable_unit_ids: [] }; }
+function randomId(prefix) { return globalThis.crypto?.randomUUID?.() || `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2)}`; }
+function buildUnit(side, card, slot) { return { id: randomId(side), owner: side, slot, x: slot, y: side === 'host' ? 0 : 8, card, hp_current: card.hp, shell_current: card.shell || 0, pa_current: card.action_points || 1, can_act: true, summoned_turn: appState.match.turn.number, attack_range: Math.min(5, 1 + (STAGE_RANK[card.stage] || 0) + Math.floor((card.action_points || 0) / 2)), attackable_unit_ids: [] }; }
 function openSlots(player) { const occupied = new Set(player.units.map((unit) => unit.slot)); return [0, 1, 2, 3, 4].filter((slot) => !occupied.has(slot)); }
 function updateDerivedCombat() { if (!appState.match) return; ['host', 'guest'].forEach((side) => { const enemy = side === 'host' ? appState.match.guest : appState.match.host; appState.match[side].units.forEach((unit) => { unit.attack_range = Math.min(5, 1 + (STAGE_RANK[unit.card.stage] || 0) + Math.floor((unit.card.action_points || 0) / 2)); unit.attackable_unit_ids = unit.can_act && unit.pa_current > 0 ? enemy.units.map((target) => target.id).sort() : []; }); }); }
 function checkWinner(actingSide) { const alive = (p) => Boolean(p.units.length || p.hand.length || p.library.length); const host = alive(appState.match.host); const guest = alive(appState.match.guest); if (!host || !guest) appState.match.winner = host ? 'host' : guest ? 'guest' : actingSide; }
@@ -49,6 +51,61 @@ function applyLocalAction(payload) { if (!appState.match || appState.match.winne
 async function sendAction(actionPayload) { applyLocalAction(actionPayload); renderGame(); }
 async function onSlotClick(slot) { const { me, mySide } = resolveSides(); if (!appState.match || !isMyTurn(mySide)) return setActionFeedback('El turno activo corresponde a la IA.', 'error'); const selectedHandCard = me?.hand?.[appState.selectedHandIndex] || null; if (!selectedHandCard) return setActionFeedback('Seleccioná una carta de la mano antes de invocar.', 'error'); try { await sendAction({ action: 'summon', hand_index: appState.selectedHandIndex, slot }); appState.selectedHandIndex = null; setActionFeedback(`${selectedHandCard.name} fue invocada en el espacio ${slot + 1}.`, 'success'); } catch (err) { setActionFeedback(err.message, 'error'); } }
 async function onArenaCardClick(unit, side) { const { me, enemy, mySide } = resolveSides(); if (!me || !enemy) return; if (side === 'host') { appState.selectedUnitId = unit.id; appState.selectedHandIndex = null; setActionFeedback(`${unit.card.name} seleccionado. Elegí una unidad rival para atacar.`, 'normal'); renderGame(); return; } const attacker = me.units?.find((item) => item.id === appState.selectedUnitId); if (!attacker) return setActionFeedback('Seleccioná primero una unidad propia para atacar.', 'error'); if (!isMyTurn(mySide)) return setActionFeedback('El turno activo corresponde a la IA.', 'error'); try { await sendAction({ action: 'attack', attacker_id: attacker.id, target_id: unit.id }); setActionFeedback(`${attacker.card.name} atacó a ${unit.card.name}.`, 'success'); } catch (err) { setActionFeedback(err.message, 'error'); } }
+function renderCatalog() {
+  const catalogEl = $('#catalog'); if (!catalogEl) return;
+  clearElement(catalogEl);
+  const family = familyFilter?.value || '';
+  const cards = appState.cards.filter((card) => !family || card.family === family);
+  if (!cards.length) return renderEmptyState(catalogEl, EMPTY_MESSAGES.catalog);
+  cards.forEach((card) => {
+    const article = document.createElement('article');
+    article.className = 'card';
+    article.appendChild(createCardImageElement(cardImage(card), card.name, 'card-image-catalog'));
+    appendTextElement(article, 'h4', card.name);
+    appendBadgeRow(article, [stageLabel(card.stage), card.family, summarizeCardStats(card)]);
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'ghost catalog-select-button';
+    button.setAttribute('aria-pressed', String(appState.selectedCatalogCardIds.has(String(card.id))));
+    button.textContent = appState.selectedCatalogCardIds.has(String(card.id)) ? 'Quitar de selección' : 'Seleccionar';
+    button.addEventListener('click', () => toggleCatalogSelection(card));
+    article.appendChild(button);
+    catalogEl.appendChild(article);
+  });
+}
+function renderArenaCard(unit, side, selectedUnit) {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = `arena-card ${side === 'host' ? 'ally-card' : 'enemy-card'} ${selectedUnit?.id === unit.id ? 'selected' : ''}`.trim();
+  button.appendChild(createCardImageElement(cardImage(unit.card), unit.card.name, 'card-image-arena'));
+  appendTextElement(button, 'strong', unit.card.name, 'arena-card-name');
+  const stats = document.createElement('div');
+  stats.className = 'stat-grid';
+  stats.append(createSummaryField('PdV', unit.hp_current), createSummaryField('Esc', unit.shell_current), createSummaryField('PA', unit.pa_current), createSummaryField('Rango', unit.attack_range ?? '-'));
+  button.appendChild(stats);
+  button.addEventListener('click', () => onArenaCardClick(unit, side));
+  return button;
+}
+function renderArenaRow(selector, units = [], side, canPlay, selectedUnit, selectedHandCard) {
+  const row = $(selector); if (!row) return;
+  clearElement(row);
+  const bySlot = new Map(units.map((unit) => [unit.slot, unit]));
+  for (let slot = 0; slot < 5; slot += 1) {
+    const unit = bySlot.get(slot);
+    if (unit) {
+      row.appendChild(renderArenaCard(unit, side, selectedUnit));
+    } else {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = `arena-slot ${side === 'host' && canPlay && selectedHandCard ? 'summon-ready' : ''}`.trim();
+      appendTextElement(button, 'span', `Espacio ${slot + 1}`, 'slot-label');
+      appendTextElement(button, 'span', side === 'host' && selectedHandCard ? `Invocar ${selectedHandCard.name}` : EMPTY_MESSAGES.arena);
+      button.disabled = side !== 'host';
+      button.addEventListener('click', () => onSlotClick(slot));
+      row.appendChild(button);
+    }
+  }
+}
 function renderHand(hand = [], canPlay = false) {
   const handEl = $('#hand'); if (!handEl) return;
   clearElement(handEl);
@@ -57,7 +114,7 @@ function renderHand(hand = [], canPlay = false) {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = `card hand-card ${appState.selectedHandIndex === index ? 'selected' : ''}`.trim();
-    button.appendChild(createCardImageElement(card.image, card.name, 'card-image-hand'));
+    button.appendChild(createCardImageElement(cardImage(card), card.name, 'card-image-hand'));
     appendTextElement(button, 'h4', card.name, 'hand-card-title');
     appendBadgeRow(button, [stageLabel(card.stage), card.family, summarizeCardStats(card)]);
     button.addEventListener('click', () => {

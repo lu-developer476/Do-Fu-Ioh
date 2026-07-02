@@ -12,21 +12,21 @@
   <main class="arcade-shell card-game-shell">
     <aside class="side-column left-column">
       <section class="panel intro-panel">
-        <p class="kicker">Card Duel Protocols</p>
+        <p class="kicker">Protocolo de duelo</p>
         <h1>DO-FU-IÓH</h1>
-        <p>Duelo de cartas contra la IA: invocá monstruos, compará estadísticas y atacá sin tablero táctico.</p>
+        <p>Gestioná un duelo contra la IA con decisiones claras sobre invocación, defensa y ataque.</p>
       </section>
 
       <section class="panel compact-panel">
-        <h2>Modo directo</h2>
+        <h2>Acceso rápido</h2>
         <div class="stack auth-box">
-          <p id="auth-status">Modo single-player por sesión. Hacé clic en "Jugar vs IA" para iniciar o reiniciar tu duelo.</p>
+          <p id="auth-status">Sesión individual activa. Iniciá un enfrentamiento nuevo o retomá el estado guardado.</p>
         </div>
       </section>
 
       <section class="panel compact-panel">
         <details class="catalog-details" open>
-          <summary>CARTAS DISPONIBLES</summary>
+          <summary>CATÁLOGO DE CARTAS</summary>
           <div class="catalog-toolbar">
             <select id="family-filter"><option value="">Todas las familias</option></select>
           </div>
@@ -38,16 +38,16 @@
     <section class="center-column panel duel-panel">
       <header class="duel-header">
         <div>
-          <h2>Arena de cartas</h2>
-          <p>Sin tablero: cada jugador tiene cinco slots de invocación y las decisiones dependen de PdV, Escudo, PA, coste y etapa.</p>
+          <h2>Arena de combate</h2>
+          <p>Cada jugador dispone de cinco espacios. Evaluá PdV, Escudo, PA, coste y etapa antes de actuar.</p>
         </div>
         <div class="duel-rules">
-          <span>1 invocación/turno</span><span>PA = ataques</span><span>Escudo absorbe daño</span>
+          <span>1 invocación por turno</span><span>PA disponible para atacar</span><span>Escudo defensivo</span>
         </div>
       </header>
-      <div id="action-feedback" class="action-feedback feedback-normal" aria-live="polite" aria-atomic="true">Seleccioná una carta o monstruo para jugar.</div>
+      <div id="action-feedback" class="action-feedback feedback-normal" aria-live="polite" aria-atomic="true">Seleccioná una carta o una unidad para continuar.</div>
 
-      <section class="duel-board" aria-label="Arena de cartas sin tablero">
+      <section class="duel-board" aria-label="Arena de combate sin tablero">
         <div class="duel-side enemy-side">
           <h3>IA</h3>
           <div id="enemy-arena" class="arena-row"></div>
@@ -60,25 +60,26 @@
       </section>
 
       <section class="panel compact-panel hand-zone">
-        <div class="panel-heading"><h2>Tu mano</h2><span class="panel-caption">Elegí una carta y después un slot libre</span></div>
+        <div class="panel-heading"><h2>Mano disponible</h2><span class="panel-caption">Seleccioná una carta y asignala a un espacio libre</span></div>
         <div id="hand" class="card-row"></div>
       </section>
     </section>
 
     <aside class="side-column right-column">
       <section class="panel compact-panel">
-        <h2>Consola rápida</h2>
+        <h2>Panel de control</h2>
         <div class="stack">
-          <button id="create-ai-match" data-loading-label="Creando duelo...">Jugar vs IA</button>
-          <button id="shuffle-monsters" class="ghost" data-loading-label="Barajando monstruos...">Barajar monstruos</button>
-          <button id="refresh-state" class="ghost" data-loading-label="Refrescando...">Refrescar duelo</button>
-          <button id="end-turn-btn" class="ghost" data-loading-label="Procesando turno...">Terminar turno</button>
+          <button id="create-ai-match" data-loading-label="Creando duelo...">Nuevo duelo vs IA</button>
+          <button id="shuffle-monsters" class="ghost" data-loading-label="Barajando cartas...">Barajar cartas</button>
+          <button id="create-selected-match" class="ghost" data-loading-label="Preparando selección...">Usar selección</button>
+          <button id="refresh-state" class="ghost" data-loading-label="Refrescando...">Actualizar estado</button>
+          <button id="end-turn-btn" class="ghost" data-loading-label="Procesando turno...">Finalizar turno</button>
         </div>
       </section>
 
-      <section class="panel compact-panel"><h2>Resumen del duelo</h2><div id="match-summary" class="stack small"></div></section>
-      <section class="panel compact-panel"><h2>Detalle seleccionado</h2><div id="selection-detail" class="stack small"></div></section>
-      <section class="panel compact-panel event-log-panel"><div class="panel-heading"><h2>Eventos</h2><span class="panel-caption">Últimos sucesos</span></div><div id="match-log" class="match-log" aria-live="polite"><div class="small">Los eventos aparecerán acá.</div></div></section>
+      <section class="panel compact-panel"><h2>Estado del duelo</h2><div id="match-summary" class="stack small"></div></section>
+      <section class="panel compact-panel"><h2>Información seleccionada</h2><div id="selection-detail" class="stack small"></div></section>
+      <section class="panel compact-panel event-log-panel"><div class="panel-heading"><h2>Registro</h2><span class="panel-caption">Actividad reciente</span></div><div id="match-log" class="match-log" aria-live="polite"><div class="small">La actividad del duelo se mostrará aquí.</div></div></section>
     </aside>
   </main>
   {{ cards_seed_json|json_script:"cards-seed" }}

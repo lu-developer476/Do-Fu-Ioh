@@ -3,7 +3,7 @@ import random
 import secrets
 
 from django.db import connection, transaction
-from django.db.utils import OperationalError, ProgrammingError
+from django.db.utils import DatabaseError, OperationalError, ProgrammingError
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -80,8 +80,9 @@ def _build_deck(serialized_cards):
     return deck
 
 
-def _player_state(side, deck_cards, draw_all=False):
-    random.shuffle(deck_cards)
+def _player_state(side, deck_cards, draw_all=False, shuffle=True):
+    if shuffle:
+        random.shuffle(deck_cards)
     initial_hand_size = len(deck_cards) if draw_all else HAND_SIZE
     hand = deck_cards[:initial_hand_size]
     library = deck_cards[initial_hand_size:]
@@ -111,9 +112,25 @@ def _empty_match_state(difficulty):
     }
 
 
-def _build_new_match_state(cards, difficulty="normal"):
+def _selected_cards_first(cards, selected_card_ids=None):
+    selected_ids = {str(card_id) for card_id in selected_card_ids or []}
+    if not selected_ids:
+        return list(cards)
+    selected = [card for card in cards if str(card.get("id")) in selected_ids]
+    remaining = [card for card in cards if str(card.get("id")) not in selected_ids]
+    return selected + remaining
+
+
+def _available_serialized_cards():
+    try:
+        return serialized_cards_queryset()
+    except (DatabaseError, OperationalError, ProgrammingError):
+        return serialized_cards_seed_data()
+
+
+def _build_new_match_state(cards, difficulty="normal", selected_card_ids=None):
     difficulty = _normalize_ai_difficulty(difficulty)
-    serialized = [_serialize_card(card) for card in cards]
+    serialized = _selected_cards_first(cards, selected_card_ids)
     if not serialized:
         return _empty_match_state(difficulty)
     return {
@@ -121,10 +138,22 @@ def _build_new_match_state(cards, difficulty="normal"):
         "ai_difficulty": difficulty,
         "arena": {"slots": ARENA_SLOTS},
         "turn": {"number": 1, "active_side": "host"},
-        "host": _player_state("host", _build_deck(serialized), draw_all=True),
+        "host": _player_state(
+            "host",
+            (
+                _selected_cards_first(serialized, selected_card_ids)
+                if selected_card_ids
+                else _build_deck(serialized)
+            ),
+            draw_all=True,
+            shuffle=False,
+        ),
         "guest": _player_state("guest", _build_deck(serialized), draw_all=True),
         "winner": None,
-        "log": ["Duelo de cartas iniciado: todos los monstruos fueron barajados y repartidos en mano."],
+        "log": [
+            "Duelo iniciado con el catálogo disponible.",
+            "La mano del jugador respeta la selección manual cuando fue indicada.",
+        ],
     }
 
 
@@ -564,7 +593,7 @@ def cards_catalog(request):
     try:
         cards = serialized_cards_queryset()
         source = "database"
-    except (OperationalError, ProgrammingError):
+    except (DatabaseError, OperationalError, ProgrammingError):
         cards = serialized_cards_seed_data()
         source = "seed"
     return JsonResponse({"ok": True, "cards": cards, "source": source})
@@ -588,18 +617,32 @@ def create_match_vs_ai(request):
     if payload_error:
         return payload_error
     difficulty = _normalize_ai_difficulty(payload.get("difficulty"))
-    cards = list(MonsterCard.objects.all())
+    selected_card_ids = (
+        payload.get("selected_card_ids")
+        if isinstance(payload.get("selected_card_ids"), list)
+        else []
+    )
+    cards = _available_serialized_cards()
     solo_system_user, ai_user = get_single_player_system_users()
     with transaction.atomic():
         record = _active_match_from_session(request)
         if record:
-            record.game_state = _build_new_match_state(cards, difficulty=difficulty)
+            record.game_state = _build_new_match_state(
+                cards, difficulty=difficulty, selected_card_ids=selected_card_ids
+            )
             record.status = "active"
             record.guest = ai_user
             record.winner = None
             record.save(update_fields=["game_state", "status", "guest", "winner", "updated_at"])
         else:
-            record = MatchRecord.objects.create(host=solo_system_user, guest=ai_user, status="active", game_state=_build_new_match_state(cards, difficulty=difficulty))
+            record = MatchRecord.objects.create(
+                host=solo_system_user,
+                guest=ai_user,
+                status="active",
+                game_state=_build_new_match_state(
+                    cards, difficulty=difficulty, selected_card_ids=selected_card_ids
+                ),
+            )
     request.session[SESSION_MATCH_KEY] = record.room_code
     request.session.modified = True
     return JsonResponse({"ok": True, **_match_payload(record)})

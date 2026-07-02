@@ -15,27 +15,43 @@
       <section class="panel intro-panel">
         <p class="kicker">Protocolo de duelo</p>
         <h1>DO-FU-IÓH</h1>
-        <p>Gestioná un duelo local contra la IA con decisiones claras sobre invocación, defensa y ataque.</p>
+        <p>Gestioná un duelo local con decisiones claras sobre invocación, defensa y ataque.</p>
       </section>
 
       <p id="auth-status" class="visually-hidden" aria-live="polite">Modo sin Backend activo. La partida se guarda localmente en este navegador.</p>
 
-      <section class="panel compact-panel collapsible-panel">
-        <details class="catalog-details" open>
-          <summary>CATÁLOGO DE CARTAS</summary>
+      <details class="panel compact-panel collapsible-panel catalog-details" open>
+        <summary>☰ Bestiario de cartas</summary>
           <div class="catalog-toolbar">
             <select id="family-filter"><option value="">Todas las familias</option></select>
           </div>
           <div id="catalog" class="catalog"></div>
-        </details>
-      </section>
+      </details>
+
+      <details class="panel compact-panel collapsible-panel" open>
+        <summary>☰ Panel de control</summary>
+        <div class="stack">
+          <label class="control-label" for="initial-hand-size">Cartas iniciales</label>
+          <select id="initial-hand-size"><option value="1">1 carta</option><option value="2">2 cartas</option><option value="5" selected>5 cartas</option></select>
+          <button id="create-ai-match" data-loading-label="Creando duelo...">Nuevo duelo</button>
+          <button id="shuffle-monsters" class="ghost" data-loading-label="Barajando cartas...">Barajar cartas</button>
+          <button id="create-selected-match" class="ghost" data-loading-label="Preparando selección...">Usar selección</button>
+          <button id="end-turn-btn" class="ghost" data-loading-label="Procesando turno...">Finalizar turno</button>
+        </div>
+      </details>
+
+      <details class="panel compact-panel collapsible-panel hand-zone" open>
+        <summary>☰ Mano actual</summary>
+        <div class="panel-heading"><h2>Mano disponible</h2><span class="panel-caption">Seleccioná una carta y asignala a un espacio libre</span></div>
+        <div id="hand" class="card-row"></div>
+      </details>
     </aside>
 
     <section class="center-column panel duel-panel">
       <header class="duel-header">
         <div>
           <h2>Arena de combate</h2>
-          <p>Tablero táctico 25 × 25: invocá, mové tus monstruos y lanzá hechizos contra la IA.</p>
+          <p>Invocá, mové tus monstruos y lanzá hechizos sin mensajes repetidos.</p>
         </div>
         <div class="duel-rules">
           <span>Elegí 1, 2 o 5 cartas iniciales</span><span>Movimientos en tablero</span><span>Hechizos por rango</span>
@@ -43,50 +59,31 @@
       </header>
       <div id="action-feedback" class="action-feedback feedback-normal" aria-live="polite" aria-atomic="true">Seleccioná una carta o una unidad para continuar.</div>
 
-      <section class="board-panel tactical-preview" aria-label="Vista previa del tablero táctico 25 por 25">
+      <section class="board-panel tactical-preview" aria-label="Tablero táctico">
         <div class="board-header">
           <div>
-            <h2>Tablero 25 × 25</h2>
-            <p>Las filas superiores son zona IA, las inferiores zona Jugador. Seleccioná una unidad para ver movimiento y rango de hechizo.</p>
+            <h2>Tablero táctico</h2>
+            <p>Zona IA arriba; zona Jugador abajo.</p>
           </div>
           <div class="board-legend">
             <span class="legend-chip summon">Invocación</span><span class="legend-chip move">Movimiento</span><span class="legend-chip attack">Hechizo</span><span class="legend-chip selected">Selección</span>
           </div>
         </div>
-        <div class="board-context" id="board-context">Seleccioná una carta de Mano Disponible para invocarla en una celda verde, o una unidad propia para moverla/atacar.</div>
         <div class="board-frame"><div class="board-scroll"><div id="tactical-board" class="board tactical-board"></div></div></div>
       </section>
 
-      <section class="panel compact-panel hand-zone">
-        <div class="panel-heading"><h2>Mano disponible</h2><span class="panel-caption">Seleccioná una carta y asignala a un espacio libre</span></div>
-        <div id="hand" class="card-row"></div>
-      </section>
     </section>
 
     <aside class="side-column right-column">
-      <details class="panel compact-panel collapsible-panel" open>
-        <summary>Panel de control</summary>
-        <div class="stack">
-          <label class="control-label" for="initial-hand-size">Cartas iniciales contra IA</label>
-          <select id="initial-hand-size"><option value="1">1 carta</option><option value="2">2 cartas</option><option value="5" selected>5 cartas</option></select>
-          <button id="create-ai-match" data-loading-label="Creando duelo...">Nuevo duelo local vs IA</button>
-          <button id="shuffle-monsters" class="ghost" data-loading-label="Barajando cartas...">Barajar cartas</button>
-          <button id="create-selected-match" class="ghost" data-loading-label="Preparando selección...">Usar selección</button>
-          <button id="refresh-state" class="ghost" data-loading-label="Refrescando...">Recuperar estado local</button>
-          <button id="end-turn-btn" class="ghost" data-loading-label="Procesando turno...">Finalizar turno</button>
-        </div>
-      </details>
-
-      <details class="panel compact-panel collapsible-panel" open><summary>Estado del duelo</summary><div id="match-summary" class="stack small"></div></details>
-      <details class="panel compact-panel collapsible-panel"><summary>Información seleccionada</summary><div id="selection-detail" class="stack small"></div></details>
-      <details class="panel compact-panel collapsible-panel event-log-panel" open><summary>Registro</summary><span class="panel-caption">Actividad reciente</span><div id="match-log" class="match-log" aria-live="polite"><div class="small">La actividad del duelo se mostrará aquí.</div></div></details>
+      <details class="panel compact-panel collapsible-panel" open><summary>☰ Estado del duelo</summary><div id="match-summary" class="stack small"></div></details>
+      <details class="panel compact-panel collapsible-panel event-log-panel" open><summary>☰ Registro del combate</summary><span class="panel-caption">Actividad reciente</span><div id="match-log" class="match-log" aria-live="polite"><div class="small">La actividad del duelo se mostrará aquí.</div></div></details>
     </aside>
 
   <dialog id="hand-choice-dialog" class="hand-choice-dialog">
     <form method="dialog" class="hand-choice-modal">
       <p class="kicker">Inicio de partida</p>
       <h2>Elegí tu mano inicial</h2>
-      <p>Podés recibir una mano al azar o prepararla manualmente desde el CATÁLOGO DE CARTAS antes de iniciar el duelo.</p>
+      <p>Podés recibir una mano al azar o prepararla manualmente desde el Bestiario de cartas antes de iniciar el duelo.</p>
       <div class="modal-actions">
         <button id="modal-random-hand" value="random">Mano al azar</button>
         <button id="modal-manual-hand" class="ghost" value="manual">Elegir manualmente</button>

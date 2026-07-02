@@ -32,13 +32,12 @@ La versión anterior persistía partidas en base de datos y dependía de sesión
 
 ## Funcionalidades disponibles
 
-- Nuevo duelo local vs IA.
+- Nuevo duelo.
 - Barajar cartas.
 - Usar selección manual del catálogo para priorizar cartas en mano.
 - Invocar cartas en cinco espacios.
 - Atacar unidades enemigas.
 - Finalizar turno y resolver respuesta automática de la IA.
-- Recuperar el duelo guardado en el navegador.
 
 ## Setup local
 
@@ -50,7 +49,7 @@ python -m pip install -r requirements.txt
 python manage.py runserver
 ```
 
-Abrí `http://127.0.0.1:8000/` e iniciá un **Nuevo duelo local vs IA**.
+Abrí `http://127.0.0.1:8000/` e iniciá un **Nuevo duelo**.
 
 ## Tests
 

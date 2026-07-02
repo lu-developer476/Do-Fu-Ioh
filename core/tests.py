@@ -23,7 +23,7 @@ class BackendlessModeTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'cards-seed')
         self.assertContains(response, 'Modo sin Backend activo')
-        self.assertContains(response, 'Nuevo duelo local vs IA')
+        self.assertContains(response, 'Nuevo duelo')
 
     def test_frontend_keeps_catalog_and_arena_renderers(self):
         script = Path(__file__).resolve().parent / 'static' / 'core' / 'js' / 'game.js'

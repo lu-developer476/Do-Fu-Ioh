@@ -82,7 +82,7 @@ class KitsuCatalogDataTests(SimpleTestCase):
                 self.assertEqual(card['action_points'], action_points)
                 self.assertEqual(card['movement_points'], movement_points)
 
-    def test_kitsu_reference_spells_are_empty_until_defined(self):
+    def test_kitsu_reference_spells_are_defined(self):
         cards = {card['name']: card for card in serialized_cards_seed_data()}
 
         for name in (
@@ -96,7 +96,10 @@ class KitsuCatalogDataTests(SimpleTestCase):
             'Kitsu yin yang evolucionado',
         ):
             with self.subTest(card=name):
-                self.assertEqual(cards[name]['spells'], [])
+                self.assertGreaterEqual(len(cards[name]['spells']), 2)
+                self.assertIn('name', cards[name]['spells'][0])
+                self.assertIn('cost', cards[name]['spells'][0])
+                self.assertIn('range', cards[name]['spells'][0])
 
 
 class BackendlessModeTests(TestCase):

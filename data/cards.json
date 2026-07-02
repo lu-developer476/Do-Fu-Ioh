@@ -379,7 +379,9 @@
     "movement_points": 4,
     "description": "Variante inspirada en las gelatinas de la Península de las Gelatinas. Su masa suave y dulzona esconde la elasticidad y voracidad propias de su familia.",
     "image": "public/images/gelatinas/base/gelatina-durazno.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 690,
+    "hp_max": 850
   },
   {
     "name": "Gelatina de frambuesa",
@@ -393,7 +395,9 @@
     "movement_points": 4,
     "description": "Gelatina de color rojizo y aroma intenso. Como las demás de su especie, parece inofensiva hasta que envuelve a su presa con movimientos pegajosos.",
     "image": "public/images/gelatinas/base/gelatina-frambuesa.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 690,
+    "hp_max": 850
   },
   {
     "name": "Gelatina lactosada",
@@ -407,7 +411,9 @@
     "movement_points": 4,
     "description": "Subespecie espesa de gelatina que parece haber absorbido nutrientes de productos lácteos. Su consistencia cremosa le da un aspecto blando, pero resiste más de lo que aparenta.",
     "image": "public/images/gelatinas/base/gelatina-lactosada.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 690,
+    "hp_max": 850
   },
   {
     "name": "Gelatina moka",
@@ -421,7 +427,9 @@
     "movement_points": 4,
     "description": "Gelatina acaramelada con aroma a granos tostados y una textura más compacta. Se mueve despacio, pero golpea con la inercia viscosa típica de su linaje.",
     "image": "public/images/gelatinas/base/gelatina-moka.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 690,
+    "hp_max": 850
   },
   {
     "name": "Gelatina nociva",
@@ -435,7 +443,9 @@
     "movement_points": 4,
     "description": "Gelatina peligrosa impregnada de sustancias tóxicas del entorno. Su masa corrompida irrita y desgasta a cualquiera que quede atrapado en ella.",
     "image": "public/images/gelatinas/base/gelatina-nociva.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 690,
+    "hp_max": 850
   },
   {
     "name": "Gelatina obscura",
@@ -449,7 +459,9 @@
     "movement_points": 4,
     "description": "Variante sombría que habita lugares húmedos, poco iluminados u oscuros. Su pigmentación le permite absorber la luz y se vuelve más difícil anticipar sus movimientos.",
     "image": "public/images/gelatinas/base/gelatina-obscura.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 690,
+    "hp_max": 850
   },
   {
     "name": "Gelatina de uva",
@@ -463,7 +475,9 @@
     "movement_points": 4,
     "description": "Subespecie púrpura que parece haber absorbido jugos frutales fermentados. Conserva la elasticidad clásica de las gelatinas, pero con un temperamento más caprichoso.",
     "image": "public/images/gelatinas/base/gelatina-uva.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 690,
+    "hp_max": 850
   },
   {
     "name": "Gelatina de durazno Real",

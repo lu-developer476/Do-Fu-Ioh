@@ -49,6 +49,22 @@ class BackendlessModeTests(TestCase):
         self.assertGreater(len(payload['cards']), 0)
         self.assertIn('summon_cost', payload['cards'][0])
 
+
+    def test_seed_catalog_marks_summons_as_free(self):
+        response = self.client.get('/api/cards/')
+
+        payload = response.json()
+        self.assertTrue(all(card['summon_cost'] == 0 for card in payload['cards']))
+
+    def test_frontend_allows_multiple_free_summons_for_player_and_ai(self):
+        script = Path(__file__).resolve().parent / 'static' / 'core' / 'js' / 'game.js'
+        source = script.read_text(encoding='utf-8')
+
+        self.assertIn('function summonCost(card = {}) { return FREE_SUMMON_COST; }', source)
+        self.assertIn("while (ai.hand.length && deployCells('guest').length)", source)
+        self.assertNotIn('No alcanza la energía para invocar.', source)
+        self.assertNotIn('Ya invocaste este turno.', source)
+
     def test_match_apis_are_disabled_in_backendless_mode(self):
         response = self.client.post('/api/match/create-vs-ai/', data='{}', content_type='application/json')
 

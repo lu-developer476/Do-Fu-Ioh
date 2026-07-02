@@ -14,9 +14,9 @@ logger = logging.getLogger(__name__)
 
 CARDS_DATA_PATH = Path(settings.BASE_DIR) / 'data' / 'cards.json'
 SUMMON_COST_BY_STAGE = {
-    'base': 1,
-    'fusion': 3,
-    'evolution': 5,
+    'base': 0,
+    'fusion': 0,
+    'evolution': 0,
 }
 OPTIONAL_CARD_DEFAULTS = {
     'description': '',
@@ -64,7 +64,7 @@ def resolve_card_image(image: str) -> str:
 
 def summon_cost(card_like) -> int:
     stage = card_like.get('stage', 'base')
-    return SUMMON_COST_BY_STAGE.get(stage, 1)
+    return SUMMON_COST_BY_STAGE.get(stage, 0)
 
 
 def serialize_card(card: MonsterCard) -> dict:

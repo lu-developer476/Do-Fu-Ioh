@@ -379,14 +379,7 @@ def _apply_summon_action(state, side, actor, payload):
         return "Slot inválido."
     if slot not in _open_slots(actor, slots):
         return "Ese slot ya está ocupado."
-    if actor["summons_this_turn"] >= 1:
-        return "Ya invocaste este turno."
     card = actor["hand"].pop(hand_index)
-    cost = summon_cost(card)
-    if actor["energy"] < cost:
-        actor["hand"].insert(hand_index, card)
-        return "No alcanza la energía para invocar."
-    actor["energy"] -= cost
     actor["summons_this_turn"] += 1
     actor["units"].append(_build_unit_from_card(state, side, card, slot))
     _append_log(state, f"{side} invocó {card['name']} en el slot {slot + 1}.")
@@ -482,8 +475,8 @@ def _select_attack_target(state, unit, difficulty):
 
 def _best_summon_action(state, difficulty):
     ai = state["guest"]
-    affordable = [(index, card) for index, card in enumerate(ai["hand"]) if summon_cost(card) <= ai["energy"]]
-    if not affordable or ai["summons_this_turn"] >= 1:
+    affordable = list(enumerate(ai["hand"]))
+    if not affordable:
         return None
     open_slots = _open_slots(ai, state["arena"]["slots"])
     if not open_slots:
@@ -502,8 +495,10 @@ def _ai_turn(state):
     if state["turn"]["active_side"] != "guest" or state["winner"]:
         return
     difficulty = _normalize_ai_difficulty(state.get("ai_difficulty"))
-    summon_action = _best_summon_action(state, difficulty)
-    if summon_action:
+    while True:
+        summon_action = _best_summon_action(state, difficulty)
+        if not summon_action:
+            break
         _apply_action(state, "guest", summon_action)
     for unit in list(state["guest"]["units"]):
         while unit.get("can_act") and not state.get("winner"):

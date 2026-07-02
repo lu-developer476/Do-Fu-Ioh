@@ -327,7 +327,8 @@ async function loadActiveMatch() {
   const data = await api('/api/match/active/');
   applyMatchPayload(data, { emptyFeedbackMessage: 'No hay duelo activo. Hacé clic en "Jugar vs IA" para iniciar.' }); renderGame();
 }
-async function createAIMatch() { const data = await api('/api/match/create-vs-ai/', { method: 'POST', body: '{}' }); applyMatchPayload(data); renderGame(); setStatus('Duelo nuevo creado en esta sesión.'); }
+async function createAIMatch() { const data = await api('/api/match/create-vs-ai/', { method: 'POST', body: '{}' }); applyMatchPayload(data); renderGame(); setStatus('Duelo nuevo creado con todos los monstruos barajados en mano.'); }
+async function shuffleMonsters() { await createAIMatch(); setActionFeedback('Monstruos barajados: tu mano inicial incluye todo el catálogo.', 'success'); }
 async function refreshMatch() { if (!appState.roomCode) return loadActiveMatch(); const data = await api(`/api/match/${appState.roomCode}/`); applyMatchPayload(data); renderGame(); }
 async function endTurn() { if (!appState.roomCode) throw new Error('No hay duelo activo.'); await sendAction({ action: 'end_turn' }); resetSelections(); setActionFeedback('Turno terminado. La IA resolvió su respuesta.', 'success'); renderGame(); }
 function bindAsyncButton(selector, handler) {
@@ -336,7 +337,7 @@ function bindAsyncButton(selector, handler) {
   button.addEventListener('click', async () => { if (button.disabled) return; button.disabled = true; button.setAttribute('aria-busy', 'true'); button.textContent = loadingLabel; try { await handler(); } catch (err) { setStatus(err.message || 'Error inesperado', true); } finally { button.disabled = false; button.setAttribute('aria-busy', 'false'); button.textContent = idleLabel; } });
 }
 function boot() {
-  renderGame(); bindAsyncButton('#create-ai-match', createAIMatch); bindAsyncButton('#refresh-state', refreshMatch); bindAsyncButton('#end-turn-btn', endTurn); familyFilter?.addEventListener('change', renderCatalog);
+  renderGame(); bindAsyncButton('#create-ai-match', createAIMatch); bindAsyncButton('#shuffle-monsters', shuffleMonsters); bindAsyncButton('#refresh-state', refreshMatch); bindAsyncButton('#end-turn-btn', endTurn); familyFilter?.addEventListener('change', renderCatalog);
   loadCards().then(loadActiveMatch).catch((err) => { setStatus(err.message || 'No se pudo iniciar el juego.', true); setActionFeedback('No se pudo cargar el duelo. Probá reiniciar con "Jugar vs IA".', 'error'); renderGame(); }).finally(() => { if (!appState.match) setStatus('Sin login: hacé clic en "Jugar vs IA" para iniciar.'); });
 }
 document.addEventListener('DOMContentLoaded', boot, { once: true });

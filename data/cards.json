@@ -16,16 +16,16 @@
     "hp_max": 85,
     "spells": [
       {
-        "name": "Picotazo",
+        "name": "Picoteo albino",
         "cost": 2,
         "range": 1,
-        "effect": "Daño cuerpo a cuerpo de aire/tierra adaptado del picotazo de Píos."
+        "effect": "Daño cuerpo a cuerpo del picoteo característico del Pío albino."
       },
       {
-        "name": "Plumaje Motivador",
+        "name": "Plumaje albino",
         "cost": 3,
         "range": 0,
-        "effect": "+1 PA propio este turno si aún no atacó."
+        "effect": "Efecto de apoyo o defensa basado en el plumaje albino del Pío."
       }
     ]
   },
@@ -46,16 +46,16 @@
     "hp_max": 85,
     "spells": [
       {
-        "name": "Picotazo",
+        "name": "Picoteo anaranjado",
         "cost": 2,
         "range": 1,
-        "effect": "Daño cuerpo a cuerpo de aire/tierra adaptado del picotazo de Píos."
+        "effect": "Daño cuerpo a cuerpo del picoteo característico del Pío anaranjado."
       },
       {
-        "name": "Plumaje Motivador",
+        "name": "Plumaje anaranjado",
         "cost": 3,
         "range": 0,
-        "effect": "+1 PA propio este turno si aún no atacó."
+        "effect": "Efecto de apoyo o defensa basado en el plumaje anaranjado del Pío."
       }
     ]
   },
@@ -76,16 +76,16 @@
     "hp_max": 85,
     "spells": [
       {
-        "name": "Picotazo",
+        "name": "Picoteo castaño",
         "cost": 2,
         "range": 1,
-        "effect": "Daño cuerpo a cuerpo de aire/tierra adaptado del picotazo de Píos."
+        "effect": "Daño cuerpo a cuerpo del picoteo característico del Pío castaño."
       },
       {
-        "name": "Plumaje Motivador",
+        "name": "Plumaje castaño",
         "cost": 3,
         "range": 0,
-        "effect": "+1 PA propio este turno si aún no atacó."
+        "effect": "Efecto de apoyo o defensa basado en el plumaje castaño del Pío."
       }
     ]
   },
@@ -106,16 +106,16 @@
     "hp_max": 85,
     "spells": [
       {
-        "name": "Picotazo",
+        "name": "Picoteo negruzco",
         "cost": 2,
         "range": 1,
-        "effect": "Daño cuerpo a cuerpo de aire/tierra adaptado del picotazo de Píos."
+        "effect": "Daño cuerpo a cuerpo del picoteo característico del Pío negruzco."
       },
       {
-        "name": "Plumaje Motivador",
+        "name": "Plumaje negruzco",
         "cost": 3,
         "range": 0,
-        "effect": "+1 PA propio este turno si aún no atacó."
+        "effect": "Efecto de apoyo o defensa basado en el plumaje negruzco del Pío."
       }
     ]
   },
@@ -136,16 +136,16 @@
     "hp_max": 105,
     "spells": [
       {
-        "name": "Picotazo Cromático",
+        "name": "Picoteo otoñal",
         "cost": 3,
         "range": 1,
-        "effect": "Golpe elemental según la variante fusionada."
+        "effect": "Daño cuerpo a cuerpo del picoteo característico del Pío otoñal."
       },
       {
-        "name": "Aleteo Disperso",
+        "name": "Plumaje otoñal",
         "cost": 4,
         "range": 2,
-        "effect": "Daño leve y empuja 1 casilla."
+        "effect": "Efecto de apoyo o defensa basado en el plumaje otoñal del Pío."
       }
     ]
   },
@@ -166,16 +166,16 @@
     "hp_max": 105,
     "spells": [
       {
-        "name": "Picotazo Cromático",
+        "name": "Picoteo combinado",
         "cost": 3,
         "range": 1,
-        "effect": "Golpe elemental según la variante fusionada."
+        "effect": "Daño cuerpo a cuerpo del picoteo característico del Pío combinado."
       },
       {
-        "name": "Aleteo Disperso",
+        "name": "Plumaje combinado",
         "cost": 4,
         "range": 2,
-        "effect": "Daño leve y empuja 1 casilla."
+        "effect": "Efecto de apoyo o defensa basado en el plumaje combinado del Pío."
       }
     ]
   },
@@ -196,16 +196,16 @@
     "hp_max": 175,
     "spells": [
       {
-        "name": "Graznido Real",
+        "name": "Picoteo píoloro",
         "cost": 4,
         "range": 3,
-        "effect": "Daño de aire en línea y revela objetivos cercanos."
+        "effect": "Daño cuerpo a cuerpo del picoteo característico del Pío píoloro."
       },
       {
-        "name": "Picotazo Majestuoso",
+        "name": "Plumaje píoloro",
         "cost": 5,
         "range": 1,
-        "effect": "Gran daño cuerpo a cuerpo; aumenta el daño si el objetivo perdió PdE."
+        "effect": "Efecto de apoyo o defensa basado en el plumaje píoloro del Pío."
       }
     ]
   },

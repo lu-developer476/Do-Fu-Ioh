@@ -998,18 +998,25 @@ body, .panel, .card, .board-header, .board-footer, .log-item, .small, input, sel
 }
 
 @media (max-width: 1200px) {
-  .card-game-shell { grid-template-columns: minmax(0, 1fr); padding: 14px; }
-  .side-column { display: block; }
-  .side-column > * + * { margin-top: 12px; }
+  .card-game-shell {
+    grid-template-columns: minmax(240px, .9fr) minmax(600px, 2fr) minmax(240px, .9fr);
+    padding: 14px;
+    min-width: 1080px;
+  }
+  .side-column { display: grid; }
+  .left-column { order: 1; }
+  .center-column { order: 2; }
+  .right-column { order: 3; }
   :root { --board-cell-size: clamp(2.2rem, 9.6vw, 4.8rem); }
   .board { padding: 8px; gap: 3px; }
-  .left-column { order: 2; }
-  .center-column { order: 1; }
-  .right-column { order: 3; }
 }
 
 @media (max-width: 640px) {
   .arcade-shell { padding: 8px; gap: 10px; }
+  .card-game-shell {
+    grid-template-columns: minmax(220px, .9fr) minmax(560px, 2fr) minmax(220px, .9fr);
+    min-width: 1020px;
+  }
   :root { --board-cell-size: min(9.25vw, 2.45rem); --board-gap: 2px; }
   .board { border-width: 3px; padding: 4px; border-radius: 12px; }
   .board-panel, .duel-panel { gap: 10px; }

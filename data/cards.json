@@ -107,7 +107,9 @@
     "movement_points": 6,
     "description": "Evolución poco común del Pío otoñal. Estas aves desarrollan un plumaje más vistoso y un comportamiento más astuto tras sobrevivir múltiples combates. Gana porte, astucia y una presencia más dominante que la de cualquier pío corriente.",
     "image": "public/images/pios/evolutions/pioloro.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 150,
+    "hp_max": 175
   },
   {
     "name": "Kitsu amatista",

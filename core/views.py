@@ -75,23 +75,16 @@ def _serialize_card(card):
 
 
 def _build_deck(serialized_cards):
-    if not serialized_cards:
-        return []
-    base_cards = [card for card in serialized_cards if card["stage"] == "base"]
-    non_base_cards = [card for card in serialized_cards if card["stage"] != "base"]
-    guaranteed = random.choices(base_cards or serialized_cards, k=min(HAND_SIZE, DECK_SIZE))
-    remaining_pool = non_base_cards or serialized_cards
-    weights = [2 if card["stage"] == "fusion" else 1 for card in remaining_pool]
-    remaining = random.choices(remaining_pool, weights=weights, k=max(0, DECK_SIZE - len(guaranteed)))
-    deck = guaranteed + remaining
+    deck = list(serialized_cards)
     random.shuffle(deck)
     return deck
 
 
-def _player_state(side, deck_cards):
+def _player_state(side, deck_cards, draw_all=False):
     random.shuffle(deck_cards)
-    hand = deck_cards[:HAND_SIZE]
-    library = deck_cards[HAND_SIZE:]
+    initial_hand_size = len(deck_cards) if draw_all else HAND_SIZE
+    hand = deck_cards[:initial_hand_size]
+    library = deck_cards[initial_hand_size:]
     return {
         "side": side,
         "energy": 1,
@@ -128,10 +121,10 @@ def _build_new_match_state(cards, difficulty="normal"):
         "ai_difficulty": difficulty,
         "arena": {"slots": ARENA_SLOTS},
         "turn": {"number": 1, "active_side": "host"},
-        "host": _player_state("host", _build_deck(serialized)),
-        "guest": _player_state("guest", _build_deck(serialized)),
+        "host": _player_state("host", _build_deck(serialized), draw_all=True),
+        "guest": _player_state("guest", _build_deck(serialized), draw_all=True),
         "winner": None,
-        "log": ["Duelo de cartas iniciado: jugador vs IA."],
+        "log": ["Duelo de cartas iniciado: todos los monstruos fueron barajados y repartidos en mano."],
     }
 
 

@@ -157,6 +157,23 @@ class SoloAIModeTests(TestCase):
         self.assertEqual(active.status_code, 200)
         self.assertEqual(active.json()["room_code"], payload["room_code"])
 
+    def test_create_match_starts_with_all_monsters_shuffled_in_hand(self):
+        created = self.client.post(
+            "/api/match/create-vs-ai/", data="{}", content_type="application/json"
+        )
+
+        self.assertEqual(created.status_code, 200)
+        match = created.json()["match"]
+        catalog_count = MonsterCard.objects.count()
+        self.assertEqual(match["host"]["hand_count"], catalog_count)
+        self.assertEqual(match["guest"]["hand_count"], catalog_count)
+        self.assertEqual(match["host"]["library_count"], 0)
+        self.assertEqual(match["guest"]["library_count"], 0)
+        self.assertCountEqual(
+            [card["id"] for card in match["host"]["hand"]],
+            list(MonsterCard.objects.values_list("id", flat=True)),
+        )
+
     def test_session_is_required_for_match_access(self):
         created = self.client.post(
             "/api/match/create-vs-ai/", data="{}", content_type="application/json"

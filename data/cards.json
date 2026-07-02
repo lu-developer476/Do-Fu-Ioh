@@ -595,9 +595,11 @@
     "shell": 120,
     "action_points": 7,
     "movement_points": 4,
-    "description": "Escarabajo elemental con caparazón brillante que habita campos abiertos. Protege un temperamento obstinado y agresivo.",
+    "description": "Escarabajo elemental con caparazón brillante que habita campos abiertos y protege un temperamento obstinado y agresivo. Inspirada en los escarahojas de las llanuras del sur de Amakna.",
     "image": "public/images/escarahojas/base/escarahoja-anaranjada.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 320,
+    "hp_max": 450
   },
   {
     "name": "Escarahoja limonada",
@@ -609,9 +611,11 @@
     "shell": 120,
     "action_points": 7,
     "movement_points": 4,
-    "description": "Escarahoja de tonos amarillos adaptado a zonas secas y soleadas. Su caparazón refleja la luz y lo vuelve fácil de distinguir.",
+    "description": "Escarahoja de tonos amarillos, adaptado a zonas secas y soleadas. Su caparazón refleja la luz y lo vuelve fácil de distinguir en campo abierto.",
     "image": "public/images/escarahojas/base/escarahoja-limonada.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 320,
+    "hp_max": 450
   },
   {
     "name": "Escarahoja sonrosada",
@@ -623,9 +627,11 @@
     "shell": 120,
     "action_points": 7,
     "movement_points": 4,
-    "description": "Subespecie de color rosado que destaca entre la fauna de su familia. Bajo ese tono extraño conserva la dureza típica de los escarahojas.",
+    "description": "Subespecie de color rosado que destaca entre la fauna de su familia. Bajo ese tono extraño conserva la dureza típica de los escarahojas. Se le atribuye su característica tonalidad rosada por la absorción de la energía solar del entorno que habita.",
     "image": "public/images/escarahojas/base/escarahoja-sonrosada.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 320,
+    "hp_max": 450
   },
   {
     "name": "Escarahoja tostada",
@@ -639,7 +645,9 @@
     "movement_points": 4,
     "description": "Variante de tonos marrones endurecida por el clima y el terreno. Su caparazón parece curtido por el polvo, el calor y el combate constante.",
     "image": "public/images/escarahojas/base/escarahoja-tostada.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 320,
+    "hp_max": 450
   },
   {
     "name": "Escarahoja violeta",
@@ -651,9 +659,11 @@
     "shell": 120,
     "action_points": 7,
     "movement_points": 4,
-    "description": "Escarahoja poco común cuyo caparazón oscuro sugiere una afinidad mayor con energías arcaicas. Suele intimidar más de lo que su tamaño sugiere.",
+    "description": "Escarahoja poco común cuyo caparazón oscuro sugiere una afinidad mayor con energías arcaicas. Suele intimidar más de lo que su tamaño sugiere; este monstruo posee habilidades que el resto de su familia no.",
     "image": "public/images/escarahojas/base/escarahoja-violeta.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg"
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 320,
+    "hp_max": 450
   },
   {
     "name": "Escarahoja duocromada",

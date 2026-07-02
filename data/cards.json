@@ -822,16 +822,16 @@
     "hp_max": 850,
     "spells": [
       {
-        "name": "Absorción Gelatinosa",
+        "name": "Gelpikes",
         "cost": 3,
-        "range": 1,
-        "effect": "Daño neutral y recupera una pequeña cantidad de PdE."
+        "range": 3,
+        "effect": "Proyectiles gelatinosos que infligen daño a distancia."
       },
       {
-        "name": "Salto Pegajoso",
-        "cost": 2,
+        "name": "Hueso de durazno",
+        "cost": 4,
         "range": 2,
-        "effect": "Ataque corto que marca la celda con baba."
+        "effect": "Golpe característico de gelatina con energía de durazno."
       }
     ]
   },
@@ -852,16 +852,16 @@
     "hp_max": 850,
     "spells": [
       {
-        "name": "Absorción Gelatinosa",
+        "name": "Gelpikes",
         "cost": 3,
-        "range": 1,
-        "effect": "Daño neutral y recupera una pequeña cantidad de PdE."
+        "range": 3,
+        "effect": "Proyectiles gelatinosos que infligen daño a distancia."
       },
       {
-        "name": "Salto Pegajoso",
-        "cost": 2,
+        "name": "Hueso de frambuesa",
+        "cost": 4,
         "range": 2,
-        "effect": "Ataque corto que marca la celda con baba."
+        "effect": "Golpe característico de gelatina con energía de frambuesa."
       }
     ]
   },
@@ -882,16 +882,16 @@
     "hp_max": 850,
     "spells": [
       {
-        "name": "Absorción Gelatinosa",
+        "name": "Gelpikes",
         "cost": 3,
-        "range": 1,
-        "effect": "Daño neutral y recupera una pequeña cantidad de PdE."
+        "range": 3,
+        "effect": "Proyectiles gelatinosos que infligen daño a distancia."
       },
       {
-        "name": "Salto Pegajoso",
-        "cost": 2,
+        "name": "Hueso de lactosada",
+        "cost": 4,
         "range": 2,
-        "effect": "Ataque corto que marca la celda con baba."
+        "effect": "Golpe característico de gelatina con energía de lactosada."
       }
     ]
   },
@@ -912,16 +912,16 @@
     "hp_max": 850,
     "spells": [
       {
-        "name": "Absorción Gelatinosa",
+        "name": "Gelpikes",
         "cost": 3,
-        "range": 1,
-        "effect": "Daño neutral y recupera una pequeña cantidad de PdE."
+        "range": 3,
+        "effect": "Proyectiles gelatinosos que infligen daño a distancia."
       },
       {
-        "name": "Salto Pegajoso",
-        "cost": 2,
+        "name": "Hueso de moka",
+        "cost": 4,
         "range": 2,
-        "effect": "Ataque corto que marca la celda con baba."
+        "effect": "Golpe característico de gelatina con energía de moka."
       }
     ]
   },
@@ -942,16 +942,16 @@
     "hp_max": 850,
     "spells": [
       {
-        "name": "Absorción Gelatinosa",
+        "name": "Gelpikes",
         "cost": 3,
-        "range": 1,
-        "effect": "Daño neutral y recupera una pequeña cantidad de PdE."
+        "range": 3,
+        "effect": "Proyectiles gelatinosos que infligen daño a distancia."
       },
       {
-        "name": "Salto Pegajoso",
-        "cost": 2,
+        "name": "Hueso de nociva",
+        "cost": 4,
         "range": 2,
-        "effect": "Ataque corto que marca la celda con baba."
+        "effect": "Golpe característico de gelatina con energía de nociva."
       }
     ]
   },
@@ -972,16 +972,16 @@
     "hp_max": 850,
     "spells": [
       {
-        "name": "Absorción Gelatinosa",
+        "name": "Gelpikes",
         "cost": 3,
-        "range": 1,
-        "effect": "Daño neutral y recupera una pequeña cantidad de PdE."
+        "range": 3,
+        "effect": "Proyectiles gelatinosos que infligen daño a distancia."
       },
       {
-        "name": "Salto Pegajoso",
-        "cost": 2,
+        "name": "Hueso de obscura",
+        "cost": 4,
         "range": 2,
-        "effect": "Ataque corto que marca la celda con baba."
+        "effect": "Golpe característico de gelatina con energía de obscura."
       }
     ]
   },
@@ -1002,16 +1002,16 @@
     "hp_max": 850,
     "spells": [
       {
-        "name": "Absorción Gelatinosa",
+        "name": "Gelpikes",
         "cost": 3,
-        "range": 1,
-        "effect": "Daño neutral y recupera una pequeña cantidad de PdE."
+        "range": 3,
+        "effect": "Proyectiles gelatinosos que infligen daño a distancia."
       },
       {
-        "name": "Salto Pegajoso",
-        "cost": 2,
+        "name": "Hueso de uva",
+        "cost": 4,
         "range": 2,
-        "effect": "Ataque corto que marca la celda con baba."
+        "effect": "Golpe característico de gelatina con energía de uva."
       }
     ]
   },
@@ -1030,16 +1030,22 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Explosión Real",
-        "cost": 5,
-        "range": 3,
-        "effect": "Daño en zona pequeña alrededor del objetivo."
+        "name": "Helada Protectora",
+        "cost": 3,
+        "range": 0,
+        "effect": "Refuerza la protección de la Gelatina Real con una capa helada."
       },
       {
-        "name": "Corona Gelatinosa",
+        "name": "Invocación de Gelatina de Durazno",
         "cost": 4,
-        "range": 0,
-        "effect": "Regenera PdE y mejora el siguiente hechizo."
+        "range": 1,
+        "effect": "Invoca una Gelatina de Durazno aliada."
+      },
+      {
+        "name": "Hueso de durazno",
+        "cost": 4,
+        "range": 2,
+        "effect": "Golpe característico de gelatina con energía de durazno."
       }
     ]
   },
@@ -1058,16 +1064,22 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Explosión Real",
-        "cost": 5,
-        "range": 3,
-        "effect": "Daño en zona pequeña alrededor del objetivo."
+        "name": "Helada Protectora",
+        "cost": 3,
+        "range": 0,
+        "effect": "Refuerza la protección de la Gelatina Real con una capa helada."
       },
       {
-        "name": "Corona Gelatinosa",
+        "name": "Invocación de Gelatina de Frambuesa",
         "cost": 4,
-        "range": 0,
-        "effect": "Regenera PdE y mejora el siguiente hechizo."
+        "range": 1,
+        "effect": "Invoca una Gelatina de Frambuesa aliada."
+      },
+      {
+        "name": "Hueso de frambuesa",
+        "cost": 4,
+        "range": 2,
+        "effect": "Golpe característico de gelatina con energía de frambuesa."
       }
     ]
   },
@@ -1086,16 +1098,22 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Explosión Real",
-        "cost": 5,
-        "range": 3,
-        "effect": "Daño en zona pequeña alrededor del objetivo."
+        "name": "Helada Protectora",
+        "cost": 3,
+        "range": 0,
+        "effect": "Refuerza la protección de la Gelatina Real con una capa helada."
       },
       {
-        "name": "Corona Gelatinosa",
+        "name": "Invocación de Gelatina lactosada",
         "cost": 4,
-        "range": 0,
-        "effect": "Regenera PdE y mejora el siguiente hechizo."
+        "range": 1,
+        "effect": "Invoca una Gelatina lactosada aliada."
+      },
+      {
+        "name": "Hueso de lactosada",
+        "cost": 4,
+        "range": 2,
+        "effect": "Golpe característico de gelatina con energía de lactosada."
       }
     ]
   },
@@ -1114,16 +1132,22 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Explosión Real",
-        "cost": 5,
-        "range": 3,
-        "effect": "Daño en zona pequeña alrededor del objetivo."
+        "name": "Helada Protectora",
+        "cost": 3,
+        "range": 0,
+        "effect": "Refuerza la protección de la Gelatina Real con una capa helada."
       },
       {
-        "name": "Corona Gelatinosa",
+        "name": "Invocación de Gelatina moka",
         "cost": 4,
-        "range": 0,
-        "effect": "Regenera PdE y mejora el siguiente hechizo."
+        "range": 1,
+        "effect": "Invoca una Gelatina moka aliada."
+      },
+      {
+        "name": "Hueso de moka",
+        "cost": 4,
+        "range": 2,
+        "effect": "Golpe característico de gelatina con energía de moka."
       }
     ]
   },
@@ -1142,16 +1166,22 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Explosión Real",
-        "cost": 5,
-        "range": 3,
-        "effect": "Daño en zona pequeña alrededor del objetivo."
+        "name": "Helada Protectora",
+        "cost": 3,
+        "range": 0,
+        "effect": "Refuerza la protección de la Gelatina Real con una capa helada."
       },
       {
-        "name": "Corona Gelatinosa",
+        "name": "Invocación de Gelatina nociva",
         "cost": 4,
-        "range": 0,
-        "effect": "Regenera PdE y mejora el siguiente hechizo."
+        "range": 1,
+        "effect": "Invoca una Gelatina nociva aliada."
+      },
+      {
+        "name": "Hueso de nociva",
+        "cost": 4,
+        "range": 2,
+        "effect": "Golpe característico de gelatina con energía de nociva."
       }
     ]
   },
@@ -1170,16 +1200,22 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Explosión Real",
-        "cost": 5,
-        "range": 3,
-        "effect": "Daño en zona pequeña alrededor del objetivo."
+        "name": "Helada Protectora",
+        "cost": 3,
+        "range": 0,
+        "effect": "Refuerza la protección de la Gelatina Real con una capa helada."
       },
       {
-        "name": "Corona Gelatinosa",
+        "name": "Invocación de Gelatina obscura",
         "cost": 4,
-        "range": 0,
-        "effect": "Regenera PdE y mejora el siguiente hechizo."
+        "range": 1,
+        "effect": "Invoca una Gelatina obscura aliada."
+      },
+      {
+        "name": "Hueso de obscura",
+        "cost": 4,
+        "range": 2,
+        "effect": "Golpe característico de gelatina con energía de obscura."
       }
     ]
   },
@@ -1198,16 +1234,22 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Explosión Real",
-        "cost": 5,
-        "range": 3,
-        "effect": "Daño en zona pequeña alrededor del objetivo."
+        "name": "Helada Protectora",
+        "cost": 3,
+        "range": 0,
+        "effect": "Refuerza la protección de la Gelatina Real con una capa helada."
       },
       {
-        "name": "Corona Gelatinosa",
+        "name": "Invocación de Gelatina de Uva",
         "cost": 4,
-        "range": 0,
-        "effect": "Regenera PdE y mejora el siguiente hechizo."
+        "range": 1,
+        "effect": "Invoca una Gelatina de Uva aliada."
+      },
+      {
+        "name": "Hueso de uva",
+        "cost": 4,
+        "range": 2,
+        "effect": "Golpe característico de gelatina con energía de uva."
       }
     ]
   },

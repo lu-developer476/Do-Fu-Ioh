@@ -24,6 +24,8 @@ OPTIONAL_CARD_DEFAULTS = {
     'shell': 0,
     'action_points': 1,
     'movement_points': 1,
+    'hp_min': None,
+    'hp_max': None,
 }
 REQUIRED_CARD_FIELDS = (
     'name',
@@ -77,6 +79,8 @@ def serialize_card(card: MonsterCard) -> dict:
         'level_min': card.level_min,
         'level_max': card.level_max,
         'hp': card.hp,
+        'hp_min': card.hp,
+        'hp_max': card.hp,
         'shell': card.shell,
         'action_points': card.action_points,
         'movement_points': card.movement_points,
@@ -146,6 +150,8 @@ def _normalized_card_payload(item):
         'level_min': item['level_min'],
         'level_max': item['level_max'],
         'hp': item['hp'],
+        'hp_min': item.get('hp_min', OPTIONAL_CARD_DEFAULTS['hp_min']),
+        'hp_max': item.get('hp_max', OPTIONAL_CARD_DEFAULTS['hp_max']),
         'shell': item.get('shell', OPTIONAL_CARD_DEFAULTS['shell']),
         'action_points': item.get('action_points', OPTIONAL_CARD_DEFAULTS['action_points']),
         'movement_points': item.get('movement_points', OPTIONAL_CARD_DEFAULTS['movement_points']),
@@ -157,6 +163,19 @@ def _normalized_card_payload(item):
     for field in integer_fields:
         if not isinstance(payload[field], int) or payload[field] < 0:
             raise ValueError(f'{field} debe ser un entero mayor o igual a 0')
+
+    for field in ('hp_min', 'hp_max'):
+        if payload[field] is not None and (not isinstance(payload[field], int) or payload[field] < 0):
+            raise ValueError(f'{field} debe ser un entero mayor o igual a 0')
+
+    if payload['hp_min'] is None:
+        payload['hp_min'] = payload['hp']
+    if payload['hp_max'] is None:
+        payload['hp_max'] = payload['hp']
+    if payload['hp_max'] < payload['hp_min']:
+        raise ValueError('hp_max no puede ser menor que hp_min')
+    if payload['hp'] < payload['hp_min'] or payload['hp'] > payload['hp_max']:
+        raise ValueError('hp debe estar dentro del rango hp_min/hp_max')
 
     if payload['level_max'] < payload['level_min']:
         raise ValueError('level_max no puede ser menor que level_min')
@@ -188,7 +207,7 @@ def import_monster_cards(*, using=DEFAULT_DB_ALIAS, path=CARDS_DATA_PATH, stdout
         stats.processed += 1
         card, created = MonsterCard.objects.using(using).update_or_create(
             slug=slug,
-            defaults=defaults,
+            defaults={key: value for key, value in defaults.items() if key not in ('hp_min', 'hp_max')},
         )
         if created:
             stats.created += 1

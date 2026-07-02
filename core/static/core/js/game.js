@@ -3,6 +3,7 @@ const STORAGE_KEY = 'do_fu_ioh_backendless_match_v1';
 const EMPTY_MESSAGES = { catalog: 'No hay cartas disponibles para mostrar.', matchLog: 'Aún no hay actividad registrada.', hand: 'No quedan cartas en la mano.', handPreview: 'La mano se mostrará al iniciar el duelo.', summary: 'Iniciá un duelo local contra la IA para ver el estado.', arena: 'Espacio libre' };
 const STAGE_RANK = { base: 0, fusion: 1, evolution: 2 };
 const MAX_ENERGY = 10;
+const FREE_SUMMON_COST = 0;
 const BOARD_WIDTH = 9;
 const BOARD_HEIGHT = 13;
 const DEPLOY_ROWS = { host: [BOARD_HEIGHT - 1], guest: [0] };
@@ -21,7 +22,7 @@ function localSeedCards() { const seedTag = document.getElementById('cards-seed'
 function resolveCardImage(image) { const raw = String(image ?? '').trim(); if (!raw) return CARD_IMAGE_PLACEHOLDER; if (raw.startsWith('data:') || raw.startsWith('blob:')) return raw; if (/^https?:\/\//i.test(raw)) { try { return new URL(raw).href; } catch { return CARD_IMAGE_PLACEHOLDER; } } if (/^[a-z]+:/i.test(raw)) return CARD_IMAGE_PLACEHOLDER; const normalized = raw.replace(/^\.\//, '').replace(/^public\//, '/static/').replace(/^static\//, '/static/'); return normalized.startsWith('/') ? normalized : `/static/${normalized}`; }
 function createCardImageElement(image, name, className = '') { const frame = document.createElement('span'); frame.className = `card-image-frame${className ? ` ${className}` : ''}`; const img = document.createElement('img'); img.className = ['card-image', className].filter(Boolean).join(' '); img.src = resolveCardImage(image); img.alt = name || 'Carta sin nombre'; img.loading = 'lazy'; img.decoding = 'async'; const fallback = document.createElement('span'); fallback.className = 'card-image-fallback'; fallback.textContent = 'Imagen no disponible'; img.addEventListener('error', () => { frame.classList.add('is-fallback'); img.src = CARD_IMAGE_PLACEHOLDER; }); frame.append(img, fallback); return frame; }
 function cardImage(card = {}) { return card.image || card.image_fallback || CARD_IMAGE_PLACEHOLDER; }
-function summarizeCardStats(card = {}) { return `PdV ${card.hp ?? '-'} · Esc ${card.shell ?? 0} · PA ${card.action_points ?? '-'} · Coste ${card.summon_cost ?? summonCost(card)}`; }
+function summarizeCardStats(card = {}) { return `PdV ${card.hp ?? '-'} · Esc ${card.shell ?? 0} · PA ${card.action_points ?? '-'} · Invocación gratis`; }
 function stageLabel(stage) { return { base: 'Base', fusion: 'Fusión', evolution: 'Evolución' }[stage] || stage || '-'; }
 function formatSideLabel(side) { return side === 'host' ? 'Jugador' : side === 'guest' ? 'IA' : side || '-'; }
 function estimateDamage(card = {}) { return (card.action_points || 0) + 2 + (STAGE_RANK[card.stage] || 0); }
@@ -33,8 +34,8 @@ function syncSelectedUnit(me) { const selected = me?.units?.find((u) => u.id ===
 function getSelectedEnemy(enemy) { return enemy?.units?.find((u) => u.id === appState.selectedUnitId) || null; }
 function resetSelections() { appState.selectedHandIndex = null; appState.selectedUnitId = null; }
 function shuffle(items) { return [...items].sort(() => Math.random() - 0.5); }
-function summonCost(card = {}) { return { base: 1, fusion: 3, evolution: 5 }[card.stage] || 1; }
-function normalizeCard(card, index) { return { id: card.id ?? index + 1, summon_cost: card.summon_cost ?? summonCost(card), ...card }; }
+function summonCost(card = {}) { return FREE_SUMMON_COST; }
+function normalizeCard(card, index) { return { ...card, id: card.id ?? index + 1, summon_cost: summonCost(card) }; }
 function createPlayer(side, cards) { const hand = cards.map((card, index) => normalizeCard(card, index)); return { side, energy: 1, max_energy: 1, hand, library: [], library_count: 0, hand_count: hand.length, units: [], summons_this_turn: 0, summon_sequence: 0 }; }
 function persistMatch() { if (appState.match) localStorage.setItem(STORAGE_KEY, JSON.stringify({ roomCode: appState.roomCode, match: appState.match })); else localStorage.removeItem(STORAGE_KEY); }
 function loadStoredMatch() { try { const payload = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); if (payload?.match) { appState.roomCode = payload.roomCode || payload.match.room_code; appState.match = payload.match; return true; } } catch { localStorage.removeItem(STORAGE_KEY); } return false; }
@@ -56,7 +57,7 @@ function checkWinner(actingSide) { const alive = (p) => Boolean(p.units.length |
 function resetTurn(player) { player.summons_this_turn = 0; player.max_energy = Math.min(MAX_ENERGY, player.max_energy + 1); player.energy = player.max_energy; player.units.forEach((unit) => { unit.pa_current = unit.card.action_points || 1; unit.can_act = true; }); }
 function pickInitialCards(selectedIds = [], count = 5) { const selected = selectedIds.map(String); const selectedCards = selected.map((id) => appState.cards.find((card) => String(card.id) === id)).filter(Boolean); const pool = appState.cards.filter((card) => !selected.includes(String(card.id))); return [...selectedCards, ...shuffle(pool)].slice(0, count); }
 function startLocalMatch(selectedIds = [], requestedCount = 5) { const handSize = INITIAL_HAND_OPTIONS.has(Number(requestedCount)) ? Number(requestedCount) : 5; const hostCards = pickInitialCards(selectedIds, handSize); const guestCards = shuffle(appState.cards).slice(0, handSize); const roomCode = `local-${Date.now()}`; appState.roomCode = roomCode; appState.match = { room_code: roomCode, mode: 'local_vs_ai', ai_difficulty: 'normal', arena: { slots: BOARD_WIDTH }, board: { width: BOARD_WIDTH, height: BOARD_HEIGHT }, initial_hand_size: handSize, turn: { number: 1, active_side: 'host' }, host: createPlayer('host', hostCards), guest: createPlayer('guest', guestCards), winner: null, log: [`Duelo local iniciado con ${handSize} carta(s) iniciales contra la IA.`, `Tablero táctico ${BOARD_HEIGHT} × ${BOARD_WIDTH} activo para movimiento y hechizos.`] }; resetSelections(); updateDerivedCombat(); persistMatch(); }
-function applySummon(side, handIndex, position) { const player = appState.match[side]; if (player.summons_this_turn >= 1) throw new Error('Ya invocaste este turno.'); if (!deployCells(side).some((cell) => cell.x === position.x && cell.y === position.y)) throw new Error('Esa celda no está disponible para invocar.'); const card = player.hand[handIndex]; if (!card) throw new Error('Carta inválida.'); const cost = summonCost(card); if (player.energy < cost) throw new Error('No alcanza la energía para invocar.'); player.hand.splice(handIndex, 1); player.energy -= cost; player.summons_this_turn += 1; player.units.push(buildUnit(side, card, position)); appendLog(`${formatSideLabel(side)} invocó ${card.name} en (${position.x + 1}, ${position.y + 1}).`); }
+function applySummon(side, handIndex, position) { const player = appState.match[side]; if (!deployCells(side).some((cell) => cell.x === position.x && cell.y === position.y)) throw new Error('Esa celda no está disponible para invocar.'); const card = player.hand[handIndex]; if (!card) throw new Error('Carta inválida.'); player.hand.splice(handIndex, 1); player.summons_this_turn += 1; player.units.push(buildUnit(side, card, position)); appendLog(`${formatSideLabel(side)} invocó ${card.name} en (${position.x + 1}, ${position.y + 1}).`); }
 function applyMove(side, unitId, position) { const unit = appState.match[side].units.find((item) => item.id === unitId); if (!unit || !unit.can_act || unit.pa_current <= 0) throw new Error('Movimiento inválido.'); if (position.x < 0 || position.y < 0 || position.x >= BOARD_WIDTH || position.y >= BOARD_HEIGHT || unitAt(position.x, position.y)) throw new Error('La celda está ocupada o fuera del tablero.'); if (distance(unit, position) > unit.move_points) throw new Error('La celda está fuera del rango de movimiento.'); unit.x = position.x; unit.y = position.y; unit.slot = position.x; unit.pa_current -= 1; unit.can_act = unit.pa_current > 0; appendLog(`${formatSideLabel(side)} movió ${unit.card.name} a (${position.x + 1}, ${position.y + 1}).`); }
 function applyAttack(side, attackerId, targetId) { const actor = appState.match[side]; const enemySide = side === 'host' ? 'guest' : 'host'; const enemy = appState.match[enemySide]; const attacker = actor.units.find((unit) => unit.id === attackerId); const target = enemy.units.find((unit) => unit.id === targetId); if (!attacker || !target || attacker.pa_current <= 0 || !attacker.can_act || distance(attacker, target) > attacker.attack_range) throw new Error('Hechizo inválido o fuera de rango.'); attacker.pa_current -= 1; attacker.can_act = attacker.pa_current > 0; const power = estimateDamage(attacker.card); const absorbed = Math.min(target.shell_current, Math.max(0, power - 1)); target.shell_current = Math.max(0, target.shell_current - absorbed); const damage = Math.max(1, power - absorbed); target.hp_current -= damage; appendLog(`${formatSideLabel(side)} lanzó un hechizo con ${attacker.card.name} e infligió ${damage} de daño.`); if (target.hp_current <= 0) { enemy.units = enemy.units.filter((unit) => unit.id !== target.id); appendLog(`${target.card.name} fue derrotado.`); } }
 function endSideTurn(side) { const nextSide = side === 'host' ? 'guest' : 'host'; appState.match.turn.active_side = nextSide; if (nextSide === 'host') appState.match.turn.number += 1; resetTurn(appState.match[nextSide]); appendLog(`Fin del turno de ${formatSideLabel(side)}.`); }
@@ -66,9 +67,14 @@ async function runAiTurn() {
   appState.aiPlayback = true;
   setActionFeedback('La IA está resolviendo sus movimientos...', 'normal');
   const ai = appState.match.guest;
-  const affordableIndex = ai.hand.findIndex((card) => summonCost(card) <= ai.energy);
-  const slot = deployCells('guest')[0];
-  if (affordableIndex >= 0 && slot) { applySummon('guest', affordableIndex, slot); refreshCounts(); updateDerivedCombat(); renderGame(); await delay(); }
+  while (ai.hand.length && deployCells('guest').length) {
+    const bestIndex = ai.hand
+      .map((card, index) => ({ card, index }))
+      .sort((a, b) => (STAGE_RANK[b.card.stage] || 0) - (STAGE_RANK[a.card.stage] || 0) || (b.card.action_points || 0) - (a.card.action_points || 0) || (b.card.hp || 0) - (a.card.hp || 0))[0]?.index;
+    if (bestIndex === undefined) break;
+    applySummon('guest', bestIndex, deployCells('guest')[0]);
+    refreshCounts(); updateDerivedCombat(); renderGame(); await delay();
+  }
   for (const unit of [...ai.units]) {
     while (!appState.match.winner && unit.can_act && appState.match.host.units.length) {
       const target = [...appState.match.host.units].sort((a, b) => distance(unit, a) - distance(unit, b) || a.hp_current - b.hp_current)[0];
@@ -228,7 +234,7 @@ function renderMatchSummary({ me, enemy }) {
     createSummaryField('Lado activo', formatSideLabel(appState.match.turn?.active_side)),
     createSummaryField('Vida jugador', calculatePlayerLife(me)),
     createSummaryField('Vida IA', calculatePlayerLife(enemy)),
-    createSummaryField('Energía', `${me?.energy ?? '-'}/${me?.max_energy ?? '-'}`),
+    createSummaryField('Invocación', 'gratis, sin límite por turno'),
     createSummaryField('Mano / Mazo', `${me?.hand_count ?? '-'}/${me?.library_count ?? '-'}`),
     createSummaryField('Ganador', appState.match.winner ? formatSideLabel(appState.match.winner) : 'sin definir')
   );

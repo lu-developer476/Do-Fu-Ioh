@@ -146,6 +146,18 @@
         "cost": 4,
         "range": 2,
         "effect": "Efecto de apoyo o defensa basado en el plumaje otoñal del Pío."
+      },
+      {
+        "name": "Fusión Pío",
+        "cost": 3,
+        "range": 0,
+        "effect": "Permite fusionarse sólo con el Pío compatible indicado por la descripción del Pío fusionado."
+      },
+      {
+        "name": "Evolución",
+        "cost": 5,
+        "range": 0,
+        "effect": "Sólo puede utilizarla un Pío fusionado en el campo para evolucionar a su forma superior correspondiente."
       }
     ]
   },
@@ -176,6 +188,18 @@
         "cost": 4,
         "range": 2,
         "effect": "Efecto de apoyo o defensa basado en el plumaje combinado del Pío."
+      },
+      {
+        "name": "Fusión Pío",
+        "cost": 3,
+        "range": 0,
+        "effect": "Permite fusionarse sólo con el Pío compatible indicado por la descripción del Pío fusionado."
+      },
+      {
+        "name": "Evolución",
+        "cost": 5,
+        "range": 0,
+        "effect": "Sólo puede utilizarla un Pío fusionado en el campo para evolucionar a su forma superior correspondiente."
       }
     ]
   },
@@ -564,8 +588,16 @@
         "cost": 4,
         "range": 0,
         "effect": "Maniobra evasiva imbuida con la afinidad nishiki del Kitsu."
+      },
+      {
+        "name": "Evolución",
+        "cost": 6,
+        "range": 0,
+        "effect": "Sólo puede utilizarla un Kitsu fusionado en el campo para evolucionar a su forma estabilizada correspondiente."
       }
-    ]
+    ],
+    "hp_min": 1800,
+    "hp_max": 1800
   },
   {
     "name": "Kitsu penta",
@@ -598,8 +630,16 @@
         "cost": 4,
         "range": 0,
         "effect": "Maniobra evasiva imbuida con la afinidad penta del Kitsu."
+      },
+      {
+        "name": "Evolución",
+        "cost": 6,
+        "range": 0,
+        "effect": "Sólo puede utilizarla un Kitsu fusionado en el campo para evolucionar a su forma estabilizada correspondiente."
       }
-    ]
+    ],
+    "hp_min": 1800,
+    "hp_max": 1800
   },
   {
     "name": "Kitsu yin yang",
@@ -632,8 +672,16 @@
         "cost": 4,
         "range": 0,
         "effect": "Maniobra evasiva imbuida con la afinidad yin yang del Kitsu."
+      },
+      {
+        "name": "Evolución",
+        "cost": 6,
+        "range": 0,
+        "effect": "Sólo puede utilizarla un Kitsu fusionado en el campo para evolucionar a su forma estabilizada correspondiente."
       }
-    ]
+    ],
+    "hp_min": 1800,
+    "hp_max": 1800
   },
   {
     "name": "Kitsu silvestre evolucionado",

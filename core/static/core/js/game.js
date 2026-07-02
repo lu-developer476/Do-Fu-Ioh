@@ -7,7 +7,7 @@ const BOARD_WIDTH = 9;
 const BOARD_HEIGHT = 13;
 const DEPLOY_ROWS = { host: [BOARD_HEIGHT - 1], guest: [0] };
 const INITIAL_HAND_OPTIONS = new Set([1, 2, 5]);
-const appState = { cards: [], roomCode: null, match: null, selectedHandIndex: null, selectedUnitId: null, selectedCatalogCardIds: new Set(), actionFeedback: { message: 'Modo local activo: seleccioná una carta o una unidad para continuar.', tone: 'normal' }, clientLog: [] };
+const appState = { cards: [], roomCode: null, match: null, selectedHandIndex: null, selectedUnitId: null, selectedCatalogCardIds: new Set(), actionFeedback: { message: 'Modo local activo: seleccioná una carta o una unidad para continuar.', tone: 'normal' }, clientLog: [], aiPlayback: false, hasPromptedInitialHand: false };
 const $ = (sel) => document.querySelector(sel);
 const familyFilter = $('#family-filter');
 function setStatus(message, isError = false) { const status = $('#auth-status'); if (!status) return; status.textContent = message; status.classList.toggle('status-error', isError); }
@@ -39,8 +39,9 @@ function createPlayer(side, cards) { const hand = cards.map((card, index) => nor
 function persistMatch() { if (appState.match) localStorage.setItem(STORAGE_KEY, JSON.stringify({ roomCode: appState.roomCode, match: appState.match })); else localStorage.removeItem(STORAGE_KEY); }
 function loadStoredMatch() { try { const payload = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); if (payload?.match) { appState.roomCode = payload.roomCode || payload.match.room_code; appState.match = payload.match; return true; } } catch { localStorage.removeItem(STORAGE_KEY); } return false; }
 function refreshCounts() { ['host', 'guest'].forEach((side) => { const p = appState.match[side]; p.hand_count = p.hand.length; p.library_count = p.library.length; }); }
-function appendLog(message) { appState.match.log.push(message); appState.match.log = appState.match.log.slice(-12); }
+function appendLog(message) { appState.match.log.push(`${new Date().toLocaleTimeString('es-AR')} · ${message}`); appState.match.log = appState.match.log.slice(-18); }
 function randomId(prefix) { return globalThis.crypto?.randomUUID?.() || `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2)}`; }
+function delay(ms = 420) { return new Promise((resolve) => setTimeout(resolve, ms)); }
 function movementRange(card = {}) { return Math.min(5, 2 + (STAGE_RANK[card.stage] || 0)); }
 function spellRange(card = {}) { return Math.min(7, 2 + (STAGE_RANK[card.stage] || 0) + Math.floor((card.action_points || 0) / 2)); }
 function unitAt(x, y) { return [...(appState.match?.host.units || []), ...(appState.match?.guest.units || [])].find((unit) => unit.x === x && unit.y === y); }
@@ -60,9 +61,27 @@ function applyMove(side, unitId, position) { const unit = appState.match[side].u
 function applyAttack(side, attackerId, targetId) { const actor = appState.match[side]; const enemySide = side === 'host' ? 'guest' : 'host'; const enemy = appState.match[enemySide]; const attacker = actor.units.find((unit) => unit.id === attackerId); const target = enemy.units.find((unit) => unit.id === targetId); if (!attacker || !target || attacker.pa_current <= 0 || !attacker.can_act || distance(attacker, target) > attacker.attack_range) throw new Error('Hechizo inválido o fuera de rango.'); attacker.pa_current -= 1; attacker.can_act = attacker.pa_current > 0; const power = estimateDamage(attacker.card); const absorbed = Math.min(target.shell_current, Math.max(0, power - 1)); target.shell_current = Math.max(0, target.shell_current - absorbed); const damage = Math.max(1, power - absorbed); target.hp_current -= damage; appendLog(`${formatSideLabel(side)} lanzó un hechizo con ${attacker.card.name} e infligió ${damage} de daño.`); if (target.hp_current <= 0) { enemy.units = enemy.units.filter((unit) => unit.id !== target.id); appendLog(`${target.card.name} fue derrotado.`); } }
 function endSideTurn(side) { const nextSide = side === 'host' ? 'guest' : 'host'; appState.match.turn.active_side = nextSide; if (nextSide === 'host') appState.match.turn.number += 1; resetTurn(appState.match[nextSide]); appendLog(`Fin del turno de ${formatSideLabel(side)}.`); }
 function stepToward(unit, target) { const candidates = [{ x: unit.x + Math.sign(target.x - unit.x), y: unit.y }, { x: unit.x, y: unit.y + Math.sign(target.y - unit.y) }, { x: unit.x + Math.sign(target.x - unit.x), y: unit.y + Math.sign(target.y - unit.y) }].filter((cell) => cell.x >= 0 && cell.y >= 0 && cell.x < BOARD_WIDTH && cell.y < BOARD_HEIGHT && !unitAt(cell.x, cell.y)); return candidates.sort((a, b) => distance(a, target) - distance(b, target))[0]; }
-function runAiTurn() { if (appState.match.winner || appState.match.turn.active_side !== 'guest') return; const ai = appState.match.guest; const affordableIndex = ai.hand.findIndex((card) => summonCost(card) <= ai.energy); const slot = deployCells('guest')[0]; if (affordableIndex >= 0 && slot) applySummon('guest', affordableIndex, slot); [...ai.units].forEach((unit) => { while (!appState.match.winner && unit.can_act && appState.match.host.units.length) { const target = [...appState.match.host.units].sort((a, b) => distance(unit, a) - distance(unit, b) || a.hp_current - b.hp_current)[0]; if (distance(unit, target) <= unit.attack_range) { applyAttack('guest', unit.id, target.id); checkWinner('guest'); } else { const nextCell = stepToward(unit, target); if (!nextCell) break; applyMove('guest', unit.id, nextCell); } } }); if (!appState.match.winner) endSideTurn('guest'); }
-function applyLocalAction(payload) { if (!appState.match || appState.match.winner) throw new Error('La partida ya terminó o no existe.'); if (appState.match.turn.active_side !== 'host') throw new Error('El turno activo corresponde a la IA.'); if (payload.action === 'summon') applySummon('host', payload.hand_index, payload.position); else if (payload.action === 'move') applyMove('host', payload.unit_id, payload.position); else if (payload.action === 'attack') applyAttack('host', payload.attacker_id, payload.target_id); else if (payload.action === 'end_turn') endSideTurn('host'); checkWinner('host'); if (appState.match.turn.active_side === 'guest' && !appState.match.winner) runAiTurn(); refreshCounts(); updateDerivedCombat(); persistMatch(); }
-async function sendAction(actionPayload) { applyLocalAction(actionPayload); renderGame(); }
+async function runAiTurn() {
+  if (appState.match.winner || appState.match.turn.active_side !== 'guest') return;
+  appState.aiPlayback = true;
+  setActionFeedback('La IA está resolviendo sus movimientos...', 'normal');
+  const ai = appState.match.guest;
+  const affordableIndex = ai.hand.findIndex((card) => summonCost(card) <= ai.energy);
+  const slot = deployCells('guest')[0];
+  if (affordableIndex >= 0 && slot) { applySummon('guest', affordableIndex, slot); refreshCounts(); updateDerivedCombat(); renderGame(); await delay(); }
+  for (const unit of [...ai.units]) {
+    while (!appState.match.winner && unit.can_act && appState.match.host.units.length) {
+      const target = [...appState.match.host.units].sort((a, b) => distance(unit, a) - distance(unit, b) || a.hp_current - b.hp_current)[0];
+      if (distance(unit, target) <= unit.attack_range) { applyAttack('guest', unit.id, target.id); checkWinner('guest'); }
+      else { const nextCell = stepToward(unit, target); if (!nextCell) break; applyMove('guest', unit.id, nextCell); }
+      refreshCounts(); updateDerivedCombat(); renderGame(); await delay();
+    }
+  }
+  if (!appState.match.winner) endSideTurn('guest');
+  appState.aiPlayback = false;
+}
+async function applyLocalAction(payload) { if (!appState.match || appState.match.winner) throw new Error('La partida ya terminó o no existe.'); if (appState.match.turn.active_side !== 'host') throw new Error('El turno activo corresponde a la IA.'); if (payload.action === 'summon') applySummon('host', payload.hand_index, payload.position); else if (payload.action === 'move') applyMove('host', payload.unit_id, payload.position); else if (payload.action === 'attack') applyAttack('host', payload.attacker_id, payload.target_id); else if (payload.action === 'end_turn') endSideTurn('host'); checkWinner('host'); refreshCounts(); updateDerivedCombat(); renderGame(); if (appState.match.turn.active_side === 'guest' && !appState.match.winner) await runAiTurn(); refreshCounts(); updateDerivedCombat(); persistMatch(); }
+async function sendAction(actionPayload) { await applyLocalAction(actionPayload); renderGame(); }
 async function onSlotClick() { const firstDeployCell = deployCells('host')[0]; if (firstDeployCell) return onBoardCellClick(firstDeployCell.x, firstDeployCell.y); return setActionFeedback('No hay celdas libres para invocar.', 'error'); }
 async function onArenaCardClick(unit, side) { const { me, enemy, mySide } = resolveSides(); if (!me || !enemy) return; if (side === 'host') { appState.selectedUnitId = unit.id; appState.selectedHandIndex = null; setActionFeedback(`${unit.card.name} seleccionado. Elegí una unidad rival para atacar.`, 'normal'); renderGame(); return; } const attacker = me.units?.find((item) => item.id === appState.selectedUnitId); if (!attacker) return setActionFeedback('Seleccioná primero una unidad propia para atacar.', 'error'); if (!isMyTurn(mySide)) return setActionFeedback('El turno activo corresponde a la IA.', 'error'); try { await sendAction({ action: 'attack', attacker_id: attacker.id, target_id: unit.id }); setActionFeedback(`${attacker.card.name} lanzó un hechizo contra ${unit.card.name}.`, 'success'); } catch (err) { setActionFeedback(err.message, 'error'); } }
 
@@ -113,7 +132,8 @@ function renderBoard({ me, enemy, canPlay, selectedUnit, selectedHandCard }) {
   const context = $('#board-context'); if (context) context.textContent = selectedUnit ? `${selectedUnit.card.name}: movimiento ${selectedUnit.move_points}, hechizo ${selectedUnit.attack_range}.` : selectedHandCard ? `Invocando ${selectedHandCard.name}: elegí una celda verde de tu zona.` : `Vista previa activa: tablero ${BOARD_HEIGHT} × ${BOARD_WIDTH}; solo la primera línea de cada lado permite invocar.`;
 }
 function renderToken(unit, tone, selectedUnit) {
-  const token = document.createElement('span'); token.className = `token token-${tone} ${selectedUnit?.id === unit.id ? 'token-selected' : ''}`.trim();
+  const token = document.createElement('span'); token.className = `token token-${tone} ${selectedUnit?.id === unit.id ? 'token-selected' : ''}`.trim(); token.title = unit.card.name; token.setAttribute('aria-label', unit.card.name);
+  token.appendChild(createCardImageElement(cardImage(unit.card), unit.card.name, 'card-image-token'));
   const header = document.createElement('span'); header.className = 'token-topline';
   appendTextElement(header, 'strong', unit.card.name, 'token-name');
   appendTextElement(header, 'span', unitBattleLabel(unit), `token-owner token-owner-${tone}`);
@@ -138,7 +158,7 @@ function renderCatalog() {
     button.type = 'button';
     button.className = 'ghost catalog-select-button';
     button.setAttribute('aria-pressed', String(appState.selectedCatalogCardIds.has(String(card.id))));
-    button.textContent = appState.selectedCatalogCardIds.has(String(card.id)) ? 'Quitar de selección' : 'Seleccionar';
+    button.textContent = appState.selectedCatalogCardIds.has(String(card.id)) ? 'Quitar / cambiar' : 'Agregar a mano';
     button.addEventListener('click', () => toggleCatalogSelection(card));
     article.appendChild(button);
     catalogEl.appendChild(article);
@@ -265,21 +285,24 @@ function toggleCatalogSelection(card) {
   const id = String(card.id);
   if (appState.selectedCatalogCardIds.has(id)) {
     appState.selectedCatalogCardIds.delete(id);
-    setActionFeedback(`${card.name} quitada de la selección manual.`, 'normal');
+    if (appState.match?.host) { appState.match.host.hand = appState.match.host.hand.filter((item) => String(item.id) !== id); refreshCounts(); persistMatch(); }
+    setActionFeedback(`${card.name} quitada de la mano manual.`, 'normal');
   } else {
-    if (appState.selectedCatalogCardIds.size >= 5) return setActionFeedback('La selección manual admite un máximo de 5 cartas.', 'error');
+    if (appState.selectedCatalogCardIds.size >= requestedHandSize()) return setActionFeedback(`La mano manual admite ${requestedHandSize()} carta(s). Quitá una para cambiarla.`, 'error');
     appState.selectedCatalogCardIds.add(id);
-    setActionFeedback(`${card.name} agregada a la selección manual.`, 'success');
+    if (appState.match?.host) { appState.match.host.hand.push(normalizeCard(card, appState.match.host.hand.length)); refreshCounts(); persistMatch(); }
+    setActionFeedback(`${card.name} agregada a la mano manual.`, 'success');
   }
-  renderCatalog();
+  renderCatalog(); renderGame();
 }
 function bindAsyncButton(selector, handler) {
   const button = $(selector); if (!button) return;
   const idleLabel = button.textContent; const loadingLabel = button.dataset.loadingLabel || 'Procesando...';
   button.addEventListener('click', async () => { if (button.disabled) return; button.disabled = true; button.setAttribute('aria-busy', 'true'); button.textContent = loadingLabel; try { await handler(); } catch (err) { setStatus(err.message || 'Error inesperado', true); } finally { button.disabled = false; button.setAttribute('aria-busy', 'false'); button.textContent = idleLabel; } });
 }
+function openInitialHandDialog() { const dialog = $('#hand-choice-dialog'); if (dialog?.showModal) dialog.showModal(); }
 function boot() {
-  renderGame(); bindAsyncButton('#create-ai-match', () => createAIMatch()); bindAsyncButton('#shuffle-monsters', shuffleMonsters); bindAsyncButton('#create-selected-match', createSelectedMatch); bindAsyncButton('#refresh-state', refreshMatch); bindAsyncButton('#end-turn-btn', endTurn); familyFilter?.addEventListener('change', renderCatalog);
-  loadCards().then(loadActiveMatch).catch((err) => { setStatus(err.message || 'No se pudo iniciar el juego.', true); setActionFeedback('No se pudo cargar el duelo. Iniciá un nuevo enfrentamiento o usá la selección manual.', 'error'); renderGame(); }).finally(() => { if (!appState.match) setStatus('Sin duelo local activo. Iniciá uno nuevo o prepará una selección manual.'); });
+  renderGame(); bindAsyncButton('#create-ai-match', () => createAIMatch()); bindAsyncButton('#shuffle-monsters', shuffleMonsters); bindAsyncButton('#create-selected-match', createSelectedMatch); bindAsyncButton('#refresh-state', refreshMatch); bindAsyncButton('#end-turn-btn', endTurn); familyFilter?.addEventListener('change', renderCatalog); $('#modal-random-hand')?.addEventListener('click', () => createAIMatch()); $('#modal-manual-hand')?.addEventListener('click', () => { setActionFeedback('Elegí tus cartas desde CATÁLOGO DE CARTAS y presioná Usar selección.', 'normal'); document.querySelector('.catalog-details')?.setAttribute('open', ''); });
+  loadCards().then(loadActiveMatch).catch((err) => { setStatus(err.message || 'No se pudo iniciar el juego.', true); setActionFeedback('No se pudo cargar el duelo. Iniciá un nuevo enfrentamiento o usá la selección manual.', 'error'); renderGame(); }).finally(() => { if (!appState.match) { setStatus('Sin duelo local activo. Iniciá uno nuevo o prepará una selección manual.'); openInitialHandDialog(); } });
 }
 document.addEventListener('DOMContentLoaded', boot, { once: true });

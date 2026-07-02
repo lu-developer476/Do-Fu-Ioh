@@ -1101,3 +1101,53 @@ body, .panel, .card, .board-header, .board-footer, .log-item, .small, input, sel
   .card { padding: 8px; }
   .card-image-catalog { height: 88px; }
 }
+
+
+/* Single options dropdown and summon-zone visual language. */
+.all-options-panel .game-info-block {
+  display: grid;
+  gap: 6px;
+  padding: .8rem;
+  border-radius: 14px;
+  border: 1px solid rgba(212, 176, 122, .42);
+  background: rgba(17, 29, 20, .36);
+}
+.all-options-panel .game-info-block h2,
+.all-options-panel .game-info-block h3,
+.all-options-panel .game-info-block p { margin: 0; }
+.all-options-panel .game-info-block h2,
+.all-options-panel .game-info-block h3 {
+  color: var(--accent-soft);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.inline-legend { justify-content: center; }
+.turn-panel button { width: 100%; }
+.cell.deploy-ally {
+  background-image: radial-gradient(circle at 50% 50%, rgba(119, 242, 162, .42), rgba(119, 242, 162, .13) 44%, transparent 72%), linear-gradient(135deg, rgba(75, 150, 255, .2), transparent 50%);
+  box-shadow: inset 0 0 0 2px rgba(119, 242, 162, .38), 0 4px 8px var(--cell-shadow);
+}
+.cell.deploy-enemy {
+  background-image: radial-gradient(circle at 50% 50%, rgba(255, 143, 107, .42), rgba(255, 143, 107, .13) 44%, transparent 72%), linear-gradient(315deg, rgba(255, 134, 67, .18), transparent 50%);
+  box-shadow: inset 0 0 0 2px rgba(255, 143, 107, .34), 0 4px 8px var(--cell-shadow);
+}
+.token {
+  padding: 2px;
+  grid-template-rows: 1fr;
+}
+.token .card-image-frame {
+  width: 100%;
+  height: 100%;
+}
+.spell-summary {
+  display: block;
+  grid-column: 1 / -1;
+  font-size: .68rem;
+  line-height: 1.25;
+  color: #f8edd8;
+  text-align: left;
+}
+.catalog .spell-summary {
+  max-height: 4.6em;
+  overflow: auto;
+}

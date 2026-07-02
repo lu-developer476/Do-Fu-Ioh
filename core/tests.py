@@ -3,7 +3,7 @@ from tempfile import TemporaryDirectory
 
 from django.test import SimpleTestCase, TestCase
 
-from .card_catalog import CardSeedDataError, load_cards_seed_data
+from .card_catalog import CardSeedDataError, load_cards_seed_data, serialized_cards_seed_data
 
 
 class CardSeedSourceValidationTests(SimpleTestCase):
@@ -14,6 +14,66 @@ class CardSeedSourceValidationTests(SimpleTestCase):
 
             with self.assertRaises(CardSeedDataError):
                 load_cards_seed_data(path=path)
+
+
+class KitsuCatalogDataTests(SimpleTestCase):
+    def test_kitsu_fusions_match_reference_stats(self):
+        cards = {card['name']: card for card in load_cards_seed_data()}
+
+        expected = {
+            'Kitsu nishiki': (135, 1800, 450, 8, 5),
+            'Kitsu penta': (135, 1800, 450, 8, 5),
+            'Kitsu yin yang': (135, 1800, 450, 8, 5),
+        }
+
+        for name, (level, hp, shell, action_points, movement_points) in expected.items():
+            with self.subTest(card=name):
+                card = cards[name]
+                self.assertEqual(card['stage'], 'fusion')
+                self.assertEqual(card['level_min'], level)
+                self.assertEqual(card['level_max'], level)
+                self.assertEqual(card['hp'], hp)
+                self.assertEqual(card['shell'], shell)
+                self.assertEqual(card['action_points'], action_points)
+                self.assertEqual(card['movement_points'], movement_points)
+
+    def test_kitsu_evolutions_match_reference_stats(self):
+        cards = {card['name']: card for card in load_cards_seed_data()}
+
+        expected = {
+            'Kitsu silvestre evolucionado': (178, 2250, 550, 10, 7),
+            'Kitsu kumiawase': (178, 2250, 550, 10, 7),
+            'Kitsu nishiki evolucionado': (178, 2250, 550, 10, 7),
+            'Kitsu penta evolucionado': (178, 2250, 550, 10, 7),
+            'Kitsu yin yang evolucionado': (178, 2250, 550, 10, 7),
+        }
+
+        for name, (level, hp, shell, action_points, movement_points) in expected.items():
+            with self.subTest(card=name):
+                card = cards[name]
+                self.assertEqual(card['stage'], 'evolution')
+                self.assertEqual(card['level_min'], level)
+                self.assertEqual(card['level_max'], level)
+                self.assertEqual(card['hp'], hp)
+                self.assertEqual(card['shell'], shell)
+                self.assertEqual(card['action_points'], action_points)
+                self.assertEqual(card['movement_points'], movement_points)
+
+    def test_kitsu_reference_spells_are_empty_until_defined(self):
+        cards = {card['name']: card for card in serialized_cards_seed_data()}
+
+        for name in (
+            'Kitsu nishiki',
+            'Kitsu penta',
+            'Kitsu yin yang',
+            'Kitsu silvestre evolucionado',
+            'Kitsu kumiawase',
+            'Kitsu nishiki evolucionado',
+            'Kitsu penta evolucionado',
+            'Kitsu yin yang evolucionado',
+        ):
+            with self.subTest(card=name):
+                self.assertEqual(cards[name]['spells'], [])
 
 
 class BackendlessModeTests(TestCase):

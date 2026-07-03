@@ -17,7 +17,7 @@
     </a>
     <nav class="navbar-links" aria-label="Secciones de juego">
       <details class="nav-popover">
-        <summary>Nueva Partida</summary>
+        <summary id="open-new-match-panel">Nueva Partida</summary>
         <div id="controls" class="nav-popover-panel" aria-label="Opciones de nueva partida">
           <div class="duel-control-card">
             <span class="control-eyebrow">Cartas iniciales</span>
@@ -132,8 +132,8 @@
         </fieldset>
 
         <div class="modal-actions">
-          <button id="modal-random-hand" value="random">Mano al azar</button>
-          <button id="modal-manual-hand" class="ghost" value="manual">Elegir manualmente</button>
+          <button id="modal-random-hand" type="button" value="random">Mano al azar</button>
+          <button id="modal-manual-hand" class="ghost" type="button" value="manual">Elegir manualmente</button>
         </div>
       </form>
     </dialog>

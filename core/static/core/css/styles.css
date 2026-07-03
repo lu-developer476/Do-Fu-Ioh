@@ -1791,3 +1791,54 @@ body {
   .board-action { width: 100%; min-height: 42px; padding-inline: .45rem; }
   .board-action-ring .board-frame { width: 100%; overflow-x: auto; }
 }
+
+/* Nueva Partida now opens as a real modal; keep the legacy control state available without rendering a dropdown. */
+.nav-popover:has(#open-new-match-panel) .nav-popover-panel {
+  display: none;
+}
+
+#open-new-match-panel {
+  list-style: none;
+}
+
+#open-new-match-panel::-webkit-details-marker {
+  display: none;
+}
+
+.hand-choice-dialog[open] {
+  animation: modal-pop-in .18s ease-out both;
+}
+
+@keyframes modal-pop-in {
+  from { opacity: 0; transform: translateY(18px) scale(.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Stronger animated battle background: drifting aurora, rune grid and soft magic particles. */
+.site-navbar::before,
+.site-footer::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle, rgba(255, 224, 130, .42) 0 2px, transparent 3px),
+    radial-gradient(circle, rgba(119, 242, 162, .34) 0 1px, transparent 2px),
+    radial-gradient(circle, rgba(99, 198, 255, .26) 0 1px, transparent 2px);
+  background-size: 210px 180px, 160px 230px, 260px 210px;
+  background-position: 0 0, 80px 120px, 140px 40px;
+  opacity: .55;
+  animation: magic-particles 32s linear infinite;
+}
+
+@keyframes magic-particles {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-120px, -180px, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hand-choice-dialog[open],
+  .site-navbar::before,
+  .site-footer::before { animation: none; }
+}

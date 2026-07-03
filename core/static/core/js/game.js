@@ -8,7 +8,7 @@ const BOARD_WIDTH = 9;
 const BOARD_HEIGHT = 13;
 const DEPLOY_ROWS = { host: [BOARD_HEIGHT - 1], guest: [0] };
 const INITIAL_HAND_OPTIONS = new Set([1, 2, 5]);
-const appState = { cards: [], roomCode: null, match: null, selectedHandIndex: null, selectedUnitId: null, selectedCatalogCardIds: new Set(), actionFeedback: { message: 'Seleccioná una carta o una unidad para continuar.', tone: 'normal' }, clientLog: [], combatEffects: [], aiPlayback: false, hasPromptedInitialHand: false };
+const appState = { cards: [], roomCode: null, match: null, selectedHandIndex: null, selectedUnitId: null, selectedCatalogCardIds: new Set(), selectedFamily: '', actionFeedback: { message: 'Seleccioná una carta o una unidad para continuar.', tone: 'normal' }, clientLog: [], combatEffects: [], aiPlayback: false, hasPromptedInitialHand: false };
 const $ = (sel) => document.querySelector(sel);
 const familyFilter = $('#family-filter');
 function setStatus(message, isError = false) { const status = $('#auth-status'); if (!status) return; status.textContent = message; status.classList.toggle('status-error', isError); }
@@ -172,7 +172,7 @@ function renderToken(unit, tone, selectedUnit) {
 function renderCatalog() {
   const catalogEl = $('#catalog'); if (!catalogEl) return;
   clearElement(catalogEl);
-  const family = familyFilter?.value || '';
+  const family = appState.selectedFamily || '';
   const cards = appState.cards.filter((card) => !family || card.family === family);
   if (!cards.length) return renderEmptyState(catalogEl, EMPTY_MESSAGES.catalog);
   cards.forEach((card) => {
@@ -287,14 +287,28 @@ function renderGame() {
   renderMatchLog(appState.match.log || []);
 }
 
+function createFamilyFilterButton(label, value) {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'filter-chip';
+  button.textContent = label;
+  button.setAttribute('aria-pressed', String((appState.selectedFamily || '') === value));
+  button.addEventListener('click', () => {
+    appState.selectedFamily = value;
+    populateFamilyFilter(appState.cards);
+    renderCatalog();
+  });
+  return button;
+}
 function populateFamilyFilter(cards = []) {
-  if (!familyFilter) return; clearElement(familyFilter);
-  const defaultOption = document.createElement('option'); defaultOption.value = ''; defaultOption.textContent = 'Todas las familias'; familyFilter.appendChild(defaultOption);
-  [...new Set(cards.map((card) => card.family).filter(Boolean))].forEach((family) => { const option = document.createElement('option'); option.value = family; option.textContent = family; familyFilter.appendChild(option); });
+  if (!familyFilter) return;
+  clearElement(familyFilter);
+  familyFilter.appendChild(createFamilyFilterButton('Todas las familias', ''));
+  [...new Set(cards.map((card) => card.family).filter(Boolean))].forEach((family) => { familyFilter.appendChild(createFamilyFilterButton(family, family)); });
 }
 function loadCards() { appState.cards = localSeedCards(); populateFamilyFilter(appState.cards); renderCatalog(); return Promise.resolve(); }
 function loadActiveMatch() { loadStoredMatch(); updateDerivedCombat(); renderGame(); return Promise.resolve(); }
-function requestedHandSize() { return Number($('#initial-hand-size')?.value || 5); }
+function requestedHandSize() { return Number(document.querySelector('input[name="initial-hand-size"]:checked')?.value || 5); }
 async function createAIMatch(selectedCardIds = []) { startLocalMatch(selectedCardIds, requestedHandSize()); renderGame(); setStatus(selectedCardIds.length ? 'Duelo local creado con la selección manual como mano disponible.' : 'Duelo local creado con mano aleatoria.'); }
 async function shuffleMonsters() { await createAIMatch(); setActionFeedback(`Cartas barajadas. Mano Disponible tiene ${appState.match.initial_hand_size} carta(s) aleatoria(s).`, 'success'); }
 async function createSelectedMatch() { const ids = [...appState.selectedCatalogCardIds]; if (!ids.length) return setActionFeedback('Seleccioná al menos una carta del catálogo.', 'error'); await createAIMatch(ids); setActionFeedback(`Selección aplicada. Mano Disponible tiene ${appState.match.host.hand.length} carta(s) seleccionada(s).`, 'success'); }
@@ -320,7 +334,7 @@ function bindAsyncButton(selector, handler) {
 }
 function openInitialHandDialog() { const dialog = $('#hand-choice-dialog'); if (dialog?.showModal) dialog.showModal(); }
 function boot() {
-  renderGame(); bindAsyncButton('#create-ai-match', () => createAIMatch()); bindAsyncButton('#shuffle-monsters', shuffleMonsters); bindAsyncButton('#create-selected-match', createSelectedMatch); bindAsyncButton('#end-turn-btn', endTurn); familyFilter?.addEventListener('change', renderCatalog); $('#modal-random-hand')?.addEventListener('click', () => createAIMatch()); $('#modal-manual-hand')?.addEventListener('click', () => { setActionFeedback('Elegí tus cartas desde Bestiario de cartas y presioná Usar selección.', 'normal'); document.querySelector('.catalog-details')?.setAttribute('open', ''); });
+  renderGame(); bindAsyncButton('#create-ai-match', () => createAIMatch()); bindAsyncButton('#shuffle-monsters', shuffleMonsters); bindAsyncButton('#create-selected-match', createSelectedMatch); bindAsyncButton('#end-turn-btn', endTurn); $('#modal-random-hand')?.addEventListener('click', () => createAIMatch()); $('#modal-manual-hand')?.addEventListener('click', () => { setActionFeedback('Elegí tus cartas desde Bestiario de cartas y presioná Usar selección.', 'normal'); });
   loadCards().then(loadActiveMatch).catch((err) => { setStatus(err.message || 'No se pudo iniciar el juego.', true); setActionFeedback('No se pudo cargar el duelo. Iniciá un nuevo enfrentamiento o usá la selección manual.', 'error'); renderGame(); }).finally(() => { if (!appState.match) { setStatus('Sin duelo local activo. Iniciá uno nuevo o prepará una selección manual.'); openInitialHandDialog(); } });
 }
 document.addEventListener('DOMContentLoaded', boot, { once: true });

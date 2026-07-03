@@ -588,6 +588,18 @@
         "cost": 4,
         "range": 0,
         "effect": "Maniobra evasiva imbuida con la afinidad nishiki del Kitsu."
+      },
+      {
+        "name": "Fusión Kitsu",
+        "cost": 5,
+        "range": 0,
+        "effect": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado."
+      },
+      {
+        "name": "Evolución",
+        "cost": 6,
+        "range": 0,
+        "effect": "Sólo puede utilizarla un Kitsu fusionado en el campo para evolucionar a su forma estabilizada correspondiente."
       }
     ],
     "hp_min": 1800,
@@ -624,6 +636,18 @@
         "cost": 4,
         "range": 0,
         "effect": "Maniobra evasiva imbuida con la afinidad penta del Kitsu."
+      },
+      {
+        "name": "Fusión Kitsu",
+        "cost": 5,
+        "range": 0,
+        "effect": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado."
+      },
+      {
+        "name": "Evolución",
+        "cost": 6,
+        "range": 0,
+        "effect": "Sólo puede utilizarla un Kitsu fusionado en el campo para evolucionar a su forma estabilizada correspondiente."
       }
     ],
     "hp_min": 1800,
@@ -660,6 +684,18 @@
         "cost": 4,
         "range": 0,
         "effect": "Maniobra evasiva imbuida con la afinidad yin yang del Kitsu."
+      },
+      {
+        "name": "Fusión Kitsu",
+        "cost": 5,
+        "range": 0,
+        "effect": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado."
+      },
+      {
+        "name": "Evolución",
+        "cost": 6,
+        "range": 0,
+        "effect": "Sólo puede utilizarla un Kitsu fusionado en el campo para evolucionar a su forma estabilizada correspondiente."
       }
     ],
     "hp_min": 1800,

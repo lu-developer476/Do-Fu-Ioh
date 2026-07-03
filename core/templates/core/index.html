@@ -17,68 +17,35 @@
     </a>
     <nav class="navbar-links" aria-label="Secciones de juego">
       <a href="#arena">Arena</a>
-      <a href="#controls">Nuevo duelo</a>
+      <a href="#controls">Combate</a>
       <a href="#catalog-panel">Bestiario</a>
       <a href="#hand-panel">Mano</a>
       <a href="#duel-log-panel">Registro</a>
     </nav>
   </header>
+
   <main class="arcade-shell card-game-shell">
-    <aside class="side-column left-column">
-      <section class="panel intro-panel">
-        <p class="kicker">Protocolo de duelo</p>
-        <h1>DO-FU-IÓH</h1>
-        <p>Gestioná un duelo local con decisiones claras sobre invocación, defensa y ataque.</p>
-      </section>
+    <section class="hero-panel panel" aria-labelledby="game-title">
+      <p class="kicker">Protocolo de duelo</p>
+      <h1 id="game-title">DO-FU-IÓH</h1>
+      <p>Gestioná un duelo local con decisiones claras sobre invocación, movimiento y hechizos.</p>
+      <div class="hero-actions" aria-label="Accesos rápidos">
+        <a href="#controls">Preparar duelo</a>
+        <a href="#catalog-panel">Elegir cartas</a>
+        <a href="#arena">Ir al tablero</a>
+      </div>
+    </section>
 
-      <p id="auth-status" class="visually-hidden" aria-live="polite">Modo sin Backend activo. La partida se guarda localmente en este navegador.</p>
-
-      <section id="controls" class="panel compact-panel all-options-panel" aria-label="Opciones e información de juego">
-          <div class="game-info-block">
-            <h2>Arena de combate</h2>
-            <p>Invocá, mové tus monstruos y lanzá hechizos sin mensajes repetidos.</p>
-            <p>Elegí 1, 2 o 5 cartas iniciales</p>
-            <p>Movimientos en tablero</p>
-            <p>Hechizos por rango</p>
-            <p>Turno terminado. La IA local resolvió su respuesta.</p>
-            <h3>Tablero táctico</h3>
-            <p>Zona IA arriba; zona Jugador abajo.</p>
-            <div class="board-legend inline-legend">
-              <span class="legend-chip summon">Invocación</span><span class="legend-chip move">Movimiento</span><span class="legend-chip attack">Hechizo</span><span class="legend-chip selected">Selección</span>
-            </div>
-          </div>
-
-          <div class="stack control-stack">
-            <label class="control-label" for="initial-hand-size">Cartas iniciales</label>
-            <select id="initial-hand-size"><option value="1">1 carta</option><option value="2">2 cartas</option><option value="5" selected>5 cartas</option></select>
-            <button id="create-ai-match" data-loading-label="Creando duelo...">Nuevo duelo</button>
-            <button id="shuffle-monsters" class="ghost" data-loading-label="Barajando cartas...">Barajar cartas</button>
-            <button id="create-selected-match" class="ghost" data-loading-label="Preparando selección...">Usar selección</button>
-          </div>
-
-          <div id="catalog-panel" class="panel-heading"><h2>Bestiario de cartas</h2><span class="panel-caption">Elegí cartas para la mano</span></div>
-          <div class="catalog-toolbar">
-            <select id="family-filter"><option value="">Todas las familias</option></select>
-          </div>
-          <div id="catalog" class="catalog"></div>
-
-          <div id="hand-panel" class="panel-heading"><h2>Mano disponible</h2><span class="panel-caption">Seleccioná e invocá</span></div>
-          <div id="hand" class="card-row"></div>
-      </section>
-
-      <section class="panel compact-panel turn-panel" aria-label="Botones de turno">
-        <button id="end-turn-btn" class="ghost" data-loading-label="Procesando turno...">Finalizar turno</button>
-      </section>
-    </aside>
+    <p id="auth-status" class="visually-hidden" aria-live="polite">Modo sin Backend activo. La partida se guarda localmente en este navegador.</p>
 
     <section id="arena" class="center-column panel duel-panel">
       <header class="duel-header">
         <div>
           <h2>Arena de combate</h2>
-          <p>Invocá, mové tus monstruos y lanzá hechizos sin mensajes repetidos.</p>
+          <p>Invocá, mové tus monstruos y lanzá hechizos sin listados laterales desplegables.</p>
         </div>
         <div class="duel-rules">
-          <span>Elegí 1, 2 o 5 cartas iniciales</span><span>Movimientos en tablero</span><span>Hechizos por rango</span>
+          <span>1, 2 o 5 cartas iniciales</span><span>Movimiento táctico</span><span>Hechizos por rango</span>
         </div>
       </header>
       <div id="action-feedback" class="action-feedback feedback-normal" aria-live="polite" aria-atomic="true">Seleccioná una carta o una unidad para continuar.</div>
@@ -95,28 +62,60 @@
         </div>
         <div class="board-frame"><div class="board-scroll"><div id="tactical-board" class="board tactical-board"></div></div></div>
       </section>
-
     </section>
 
-    <aside class="side-column right-column">
+    <section class="play-dashboard" aria-label="Paneles de partida">
+      <section id="controls" class="panel compact-panel all-options-panel" aria-label="Opciones de combate">
+        <div class="panel-heading"><h2>Combate</h2><span class="panel-caption">Sin desplegables</span></div>
+        <div class="game-info-block">
+          <p>Elegí una mano inicial, invocá en tu zona, mové unidades y lanzá hechizos por rango.</p>
+          <div class="board-legend inline-legend">
+            <span class="legend-chip summon">Invocación</span><span class="legend-chip move">Movimiento</span><span class="legend-chip attack">Hechizo</span><span class="legend-chip selected">Selección</span>
+          </div>
+        </div>
+        <div class="stack control-stack">
+          <fieldset class="segmented-control" aria-label="Cartas iniciales">
+            <legend class="control-label">Cartas iniciales</legend>
+            <label><input type="radio" name="initial-hand-size" value="1" /> <span>1 carta</span></label>
+            <label><input type="radio" name="initial-hand-size" value="2" /> <span>2 cartas</span></label>
+            <label><input type="radio" name="initial-hand-size" value="5" checked /> <span>5 cartas</span></label>
+          </fieldset>
+          <button id="create-ai-match" data-loading-label="Creando duelo...">Nuevo duelo</button>
+          <button id="shuffle-monsters" class="ghost" data-loading-label="Barajando cartas...">Barajar cartas</button>
+          <button id="create-selected-match" class="ghost" data-loading-label="Preparando selección...">Usar selección</button>
+          <button id="end-turn-btn" class="ghost" data-loading-label="Procesando turno...">Finalizar turno</button>
+        </div>
+      </section>
+
+      <section class="panel compact-panel catalog-panel" aria-labelledby="catalog-heading">
+        <div id="catalog-panel" class="panel-heading"><h2 id="catalog-heading">Bestiario de cartas</h2><span class="panel-caption">Elegí cartas para la mano</span></div>
+        <div id="family-filter" class="catalog-toolbar filter-chip-row" role="group" aria-label="Filtrar por familia"></div>
+        <div id="catalog" class="catalog"></div>
+      </section>
+
+      <section class="panel compact-panel hand-panel" aria-labelledby="hand-heading">
+        <div id="hand-panel" class="panel-heading"><h2 id="hand-heading">Mano disponible</h2><span class="panel-caption">Seleccioná e invocá</span></div>
+        <div id="hand" class="card-row"></div>
+      </section>
+
       <section id="duel-log-panel" class="panel compact-panel duel-status-panel" aria-label="Estado y registro del duelo">
         <div class="panel-heading"><h2>Duelo y registro</h2><span class="panel-caption">Actividad reciente</span></div>
         <div id="match-summary" class="stack small"></div>
         <div id="match-log" class="match-log" aria-live="polite"><div class="small">La actividad del duelo se mostrará aquí.</div></div>
       </section>
-    </aside>
+    </section>
 
-  <dialog id="hand-choice-dialog" class="hand-choice-dialog">
-    <form method="dialog" class="hand-choice-modal">
-      <p class="kicker">Inicio de partida</p>
-      <h2>Elegí tu mano inicial</h2>
-      <p>Podés recibir una mano al azar o prepararla manualmente desde el Bestiario de cartas antes de iniciar el duelo.</p>
-      <div class="modal-actions">
-        <button id="modal-random-hand" value="random">Mano al azar</button>
-        <button id="modal-manual-hand" class="ghost" value="manual">Elegir manualmente</button>
-      </div>
-    </form>
-  </dialog>
+    <dialog id="hand-choice-dialog" class="hand-choice-dialog">
+      <form method="dialog" class="hand-choice-modal">
+        <p class="kicker">Inicio de partida</p>
+        <h2>Elegí tu mano inicial</h2>
+        <p>Podés recibir una mano al azar o prepararla manualmente desde el Bestiario de cartas antes de iniciar el duelo.</p>
+        <div class="modal-actions">
+          <button id="modal-random-hand" value="random">Mano al azar</button>
+          <button id="modal-manual-hand" class="ghost" value="manual">Elegir manualmente</button>
+        </div>
+      </form>
+    </dialog>
   </main>
   {{ cards_seed_json|json_script:"cards-seed" }}
   <script src="{% static 'core/js/game.js' %}"></script>

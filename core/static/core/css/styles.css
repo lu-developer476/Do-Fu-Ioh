@@ -658,26 +658,6 @@ input, select {
 
 .bottom-panel { grid-column: 1 / -1; }
 
-.catalog-details summary {
-  cursor: pointer;
-  list-style: none;
-  font-weight: 700;
-  letter-spacing: .08em;
-  margin-bottom: 10px;
-}
-
-.catalog-details summary::-webkit-details-marker {
-  display: none;
-}
-
-.catalog-details summary::after {
-  content: "▾";
-  margin-left: 8px;
-}
-
-.catalog-details:not([open]) summary::after {
-  content: "▸";
-}
 hr { border: 0; border-top: 1px solid #b89364; }
 
 @media (max-width: 1300px) {
@@ -1054,7 +1034,7 @@ body, .panel, .card, .board-header, .board-footer, .log-item, .small, input, sel
   100% { opacity: 0; transform: translateY(-34px) scale(.96); }
 }
 
-/* Mobile keeps the information columns beside the board without summary dropdowns. */
+/* Mobile keeps the information panels beside the board without dropdown lists. */
 @media (max-width: 640px) {
   body { overflow-x: auto; }
   .arcade-shell.card-game-shell {
@@ -1076,7 +1056,7 @@ body, .panel, .card, .board-header, .board-footer, .log-item, .small, input, sel
 }
 
 
-/* Single options dropdown and summon-zone visual language. */
+/* Options panel and summon-zone visual language. */
 .all-options-panel .game-info-block {
   display: grid;
   gap: 6px;
@@ -1221,4 +1201,180 @@ body { padding-top: 82px; }
   .site-navbar { align-items: flex-start; flex-direction: column; gap: 8px; }
   .navbar-links { justify-content: flex-start; width: 100%; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 2px; }
   .navbar-links a { min-width: max-content; }
+}
+
+/* Final play-first layout: top navigation plus visible panels, no lateral dropdown columns. */
+body { padding-top: 78px; }
+.site-navbar {
+  min-height: 72px;
+  padding-inline: clamp(18px, 4vw, 64px);
+  border-bottom-color: #9ac41f;
+}
+.navbar-links a {
+  border-radius: 0;
+  min-height: 52px;
+  padding-inline: 1rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.navbar-links a:hover,
+.navbar-links a:focus-visible {
+  border-radius: 12px;
+}
+.card-game-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+  width: min(100%, 1500px);
+  min-width: 0;
+  padding: 20px;
+}
+.hero-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+}
+.hero-panel h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 4.25rem);
+  letter-spacing: .08em;
+  line-height: .95;
+}
+.hero-panel p { margin: 0; }
+.hero-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.hero-actions a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  padding: .65rem .9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(214, 184, 142, .82);
+  color: #17301f;
+  background: linear-gradient(120deg, #d9c19c, #8fbd23);
+  font-weight: 900;
+  text-decoration: none;
+}
+.duel-panel {
+  grid-column: auto;
+  min-width: 0;
+}
+.play-dashboard {
+  display: grid;
+  grid-template-columns: minmax(240px, .85fr) minmax(360px, 1.35fr) minmax(280px, 1fr) minmax(280px, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+.play-dashboard > .panel {
+  min-width: 0;
+  height: 100%;
+}
+.catalog-panel .catalog,
+.hand-panel .card-row {
+  max-height: 520px;
+}
+.hand-panel #hand.card-row {
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+.duel-status-panel .match-log {
+  max-height: 420px;
+}
+.all-options-panel .game-info-block {
+  text-align: left;
+}
+.all-options-panel .game-info-block p {
+  margin: 0;
+}
+
+@media (min-width: 1201px) {
+  .side-column { position: static; max-height: none; overflow: visible; }
+}
+
+@media (max-width: 1200px) {
+  .card-game-shell {
+    grid-template-columns: minmax(0, 1fr);
+    min-width: 0;
+    padding: 14px;
+  }
+  .play-dashboard {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  body { padding-top: 124px; overflow-x: hidden; }
+  .site-navbar { align-items: flex-start; }
+  .hero-panel { grid-template-columns: 1fr; }
+  .hero-actions { justify-content: flex-start; }
+  .play-dashboard { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .arcade-shell.card-game-shell {
+    grid-template-columns: minmax(0, 1fr);
+    min-width: 0;
+  }
+  .board-header p,
+  .duel-header p,
+  .board-legend,
+  .duel-rules {
+    display: flex;
+  }
+}
+
+/* Button-based controls replace dropdown lists. */
+.segmented-control {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.segmented-control .control-label {
+  grid-column: 1 / -1;
+}
+.segmented-control input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.segmented-control label,
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: .5rem .65rem;
+  border-radius: 999px;
+  border: 1px solid rgba(214, 184, 142, .72);
+  color: var(--text);
+  background: rgba(24, 43, 29, .55);
+  font-weight: 900;
+  line-height: 1.1;
+  cursor: pointer;
+}
+.segmented-control label:has(input:checked),
+.filter-chip[aria-pressed="true"] {
+  color: #17301f;
+  background: linear-gradient(120deg, #d9c19c, #9ac41f);
+  border-color: rgba(255,255,255,.38);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.28), 0 8px 16px rgba(0,0,0,.18);
+}
+.filter-chip-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-chip {
+  width: auto;
+  font-size: .85rem;
+}
+@media (max-width: 480px) {
+  .segmented-control { grid-template-columns: 1fr; }
 }

@@ -1340,7 +1340,7 @@
     "shell": 350,
     "action_points": 9,
     "movement_points": 4,
-    "description": "Variante sombría que habita lugares húmedos, poco iluminados u oscuros. Su pigmentación le permite absorber la luz y se vuelve más difícil anticipar sus movimientos.",
+    "description": "Variante sombría que habita lugares húmedos, poco iluminadas u oscuras. Su pigmentación le permite absorber la luz y se vuelve más difícil anticipar sus movimientos.",
     "image": "public/images/gelatinas/base/gelatina-obscura.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "hp_min": 690,
@@ -1584,7 +1584,7 @@
     "shell": 500,
     "action_points": 10,
     "movement_points": 5,
-    "description": "Evolución de Gelatina nociva. La corrupción de su masa alcanza un punto en que su sola presencia es capaz de contaminar el terreno alrededor donde sea que se encuentre, pudriéndose para nunca más sanar.",
+    "description": "Evolución de la Gelatina nociva. La corrupción de su masa alcanza un punto en que su sola presencia es capaz de contaminar el terreno alrededor donde sea que se encuentre, pudriéndose para nunca más sanar.",
     "image": "public/images/gelatinas/evolutions/gelatina-nociva-real.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -1627,7 +1627,7 @@
     "shell": 500,
     "action_points": 10,
     "movement_points": 5,
-    "description": "Evolución de Gelatina obscura. Domina aquellos ambientes sombríos, donde se encuentra tanto para jugadores como otros monstruos. Usa esa ventaja para ocultar sus ataques y mantener el sigilo.",
+    "description": "Evolución de Gelatina obscura. Domina aquellos ambientes sombríos, inaccesibles tanto para jugadores como otros monstruos. Usa esa ventaja para ocultar sus ataques y mantener el sigilo.",
     "image": "public/images/gelatinas/evolutions/gelatina-obscura-real.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [

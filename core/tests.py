@@ -201,10 +201,10 @@ class GelatinaCatalogDataTests(SimpleTestCase):
         expected_colors = {
             'Gelatina de durazno': 'durazno',
             'Gelatina de frambuesa': 'frambuesa',
-            'Gelatina lactosada': 'lactosada',
-            'Gelatina moka': 'moka',
-            'Gelatina nociva': 'nociva',
-            'Gelatina obscura': 'obscura',
+            'Gelatina lactosada': 'descalcificado',
+            'Gelatina moka': 'chocolatoso',
+            'Gelatina nociva': 'ácido',
+            'Gelatina obscura': 'maléfico',
             'Gelatina de uva': 'uva',
         }
 
@@ -212,7 +212,7 @@ class GelatinaCatalogDataTests(SimpleTestCase):
             with self.subTest(card=name):
                 spells = cards[name]['spells']
                 self.assertEqual(len(spells), 2)
-                self.assertEqual([spell['name'] for spell in spells], ['Gelpikes', f'Hueso de {color}'])
+                self.assertEqual([spell['name'] for spell in spells], ['Gelpikes', f'Hueso {color}' if color in {'descalcificado', 'chocolatoso', 'ácido', 'maléfico'} else f'Hueso de {color}'])
 
     def test_royal_gelatinas_use_protection_summon_and_color_spells(self):
         cards = {card['name']: card for card in serialized_cards_seed_data()}
@@ -231,22 +231,22 @@ class GelatinaCatalogDataTests(SimpleTestCase):
             'Gelatina lactosada Real': [
                 'Helada Protectora',
                 'Invocación de Gelatina lactosada',
-                'Hueso de lactosada',
+                'Hueso descalcificado',
             ],
             'Gelatina moka Real': [
                 'Helada Protectora',
                 'Invocación de Gelatina moka',
-                'Hueso de moka',
+                'Hueso chocolatoso',
             ],
             'Gelatina nociva Real': [
                 'Helada Protectora',
                 'Invocación de Gelatina nociva',
-                'Hueso de nociva',
+                'Hueso ácido',
             ],
             'Gelatina obscura Real': [
                 'Helada Protectora',
                 'Invocación de Gelatina obscura',
-                'Hueso de obscura',
+                'Hueso maléfico',
             ],
             'Gelatina de uva Real': [
                 'Helada Protectora',

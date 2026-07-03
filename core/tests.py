@@ -262,6 +262,29 @@ class GelatinaCatalogDataTests(SimpleTestCase):
                 self.assertEqual([spell['name'] for spell in spells], spell_names)
 
 
+class SpellBalanceTests(SimpleTestCase):
+    def test_every_catalog_spell_has_positive_damage(self):
+        for card in load_cards_seed_data():
+            with self.subTest(card=card['name']):
+                self.assertGreater(len(card['spells']), 0)
+                for spell in card['spells']:
+                    self.assertGreater(spell['damage_min'], 0, spell['name'])
+                    self.assertGreaterEqual(spell['damage_max'], spell['damage_min'], spell['name'])
+
+    def test_damage_scales_with_monster_tier(self):
+        cards = {card['name']: card for card in load_cards_seed_data()}
+
+        self.assertGreaterEqual(cards['Kitsu amatista']['spells'][0]['damage_min'], 100)
+        self.assertGreater(
+            cards['Kitsu nishiki evolucionado']['spells'][0]['damage_min'],
+            cards['Kitsu nishiki']['spells'][0]['damage_min'],
+        )
+        self.assertGreater(
+            cards['Gelatina de durazno Real']['spells'][-1]['damage_min'],
+            cards['Gelatina de durazno']['spells'][-1]['damage_min'],
+        )
+
+
 class BackendlessModeTests(TestCase):
     def test_index_bootstraps_seed_cards_for_local_gameplay(self):
         response = self.client.get('/')

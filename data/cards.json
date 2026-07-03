@@ -32,6 +32,15 @@
         "description": "Efecto de apoyo o defensa basado en el plumaje albino del Pío.",
         "damage_min": 19,
         "damage_max": 25
+      },
+      {
+        "name": "Fusión Pío",
+        "cost": 0,
+        "range": 1,
+        "damage_min": 0,
+        "damage_max": 0,
+        "effect": "Permite fusionarse sólo con el Pío compatible indicado por la descripción del Pío fusionado.",
+        "description": "Permite fusionarse sólo con el Pío compatible indicado por la descripción del Pío fusionado."
       }
     ]
   },
@@ -68,6 +77,15 @@
         "description": "Efecto de apoyo o defensa basado en el plumaje anaranjado del Pío.",
         "damage_min": 19,
         "damage_max": 25
+      },
+      {
+        "name": "Fusión Pío",
+        "cost": 0,
+        "range": 1,
+        "damage_min": 0,
+        "damage_max": 0,
+        "effect": "Permite fusionarse sólo con el Pío compatible indicado por la descripción del Pío fusionado.",
+        "description": "Permite fusionarse sólo con el Pío compatible indicado por la descripción del Pío fusionado."
       }
     ]
   },
@@ -104,6 +122,15 @@
         "description": "Efecto de apoyo o defensa basado en el plumaje castaño del Pío.",
         "damage_min": 19,
         "damage_max": 25
+      },
+      {
+        "name": "Fusión Pío",
+        "cost": 0,
+        "range": 1,
+        "damage_min": 0,
+        "damage_max": 0,
+        "effect": "Permite fusionarse sólo con el Pío compatible indicado por la descripción del Pío fusionado.",
+        "description": "Permite fusionarse sólo con el Pío compatible indicado por la descripción del Pío fusionado."
       }
     ]
   },
@@ -140,6 +167,15 @@
         "description": "Efecto de apoyo o defensa basado en el plumaje negruzco del Pío.",
         "damage_min": 19,
         "damage_max": 25
+      },
+      {
+        "name": "Fusión Pío",
+        "cost": 0,
+        "range": 1,
+        "damage_min": 0,
+        "damage_max": 0,
+        "effect": "Permite fusionarse sólo con el Pío compatible indicado por la descripción del Pío fusionado.",
+        "description": "Permite fusionarse sólo con el Pío compatible indicado por la descripción del Pío fusionado."
       }
     ]
   },
@@ -176,15 +212,6 @@
         "description": "Efecto de apoyo o defensa basado en el plumaje otoñal del Pío.",
         "damage_min": 30,
         "damage_max": 39
-      },
-      {
-        "name": "Fusión Pío",
-        "cost": 3,
-        "range": 0,
-        "effect": "Permite fusionarse sólo con el Pío compatible indicado por la descripción del Pío fusionado.",
-        "description": "Permite fusionarse sólo con el Pío compatible indicado por la descripción del Pío fusionado.",
-        "damage_min": 30,
-        "damage_max": 40
       },
       {
         "name": "Evolución",
@@ -230,15 +257,6 @@
         "description": "Efecto de apoyo o defensa basado en el plumaje combinado del Pío.",
         "damage_min": 30,
         "damage_max": 39
-      },
-      {
-        "name": "Fusión Pío",
-        "cost": 3,
-        "range": 0,
-        "effect": "Permite fusionarse sólo con el Pío compatible indicado por la descripción del Pío fusionado.",
-        "description": "Permite fusionarse sólo con el Pío compatible indicado por la descripción del Pío fusionado.",
-        "damage_min": 30,
-        "damage_max": 40
       },
       {
         "name": "Evolución",
@@ -329,6 +347,15 @@
         "description": "Maniobra evasiva imbuida con la afinidad amatista del Kitsu.",
         "damage_min": 102,
         "damage_max": 132
+      },
+      {
+        "name": "Fusión Kitsu",
+        "cost": 0,
+        "range": 1,
+        "damage_min": 0,
+        "damage_max": 0,
+        "effect": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
+        "description": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado."
       }
     ]
   },
@@ -374,6 +401,15 @@
         "description": "Maniobra evasiva imbuida con la afinidad anaranjado del Kitsu.",
         "damage_min": 102,
         "damage_max": 132
+      },
+      {
+        "name": "Fusión Kitsu",
+        "cost": 0,
+        "range": 1,
+        "damage_min": 0,
+        "damage_max": 0,
+        "effect": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
+        "description": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado."
       }
     ]
   },
@@ -419,6 +455,15 @@
         "description": "Maniobra evasiva imbuida con la afinidad carmine del Kitsu.",
         "damage_min": 102,
         "damage_max": 132
+      },
+      {
+        "name": "Fusión Kitsu",
+        "cost": 0,
+        "range": 1,
+        "damage_min": 0,
+        "damage_max": 0,
+        "effect": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
+        "description": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado."
       }
     ]
   },
@@ -464,6 +509,15 @@
         "description": "Maniobra evasiva imbuida con la afinidad dākuburakku del Kitsu.",
         "damage_min": 102,
         "damage_max": 132
+      },
+      {
+        "name": "Fusión Kitsu",
+        "cost": 0,
+        "range": 1,
+        "damage_min": 0,
+        "damage_max": 0,
+        "effect": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
+        "description": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado."
       }
     ]
   },
@@ -509,6 +563,15 @@
         "description": "Maniobra evasiva imbuida con la afinidad junsuina hikari del Kitsu.",
         "damage_min": 102,
         "damage_max": 132
+      },
+      {
+        "name": "Fusión Kitsu",
+        "cost": 0,
+        "range": 1,
+        "damage_min": 0,
+        "damage_max": 0,
+        "effect": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
+        "description": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado."
       }
     ]
   },
@@ -554,6 +617,15 @@
         "description": "Maniobra evasiva imbuida con la afinidad magenta del Kitsu.",
         "damage_min": 102,
         "damage_max": 132
+      },
+      {
+        "name": "Fusión Kitsu",
+        "cost": 0,
+        "range": 1,
+        "damage_min": 0,
+        "damage_max": 0,
+        "effect": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
+        "description": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado."
       }
     ]
   },
@@ -599,6 +671,15 @@
         "description": "Maniobra evasiva imbuida con la afinidad midori no mizu del Kitsu.",
         "damage_min": 102,
         "damage_max": 132
+      },
+      {
+        "name": "Fusión Kitsu",
+        "cost": 0,
+        "range": 1,
+        "damage_min": 0,
+        "damage_max": 0,
+        "effect": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
+        "description": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado."
       }
     ]
   },
@@ -644,6 +725,15 @@
         "description": "Maniobra evasiva imbuida con la afinidad mizu del Kitsu.",
         "damage_min": 102,
         "damage_max": 132
+      },
+      {
+        "name": "Fusión Kitsu",
+        "cost": 0,
+        "range": 1,
+        "damage_min": 0,
+        "damage_max": 0,
+        "effect": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
+        "description": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado."
       }
     ]
   },
@@ -734,15 +824,6 @@
         "damage_max": 180
       },
       {
-        "name": "Fusión Kitsu",
-        "cost": 5,
-        "range": 0,
-        "effect": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
-        "description": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
-        "damage_min": 148,
-        "damage_max": 195
-      },
-      {
         "name": "Evolución",
         "cost": 6,
         "range": 0,
@@ -797,15 +878,6 @@
         "damage_max": 180
       },
       {
-        "name": "Fusión Kitsu",
-        "cost": 5,
-        "range": 0,
-        "effect": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
-        "description": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
-        "damage_min": 148,
-        "damage_max": 195
-      },
-      {
         "name": "Evolución",
         "cost": 6,
         "range": 0,
@@ -858,15 +930,6 @@
         "description": "Maniobra evasiva imbuida con la afinidad yin yang del Kitsu.",
         "damage_min": 137,
         "damage_max": 180
-      },
-      {
-        "name": "Fusión Kitsu",
-        "cost": 5,
-        "range": 0,
-        "effect": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
-        "description": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
-        "damage_min": 148,
-        "damage_max": 195
       },
       {
         "name": "Evolución",
@@ -1707,8 +1770,8 @@
         "range": 1,
         "effect": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas.",
         "description": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas.",
-        "damage_min": 41,
-        "damage_max": 61
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -1770,8 +1833,8 @@
         "range": 1,
         "effect": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas.",
         "description": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas.",
-        "damage_min": 41,
-        "damage_max": 61
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -1833,8 +1896,8 @@
         "range": 1,
         "effect": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas.",
         "description": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas.",
-        "damage_min": 41,
-        "damage_max": 61
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -1896,8 +1959,8 @@
         "range": 1,
         "effect": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas.",
         "description": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas.",
-        "damage_min": 41,
-        "damage_max": 61
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -1959,8 +2022,8 @@
         "range": 1,
         "effect": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas.",
         "description": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas.",
-        "damage_min": 41,
-        "damage_max": 61
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -2226,7 +2289,7 @@
     "shell": 630,
     "action_points": 10,
     "movement_points": 6,
-    "description": "Subjefe de bronce de la familia Escarahoja. Su caparazón oscuro y metálico impone autoridad sobre el enjambre, combinando apoyo, control de espacio y humo abrasador para sostener la presión del combate.",
+    "description": "Cuando una fusión de escarahojas completa su ciclo, puede ascender una vez más, dando como resultado la presencia indiscutible del Virrey de la familia. Su caparazón bronceado marca un rango superior dentro del enjambre, como si fuera un jefe militar del nido. Dominante e imponente, simboliza la jerarquía y el pináculo de poder.",
     "image": "public/images/escarahojas/evolutions/escarasubjefe-bronce.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "hp_min": 1800,

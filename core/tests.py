@@ -162,19 +162,20 @@ class KitsuCatalogDataTests(SimpleTestCase):
                         f'Kitsnición {spell_suffix}',
                         f'Ilusión espectral {spell_suffix}',
                         f'Argucia del Kitsu {spell_suffix}',
-                    ] + (['Fusión Kitsu', 'Evolución'] if card['stage'] == 'fusion' else []),
+                    ] + (['Evolución'] if card['stage'] == 'fusion' else ['Fusión Kitsu'] if card['stage'] == 'base' and card['name'] != 'Kitsu silvestre' else []),
                 )
-                self.assertEqual(len(card['spells']), 5 if card['stage'] == 'fusion' else 3)
+                self.assertEqual(len(card['spells']), 4 if (card['stage'] == 'fusion' or (card['stage'] == 'base' and card['name'] != 'Kitsu silvestre')) else 3)
                 if card['stage'] == 'fusion':
+                    self.assertIn('Kitsu fusionado', card['spells'][3]['effect'])
+                if card['stage'] == 'base' and card['name'] != 'Kitsu silvestre':
                     self.assertIn('Kitsus compatibles', card['spells'][3]['effect'])
-                    self.assertIn('Kitsu fusionado', card['spells'][4]['effect'])
                 for spell in card['spells']:
                     self.assertIn('cost', spell)
                     self.assertIn('range', spell)
 
 
 class PioCatalogDataTests(SimpleTestCase):
-    def test_pio_fusions_include_fusion_and_evolution_spells(self):
+    def test_pio_fusions_only_include_evolution_spell(self):
         cards = {card['name']: card for card in serialized_cards_seed_data()}
 
         for name in ['Pío otoñal', 'Pío combinado']:
@@ -186,12 +187,20 @@ class PioCatalogDataTests(SimpleTestCase):
                     [
                         f"Picoteo {name.removeprefix('Pío ').lower()}",
                         f"Plumaje {name.removeprefix('Pío ').lower()}",
-                        'Fusión Pío',
                         'Evolución',
                     ],
                 )
-                self.assertIn('Pío compatible', card['spells'][2]['effect'])
-                self.assertIn('Pío fusionado', card['spells'][3]['effect'])
+                self.assertIn('Pío fusionado', card['spells'][2]['effect'])
+
+    def test_pio_base_components_include_fusion_spell(self):
+        cards = {card['name']: card for card in serialized_cards_seed_data()}
+
+        for name in ['Pío albino', 'Pío negruzco', 'Pío anaranjado', 'Pío castaño']:
+            with self.subTest(card=name):
+                self.assertEqual(cards[name]['spells'][-1]['name'], 'Fusión Pío')
+                self.assertEqual(cards[name]['spells'][-1]['damage_min'], 0)
+                self.assertEqual(cards[name]['spells'][-1]['damage_max'], 0)
+                self.assertIn('Pío compatible', cards[name]['spells'][-1]['effect'])
 
 
 class GelatinaCatalogDataTests(SimpleTestCase):
@@ -268,8 +277,12 @@ class SpellBalanceTests(SimpleTestCase):
             with self.subTest(card=card['name']):
                 self.assertGreater(len(card['spells']), 0)
                 for spell in card['spells']:
-                    self.assertGreater(spell['damage_min'], 0, spell['name'])
-                    self.assertGreaterEqual(spell['damage_max'], spell['damage_min'], spell['name'])
+                    if 'Fusión' in spell['name']:
+                        self.assertEqual(spell['damage_min'], 0, spell['name'])
+                        self.assertEqual(spell['damage_max'], 0, spell['name'])
+                    else:
+                        self.assertGreater(spell['damage_min'], 0, spell['name'])
+                        self.assertGreaterEqual(spell['damage_max'], spell['damage_min'], spell['name'])
 
     def test_damage_scales_with_monster_tier(self):
         cards = {card['name']: card for card in load_cards_seed_data()}

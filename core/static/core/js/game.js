@@ -64,6 +64,11 @@ function spellDamageRange(spell = {}, card = {}) {
   return { min, max };
 }
 function spellDamageLabel(spell = {}, card = {}) { const { min, max } = spellDamageRange(spell, card); return min === max ? `${max}` : `${min}-${max}`; }
+function spellMetaLabel(spell = {}, card = {}) {
+  const parts = [`${spell.cost ?? '-'} PA`, `rango ${spell.range ?? '-'}`];
+  if (!isFusionSpell(spell) && !isEvolutionSpell(spell)) parts.push(`daño ${spellDamageLabel(spell, card)}`);
+  return parts.join(' · ');
+}
 function defaultSpell(card = {}) { const fallbackDamage = Math.max(1, (Number(card.action_points) || 1) + 2 + (STAGE_RANK[card.stage] || 0)); return (Array.isArray(card.spells) && card.spells[0]) || { name: 'Ataque básico', cost: 1, range: 1, damage_min: fallbackDamage, damage_max: fallbackDamage + 2, description: 'Ataque básico del monstruo.' }; }
 function estimateDamage(card = {}, spell = null) { const selected = spell || defaultSpell(card); const { min, max } = spellDamageRange(selected, card); return Math.max(0, Math.floor((min + max) / 2)); }
 function shellRegenPercent(card = {}) {
@@ -261,7 +266,7 @@ async function chooseSpellForAttack(attacker, target) {
   title.textContent = 'Elegí un hechizo'; targetText.textContent = ''; clearElement(list);
   return new Promise((resolve) => {
     let done = false; const finish = (spell) => { if (done) return; done = true; dialog.close(); resolve(spell); };
-    spells.forEach((spell) => { const button = document.createElement('button'); button.type = 'button'; button.className = 'spell-choice-option'; appendTextElement(button, 'strong', spell.name); appendTextElement(button, 'span', `${spell.cost ?? '-'} PA · rango ${spell.range ?? '-'} · daño ${spellDamageLabel(spell, attacker.card)}`); appendTextElement(button, 'small', spell.description || spell.effect || 'Sin descripción.'); button.addEventListener('click', () => finish(spell)); list.appendChild(button); });
+    spells.forEach((spell) => { const button = document.createElement('button'); button.type = 'button'; button.className = 'spell-choice-option'; appendTextElement(button, 'strong', spell.name); appendTextElement(button, 'span', spellMetaLabel(spell, attacker.card)); appendTextElement(button, 'small', spell.description || spell.effect || 'Sin descripción.'); button.addEventListener('click', () => finish(spell)); list.appendChild(button); });
     $('#spell-choice-cancel')?.addEventListener('click', () => finish(null), { once: true }); dialog.addEventListener('cancel', () => finish(null), { once: true }); dialog.showModal();
   });
 }
@@ -316,12 +321,11 @@ function renderBoard({ me, enemy, canPlay, selectedUnit, selectedHandCard }) {
 function formatSpells(card = {}) {
   const spells = Array.isArray(card.spells) ? card.spells : [];
   if (!spells.length) return 'Hechizos: sin hechizos configurados.';
-  return `Hechizos: ${spells.map((spell) => `${spell.name} (${spell.cost ?? '-'} PA, rango ${spell.range ?? '-'}, daño ${spellDamageLabel(spell, card)}): ${spell.description || spell.effect || 'Sin descripción.'}`).join(' · ')}`;
+  return `Hechizos: ${spells.map((spell) => `${spell.name} (${spellMetaLabel(spell, card)}): ${spell.description || spell.effect || 'Sin descripción.'}`).join(' · ')}`;
 }
 function appendCardDescription(parent, card = {}) { appendTextElement(parent, 'p', card.description || 'Sin descripción disponible.', 'card-description'); }
 function appendCardDescriptionContent(parent, card = {}) {
   appendTextElement(parent, 'p', `Familia: ${card.family || '-'}`);
-  appendTextElement(parent, 'p', `Tipo de monstruo: ${card.monster_type || card.type || 'Monstruo'}`);
   appendTextElement(parent, 'p', `Forma: ${stageLabel(card.stage)}`);
   appendTextElement(parent, 'p', card.description || 'Sin descripción disponible.');
 }
@@ -331,7 +335,7 @@ function appendCardSpellsContent(parent, card = {}) {
     appendTextElement(parent, 'p', 'Sin hechizos configurados.');
     return;
   }
-  list.forEach((spell) => appendTextElement(parent, 'p', `${spell.name} (${spell.cost ?? '-'} PA · rango ${spell.range ?? '-'} · daño ${spellDamageLabel(spell, card)}): ${spell.description || spell.effect || 'Sin descripción.'}`));
+  list.forEach((spell) => appendTextElement(parent, 'p', `${spell.name} (${spellMetaLabel(spell, card)}): ${spell.description || spell.effect || 'Sin descripción.'}`));
 }
 function openCardInfoDialog(card = {}, section = 'description') {
   const dialog = $('#card-info-dialog');
@@ -340,8 +344,7 @@ function openCardInfoDialog(card = {}, section = 'description') {
   if (!dialog?.showModal || !body) return;
   clearElement(body);
   const isSpells = section === 'spells';
-  if (title) title.textContent = `${isSpells ? 'Hechizos' : 'Descripción'} · ${card.name || 'Carta'}`;
-  appendTextElement(body, 'p', card.name || 'Carta sin nombre', 'card-info-card-name');
+  if (title) title.textContent = isSpells ? 'Hechizos' : 'Descripción';
   if (isSpells) appendCardSpellsContent(body, card);
   else appendCardDescriptionContent(body, card);
   dialog.showModal();

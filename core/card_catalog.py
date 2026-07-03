@@ -1,6 +1,7 @@
 import json
 import logging
 from dataclasses import dataclass
+from functools import lru_cache
 from pathlib import Path
 
 from django.conf import settings
@@ -70,6 +71,18 @@ def summon_cost(card_like) -> int:
     return SUMMON_COST_BY_STAGE.get(stage, 0)
 
 
+@lru_cache(maxsize=1)
+def seed_spells_by_slug(path=CARDS_DATA_PATH):
+    spells = {}
+    for item in load_cards_seed_data(path=path):
+        try:
+            slug, payload = _normalized_card_payload(item)
+        except ValueError:
+            continue
+        spells[slug] = payload['spells']
+    return spells
+
+
 def serialize_card(card: MonsterCard) -> dict:
     return {
         'id': card.id,
@@ -88,6 +101,7 @@ def serialize_card(card: MonsterCard) -> dict:
         'description': card.description,
         'image': resolve_card_image(card.image),
         'summon_cost': summon_cost({'stage': card.stage}),
+        'spells': seed_spells_by_slug().get(card.slug, []),
     }
 
 
@@ -163,6 +177,14 @@ def _normalized_card_payload(item):
 
     if not isinstance(payload['spells'], list):
         raise ValueError('spells debe ser una lista')
+    for index, spell in enumerate(payload['spells'], start=1):
+        if not isinstance(spell, dict):
+            raise ValueError(f'spells[{index}] debe ser un objeto')
+        for field in ('damage_min', 'damage_max'):
+            if not isinstance(spell.get(field), int) or spell[field] <= 0:
+                raise ValueError(f'spells[{index}].{field} debe ser un entero mayor a 0')
+        if spell['damage_max'] < spell['damage_min']:
+            raise ValueError(f'spells[{index}].damage_max no puede ser menor que damage_min')
 
     integer_fields = ('level_min', 'level_max', 'hp', 'shell', 'action_points', 'movement_points')
     for field in integer_fields:

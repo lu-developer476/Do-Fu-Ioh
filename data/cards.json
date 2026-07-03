@@ -180,6 +180,51 @@
     ]
   },
   {
+    "name": "Pío cyborg",
+    "family": "Píos",
+    "stage": "base",
+    "level_min": 11,
+    "level_max": 15,
+    "hp": 85,
+    "shell": 105,
+    "action_points": 5,
+    "movement_points": 5,
+    "description": "Pío modificado con componentes tecnomágicos que amplifican sus reflejos. Sus plumas metálicas emiten chispas de Wakfu cuando entra en combate.",
+    "image": "public/images/pios/base/pio-cyborg.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 50,
+    "hp_max": 85,
+    "spells": [
+      {
+        "name": "Picoteo cyborg",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño cuerpo a cuerpo del picoteo mecanizado del Pío cyborg.",
+        "description": "Daño cuerpo a cuerpo del picoteo mecanizado del Pío cyborg.",
+        "damage_min": 23,
+        "damage_max": 31
+      },
+      {
+        "name": "Plumaje cyborg",
+        "cost": 3,
+        "range": 0,
+        "effect": "Efecto de apoyo o defensa basado en el plumaje reforzado del Pío cyborg.",
+        "description": "Efecto de apoyo o defensa basado en el plumaje reforzado del Pío cyborg.",
+        "damage_min": 19,
+        "damage_max": 25
+      },
+      {
+        "name": "Fusión Pío",
+        "cost": 0,
+        "range": 1,
+        "damage_min": 0,
+        "damage_max": 0,
+        "effect": "Permite fusionarse sólo con el Pío compatible indicado por la descripción del Pío fusionado.",
+        "description": "Permite fusionarse sólo con el Pío compatible indicado por la descripción del Pío fusionado."
+      }
+    ]
+  },
+  {
     "name": "Pío otoñal",
     "family": "Píos",
     "stage": "fusion",
@@ -390,6 +435,60 @@
         "range": 0,
         "effect": "Maniobra evasiva imbuida con la afinidad anaranjado del Kitsu.",
         "description": "Maniobra evasiva imbuida con la afinidad anaranjado del Kitsu.",
+        "damage_min": 102,
+        "damage_max": 132
+      },
+      {
+        "name": "Fusión Kitsu",
+        "cost": 0,
+        "range": 1,
+        "damage_min": 0,
+        "damage_max": 0,
+        "effect": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
+        "description": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado."
+      }
+    ]
+  },
+  {
+    "name": "Kitsu androide",
+    "family": "Kitsus",
+    "stage": "base",
+    "level_min": 110,
+    "level_max": 110,
+    "hp": 1500,
+    "shell": 300,
+    "action_points": 9,
+    "movement_points": 6,
+    "description": "Kitsu artificial reforzado con piezas tecnomágicas. Su núcleo mecánico estabiliza el Wakfu y convierte sus movimientos en patrones precisos y calculados.",
+    "image": "public/images/kitsus/base/kitsu-androide.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "hp_min": 1500,
+    "hp_max": 1500,
+    "spells": [
+      {
+        "name": "Kitsnición androide",
+        "cost": 3,
+        "range": 3,
+        "effect": "Daño elemental adaptado al color androide del Kitsu.",
+        "description": "Daño elemental adaptado al color androide del Kitsu.",
+        "damage_min": 123,
+        "damage_max": 158
+      },
+      {
+        "name": "Ilusión espectral androide",
+        "cost": 4,
+        "range": 2,
+        "effect": "Crea una ilusión espectral con la energía androide del Kitsu.",
+        "description": "Crea una ilusión espectral con la energía androide del Kitsu.",
+        "damage_min": 142,
+        "damage_max": 183
+      },
+      {
+        "name": "Argucia del Kitsu androide",
+        "cost": 4,
+        "range": 0,
+        "effect": "Maniobra evasiva imbuida con la afinidad androide del Kitsu.",
+        "description": "Maniobra evasiva imbuida con la afinidad androide del Kitsu.",
         "damage_min": 102,
         "damage_max": 132
       },

@@ -1454,3 +1454,53 @@ body { padding-top: 78px; }
   .nav-popover { position: static; }
   .nav-popover-panel { left: 10px; right: 10px; width: auto; }
 }
+
+.card-description {
+  margin: .35rem 0 .2rem;
+  color: #fff7d7;
+  font-size: .76rem;
+  line-height: 1.35;
+  text-align: left;
+}
+
+.hand-card .card-description {
+  max-height: 4.2em;
+  overflow: auto;
+}
+
+.modal-segmented {
+  margin: 0;
+}
+
+.spell-choice-list {
+  display: grid;
+  gap: 10px;
+  max-height: 48vh;
+  overflow: auto;
+}
+
+.spell-choice-option {
+  display: grid;
+  gap: 4px;
+  text-align: left;
+  justify-items: start;
+}
+
+.spell-choice-option small {
+  color: #fff7d7;
+  line-height: 1.35;
+}
+
+.modal-actions-single {
+  grid-template-columns: 1fr;
+}
+
+.site-footer {
+  padding: 18px clamp(16px, 4vw, 42px) 26px;
+  color: #f7f3dc;
+  text-align: center;
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .03em;
+  text-shadow: 0 2px 0 rgba(0,0,0,.35);
+}

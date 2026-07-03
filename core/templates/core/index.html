@@ -11,22 +11,21 @@
 </head>
 <body>
   <header class="site-navbar" aria-label="Navegación principal">
-    <a class="navbar-brand" href="#arena" aria-label="Ir a la arena de combate">
+    <a class="navbar-brand" href="#arena" aria-label="Ir al tablero de combate">
       <span class="brand-mark">D</span>
       <span>Do-Fu-Ióh</span>
     </a>
     <nav class="navbar-links" aria-label="Secciones de juego">
-      <a href="#arena">Arena</a>
       <details class="nav-popover">
-        <summary>Nuevo duelo</summary>
-        <div id="controls" class="nav-popover-panel" aria-label="Opciones de nuevo duelo">
+        <summary>Nueva Partida</summary>
+        <div id="controls" class="nav-popover-panel" aria-label="Opciones de nueva partida">
           <fieldset class="segmented-control" aria-label="Cartas iniciales">
             <legend class="control-label">Cartas iniciales</legend>
             <label><input type="radio" name="initial-hand-size" value="1" /> <span>1 carta</span></label>
             <label><input type="radio" name="initial-hand-size" value="2" checked /> <span>2 cartas</span></label>
             <label><input type="radio" name="initial-hand-size" value="5" /> <span>5 cartas</span></label>
           </fieldset>
-          <button id="create-ai-match" data-loading-label="Creando duelo...">Nuevo duelo</button>
+          <button id="create-ai-match" data-loading-label="Creando partida...">Nueva Partida</button>
           <button id="shuffle-monsters" class="ghost" data-loading-label="Barajando cartas...">Barajar cartas</button>
           <button id="create-selected-match" class="ghost" data-loading-label="Preparando selección...">Usar selección</button>
           <button id="end-turn-btn" class="ghost" data-loading-label="Procesando turno...">Finalizar turno</button>
@@ -73,18 +72,37 @@
       </section>
     </section>
 
-    <dialog id="hand-choice-dialog" class="hand-choice-dialog">
+    <dialog id="match-setup-dialog" class="hand-choice-dialog">
       <form method="dialog" class="hand-choice-modal">
-        <p class="kicker">Inicio de partida</p>
-        <h2>Elegí tu mano inicial</h2>
-        <p>Podés recibir una mano al azar o prepararla manualmente desde el Bestiario de cartas antes de iniciar el duelo.</p>
+        <p class="kicker">Nueva Partida</p>
+        <h2>Configurá el estilo de juego</h2>
+        <p>Elegí cuántas cartas iniciales usar y si querés jugar con una mano aleatoria o con tu selección del Bestiario.</p>
+        <fieldset class="segmented-control modal-segmented" aria-label="Cartas iniciales para la nueva partida">
+          <legend class="control-label">Cartas iniciales</legend>
+          <label><input type="radio" name="modal-initial-hand-size" value="1" /> <span>1 carta</span></label>
+          <label><input type="radio" name="modal-initial-hand-size" value="2" checked /> <span>2 cartas</span></label>
+          <label><input type="radio" name="modal-initial-hand-size" value="5" /> <span>5 cartas</span></label>
+        </fieldset>
         <div class="modal-actions">
           <button id="modal-random-hand" value="random">Mano al azar</button>
           <button id="modal-manual-hand" class="ghost" value="manual">Elegir manualmente</button>
         </div>
       </form>
     </dialog>
+
+    <dialog id="spell-choice-dialog" class="hand-choice-dialog spell-choice-dialog">
+      <form method="dialog" class="hand-choice-modal">
+        <p class="kicker">Ataque de monstruo</p>
+        <h2 id="spell-choice-title">Elegí un hechizo</h2>
+        <p id="spell-choice-target" class="small"></p>
+        <div id="spell-choice-list" class="spell-choice-list"></div>
+        <div class="modal-actions modal-actions-single">
+          <button id="spell-choice-cancel" class="ghost" value="cancel">Cancelar</button>
+        </div>
+      </form>
+    </dialog>
   </main>
+  <footer class="site-footer">© 2026 Todos los derechos reservados • Built with Python &amp; Django • UX/UI Interface • Deployed on Render ®</footer>
   {{ cards_seed_json|json_script:"cards-seed" }}
   <script src="{% static 'core/js/game.js' %}"></script>
 </body>

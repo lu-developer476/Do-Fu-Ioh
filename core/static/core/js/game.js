@@ -91,6 +91,7 @@ function appendLog(message) {
   appState.match.log.push(`${new Date().toLocaleTimeString('es-AR')} · ${message}`);
   appState.match.log = appState.match.log.slice(-36);
   renderMatchLog(appState.match.log || []);
+  syncBoardActionButtons();
 }
 function getAudioContext() {
   if (!appState.audio.enabled) return null;
@@ -227,14 +228,21 @@ async function runAiTurn() {
     let safety = 0;
     while (!appState.match.winner && unit.can_act && safety < 8) {
       safety += 1;
-      if (canEvolveNow(unit)) { applyAttack('guest', unit.id, unit.id, 'Evolución'); refreshCounts(); updateDerivedCombat(); renderGame(); await delay(); break; }
-      const fusionAlly = adjacentAllyFusion(unit, ai.units);
-      if (fusionAlly) { const spell = virtualFusionSpell(unit, fusionAlly); applyAttack('guest', unit.id, fusionAlly.id, spell.name); refreshCounts(); updateDerivedCombat(); renderGame(); await delay(); break; }
-      if (!appState.match.host.units.length) break;
-      const target = [...appState.match.host.units].sort((a, b) => distance(unit, a) - distance(unit, b) || a.hp_current - b.hp_current)[0];
-      const spell = usableSpells(unit, target).filter((item) => !isFusionSpell(item) && !isEvolutionSpell(item)).sort((a, b) => estimateDamage(unit.card, b) - estimateDamage(unit.card, a))[0];
-      if (spell && distance(unit, target) <= Math.max(1, Number(spell.range) || unit.attack_range)) { applyAttack('guest', unit.id, target.id, spell.name); checkWinner('guest'); }
-      else { const nextCell = stepToward(unit, target); if (!nextCell || unit.move_points <= 0) { unit.can_act = false; break; } applyMove('guest', unit.id, nextCell); }
+      try {
+        if (!ai.units.some((current) => current.id === unit.id)) break;
+        if (canEvolveNow(unit)) { applyAttack('guest', unit.id, unit.id, 'Evolución'); refreshCounts(); updateDerivedCombat(); renderGame(); await delay(); break; }
+        const fusionAlly = adjacentAllyFusion(unit, ai.units);
+        if (fusionAlly) { const spell = virtualFusionSpell(unit, fusionAlly); applyAttack('guest', unit.id, fusionAlly.id, spell.name); refreshCounts(); updateDerivedCombat(); renderGame(); await delay(); break; }
+        if (!appState.match.host.units.length) break;
+        const target = [...appState.match.host.units].sort((a, b) => distance(unit, a) - distance(unit, b) || a.hp_current - b.hp_current)[0];
+        const spell = usableSpells(unit, target).filter((item) => !isFusionSpell(item) && !isEvolutionSpell(item)).sort((a, b) => estimateDamage(unit.card, b) - estimateDamage(unit.card, a))[0];
+        if (spell && distance(unit, target) <= Math.max(1, Number(spell.range) || unit.attack_range)) { applyAttack('guest', unit.id, target.id, spell.name); checkWinner('guest'); }
+        else { const nextCell = stepToward(unit, target); if (!nextCell || unit.move_points <= 0) { unit.can_act = false; break; } applyMove('guest', unit.id, nextCell); }
+      } catch (err) {
+        unit.can_act = false;
+        appendLog(`La IA descartó una acción inválida de ${unit.card?.name || 'una unidad'}: ${err.message}`);
+        break;
+      }
       refreshCounts(); updateDerivedCombat(); renderGame(); await delay();
     }
     if (safety >= 8) { unit.can_act = false; appendLog(`La IA agotó el plan de ${unit.card.name} y cedió la acción para evitar trabas.`); }
@@ -432,6 +440,7 @@ function renderMatchLog(logEntries = []) {
 
 function renderGame() {
   setActionFeedback(appState.actionFeedback.message, appState.actionFeedback.tone, { silentLog: true });
+  syncBoardActionButtons();
   if (!appState.match) {
     renderEmptyState($('#hand'), EMPTY_MESSAGES.handPreview); renderEmptyState($('#match-summary'), EMPTY_MESSAGES.summary); renderBoard({ me: { units: [] }, enemy: { units: [] }, canPlay: false, selectedUnit: null, selectedHandCard: null }); renderMatchLog(); return;
   }
@@ -488,14 +497,15 @@ function toggleCatalogSelection(card) {
 function bindAsyncButton(selector, handler) {
   const button = $(selector); if (!button) return;
   const idleLabel = button.textContent; const loadingLabel = button.dataset.loadingLabel || 'Procesando...';
-  button.addEventListener('click', async () => { if (button.disabled) return; button.disabled = true; button.setAttribute('aria-busy', 'true'); button.textContent = loadingLabel; try { await handler(); } catch (err) { setStatus(err.message || 'Error inesperado', true); } finally { button.disabled = false; button.setAttribute('aria-busy', 'false'); button.textContent = idleLabel; } });
+  button.addEventListener('click', async () => { if (button.disabled) return; button.disabled = true; button.setAttribute('aria-busy', 'true'); button.textContent = loadingLabel; try { await handler(); } catch (err) { setStatus(err.message || 'Error inesperado', true); } finally { button.disabled = false; button.setAttribute('aria-busy', 'false'); button.textContent = idleLabel; syncBoardActionButtons(); } });
 }
 function syncModalHandSize() { const current = String(requestedHandSize()); document.querySelectorAll('input[name="modal-initial-hand-size"]').forEach((input) => { input.checked = input.value === current; }); }
 function applyModalHandSize() { const selected = document.querySelector('input[name="modal-initial-hand-size"]:checked')?.value; const target = selected && document.querySelector(`input[name="initial-hand-size"][value="${selected}"]`); if (target) target.checked = true; }
 function closeNewMatchPanel() { $('#close-new-match-panel')?.closest('details')?.removeAttribute('open'); }
 function chooseManualMatchSetup() { setActionFeedback('Abrí Bestiario, elegí cartas y presioná Usar selección desde Mano.', 'normal'); closeNewMatchPanel(); }
-function openInitialHandDialog() { createAIMatch(); closeNewMatchPanel(); }
-function openNewMatchPanel() { document.querySelector('.nav-popover summary')?.parentElement?.setAttribute('open', ''); }
+function openInitialHandDialog() { syncModalHandSize(); syncModalDeckScope(); const dialog = $('#match-setup-dialog'); closeNewMatchPanel(); if (dialog?.showModal) dialog.showModal(); else createAIMatch(); }
+function closeInitialHandDialog() { const dialog = $('#match-setup-dialog'); if (dialog?.open) dialog.close(); }
+function openNewMatchPanel() { openInitialHandDialog(); }
 
 
 
@@ -508,7 +518,7 @@ const OST_TRACKS = [
   { name: 'Faroles del Zorro Umbrío', bpm: 151, lead: [277, 370, 415, 311, 466, 415, 349, 294, 392, 330, 247, 311], bass: [69, 104, 92, 78, 87], wave: 'sawtooth' },
   { name: 'Quitina de Sol Partido', bpm: 112, lead: [147, 220, 262, 330, 294, 247, 196, 233, 277, 349], bass: [36, 55, 73, 49, 65], wave: 'triangle' }
 ];
-function playTone(gain, frequency, duration, type = 'sine', volume = 1, detune = 0) {
+function playOstTone(gain, frequency, duration, type = 'sine', volume = 1, detune = 0) {
   const osc = audioContext.createOscillator(); const env = audioContext.createGain();
   osc.type = type; osc.frequency.value = frequency; osc.detune.value = detune;
   env.gain.setValueAtTime(0.0001, audioContext.currentTime);
@@ -526,19 +536,19 @@ function playOst(index = 0) {
   stopOst();
   audioContext = audioContext || new (window.AudioContext || window.webkitAudioContext)();
   const track = OST_TRACKS[index % OST_TRACKS.length];
-  const gain = audioContext.createGain(); gain.gain.value = 0.7; gain.connect(audioContext.destination);
+  const gain = audioContext.createGain(); gain.gain.value = 0.32; gain.connect(audioContext.destination);
   let step = 0; const beatMs = Math.max(90, Math.round(60000 / track.bpm / 2));
   activeOst = setInterval(() => {
     const lead = track.lead[step % track.lead.length]; const bass = track.bass[Math.floor(step / 2) % track.bass.length];
-    playTone(gain, bass, beatMs / 1000 * 0.9, 'sawtooth', step % 4 === 0 ? 1.2 : 0.8, -8);
-    if (step % 2 === 0) playTone(gain, lead, beatMs / 1000 * 0.72, track.wave, 0.72);
-    if (step % 4 === 2) playTone(gain, lead * 1.5, beatMs / 1000 * 0.45, 'triangle', 0.35, 5);
-    if (step % 2 === 0) playNoise(gain, 0.035, step % 8 === 0 ? 0.9 : 0.42);
+    playOstTone(gain, bass, beatMs / 1000 * 0.9, 'sawtooth', step % 4 === 0 ? 1.2 : 0.8, -8);
+    if (step % 2 === 0) playOstTone(gain, lead, beatMs / 1000 * 0.72, track.wave, 0.72);
+    if (step % 4 === 2) playOstTone(gain, lead * 1.5, beatMs / 1000 * 0.45, 'triangle', 0.35, 5);
+    if (step % 2 === 0) playNoise(gain, 0.03, step % 8 === 0 ? 0.55 : 0.24);
     step += 1;
   }, beatMs);
   setActionFeedback(`OST de combate activa: ${track.name}.`, 'success');
 }
-function stopOst() { if (activeOst) clearInterval(activeOst); activeOst = null; }
+function stopOst() { if (activeOst) clearInterval(activeOst); activeOst = null; setActionFeedback('OST silenciada.', 'normal'); }
 function renderOstControls() {
   const target = $('#ost-controls'); if (!target) return;
   clearElement(target);
@@ -558,13 +568,14 @@ function syncFamilySelects() {
 }
 function syncModalDeckScope() { const current = document.querySelector('input[name="deck-scope"]:checked')?.value || 'all'; const currentTier = document.querySelector('input[name="deck-tier"]:checked')?.value || 'all'; document.querySelectorAll('input[name="modal-deck-scope"]').forEach((input) => { input.checked = input.value === current; }); document.querySelectorAll('input[name="modal-deck-tier"]').forEach((input) => { input.checked = input.value === currentTier; }); const modalFamily = $('#modal-family-select'); if (modalFamily && $('#match-family-select')) modalFamily.value = $('#match-family-select').value; }
 function applyModalDeckScope() { const selected = document.querySelector('input[name="modal-deck-scope"]:checked')?.value; const selectedTier = document.querySelector('input[name="modal-deck-tier"]:checked')?.value; const target = selected && document.querySelector(`input[name="deck-scope"][value="${selected}"]`); const tierTarget = selectedTier && document.querySelector(`input[name="deck-tier"][value="${selectedTier}"]`); if (target) target.checked = true; if (tierTarget) tierTarget.checked = true; if ($('#modal-family-select') && $('#match-family-select')) $('#match-family-select').value = $('#modal-family-select').value; }
-function setMatchPaused(paused) { if (!appState.match) return setActionFeedback('No hay duelo activo.', 'error'); appState.match.paused = paused; appendLog(paused ? 'Partida pausada por el jugador.' : 'Partida reanudada por el jugador.'); persistMatch(); renderGame(); setActionFeedback(paused ? 'Partida pausada.' : 'Partida reanudada.', 'success'); }
-function abandonMatch() { if (!appState.match) return setActionFeedback('No hay duelo activo.', 'error'); appendLog('El jugador abandonó la partida.'); appState.match.winner = 'guest'; persistMatch(); renderGame(); setActionFeedback('Abandonaste la partida. La IA gana el duelo.', 'error'); }
+function setMatchPaused(paused) { if (!appState.match) return setActionFeedback('No hay duelo activo.', 'error'); if (appState.match.winner) return setActionFeedback('La partida ya terminó; reiniciala para seguir jugando.', 'error'); appState.match.paused = paused; appendLog(paused ? 'Partida pausada por el jugador.' : 'Partida reanudada por el jugador.'); persistMatch(); renderGame(); setActionFeedback(paused ? 'Partida pausada.' : 'Partida reanudada.', 'success'); }
+function abandonMatch() { if (!appState.match) return setActionFeedback('No hay duelo activo.', 'error'); if (appState.match.winner) return setActionFeedback('La partida ya estaba terminada.', 'error'); appendLog('El jugador abandonó la partida.'); appState.match.winner = 'guest'; persistMatch(); renderGame(); setActionFeedback('Abandonaste la partida. La IA gana el duelo.', 'error'); }
 function restartMatch() { const cfg = appState.lastMatchConfig || { selectedIds: [...appState.selectedCatalogCardIds], handSize: requestedHandSize() }; startLocalMatch(cfg.selectedIds || [], cfg.handSize || requestedHandSize()); renderGame(); setActionFeedback('Partida reiniciada con la misma configuración.', 'success'); }
 function openHandDialog() { const dialog = $('#hand-dialog'); if (dialog?.showModal) dialog.showModal(); }
+function syncBoardActionButtons() { const hasMatch = Boolean(appState.match); const isBusy = Boolean(appState.aiPlayback); const finished = Boolean(appState.match?.winner); ['#end-turn-btn', '#pause-match-btn', '#restart-match-btn', '#abandon-match-btn'].forEach((selector) => { const button = $(selector); if (!button) return; button.disabled = !hasMatch || isBusy || (finished && selector !== '#restart-match-btn'); }); const pause = $('#pause-match-btn'); if (pause) pause.textContent = appState.match?.paused ? 'Reanudar' : 'Pausar'; }
 
 function boot() {
-  renderGame(); bindAsyncButton('#create-ai-match', () => { openInitialHandDialog(); return Promise.resolve(); }); $('#create-manual-match')?.addEventListener('click', chooseManualMatchSetup); $('#close-new-match-panel')?.addEventListener('click', closeNewMatchPanel); bindAsyncButton('#shuffle-monsters', shuffleMonsters); bindAsyncButton('#create-selected-match', createSelectedMatch); bindAsyncButton('#end-turn-btn', endTurn); bindAsyncButton('#pause-match-btn', () => { setMatchPaused(!appState.match?.paused); return Promise.resolve(); }); bindAsyncButton('#restart-match-btn', () => { restartMatch(); return Promise.resolve(); }); bindAsyncButton('#abandon-match-btn', () => { abandonMatch(); return Promise.resolve(); }); $('#open-hand-dialog')?.addEventListener('click', openHandDialog); $('#close-hand-dialog')?.addEventListener('click', () => $('#hand-dialog')?.close()); $('#modal-random-hand')?.addEventListener('click', () => { applyModalHandSize(); applyModalDeckScope(); createAIMatch(); }); $('#modal-manual-hand')?.addEventListener('click', () => { applyModalHandSize(); applyModalDeckScope(); setActionFeedback('Abrí Bestiario, elegí cartas y presioná Usar selección desde Mano.', 'normal'); });
+  renderGame(); $('#open-new-match-panel')?.addEventListener('click', (event) => { event.preventDefault(); openInitialHandDialog(); }); bindAsyncButton('#create-ai-match', () => { openInitialHandDialog(); return Promise.resolve(); }); $('#create-manual-match')?.addEventListener('click', chooseManualMatchSetup); $('#close-new-match-panel')?.addEventListener('click', closeNewMatchPanel); bindAsyncButton('#shuffle-monsters', shuffleMonsters); bindAsyncButton('#create-selected-match', createSelectedMatch); bindAsyncButton('#end-turn-btn', endTurn); bindAsyncButton('#pause-match-btn', () => { setMatchPaused(!appState.match?.paused); return Promise.resolve(); }); bindAsyncButton('#restart-match-btn', () => { restartMatch(); return Promise.resolve(); }); bindAsyncButton('#abandon-match-btn', () => { abandonMatch(); return Promise.resolve(); }); $('#open-hand-dialog')?.addEventListener('click', openHandDialog); $('#close-hand-dialog')?.addEventListener('click', () => $('#hand-dialog')?.close()); $('#modal-random-hand')?.addEventListener('click', async () => { applyModalHandSize(); applyModalDeckScope(); closeInitialHandDialog(); await createAIMatch(); }); $('#modal-manual-hand')?.addEventListener('click', () => { applyModalHandSize(); applyModalDeckScope(); closeInitialHandDialog(); setActionFeedback('Abrí Bestiario, elegí cartas y presioná Usar selección desde Mano.', 'normal'); document.querySelector('#catalog-panel')?.closest('details')?.setAttribute('open', ''); });
   loadCards().then(loadActiveMatch).catch((err) => { setStatus(err.message || 'No se pudo iniciar el juego.', true); setActionFeedback('No se pudo cargar el duelo. Iniciá un nuevo enfrentamiento o usá la selección manual.', 'error'); renderGame(); }).finally(() => { if (!appState.match) { setStatus('Sin duelo local activo. Iniciá uno nuevo o prepará una selección manual.'); openNewMatchPanel(); } });
 }
 document.addEventListener('DOMContentLoaded', boot, { once: true });

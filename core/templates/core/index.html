@@ -49,7 +49,7 @@
           <div class="duel-action-grid new-match-actions">
             <button id="create-ai-match" data-loading-label="Creando partida...">Mano al azar</button>
             <button id="create-manual-match" class="ghost" type="button">Elegir manualmente</button>
-            <button id="close-new-match-panel" class="ghost" type="button">Cerrar</button>
+            <button id="close-new-match-panel" class="ghost icon-close" type="button" aria-label="Cerrar">×</button>
           </div>
         </div>
       </details>
@@ -68,7 +68,7 @@
       <details class="nav-popover nav-popover-wide nav-popover-right hand-nav-popover">
         <summary>Mano</summary>
         <div class="nav-popover-panel hand-panel hand-navbar-panel" aria-labelledby="hand-heading">
-          <div id="hand-panel" class="panel-heading"><h2 id="hand-heading">Mano disponible</h2><span class="panel-caption">Seleccioná e invocá</span></div>
+          <div id="hand-panel" class="panel-heading"><h2 id="hand-heading">Disponible</h2><span class="panel-caption">Mis monstruos</span></div>
           <div class="hand-navbar-actions">
             <button id="shuffle-monsters" class="ghost" type="button" data-loading-label="Barajando cartas...">Barajar cartas</button>
             <button id="create-selected-match" class="ghost" type="button" data-loading-label="Preparando selección...">Usar selección</button>
@@ -101,6 +101,7 @@
           <button id="end-turn-btn" class="ghost board-action board-action-end" data-loading-label="Procesando turno...">Finalizar turno</button>
           <button id="pause-match-btn" class="ghost board-action board-action-pause" data-loading-label="Pausando...">Pausar</button>
           <div class="board-frame"><div class="board-scroll"><div id="tactical-board" class="board tactical-board"></div></div></div>
+          <div id="pause-shade" class="pause-shade" aria-hidden="true">PAUSA</div>
           <button id="restart-match-btn" class="ghost board-action board-action-restart" data-loading-label="Reiniciando...">Reiniciar</button>
           <button id="abandon-match-btn" class="ghost danger board-action board-action-abandon" data-loading-label="Abandonando...">Abandonar</button>
         </div>
@@ -139,14 +140,31 @@
     </dialog>
 
     <dialog id="spell-choice-dialog" class="hand-choice-dialog spell-choice-dialog">
-      <form method="dialog" class="hand-choice-modal">
-        <p class="kicker">Ataque de monstruo</p>
-        <h2 id="spell-choice-title">Elegí un hechizo</h2>
-        <p id="spell-choice-target" class="small"></p>
+      <form method="dialog" class="hand-choice-modal spell-choice-modal">
+        <button id="spell-choice-cancel" class="ghost icon-close modal-close-x" value="cancel" aria-label="Cerrar">×</button>
+        <h2 id="spell-choice-title" class="visually-hidden">Elegí un hechizo</h2>
+        <p id="spell-choice-target" class="visually-hidden"></p>
         <div id="spell-choice-list" class="spell-choice-list"></div>
-        <div class="modal-actions modal-actions-single">
-          <button id="spell-choice-cancel" class="ghost" value="cancel">Cancelar</button>
+      </form>
+    </dialog>
+
+    <dialog id="decision-dialog" class="hand-choice-dialog decision-dialog">
+      <form method="dialog" class="hand-choice-modal">
+        <button id="decision-close" class="ghost icon-close modal-close-x" value="cancel" aria-label="Cerrar">×</button>
+        <h2 id="decision-title">Confirmar acción</h2>
+        <p id="decision-message"></p>
+        <div class="modal-actions">
+          <button id="decision-confirm" type="button">Sí</button>
+          <button id="decision-cancel" class="ghost" value="cancel">No</button>
         </div>
+      </form>
+    </dialog>
+
+    <dialog id="success-dialog" class="hand-choice-dialog decision-dialog">
+      <form method="dialog" class="hand-choice-modal">
+        <button class="ghost icon-close modal-close-x" value="ok" aria-label="Cerrar">×</button>
+        <h2 id="success-title">Listo</h2>
+        <p id="success-message"></p>
       </form>
     </dialog>
   </main>

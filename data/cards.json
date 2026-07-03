@@ -226,16 +226,22 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Llama de Pandala",
+        "name": "Kitsnición amatista",
         "cost": 3,
         "range": 3,
-        "effect": "Daño elemental adaptado al color del Kitsu."
+        "effect": "Daño elemental adaptado al color amatista del Kitsu."
       },
       {
-        "name": "Encanto Zorruno",
+        "name": "Ilusión espectral amatista",
         "cost": 4,
         "range": 2,
-        "effect": "Reduce 1 PA del objetivo si está en rango."
+        "effect": "Crea una ilusión espectral con la energía amatista del Kitsu."
+      },
+      {
+        "name": "Argucia del Kitsu amatista",
+        "cost": 4,
+        "range": 0,
+        "effect": "Maniobra evasiva imbuida con la afinidad amatista del Kitsu."
       }
     ]
   },
@@ -256,16 +262,22 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Llama de Pandala",
+        "name": "Kitsnición anaranjado",
         "cost": 3,
         "range": 3,
-        "effect": "Daño elemental adaptado al color del Kitsu."
+        "effect": "Daño elemental adaptado al color anaranjado del Kitsu."
       },
       {
-        "name": "Encanto Zorruno",
+        "name": "Ilusión espectral anaranjado",
         "cost": 4,
         "range": 2,
-        "effect": "Reduce 1 PA del objetivo si está en rango."
+        "effect": "Crea una ilusión espectral con la energía anaranjado del Kitsu."
+      },
+      {
+        "name": "Argucia del Kitsu anaranjado",
+        "cost": 4,
+        "range": 0,
+        "effect": "Maniobra evasiva imbuida con la afinidad anaranjado del Kitsu."
       }
     ]
   },
@@ -286,16 +298,22 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Llama de Pandala",
+        "name": "Kitsnición carmine",
         "cost": 3,
         "range": 3,
-        "effect": "Daño elemental adaptado al color del Kitsu."
+        "effect": "Daño elemental adaptado al color carmine del Kitsu."
       },
       {
-        "name": "Encanto Zorruno",
+        "name": "Ilusión espectral carmine",
         "cost": 4,
         "range": 2,
-        "effect": "Reduce 1 PA del objetivo si está en rango."
+        "effect": "Crea una ilusión espectral con la energía carmine del Kitsu."
+      },
+      {
+        "name": "Argucia del Kitsu carmine",
+        "cost": 4,
+        "range": 0,
+        "effect": "Maniobra evasiva imbuida con la afinidad carmine del Kitsu."
       }
     ]
   },
@@ -316,16 +334,22 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Llama de Pandala",
+        "name": "Kitsnición dākuburakku",
         "cost": 3,
         "range": 3,
-        "effect": "Daño elemental adaptado al color del Kitsu."
+        "effect": "Daño elemental adaptado al color dākuburakku del Kitsu."
       },
       {
-        "name": "Encanto Zorruno",
+        "name": "Ilusión espectral dākuburakku",
         "cost": 4,
         "range": 2,
-        "effect": "Reduce 1 PA del objetivo si está en rango."
+        "effect": "Crea una ilusión espectral con la energía dākuburakku del Kitsu."
+      },
+      {
+        "name": "Argucia del Kitsu dākuburakku",
+        "cost": 4,
+        "range": 0,
+        "effect": "Maniobra evasiva imbuida con la afinidad dākuburakku del Kitsu."
       }
     ]
   },
@@ -346,16 +370,22 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Llama de Pandala",
+        "name": "Kitsnición junsuina hikari",
         "cost": 3,
         "range": 3,
-        "effect": "Daño elemental adaptado al color del Kitsu."
+        "effect": "Daño elemental adaptado al color junsuina hikari del Kitsu."
       },
       {
-        "name": "Encanto Zorruno",
+        "name": "Ilusión espectral junsuina hikari",
         "cost": 4,
         "range": 2,
-        "effect": "Reduce 1 PA del objetivo si está en rango."
+        "effect": "Crea una ilusión espectral con la energía junsuina hikari del Kitsu."
+      },
+      {
+        "name": "Argucia del Kitsu junsuina hikari",
+        "cost": 4,
+        "range": 0,
+        "effect": "Maniobra evasiva imbuida con la afinidad junsuina hikari del Kitsu."
       }
     ]
   },
@@ -376,16 +406,22 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Llama de Pandala",
+        "name": "Kitsnición magenta",
         "cost": 3,
         "range": 3,
-        "effect": "Daño elemental adaptado al color del Kitsu."
+        "effect": "Daño elemental adaptado al color magenta del Kitsu."
       },
       {
-        "name": "Encanto Zorruno",
+        "name": "Ilusión espectral magenta",
         "cost": 4,
         "range": 2,
-        "effect": "Reduce 1 PA del objetivo si está en rango."
+        "effect": "Crea una ilusión espectral con la energía magenta del Kitsu."
+      },
+      {
+        "name": "Argucia del Kitsu magenta",
+        "cost": 4,
+        "range": 0,
+        "effect": "Maniobra evasiva imbuida con la afinidad magenta del Kitsu."
       }
     ]
   },
@@ -406,16 +442,22 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Llama de Pandala",
+        "name": "Kitsnición midori no mizu",
         "cost": 3,
         "range": 3,
-        "effect": "Daño elemental adaptado al color del Kitsu."
+        "effect": "Daño elemental adaptado al color midori no mizu del Kitsu."
       },
       {
-        "name": "Encanto Zorruno",
+        "name": "Ilusión espectral midori no mizu",
         "cost": 4,
         "range": 2,
-        "effect": "Reduce 1 PA del objetivo si está en rango."
+        "effect": "Crea una ilusión espectral con la energía midori no mizu del Kitsu."
+      },
+      {
+        "name": "Argucia del Kitsu midori no mizu",
+        "cost": 4,
+        "range": 0,
+        "effect": "Maniobra evasiva imbuida con la afinidad midori no mizu del Kitsu."
       }
     ]
   },
@@ -436,16 +478,22 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Llama de Pandala",
+        "name": "Kitsnición mizu",
         "cost": 3,
         "range": 3,
-        "effect": "Daño elemental adaptado al color del Kitsu."
+        "effect": "Daño elemental adaptado al color mizu del Kitsu."
       },
       {
-        "name": "Encanto Zorruno",
+        "name": "Ilusión espectral mizu",
         "cost": 4,
         "range": 2,
-        "effect": "Reduce 1 PA del objetivo si está en rango."
+        "effect": "Crea una ilusión espectral con la energía mizu del Kitsu."
+      },
+      {
+        "name": "Argucia del Kitsu mizu",
+        "cost": 4,
+        "range": 0,
+        "effect": "Maniobra evasiva imbuida con la afinidad mizu del Kitsu."
       }
     ]
   },
@@ -466,16 +514,22 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Llama de Pandala",
+        "name": "Kitsnición silvestre",
         "cost": 3,
         "range": 3,
-        "effect": "Daño elemental adaptado al color del Kitsu."
+        "effect": "Daño elemental adaptado al color silvestre del Kitsu."
       },
       {
-        "name": "Encanto Zorruno",
+        "name": "Ilusión espectral silvestre",
         "cost": 4,
         "range": 2,
-        "effect": "Reduce 1 PA del objetivo si está en rango."
+        "effect": "Crea una ilusión espectral con la energía silvestre del Kitsu."
+      },
+      {
+        "name": "Argucia del Kitsu silvestre",
+        "cost": 4,
+        "range": 0,
+        "effect": "Maniobra evasiva imbuida con la afinidad silvestre del Kitsu."
       }
     ]
   },
@@ -494,16 +548,22 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Espejismo Kitsu",
+        "name": "Kitsnición nishiki",
         "cost": 3,
-        "range": 0,
-        "effect": "Gana 1 PM hasta el final del turno."
+        "range": 3,
+        "effect": "Daño elemental adaptado al color nishiki del Kitsu."
       },
       {
-        "name": "Fuego Fatuo Combinado",
+        "name": "Ilusión espectral nishiki",
         "cost": 4,
-        "range": 4,
-        "effect": "Daño elemental doble de las variantes fusionadas."
+        "range": 2,
+        "effect": "Crea una ilusión espectral con la energía nishiki del Kitsu."
+      },
+      {
+        "name": "Argucia del Kitsu nishiki",
+        "cost": 4,
+        "range": 0,
+        "effect": "Maniobra evasiva imbuida con la afinidad nishiki del Kitsu."
       }
     ]
   },
@@ -522,16 +582,22 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Espejismo Kitsu",
+        "name": "Kitsnición penta",
         "cost": 3,
-        "range": 0,
-        "effect": "Gana 1 PM hasta el final del turno."
+        "range": 3,
+        "effect": "Daño elemental adaptado al color penta del Kitsu."
       },
       {
-        "name": "Fuego Fatuo Combinado",
+        "name": "Ilusión espectral penta",
         "cost": 4,
-        "range": 4,
-        "effect": "Daño elemental doble de las variantes fusionadas."
+        "range": 2,
+        "effect": "Crea una ilusión espectral con la energía penta del Kitsu."
+      },
+      {
+        "name": "Argucia del Kitsu penta",
+        "cost": 4,
+        "range": 0,
+        "effect": "Maniobra evasiva imbuida con la afinidad penta del Kitsu."
       }
     ]
   },
@@ -550,16 +616,22 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Espejismo Kitsu",
+        "name": "Kitsnición yin yang",
         "cost": 3,
-        "range": 0,
-        "effect": "Gana 1 PM hasta el final del turno."
+        "range": 3,
+        "effect": "Daño elemental adaptado al color yin yang del Kitsu."
       },
       {
-        "name": "Fuego Fatuo Combinado",
+        "name": "Ilusión espectral yin yang",
         "cost": 4,
-        "range": 4,
-        "effect": "Daño elemental doble de las variantes fusionadas."
+        "range": 2,
+        "effect": "Crea una ilusión espectral con la energía yin yang del Kitsu."
+      },
+      {
+        "name": "Argucia del Kitsu yin yang",
+        "cost": 4,
+        "range": 0,
+        "effect": "Maniobra evasiva imbuida con la afinidad yin yang del Kitsu."
       }
     ]
   },
@@ -578,16 +650,22 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Ritual Kitsune",
-        "cost": 4,
+        "name": "Kitsnición silvestre evolucionado",
+        "cost": 3,
         "range": 3,
-        "effect": "Daño y recuperación menor de PdE."
+        "effect": "Daño elemental adaptado al color silvestre evolucionado del Kitsu."
       },
       {
-        "name": "Cola Espiritual",
-        "cost": 5,
+        "name": "Ilusión espectral silvestre evolucionado",
+        "cost": 4,
         "range": 2,
-        "effect": "Golpe fuerte que puede retirar 1 PM."
+        "effect": "Crea una ilusión espectral con la energía silvestre evolucionado del Kitsu."
+      },
+      {
+        "name": "Argucia del Kitsu silvestre evolucionado",
+        "cost": 4,
+        "range": 0,
+        "effect": "Maniobra evasiva imbuida con la afinidad silvestre evolucionado del Kitsu."
       }
     ]
   },
@@ -606,16 +684,22 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Ritual Kitsune",
-        "cost": 4,
+        "name": "Kitsnición kumiawase",
+        "cost": 3,
         "range": 3,
-        "effect": "Daño y recuperación menor de PdE."
+        "effect": "Daño elemental adaptado al color kumiawase del Kitsu."
       },
       {
-        "name": "Cola Espiritual",
-        "cost": 5,
+        "name": "Ilusión espectral kumiawase",
+        "cost": 4,
         "range": 2,
-        "effect": "Golpe fuerte que puede retirar 1 PM."
+        "effect": "Crea una ilusión espectral con la energía kumiawase del Kitsu."
+      },
+      {
+        "name": "Argucia del Kitsu kumiawase",
+        "cost": 4,
+        "range": 0,
+        "effect": "Maniobra evasiva imbuida con la afinidad kumiawase del Kitsu."
       }
     ]
   },
@@ -634,16 +718,22 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Ritual Kitsune",
-        "cost": 4,
+        "name": "Kitsnición nishiki evolucionado",
+        "cost": 3,
         "range": 3,
-        "effect": "Daño y recuperación menor de PdE."
+        "effect": "Daño elemental adaptado al color nishiki evolucionado del Kitsu."
       },
       {
-        "name": "Cola Espiritual",
-        "cost": 5,
+        "name": "Ilusión espectral nishiki evolucionado",
+        "cost": 4,
         "range": 2,
-        "effect": "Golpe fuerte que puede retirar 1 PM."
+        "effect": "Crea una ilusión espectral con la energía nishiki evolucionado del Kitsu."
+      },
+      {
+        "name": "Argucia del Kitsu nishiki evolucionado",
+        "cost": 4,
+        "range": 0,
+        "effect": "Maniobra evasiva imbuida con la afinidad nishiki evolucionado del Kitsu."
       }
     ]
   },
@@ -662,16 +752,22 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Ritual Kitsune",
-        "cost": 4,
+        "name": "Kitsnición penta evolucionado",
+        "cost": 3,
         "range": 3,
-        "effect": "Daño y recuperación menor de PdE."
+        "effect": "Daño elemental adaptado al color penta evolucionado del Kitsu."
       },
       {
-        "name": "Cola Espiritual",
-        "cost": 5,
+        "name": "Ilusión espectral penta evolucionado",
+        "cost": 4,
         "range": 2,
-        "effect": "Golpe fuerte que puede retirar 1 PM."
+        "effect": "Crea una ilusión espectral con la energía penta evolucionado del Kitsu."
+      },
+      {
+        "name": "Argucia del Kitsu penta evolucionado",
+        "cost": 4,
+        "range": 0,
+        "effect": "Maniobra evasiva imbuida con la afinidad penta evolucionado del Kitsu."
       }
     ]
   },
@@ -690,16 +786,22 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Ritual Kitsune",
-        "cost": 4,
+        "name": "Kitsnición yin yang evolucionado",
+        "cost": 3,
         "range": 3,
-        "effect": "Daño y recuperación menor de PdE."
+        "effect": "Daño elemental adaptado al color yin yang evolucionado del Kitsu."
       },
       {
-        "name": "Cola Espiritual",
-        "cost": 5,
+        "name": "Ilusión espectral yin yang evolucionado",
+        "cost": 4,
         "range": 2,
-        "effect": "Golpe fuerte que puede retirar 1 PM."
+        "effect": "Crea una ilusión espectral con la energía yin yang evolucionado del Kitsu."
+      },
+      {
+        "name": "Argucia del Kitsu yin yang evolucionado",
+        "cost": 4,
+        "range": 0,
+        "effect": "Maniobra evasiva imbuida con la afinidad yin yang evolucionado del Kitsu."
       }
     ]
   },

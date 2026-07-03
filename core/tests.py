@@ -84,22 +84,24 @@ class KitsuCatalogDataTests(SimpleTestCase):
 
     def test_kitsu_reference_spells_are_defined(self):
         cards = {card['name']: card for card in serialized_cards_seed_data()}
+        kitsus = [card for card in cards.values() if card['family'] == 'Kitsus']
 
-        for name in (
-            'Kitsu nishiki',
-            'Kitsu penta',
-            'Kitsu yin yang',
-            'Kitsu silvestre evolucionado',
-            'Kitsu kumiawase',
-            'Kitsu nishiki evolucionado',
-            'Kitsu penta evolucionado',
-            'Kitsu yin yang evolucionado',
-        ):
-            with self.subTest(card=name):
-                self.assertGreaterEqual(len(cards[name]['spells']), 2)
-                self.assertIn('name', cards[name]['spells'][0])
-                self.assertIn('cost', cards[name]['spells'][0])
-                self.assertIn('range', cards[name]['spells'][0])
+        for card in kitsus:
+            spell_suffix = card['name'].removeprefix('Kitsu ')
+
+            with self.subTest(card=card['name']):
+                self.assertEqual(
+                    [spell['name'] for spell in card['spells']],
+                    [
+                        f'Kitsnición {spell_suffix}',
+                        f'Ilusión espectral {spell_suffix}',
+                        f'Argucia del Kitsu {spell_suffix}',
+                    ],
+                )
+                self.assertEqual(len(card['spells']), 3)
+                for spell in card['spells']:
+                    self.assertIn('cost', spell)
+                    self.assertIn('range', spell)
 
 
 class BackendlessModeTests(TestCase):

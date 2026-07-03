@@ -868,32 +868,6 @@ body, .panel, .card, .board-header, .board-footer, .log-item, .small, input, sel
   border: 0;
 }
 
-.collapsible-panel > summary,
-.catalog-details summary {
-  cursor: pointer;
-  list-style: none;
-  font-weight: 800;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  margin-bottom: 10px;
-}
-
-.collapsible-section {
-  display: grid;
-  gap: 10px;
-  min-width: 0;
-}
-
-.collapsible-panel:not([open]) > .collapsible-section {
-  display: none;
-}
-
-.collapsible-panel > summary::-webkit-details-marker { display: none; }
-.collapsible-panel > summary::after,
-.catalog-details summary::after { content: "▾"; margin-left: 8px; color: var(--accent-soft); }
-.collapsible-panel:not([open]) > summary::after,
-.catalog-details:not([open]) summary::after { content: "▸"; }
-
 .card-game-shell {
   width: min(100%, 1800px);
   max-width: none;
@@ -1080,7 +1054,7 @@ body, .panel, .card, .board-header, .board-footer, .log-item, .small, input, sel
   100% { opacity: 0; transform: translateY(-34px) scale(.96); }
 }
 
-/* Mobile keeps the information columns as side drop-down panels instead of stacking them below the board. */
+/* Mobile keeps the information columns beside the board without summary dropdowns. */
 @media (max-width: 640px) {
   body { overflow-x: auto; }
   .arcade-shell.card-game-shell {
@@ -1096,7 +1070,6 @@ body, .panel, .card, .board-header, .board-footer, .log-item, .small, input, sel
     align-content: start;
   }
   .intro-panel { display: none; }
-  .collapsible-panel, .catalog-details { max-height: calc(100vh - 24px); overflow: auto; }
   .catalog { grid-template-columns: 1fr; }
   .card { padding: 8px; }
   .card-image-catalog { height: 88px; }
@@ -1150,4 +1123,102 @@ body, .panel, .card, .board-header, .board-footer, .log-item, .small, input, sel
 .catalog .spell-summary {
   max-height: 4.6em;
   overflow: auto;
+}
+
+/* Dofus-inspired top navbar replacing lateral dropdown summaries. */
+html { scroll-behavior: smooth; }
+body { padding-top: 82px; }
+.site-navbar {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 70px;
+  padding: 10px clamp(14px, 3vw, 38px);
+  border-bottom: 4px solid #8fbd23;
+  background: linear-gradient(180deg, rgba(45, 42, 37, .98), rgba(27, 25, 22, .98));
+  box-shadow: 0 14px 28px rgba(0, 0, 0, .34), inset 0 -1px 0 rgba(255,255,255,.06);
+}
+.site-navbar::after {
+  content: '';
+  position: absolute;
+  left: clamp(52px, 13vw, 220px);
+  bottom: -13px;
+  width: 28px;
+  height: 28px;
+  background: #8fbd23;
+  transform: rotate(45deg);
+  border-radius: 3px;
+  z-index: -1;
+}
+.navbar-brand,
+.navbar-links a {
+  color: #f7f3dc;
+  text-decoration: none;
+  font-weight: 900;
+  text-shadow: 0 2px 0 rgba(0,0,0,.35);
+}
+.navbar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: max-content;
+  font-size: clamp(1.05rem, 2vw, 1.45rem);
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+.brand-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  color: #263114;
+  background: linear-gradient(135deg, #c8ee3b, #86b51e);
+  box-shadow: inset 0 2px 0 rgba(255,255,255,.35), 0 8px 16px rgba(0,0,0,.28);
+}
+.navbar-links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.navbar-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: .65rem .9rem;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  font-size: .95rem;
+  background: transparent;
+  transition: background-color .16s ease, border-color .16s ease, color .16s ease, transform .16s ease;
+}
+.navbar-links a:hover,
+.navbar-links a:focus-visible {
+  color: #25320f;
+  background: linear-gradient(180deg, #c7ed37, #8fbf20);
+  border-color: rgba(255,255,255,.28);
+  transform: translateY(-1px);
+  outline: none;
+}
+.all-options-panel,
+.duel-status-panel { display: grid; gap: 12px; }
+.all-options-panel > .game-info-block,
+.all-options-panel > .stack,
+.all-options-panel > .panel-heading,
+.all-options-panel > .catalog-toolbar,
+.all-options-panel > .catalog,
+.all-options-panel > .card-row,
+.duel-status-panel > * { min-width: 0; }
+
+@media (max-width: 760px) {
+  body { padding-top: 118px; }
+  .site-navbar { align-items: flex-start; flex-direction: column; gap: 8px; }
+  .navbar-links { justify-content: flex-start; width: 100%; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 2px; }
+  .navbar-links a { min-width: max-content; }
 }

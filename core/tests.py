@@ -38,6 +38,48 @@ class CardSeedSourceValidationTests(SimpleTestCase):
                 self.assertEqual(card['action_points'], 7)
                 self.assertEqual(card['movement_points'], 4)
 
+    def test_escarahoja_spells_match_reference_lists(self):
+        cards = {card['name']: card for card in load_cards_seed_data()}
+
+        expected_base_spells = [
+            'Escarainvoc',
+            'Escarafuerza',
+            'Dispersión Elemental',
+            'Espíritu Elemental',
+            'Fusión Escarahoja',
+        ]
+        for name in [
+            'Escarahoja anaranjada',
+            'Escarahoja limonada',
+            'Escarahoja sonrosada',
+            'Escarahoja tostada',
+            'Escarahoja violeta',
+        ]:
+            with self.subTest(card=name):
+                self.assertEqual([spell['name'] for spell in cards[name]['spells']], expected_base_spells)
+
+        expected_fusion_spells = [
+            'Inmovilización',
+            'Escarafuerza',
+            'Elemental Dispersión',
+            'Desaparición en Grupo',
+            'Evolución',
+        ]
+        for name in [
+            'Escarahoja duocromada',
+            'Escarahoja mecanizada',
+            'Escarahoja tricolor',
+            'Escarahoja variopinta',
+        ]:
+            with self.subTest(card=name):
+                self.assertEqual([spell['name'] for spell in cards[name]['spells']], expected_fusion_spells)
+                self.assertIn('Sólo puede utilizarla una Escarahoja fusionada', cards[name]['spells'][-1]['effect'])
+
+        self.assertEqual(
+            [spell['name'] for spell in cards['Escarasubjefe Bronce']['spells']],
+            ['Liberación', 'Cura Afrodisíaca', 'Picota', 'Humo Calcinador'],
+        )
+
 
 class KitsuCatalogDataTests(SimpleTestCase):
     def test_kitsu_fusions_match_reference_stats(self):
@@ -59,6 +101,8 @@ class KitsuCatalogDataTests(SimpleTestCase):
                 self.assertEqual(card['shell'], shell)
                 self.assertEqual(card['action_points'], action_points)
                 self.assertEqual(card['movement_points'], movement_points)
+                self.assertEqual(card['hp_min'], hp)
+                self.assertEqual(card['hp_max'], hp)
 
     def test_kitsu_evolutions_match_reference_stats(self):
         cards = {card['name']: card for card in load_cards_seed_data()}

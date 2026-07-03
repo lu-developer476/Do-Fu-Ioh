@@ -16,16 +16,16 @@
     "hp_max": 85,
     "spells": [
       {
-        "name": "Picotazo",
+        "name": "Picoteo albino",
         "cost": 2,
         "range": 1,
-        "effect": "Daño cuerpo a cuerpo de aire/tierra adaptado del picotazo de Píos."
+        "effect": "Daño cuerpo a cuerpo del picoteo característico del Pío albino."
       },
       {
-        "name": "Plumaje Motivador",
+        "name": "Plumaje albino",
         "cost": 3,
         "range": 0,
-        "effect": "+1 PA propio este turno si aún no atacó."
+        "effect": "Efecto de apoyo o defensa basado en el plumaje albino del Pío."
       }
     ]
   },
@@ -46,16 +46,16 @@
     "hp_max": 85,
     "spells": [
       {
-        "name": "Picotazo",
+        "name": "Picoteo anaranjado",
         "cost": 2,
         "range": 1,
-        "effect": "Daño cuerpo a cuerpo de aire/tierra adaptado del picotazo de Píos."
+        "effect": "Daño cuerpo a cuerpo del picoteo característico del Pío anaranjado."
       },
       {
-        "name": "Plumaje Motivador",
+        "name": "Plumaje anaranjado",
         "cost": 3,
         "range": 0,
-        "effect": "+1 PA propio este turno si aún no atacó."
+        "effect": "Efecto de apoyo o defensa basado en el plumaje anaranjado del Pío."
       }
     ]
   },
@@ -76,16 +76,16 @@
     "hp_max": 85,
     "spells": [
       {
-        "name": "Picotazo",
+        "name": "Picoteo castaño",
         "cost": 2,
         "range": 1,
-        "effect": "Daño cuerpo a cuerpo de aire/tierra adaptado del picotazo de Píos."
+        "effect": "Daño cuerpo a cuerpo del picoteo característico del Pío castaño."
       },
       {
-        "name": "Plumaje Motivador",
+        "name": "Plumaje castaño",
         "cost": 3,
         "range": 0,
-        "effect": "+1 PA propio este turno si aún no atacó."
+        "effect": "Efecto de apoyo o defensa basado en el plumaje castaño del Pío."
       }
     ]
   },
@@ -106,16 +106,16 @@
     "hp_max": 85,
     "spells": [
       {
-        "name": "Picotazo",
+        "name": "Picoteo negruzco",
         "cost": 2,
         "range": 1,
-        "effect": "Daño cuerpo a cuerpo de aire/tierra adaptado del picotazo de Píos."
+        "effect": "Daño cuerpo a cuerpo del picoteo característico del Pío negruzco."
       },
       {
-        "name": "Plumaje Motivador",
+        "name": "Plumaje negruzco",
         "cost": 3,
         "range": 0,
-        "effect": "+1 PA propio este turno si aún no atacó."
+        "effect": "Efecto de apoyo o defensa basado en el plumaje negruzco del Pío."
       }
     ]
   },
@@ -136,16 +136,28 @@
     "hp_max": 105,
     "spells": [
       {
-        "name": "Picotazo Cromático",
+        "name": "Picoteo otoñal",
         "cost": 3,
         "range": 1,
-        "effect": "Golpe elemental según la variante fusionada."
+        "effect": "Daño cuerpo a cuerpo del picoteo característico del Pío otoñal."
       },
       {
-        "name": "Aleteo Disperso",
+        "name": "Plumaje otoñal",
         "cost": 4,
         "range": 2,
-        "effect": "Daño leve y empuja 1 casilla."
+        "effect": "Efecto de apoyo o defensa basado en el plumaje otoñal del Pío."
+      },
+      {
+        "name": "Fusión Pío",
+        "cost": 3,
+        "range": 0,
+        "effect": "Permite fusionarse sólo con el Pío compatible indicado por la descripción del Pío fusionado."
+      },
+      {
+        "name": "Evolución",
+        "cost": 5,
+        "range": 0,
+        "effect": "Sólo puede utilizarla un Pío fusionado en el campo para evolucionar a su forma superior correspondiente."
       }
     ]
   },
@@ -166,16 +178,28 @@
     "hp_max": 105,
     "spells": [
       {
-        "name": "Picotazo Cromático",
+        "name": "Picoteo combinado",
         "cost": 3,
         "range": 1,
-        "effect": "Golpe elemental según la variante fusionada."
+        "effect": "Daño cuerpo a cuerpo del picoteo característico del Pío combinado."
       },
       {
-        "name": "Aleteo Disperso",
+        "name": "Plumaje combinado",
         "cost": 4,
         "range": 2,
-        "effect": "Daño leve y empuja 1 casilla."
+        "effect": "Efecto de apoyo o defensa basado en el plumaje combinado del Pío."
+      },
+      {
+        "name": "Fusión Pío",
+        "cost": 3,
+        "range": 0,
+        "effect": "Permite fusionarse sólo con el Pío compatible indicado por la descripción del Pío fusionado."
+      },
+      {
+        "name": "Evolución",
+        "cost": 5,
+        "range": 0,
+        "effect": "Sólo puede utilizarla un Pío fusionado en el campo para evolucionar a su forma superior correspondiente."
       }
     ]
   },
@@ -196,16 +220,16 @@
     "hp_max": 175,
     "spells": [
       {
-        "name": "Graznido Real",
+        "name": "Picoteo píoloro",
         "cost": 4,
         "range": 3,
-        "effect": "Daño de aire en línea y revela objetivos cercanos."
+        "effect": "Daño cuerpo a cuerpo del picoteo característico del Pío píoloro."
       },
       {
-        "name": "Picotazo Majestuoso",
+        "name": "Plumaje píoloro",
         "cost": 5,
         "range": 1,
-        "effect": "Gran daño cuerpo a cuerpo; aumenta el daño si el objetivo perdió PdE."
+        "effect": "Efecto de apoyo o defensa basado en el plumaje píoloro del Pío."
       }
     ]
   },
@@ -565,7 +589,9 @@
         "range": 0,
         "effect": "Maniobra evasiva imbuida con la afinidad nishiki del Kitsu."
       }
-    ]
+    ],
+    "hp_min": 1800,
+    "hp_max": 1800
   },
   {
     "name": "Kitsu penta",
@@ -599,7 +625,9 @@
         "range": 0,
         "effect": "Maniobra evasiva imbuida con la afinidad penta del Kitsu."
       }
-    ]
+    ],
+    "hp_min": 1800,
+    "hp_max": 1800
   },
   {
     "name": "Kitsu yin yang",
@@ -633,7 +661,9 @@
         "range": 0,
         "effect": "Maniobra evasiva imbuida con la afinidad yin yang del Kitsu."
       }
-    ]
+    ],
+    "hp_min": 1800,
+    "hp_max": 1800
   },
   {
     "name": "Kitsu silvestre evolucionado",
@@ -822,16 +852,16 @@
     "hp_max": 850,
     "spells": [
       {
-        "name": "Absorción Gelatinosa",
+        "name": "Gelpikes",
         "cost": 3,
-        "range": 1,
-        "effect": "Daño neutral y recupera una pequeña cantidad de PdE."
+        "range": 3,
+        "effect": "Proyectiles gelatinosos que infligen daño a distancia."
       },
       {
-        "name": "Salto Pegajoso",
-        "cost": 2,
+        "name": "Hueso de durazno",
+        "cost": 4,
         "range": 2,
-        "effect": "Ataque corto que marca la celda con baba."
+        "effect": "Golpe característico de gelatina con energía de durazno."
       }
     ]
   },
@@ -852,16 +882,16 @@
     "hp_max": 850,
     "spells": [
       {
-        "name": "Absorción Gelatinosa",
+        "name": "Gelpikes",
         "cost": 3,
-        "range": 1,
-        "effect": "Daño neutral y recupera una pequeña cantidad de PdE."
+        "range": 3,
+        "effect": "Proyectiles gelatinosos que infligen daño a distancia."
       },
       {
-        "name": "Salto Pegajoso",
-        "cost": 2,
+        "name": "Hueso de frambuesa",
+        "cost": 4,
         "range": 2,
-        "effect": "Ataque corto que marca la celda con baba."
+        "effect": "Golpe característico de gelatina con energía de frambuesa."
       }
     ]
   },
@@ -882,16 +912,16 @@
     "hp_max": 850,
     "spells": [
       {
-        "name": "Absorción Gelatinosa",
+        "name": "Gelpikes",
         "cost": 3,
-        "range": 1,
-        "effect": "Daño neutral y recupera una pequeña cantidad de PdE."
+        "range": 3,
+        "effect": "Proyectiles gelatinosos que infligen daño a distancia."
       },
       {
-        "name": "Salto Pegajoso",
-        "cost": 2,
+        "name": "Hueso de lactosada",
+        "cost": 4,
         "range": 2,
-        "effect": "Ataque corto que marca la celda con baba."
+        "effect": "Golpe característico de gelatina con energía de lactosada."
       }
     ]
   },
@@ -912,16 +942,16 @@
     "hp_max": 850,
     "spells": [
       {
-        "name": "Absorción Gelatinosa",
+        "name": "Gelpikes",
         "cost": 3,
-        "range": 1,
-        "effect": "Daño neutral y recupera una pequeña cantidad de PdE."
+        "range": 3,
+        "effect": "Proyectiles gelatinosos que infligen daño a distancia."
       },
       {
-        "name": "Salto Pegajoso",
-        "cost": 2,
+        "name": "Hueso de moka",
+        "cost": 4,
         "range": 2,
-        "effect": "Ataque corto que marca la celda con baba."
+        "effect": "Golpe característico de gelatina con energía de moka."
       }
     ]
   },
@@ -942,16 +972,16 @@
     "hp_max": 850,
     "spells": [
       {
-        "name": "Absorción Gelatinosa",
+        "name": "Gelpikes",
         "cost": 3,
-        "range": 1,
-        "effect": "Daño neutral y recupera una pequeña cantidad de PdE."
+        "range": 3,
+        "effect": "Proyectiles gelatinosos que infligen daño a distancia."
       },
       {
-        "name": "Salto Pegajoso",
-        "cost": 2,
+        "name": "Hueso de nociva",
+        "cost": 4,
         "range": 2,
-        "effect": "Ataque corto que marca la celda con baba."
+        "effect": "Golpe característico de gelatina con energía de nociva."
       }
     ]
   },
@@ -972,16 +1002,16 @@
     "hp_max": 850,
     "spells": [
       {
-        "name": "Absorción Gelatinosa",
+        "name": "Gelpikes",
         "cost": 3,
-        "range": 1,
-        "effect": "Daño neutral y recupera una pequeña cantidad de PdE."
+        "range": 3,
+        "effect": "Proyectiles gelatinosos que infligen daño a distancia."
       },
       {
-        "name": "Salto Pegajoso",
-        "cost": 2,
+        "name": "Hueso de obscura",
+        "cost": 4,
         "range": 2,
-        "effect": "Ataque corto que marca la celda con baba."
+        "effect": "Golpe característico de gelatina con energía de obscura."
       }
     ]
   },
@@ -1002,16 +1032,16 @@
     "hp_max": 850,
     "spells": [
       {
-        "name": "Absorción Gelatinosa",
+        "name": "Gelpikes",
         "cost": 3,
-        "range": 1,
-        "effect": "Daño neutral y recupera una pequeña cantidad de PdE."
+        "range": 3,
+        "effect": "Proyectiles gelatinosos que infligen daño a distancia."
       },
       {
-        "name": "Salto Pegajoso",
-        "cost": 2,
+        "name": "Hueso de uva",
+        "cost": 4,
         "range": 2,
-        "effect": "Ataque corto que marca la celda con baba."
+        "effect": "Golpe característico de gelatina con energía de uva."
       }
     ]
   },
@@ -1030,16 +1060,22 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Explosión Real",
-        "cost": 5,
-        "range": 3,
-        "effect": "Daño en zona pequeña alrededor del objetivo."
+        "name": "Helada Protectora",
+        "cost": 3,
+        "range": 0,
+        "effect": "Refuerza la protección de la Gelatina Real con una capa helada."
       },
       {
-        "name": "Corona Gelatinosa",
+        "name": "Invocación de Gelatina de Durazno",
         "cost": 4,
-        "range": 0,
-        "effect": "Regenera PdE y mejora el siguiente hechizo."
+        "range": 1,
+        "effect": "Invoca una Gelatina de Durazno aliada."
+      },
+      {
+        "name": "Hueso de durazno",
+        "cost": 4,
+        "range": 2,
+        "effect": "Golpe característico de gelatina con energía de durazno."
       }
     ]
   },
@@ -1058,16 +1094,22 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Explosión Real",
-        "cost": 5,
-        "range": 3,
-        "effect": "Daño en zona pequeña alrededor del objetivo."
+        "name": "Helada Protectora",
+        "cost": 3,
+        "range": 0,
+        "effect": "Refuerza la protección de la Gelatina Real con una capa helada."
       },
       {
-        "name": "Corona Gelatinosa",
+        "name": "Invocación de Gelatina de Frambuesa",
         "cost": 4,
-        "range": 0,
-        "effect": "Regenera PdE y mejora el siguiente hechizo."
+        "range": 1,
+        "effect": "Invoca una Gelatina de Frambuesa aliada."
+      },
+      {
+        "name": "Hueso de frambuesa",
+        "cost": 4,
+        "range": 2,
+        "effect": "Golpe característico de gelatina con energía de frambuesa."
       }
     ]
   },
@@ -1086,16 +1128,22 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Explosión Real",
-        "cost": 5,
-        "range": 3,
-        "effect": "Daño en zona pequeña alrededor del objetivo."
+        "name": "Helada Protectora",
+        "cost": 3,
+        "range": 0,
+        "effect": "Refuerza la protección de la Gelatina Real con una capa helada."
       },
       {
-        "name": "Corona Gelatinosa",
+        "name": "Invocación de Gelatina lactosada",
         "cost": 4,
-        "range": 0,
-        "effect": "Regenera PdE y mejora el siguiente hechizo."
+        "range": 1,
+        "effect": "Invoca una Gelatina lactosada aliada."
+      },
+      {
+        "name": "Hueso de lactosada",
+        "cost": 4,
+        "range": 2,
+        "effect": "Golpe característico de gelatina con energía de lactosada."
       }
     ]
   },
@@ -1114,16 +1162,22 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Explosión Real",
-        "cost": 5,
-        "range": 3,
-        "effect": "Daño en zona pequeña alrededor del objetivo."
+        "name": "Helada Protectora",
+        "cost": 3,
+        "range": 0,
+        "effect": "Refuerza la protección de la Gelatina Real con una capa helada."
       },
       {
-        "name": "Corona Gelatinosa",
+        "name": "Invocación de Gelatina moka",
         "cost": 4,
-        "range": 0,
-        "effect": "Regenera PdE y mejora el siguiente hechizo."
+        "range": 1,
+        "effect": "Invoca una Gelatina moka aliada."
+      },
+      {
+        "name": "Hueso de moka",
+        "cost": 4,
+        "range": 2,
+        "effect": "Golpe característico de gelatina con energía de moka."
       }
     ]
   },
@@ -1142,16 +1196,22 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Explosión Real",
-        "cost": 5,
-        "range": 3,
-        "effect": "Daño en zona pequeña alrededor del objetivo."
+        "name": "Helada Protectora",
+        "cost": 3,
+        "range": 0,
+        "effect": "Refuerza la protección de la Gelatina Real con una capa helada."
       },
       {
-        "name": "Corona Gelatinosa",
+        "name": "Invocación de Gelatina nociva",
         "cost": 4,
-        "range": 0,
-        "effect": "Regenera PdE y mejora el siguiente hechizo."
+        "range": 1,
+        "effect": "Invoca una Gelatina nociva aliada."
+      },
+      {
+        "name": "Hueso de nociva",
+        "cost": 4,
+        "range": 2,
+        "effect": "Golpe característico de gelatina con energía de nociva."
       }
     ]
   },
@@ -1170,16 +1230,22 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Explosión Real",
-        "cost": 5,
-        "range": 3,
-        "effect": "Daño en zona pequeña alrededor del objetivo."
+        "name": "Helada Protectora",
+        "cost": 3,
+        "range": 0,
+        "effect": "Refuerza la protección de la Gelatina Real con una capa helada."
       },
       {
-        "name": "Corona Gelatinosa",
+        "name": "Invocación de Gelatina obscura",
         "cost": 4,
-        "range": 0,
-        "effect": "Regenera PdE y mejora el siguiente hechizo."
+        "range": 1,
+        "effect": "Invoca una Gelatina obscura aliada."
+      },
+      {
+        "name": "Hueso de obscura",
+        "cost": 4,
+        "range": 2,
+        "effect": "Golpe característico de gelatina con energía de obscura."
       }
     ]
   },
@@ -1198,16 +1264,22 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Explosión Real",
-        "cost": 5,
-        "range": 3,
-        "effect": "Daño en zona pequeña alrededor del objetivo."
+        "name": "Helada Protectora",
+        "cost": 3,
+        "range": 0,
+        "effect": "Refuerza la protección de la Gelatina Real con una capa helada."
       },
       {
-        "name": "Corona Gelatinosa",
+        "name": "Invocación de Gelatina de Uva",
         "cost": 4,
-        "range": 0,
-        "effect": "Regenera PdE y mejora el siguiente hechizo."
+        "range": 1,
+        "effect": "Invoca una Gelatina de Uva aliada."
+      },
+      {
+        "name": "Hueso de uva",
+        "cost": 4,
+        "range": 2,
+        "effect": "Golpe característico de gelatina con energía de uva."
       }
     ]
   },
@@ -1228,16 +1300,34 @@
     "hp_max": 450,
     "spells": [
       {
-        "name": "Carga de Escarahoja",
+        "name": "Escarainvoc",
         "cost": 3,
-        "range": 2,
-        "effect": "Daño cuerpo a cuerpo extendido; si avanzó este turno causa más daño."
+        "range": 3,
+        "effect": "Invoca o coordina una presencia escarahoja aliada según el color de la criatura."
       },
       {
-        "name": "Coraza Elemental",
+        "name": "Escarafuerza",
         "cost": 3,
         "range": 0,
-        "effect": "Recupera PdE según su variante elemental."
+        "effect": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón elemental."
+      },
+      {
+        "name": "Dispersión Elemental",
+        "cost": 4,
+        "range": 3,
+        "effect": "Dispersa energía de su elemento para dañar o presionar una zona cercana."
+      },
+      {
+        "name": "Espíritu Elemental",
+        "cost": 3,
+        "range": 0,
+        "effect": "Canaliza el espíritu de su color para recuperar PdE y sostener el combate."
+      },
+      {
+        "name": "Fusión Escarahoja",
+        "cost": 5,
+        "range": 1,
+        "effect": "Permite fusionarse sólo con la Escarahoja compatible indicada por las descripciones de las Escarahojas fusionadas."
       }
     ]
   },
@@ -1258,16 +1348,34 @@
     "hp_max": 450,
     "spells": [
       {
-        "name": "Carga de Escarahoja",
+        "name": "Escarainvoc",
         "cost": 3,
-        "range": 2,
-        "effect": "Daño cuerpo a cuerpo extendido; si avanzó este turno causa más daño."
+        "range": 3,
+        "effect": "Invoca o coordina una presencia escarahoja aliada según el color de la criatura."
       },
       {
-        "name": "Coraza Elemental",
+        "name": "Escarafuerza",
         "cost": 3,
         "range": 0,
-        "effect": "Recupera PdE según su variante elemental."
+        "effect": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón elemental."
+      },
+      {
+        "name": "Dispersión Elemental",
+        "cost": 4,
+        "range": 3,
+        "effect": "Dispersa energía de su elemento para dañar o presionar una zona cercana."
+      },
+      {
+        "name": "Espíritu Elemental",
+        "cost": 3,
+        "range": 0,
+        "effect": "Canaliza el espíritu de su color para recuperar PdE y sostener el combate."
+      },
+      {
+        "name": "Fusión Escarahoja",
+        "cost": 5,
+        "range": 1,
+        "effect": "Permite fusionarse sólo con la Escarahoja compatible indicada por las descripciones de las Escarahojas fusionadas."
       }
     ]
   },
@@ -1288,16 +1396,34 @@
     "hp_max": 450,
     "spells": [
       {
-        "name": "Carga de Escarahoja",
+        "name": "Escarainvoc",
         "cost": 3,
-        "range": 2,
-        "effect": "Daño cuerpo a cuerpo extendido; si avanzó este turno causa más daño."
+        "range": 3,
+        "effect": "Invoca o coordina una presencia escarahoja aliada según el color de la criatura."
       },
       {
-        "name": "Coraza Elemental",
+        "name": "Escarafuerza",
         "cost": 3,
         "range": 0,
-        "effect": "Recupera PdE según su variante elemental."
+        "effect": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón elemental."
+      },
+      {
+        "name": "Dispersión Elemental",
+        "cost": 4,
+        "range": 3,
+        "effect": "Dispersa energía de su elemento para dañar o presionar una zona cercana."
+      },
+      {
+        "name": "Espíritu Elemental",
+        "cost": 3,
+        "range": 0,
+        "effect": "Canaliza el espíritu de su color para recuperar PdE y sostener el combate."
+      },
+      {
+        "name": "Fusión Escarahoja",
+        "cost": 5,
+        "range": 1,
+        "effect": "Permite fusionarse sólo con la Escarahoja compatible indicada por las descripciones de las Escarahojas fusionadas."
       }
     ]
   },
@@ -1318,16 +1444,34 @@
     "hp_max": 450,
     "spells": [
       {
-        "name": "Carga de Escarahoja",
+        "name": "Escarainvoc",
         "cost": 3,
-        "range": 2,
-        "effect": "Daño cuerpo a cuerpo extendido; si avanzó este turno causa más daño."
+        "range": 3,
+        "effect": "Invoca o coordina una presencia escarahoja aliada según el color de la criatura."
       },
       {
-        "name": "Coraza Elemental",
+        "name": "Escarafuerza",
         "cost": 3,
         "range": 0,
-        "effect": "Recupera PdE según su variante elemental."
+        "effect": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón elemental."
+      },
+      {
+        "name": "Dispersión Elemental",
+        "cost": 4,
+        "range": 3,
+        "effect": "Dispersa energía de su elemento para dañar o presionar una zona cercana."
+      },
+      {
+        "name": "Espíritu Elemental",
+        "cost": 3,
+        "range": 0,
+        "effect": "Canaliza el espíritu de su color para recuperar PdE y sostener el combate."
+      },
+      {
+        "name": "Fusión Escarahoja",
+        "cost": 5,
+        "range": 1,
+        "effect": "Permite fusionarse sólo con la Escarahoja compatible indicada por las descripciones de las Escarahojas fusionadas."
       }
     ]
   },
@@ -1348,16 +1492,34 @@
     "hp_max": 450,
     "spells": [
       {
-        "name": "Carga de Escarahoja",
+        "name": "Escarainvoc",
         "cost": 3,
-        "range": 2,
-        "effect": "Daño cuerpo a cuerpo extendido; si avanzó este turno causa más daño."
+        "range": 3,
+        "effect": "Invoca o coordina una presencia escarahoja aliada según el color de la criatura."
       },
       {
-        "name": "Coraza Elemental",
+        "name": "Escarafuerza",
         "cost": 3,
         "range": 0,
-        "effect": "Recupera PdE según su variante elemental."
+        "effect": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón elemental."
+      },
+      {
+        "name": "Dispersión Elemental",
+        "cost": 4,
+        "range": 3,
+        "effect": "Dispersa energía de su elemento para dañar o presionar una zona cercana."
+      },
+      {
+        "name": "Espíritu Elemental",
+        "cost": 3,
+        "range": 0,
+        "effect": "Canaliza el espíritu de su color para recuperar PdE y sostener el combate."
+      },
+      {
+        "name": "Fusión Escarahoja",
+        "cost": 5,
+        "range": 1,
+        "effect": "Permite fusionarse sólo con la Escarahoja compatible indicada por las descripciones de las Escarahojas fusionadas."
       }
     ]
   },
@@ -1378,16 +1540,34 @@
     "hp_max": 650,
     "spells": [
       {
-        "name": "Mandíbulas Bicolores",
-        "cost": 4,
-        "range": 1,
-        "effect": "Daño de dos elementos adaptado a la fusión."
+        "name": "Inmovilización",
+        "cost": 3,
+        "range": 3,
+        "effect": "Reduce la movilidad del objetivo y lo deja expuesto a la presión de la fusión."
       },
       {
-        "name": "Caparazón Prismático",
+        "name": "Escarafuerza",
         "cost": 3,
         "range": 0,
-        "effect": "Gana PdE y resistencia temporal."
+        "effect": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón fusionado."
+      },
+      {
+        "name": "Elemental Dispersión",
+        "cost": 4,
+        "range": 3,
+        "effect": "Libera energía elemental mezclada para dañar o controlar una zona cercana."
+      },
+      {
+        "name": "Desaparición en Grupo",
+        "cost": 4,
+        "range": 0,
+        "effect": "Oculta temporalmente a la fusión y a aliados cercanos para reorganizar el combate."
+      },
+      {
+        "name": "Evolución",
+        "cost": 5,
+        "range": 0,
+        "effect": "Sólo puede utilizarla una Escarahoja fusionada en el campo, aunque haya más fusiones en combate."
       }
     ]
   },
@@ -1408,16 +1588,34 @@
     "hp_max": 650,
     "spells": [
       {
-        "name": "Mandíbulas Bicolores",
-        "cost": 4,
-        "range": 1,
-        "effect": "Daño de dos elementos adaptado a la fusión."
+        "name": "Inmovilización",
+        "cost": 3,
+        "range": 3,
+        "effect": "Reduce la movilidad del objetivo y lo deja expuesto a la presión de la fusión."
       },
       {
-        "name": "Caparazón Prismático",
+        "name": "Escarafuerza",
         "cost": 3,
         "range": 0,
-        "effect": "Gana PdE y resistencia temporal."
+        "effect": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón fusionado."
+      },
+      {
+        "name": "Elemental Dispersión",
+        "cost": 4,
+        "range": 3,
+        "effect": "Libera energía elemental mezclada para dañar o controlar una zona cercana."
+      },
+      {
+        "name": "Desaparición en Grupo",
+        "cost": 4,
+        "range": 0,
+        "effect": "Oculta temporalmente a la fusión y a aliados cercanos para reorganizar el combate."
+      },
+      {
+        "name": "Evolución",
+        "cost": 5,
+        "range": 0,
+        "effect": "Sólo puede utilizarla una Escarahoja fusionada en el campo, aunque haya más fusiones en combate."
       }
     ]
   },
@@ -1438,16 +1636,34 @@
     "hp_max": 650,
     "spells": [
       {
-        "name": "Mandíbulas Bicolores",
-        "cost": 4,
-        "range": 1,
-        "effect": "Daño de dos elementos adaptado a la fusión."
+        "name": "Inmovilización",
+        "cost": 3,
+        "range": 3,
+        "effect": "Reduce la movilidad del objetivo y lo deja expuesto a la presión de la fusión."
       },
       {
-        "name": "Caparazón Prismático",
+        "name": "Escarafuerza",
         "cost": 3,
         "range": 0,
-        "effect": "Gana PdE y resistencia temporal."
+        "effect": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón fusionado."
+      },
+      {
+        "name": "Elemental Dispersión",
+        "cost": 4,
+        "range": 3,
+        "effect": "Libera energía elemental mezclada para dañar o controlar una zona cercana."
+      },
+      {
+        "name": "Desaparición en Grupo",
+        "cost": 4,
+        "range": 0,
+        "effect": "Oculta temporalmente a la fusión y a aliados cercanos para reorganizar el combate."
+      },
+      {
+        "name": "Evolución",
+        "cost": 5,
+        "range": 0,
+        "effect": "Sólo puede utilizarla una Escarahoja fusionada en el campo, aunque haya más fusiones en combate."
       }
     ]
   },
@@ -1468,21 +1684,39 @@
     "hp_max": 650,
     "spells": [
       {
-        "name": "Mandíbulas Bicolores",
-        "cost": 4,
-        "range": 1,
-        "effect": "Daño de dos elementos adaptado a la fusión."
+        "name": "Inmovilización",
+        "cost": 3,
+        "range": 3,
+        "effect": "Reduce la movilidad del objetivo y lo deja expuesto a la presión de la fusión."
       },
       {
-        "name": "Caparazón Prismático",
+        "name": "Escarafuerza",
         "cost": 3,
         "range": 0,
-        "effect": "Gana PdE y resistencia temporal."
+        "effect": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón fusionado."
+      },
+      {
+        "name": "Elemental Dispersión",
+        "cost": 4,
+        "range": 3,
+        "effect": "Libera energía elemental mezclada para dañar o controlar una zona cercana."
+      },
+      {
+        "name": "Desaparición en Grupo",
+        "cost": 4,
+        "range": 0,
+        "effect": "Oculta temporalmente a la fusión y a aliados cercanos para reorganizar el combate."
+      },
+      {
+        "name": "Evolución",
+        "cost": 5,
+        "range": 0,
+        "effect": "Sólo puede utilizarla una Escarahoja fusionada en el campo, aunque haya más fusiones en combate."
       }
     ]
   },
   {
-    "name": "Escarajefe Dorado",
+    "name": "Escarasubjefe Bronce",
     "family": "Escarahojas",
     "stage": "evolution",
     "level_min": 65,
@@ -1491,23 +1725,35 @@
     "shell": 630,
     "action_points": 10,
     "movement_points": 6,
-    "description": "Jefe mayor de las Escarahojas adaptado de los Escarajefes dorados de Dofus Retro, Dofus Touch y Dofus. Su caparazón brillante concentra mando de enjambre, defensa superior y presión táctica sobre el tablero.",
+    "description": "Subjefe de bronce de la familia Escarahoja. Su caparazón oscuro y metálico impone autoridad sobre el enjambre, combinando apoyo, control de espacio y humo abrasador para sostener la presión del combate.",
     "image": "public/images/escarahojas/evolutions/escarasubjefe-bronce.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "hp_min": 1800,
     "hp_max": 2575,
     "spells": [
       {
-        "name": "Orden del Escarajefe Dorado",
-        "cost": 5,
-        "range": 4,
-        "effect": "Daño de mando a distancia inspirado en jefes Escarahojas."
+        "name": "Liberación",
+        "cost": 3,
+        "range": 0,
+        "effect": "Empuja a los enemigos cercanos para recuperar espacio táctico."
       },
       {
-        "name": "Armadura Dorada",
+        "name": "Cura Afrodisíaca",
         "cost": 4,
-        "range": 0,
-        "effect": "Gran recuperación de PdE y bloqueo táctico."
+        "range": 3,
+        "effect": "Restaura PdE a un aliado y refuerza su permanencia en combate."
+      },
+      {
+        "name": "Picota",
+        "cost": 4,
+        "range": 1,
+        "effect": "Golpe contundente de corto alcance que castiga al objetivo marcado."
+      },
+      {
+        "name": "Humo Calcinador",
+        "cost": 5,
+        "range": 3,
+        "effect": "Nube ardiente que daña y dificulta la respuesta de los enemigos alcanzados."
       }
     ]
   }

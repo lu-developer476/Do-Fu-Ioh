@@ -10,6 +10,19 @@
   <link rel="stylesheet" href="{% static 'core/css/styles.css' %}" />
 </head>
 <body>
+  <header class="site-navbar" aria-label="Navegación principal">
+    <a class="navbar-brand" href="#arena" aria-label="Ir a la arena de combate">
+      <span class="brand-mark">D</span>
+      <span>Do-Fu-Ióh</span>
+    </a>
+    <nav class="navbar-links" aria-label="Secciones de juego">
+      <a href="#arena">Arena</a>
+      <a href="#controls">Nuevo duelo</a>
+      <a href="#catalog-panel">Bestiario</a>
+      <a href="#hand-panel">Mano</a>
+      <a href="#duel-log-panel">Registro</a>
+    </nav>
+  </header>
   <main class="arcade-shell card-game-shell">
     <aside class="side-column left-column">
       <section class="panel intro-panel">
@@ -20,9 +33,7 @@
 
       <p id="auth-status" class="visually-hidden" aria-live="polite">Modo sin Backend activo. La partida se guarda localmente en este navegador.</p>
 
-      <details class="panel compact-panel collapsible-panel all-options-panel" open>
-        <summary>☰ Opciones e información</summary>
-        <section class="collapsible-section" aria-label="Opciones e información de juego">
+      <section id="controls" class="panel compact-panel all-options-panel" aria-label="Opciones e información de juego">
           <div class="game-info-block">
             <h2>Arena de combate</h2>
             <p>Invocá, mové tus monstruos y lanzá hechizos sin mensajes repetidos.</p>
@@ -45,23 +56,22 @@
             <button id="create-selected-match" class="ghost" data-loading-label="Preparando selección...">Usar selección</button>
           </div>
 
-          <div class="panel-heading"><h2>Bestiario de cartas</h2><span class="panel-caption">Elegí cartas para la mano</span></div>
+          <div id="catalog-panel" class="panel-heading"><h2>Bestiario de cartas</h2><span class="panel-caption">Elegí cartas para la mano</span></div>
           <div class="catalog-toolbar">
             <select id="family-filter"><option value="">Todas las familias</option></select>
           </div>
           <div id="catalog" class="catalog"></div>
 
-          <div class="panel-heading"><h2>Mano disponible</h2><span class="panel-caption">Seleccioná e invocá</span></div>
+          <div id="hand-panel" class="panel-heading"><h2>Mano disponible</h2><span class="panel-caption">Seleccioná e invocá</span></div>
           <div id="hand" class="card-row"></div>
-        </section>
-      </details>
+      </section>
 
       <section class="panel compact-panel turn-panel" aria-label="Botones de turno">
         <button id="end-turn-btn" class="ghost" data-loading-label="Procesando turno...">Finalizar turno</button>
       </section>
     </aside>
 
-    <section class="center-column panel duel-panel">
+    <section id="arena" class="center-column panel duel-panel">
       <header class="duel-header">
         <div>
           <h2>Arena de combate</h2>
@@ -89,14 +99,11 @@
     </section>
 
     <aside class="side-column right-column">
-      <details class="panel compact-panel collapsible-panel duel-status-panel" open>
-        <summary>☰ Duelo y registro</summary>
-        <section class="collapsible-section" aria-label="Estado y registro del duelo">
-          <div id="match-summary" class="stack small"></div>
-          <span class="panel-caption">Actividad reciente</span>
-          <div id="match-log" class="match-log" aria-live="polite"><div class="small">La actividad del duelo se mostrará aquí.</div></div>
-        </section>
-      </details>
+      <section id="duel-log-panel" class="panel compact-panel duel-status-panel" aria-label="Estado y registro del duelo">
+        <div class="panel-heading"><h2>Duelo y registro</h2><span class="panel-caption">Actividad reciente</span></div>
+        <div id="match-summary" class="stack small"></div>
+        <div id="match-log" class="match-log" aria-live="polite"><div class="small">La actividad del duelo se mostrará aquí.</div></div>
+      </section>
     </aside>
 
   <dialog id="hand-choice-dialog" class="hand-choice-dialog">

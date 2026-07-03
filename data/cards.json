@@ -21,8 +21,8 @@
         "range": 1,
         "effect": "Daño cuerpo a cuerpo del picoteo característico del Pío albino.",
         "description": "Daño cuerpo a cuerpo del picoteo característico del Pío albino.",
-        "damage_min": 4,
-        "damage_max": 6
+        "damage_min": 6,
+        "damage_max": 8
       },
       {
         "name": "Plumaje albino",
@@ -30,8 +30,8 @@
         "range": 0,
         "effect": "Efecto de apoyo o defensa basado en el plumaje albino del Pío.",
         "description": "Efecto de apoyo o defensa basado en el plumaje albino del Pío.",
-        "damage_min": 1,
-        "damage_max": 3
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -57,8 +57,8 @@
         "range": 1,
         "effect": "Daño cuerpo a cuerpo del picoteo característico del Pío anaranjado.",
         "description": "Daño cuerpo a cuerpo del picoteo característico del Pío anaranjado.",
-        "damage_min": 4,
-        "damage_max": 6
+        "damage_min": 6,
+        "damage_max": 8
       },
       {
         "name": "Plumaje anaranjado",
@@ -66,8 +66,8 @@
         "range": 0,
         "effect": "Efecto de apoyo o defensa basado en el plumaje anaranjado del Pío.",
         "description": "Efecto de apoyo o defensa basado en el plumaje anaranjado del Pío.",
-        "damage_min": 1,
-        "damage_max": 3
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -93,8 +93,8 @@
         "range": 1,
         "effect": "Daño cuerpo a cuerpo del picoteo característico del Pío castaño.",
         "description": "Daño cuerpo a cuerpo del picoteo característico del Pío castaño.",
-        "damage_min": 4,
-        "damage_max": 6
+        "damage_min": 6,
+        "damage_max": 8
       },
       {
         "name": "Plumaje castaño",
@@ -102,8 +102,8 @@
         "range": 0,
         "effect": "Efecto de apoyo o defensa basado en el plumaje castaño del Pío.",
         "description": "Efecto de apoyo o defensa basado en el plumaje castaño del Pío.",
-        "damage_min": 1,
-        "damage_max": 3
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -129,8 +129,8 @@
         "range": 1,
         "effect": "Daño cuerpo a cuerpo del picoteo característico del Pío negruzco.",
         "description": "Daño cuerpo a cuerpo del picoteo característico del Pío negruzco.",
-        "damage_min": 4,
-        "damage_max": 6
+        "damage_min": 6,
+        "damage_max": 8
       },
       {
         "name": "Plumaje negruzco",
@@ -138,8 +138,8 @@
         "range": 0,
         "effect": "Efecto de apoyo o defensa basado en el plumaje negruzco del Pío.",
         "description": "Efecto de apoyo o defensa basado en el plumaje negruzco del Pío.",
-        "damage_min": 1,
-        "damage_max": 3
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -165,8 +165,8 @@
         "range": 1,
         "effect": "Daño cuerpo a cuerpo del picoteo característico del Pío otoñal.",
         "description": "Daño cuerpo a cuerpo del picoteo característico del Pío otoñal.",
-        "damage_min": 7,
-        "damage_max": 10
+        "damage_min": 10,
+        "damage_max": 12
       },
       {
         "name": "Plumaje otoñal",
@@ -174,8 +174,8 @@
         "range": 2,
         "effect": "Efecto de apoyo o defensa basado en el plumaje otoñal del Pío.",
         "description": "Efecto de apoyo o defensa basado en el plumaje otoñal del Pío.",
-        "damage_min": 9,
-        "damage_max": 12
+        "damage_min": 12,
+        "damage_max": 14
       },
       {
         "name": "Fusión Pío",
@@ -183,8 +183,8 @@
         "range": 0,
         "effect": "Permite fusionarse sólo con el Pío compatible indicado por la descripción del Pío fusionado.",
         "description": "Permite fusionarse sólo con el Pío compatible indicado por la descripción del Pío fusionado.",
-        "damage_min": 2,
-        "damage_max": 4
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Evolución",
@@ -192,8 +192,8 @@
         "range": 0,
         "effect": "Sólo puede utilizarla un Pío fusionado en el campo para evolucionar a su forma superior correspondiente.",
         "description": "Sólo puede utilizarla un Pío fusionado en el campo para evolucionar a su forma superior correspondiente.",
-        "damage_min": 4,
-        "damage_max": 6
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -219,8 +219,8 @@
         "range": 1,
         "effect": "Daño cuerpo a cuerpo del picoteo característico del Pío combinado.",
         "description": "Daño cuerpo a cuerpo del picoteo característico del Pío combinado.",
-        "damage_min": 7,
-        "damage_max": 10
+        "damage_min": 10,
+        "damage_max": 12
       },
       {
         "name": "Plumaje combinado",
@@ -228,8 +228,8 @@
         "range": 2,
         "effect": "Efecto de apoyo o defensa basado en el plumaje combinado del Pío.",
         "description": "Efecto de apoyo o defensa basado en el plumaje combinado del Pío.",
-        "damage_min": 9,
-        "damage_max": 12
+        "damage_min": 12,
+        "damage_max": 14
       },
       {
         "name": "Fusión Pío",
@@ -237,8 +237,8 @@
         "range": 0,
         "effect": "Permite fusionarse sólo con el Pío compatible indicado por la descripción del Pío fusionado.",
         "description": "Permite fusionarse sólo con el Pío compatible indicado por la descripción del Pío fusionado.",
-        "damage_min": 2,
-        "damage_max": 4
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Evolución",
@@ -246,8 +246,8 @@
         "range": 0,
         "effect": "Sólo puede utilizarla un Pío fusionado en el campo para evolucionar a su forma superior correspondiente.",
         "description": "Sólo puede utilizarla un Pío fusionado en el campo para evolucionar a su forma superior correspondiente.",
-        "damage_min": 4,
-        "damage_max": 6
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -273,8 +273,8 @@
         "range": 3,
         "effect": "Daño cuerpo a cuerpo del picoteo característico del Pío píoloro.",
         "description": "Daño cuerpo a cuerpo del picoteo característico del Pío píoloro.",
-        "damage_min": 10,
-        "damage_max": 15
+        "damage_min": 14,
+        "damage_max": 16
       },
       {
         "name": "Plumaje píoloro",
@@ -282,8 +282,8 @@
         "range": 1,
         "effect": "Efecto de apoyo o defensa basado en el plumaje píoloro del Pío.",
         "description": "Efecto de apoyo o defensa basado en el plumaje píoloro del Pío.",
-        "damage_min": 12,
-        "damage_max": 16
+        "damage_min": 16,
+        "damage_max": 18
       }
     ]
   },
@@ -309,8 +309,8 @@
         "range": 3,
         "effect": "Daño elemental adaptado al color amatista del Kitsu.",
         "description": "Daño elemental adaptado al color amatista del Kitsu.",
-        "damage_min": 6,
-        "damage_max": 9
+        "damage_min": 8,
+        "damage_max": 10
       },
       {
         "name": "Ilusión espectral amatista",
@@ -318,8 +318,8 @@
         "range": 2,
         "effect": "Crea una ilusión espectral con la energía amatista del Kitsu.",
         "description": "Crea una ilusión espectral con la energía amatista del Kitsu.",
-        "damage_min": 8,
-        "damage_max": 10
+        "damage_min": 10,
+        "damage_max": 12
       },
       {
         "name": "Argucia del Kitsu amatista",
@@ -327,8 +327,8 @@
         "range": 0,
         "effect": "Maniobra evasiva imbuida con la afinidad amatista del Kitsu.",
         "description": "Maniobra evasiva imbuida con la afinidad amatista del Kitsu.",
-        "damage_min": 2,
-        "damage_max": 4
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -354,8 +354,8 @@
         "range": 3,
         "effect": "Daño elemental adaptado al color anaranjado del Kitsu.",
         "description": "Daño elemental adaptado al color anaranjado del Kitsu.",
-        "damage_min": 6,
-        "damage_max": 9
+        "damage_min": 8,
+        "damage_max": 10
       },
       {
         "name": "Ilusión espectral anaranjado",
@@ -363,8 +363,8 @@
         "range": 2,
         "effect": "Crea una ilusión espectral con la energía anaranjado del Kitsu.",
         "description": "Crea una ilusión espectral con la energía anaranjado del Kitsu.",
-        "damage_min": 8,
-        "damage_max": 10
+        "damage_min": 10,
+        "damage_max": 12
       },
       {
         "name": "Argucia del Kitsu anaranjado",
@@ -372,8 +372,8 @@
         "range": 0,
         "effect": "Maniobra evasiva imbuida con la afinidad anaranjado del Kitsu.",
         "description": "Maniobra evasiva imbuida con la afinidad anaranjado del Kitsu.",
-        "damage_min": 2,
-        "damage_max": 4
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -399,8 +399,8 @@
         "range": 3,
         "effect": "Daño elemental adaptado al color carmine del Kitsu.",
         "description": "Daño elemental adaptado al color carmine del Kitsu.",
-        "damage_min": 6,
-        "damage_max": 9
+        "damage_min": 8,
+        "damage_max": 10
       },
       {
         "name": "Ilusión espectral carmine",
@@ -408,8 +408,8 @@
         "range": 2,
         "effect": "Crea una ilusión espectral con la energía carmine del Kitsu.",
         "description": "Crea una ilusión espectral con la energía carmine del Kitsu.",
-        "damage_min": 8,
-        "damage_max": 10
+        "damage_min": 10,
+        "damage_max": 12
       },
       {
         "name": "Argucia del Kitsu carmine",
@@ -417,8 +417,8 @@
         "range": 0,
         "effect": "Maniobra evasiva imbuida con la afinidad carmine del Kitsu.",
         "description": "Maniobra evasiva imbuida con la afinidad carmine del Kitsu.",
-        "damage_min": 2,
-        "damage_max": 4
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -444,8 +444,8 @@
         "range": 3,
         "effect": "Daño elemental adaptado al color dākuburakku del Kitsu.",
         "description": "Daño elemental adaptado al color dākuburakku del Kitsu.",
-        "damage_min": 6,
-        "damage_max": 9
+        "damage_min": 8,
+        "damage_max": 10
       },
       {
         "name": "Ilusión espectral dākuburakku",
@@ -453,8 +453,8 @@
         "range": 2,
         "effect": "Crea una ilusión espectral con la energía dākuburakku del Kitsu.",
         "description": "Crea una ilusión espectral con la energía dākuburakku del Kitsu.",
-        "damage_min": 8,
-        "damage_max": 10
+        "damage_min": 10,
+        "damage_max": 12
       },
       {
         "name": "Argucia del Kitsu dākuburakku",
@@ -462,8 +462,8 @@
         "range": 0,
         "effect": "Maniobra evasiva imbuida con la afinidad dākuburakku del Kitsu.",
         "description": "Maniobra evasiva imbuida con la afinidad dākuburakku del Kitsu.",
-        "damage_min": 2,
-        "damage_max": 4
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -489,8 +489,8 @@
         "range": 3,
         "effect": "Daño elemental adaptado al color junsuina hikari del Kitsu.",
         "description": "Daño elemental adaptado al color junsuina hikari del Kitsu.",
-        "damage_min": 6,
-        "damage_max": 9
+        "damage_min": 8,
+        "damage_max": 10
       },
       {
         "name": "Ilusión espectral junsuina hikari",
@@ -498,8 +498,8 @@
         "range": 2,
         "effect": "Crea una ilusión espectral con la energía junsuina hikari del Kitsu.",
         "description": "Crea una ilusión espectral con la energía junsuina hikari del Kitsu.",
-        "damage_min": 8,
-        "damage_max": 10
+        "damage_min": 10,
+        "damage_max": 12
       },
       {
         "name": "Argucia del Kitsu junsuina hikari",
@@ -507,8 +507,8 @@
         "range": 0,
         "effect": "Maniobra evasiva imbuida con la afinidad junsuina hikari del Kitsu.",
         "description": "Maniobra evasiva imbuida con la afinidad junsuina hikari del Kitsu.",
-        "damage_min": 2,
-        "damage_max": 4
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -534,8 +534,8 @@
         "range": 3,
         "effect": "Daño elemental adaptado al color magenta del Kitsu.",
         "description": "Daño elemental adaptado al color magenta del Kitsu.",
-        "damage_min": 6,
-        "damage_max": 9
+        "damage_min": 8,
+        "damage_max": 10
       },
       {
         "name": "Ilusión espectral magenta",
@@ -543,8 +543,8 @@
         "range": 2,
         "effect": "Crea una ilusión espectral con la energía magenta del Kitsu.",
         "description": "Crea una ilusión espectral con la energía magenta del Kitsu.",
-        "damage_min": 8,
-        "damage_max": 10
+        "damage_min": 10,
+        "damage_max": 12
       },
       {
         "name": "Argucia del Kitsu magenta",
@@ -552,8 +552,8 @@
         "range": 0,
         "effect": "Maniobra evasiva imbuida con la afinidad magenta del Kitsu.",
         "description": "Maniobra evasiva imbuida con la afinidad magenta del Kitsu.",
-        "damage_min": 2,
-        "damage_max": 4
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -579,8 +579,8 @@
         "range": 3,
         "effect": "Daño elemental adaptado al color midori no mizu del Kitsu.",
         "description": "Daño elemental adaptado al color midori no mizu del Kitsu.",
-        "damage_min": 6,
-        "damage_max": 9
+        "damage_min": 8,
+        "damage_max": 10
       },
       {
         "name": "Ilusión espectral midori no mizu",
@@ -588,8 +588,8 @@
         "range": 2,
         "effect": "Crea una ilusión espectral con la energía midori no mizu del Kitsu.",
         "description": "Crea una ilusión espectral con la energía midori no mizu del Kitsu.",
-        "damage_min": 8,
-        "damage_max": 10
+        "damage_min": 10,
+        "damage_max": 12
       },
       {
         "name": "Argucia del Kitsu midori no mizu",
@@ -597,8 +597,8 @@
         "range": 0,
         "effect": "Maniobra evasiva imbuida con la afinidad midori no mizu del Kitsu.",
         "description": "Maniobra evasiva imbuida con la afinidad midori no mizu del Kitsu.",
-        "damage_min": 2,
-        "damage_max": 4
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -624,8 +624,8 @@
         "range": 3,
         "effect": "Daño elemental adaptado al color mizu del Kitsu.",
         "description": "Daño elemental adaptado al color mizu del Kitsu.",
-        "damage_min": 6,
-        "damage_max": 9
+        "damage_min": 8,
+        "damage_max": 10
       },
       {
         "name": "Ilusión espectral mizu",
@@ -633,8 +633,8 @@
         "range": 2,
         "effect": "Crea una ilusión espectral con la energía mizu del Kitsu.",
         "description": "Crea una ilusión espectral con la energía mizu del Kitsu.",
-        "damage_min": 8,
-        "damage_max": 10
+        "damage_min": 10,
+        "damage_max": 12
       },
       {
         "name": "Argucia del Kitsu mizu",
@@ -642,8 +642,8 @@
         "range": 0,
         "effect": "Maniobra evasiva imbuida con la afinidad mizu del Kitsu.",
         "description": "Maniobra evasiva imbuida con la afinidad mizu del Kitsu.",
-        "damage_min": 2,
-        "damage_max": 4
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -669,8 +669,8 @@
         "range": 3,
         "effect": "Daño elemental adaptado al color silvestre del Kitsu.",
         "description": "Daño elemental adaptado al color silvestre del Kitsu.",
-        "damage_min": 6,
-        "damage_max": 9
+        "damage_min": 8,
+        "damage_max": 10
       },
       {
         "name": "Ilusión espectral silvestre",
@@ -678,8 +678,8 @@
         "range": 2,
         "effect": "Crea una ilusión espectral con la energía silvestre del Kitsu.",
         "description": "Crea una ilusión espectral con la energía silvestre del Kitsu.",
-        "damage_min": 8,
-        "damage_max": 10
+        "damage_min": 10,
+        "damage_max": 12
       },
       {
         "name": "Argucia del Kitsu silvestre",
@@ -687,8 +687,8 @@
         "range": 0,
         "effect": "Maniobra evasiva imbuida con la afinidad silvestre del Kitsu.",
         "description": "Maniobra evasiva imbuida con la afinidad silvestre del Kitsu.",
-        "damage_min": 2,
-        "damage_max": 4
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -712,8 +712,8 @@
         "range": 3,
         "effect": "Daño elemental adaptado al color nishiki del Kitsu.",
         "description": "Daño elemental adaptado al color nishiki del Kitsu.",
-        "damage_min": 7,
-        "damage_max": 11
+        "damage_min": 10,
+        "damage_max": 12
       },
       {
         "name": "Ilusión espectral nishiki",
@@ -721,8 +721,8 @@
         "range": 2,
         "effect": "Crea una ilusión espectral con la energía nishiki del Kitsu.",
         "description": "Crea una ilusión espectral con la energía nishiki del Kitsu.",
-        "damage_min": 9,
-        "damage_max": 12
+        "damage_min": 12,
+        "damage_max": 14
       },
       {
         "name": "Argucia del Kitsu nishiki",
@@ -730,8 +730,8 @@
         "range": 0,
         "effect": "Maniobra evasiva imbuida con la afinidad nishiki del Kitsu.",
         "description": "Maniobra evasiva imbuida con la afinidad nishiki del Kitsu.",
-        "damage_min": 3,
-        "damage_max": 5
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Fusión Kitsu",
@@ -739,8 +739,8 @@
         "range": 0,
         "effect": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
         "description": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
-        "damage_min": 4,
-        "damage_max": 6
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Evolución",
@@ -748,8 +748,8 @@
         "range": 0,
         "effect": "Sólo puede utilizarla un Kitsu fusionado en el campo para evolucionar a su forma estabilizada correspondiente.",
         "description": "Sólo puede utilizarla un Kitsu fusionado en el campo para evolucionar a su forma estabilizada correspondiente.",
-        "damage_min": 5,
-        "damage_max": 7
+        "damage_min": 0,
+        "damage_max": 0
       }
     ],
     "hp_min": 1800,
@@ -775,8 +775,8 @@
         "range": 3,
         "effect": "Daño elemental adaptado al color penta del Kitsu.",
         "description": "Daño elemental adaptado al color penta del Kitsu.",
-        "damage_min": 7,
-        "damage_max": 11
+        "damage_min": 10,
+        "damage_max": 12
       },
       {
         "name": "Ilusión espectral penta",
@@ -784,8 +784,8 @@
         "range": 2,
         "effect": "Crea una ilusión espectral con la energía penta del Kitsu.",
         "description": "Crea una ilusión espectral con la energía penta del Kitsu.",
-        "damage_min": 9,
-        "damage_max": 12
+        "damage_min": 12,
+        "damage_max": 14
       },
       {
         "name": "Argucia del Kitsu penta",
@@ -793,8 +793,8 @@
         "range": 0,
         "effect": "Maniobra evasiva imbuida con la afinidad penta del Kitsu.",
         "description": "Maniobra evasiva imbuida con la afinidad penta del Kitsu.",
-        "damage_min": 3,
-        "damage_max": 5
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Fusión Kitsu",
@@ -802,8 +802,8 @@
         "range": 0,
         "effect": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
         "description": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
-        "damage_min": 4,
-        "damage_max": 6
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Evolución",
@@ -811,8 +811,8 @@
         "range": 0,
         "effect": "Sólo puede utilizarla un Kitsu fusionado en el campo para evolucionar a su forma estabilizada correspondiente.",
         "description": "Sólo puede utilizarla un Kitsu fusionado en el campo para evolucionar a su forma estabilizada correspondiente.",
-        "damage_min": 5,
-        "damage_max": 7
+        "damage_min": 0,
+        "damage_max": 0
       }
     ],
     "hp_min": 1800,
@@ -838,8 +838,8 @@
         "range": 3,
         "effect": "Daño elemental adaptado al color yin yang del Kitsu.",
         "description": "Daño elemental adaptado al color yin yang del Kitsu.",
-        "damage_min": 7,
-        "damage_max": 11
+        "damage_min": 10,
+        "damage_max": 12
       },
       {
         "name": "Ilusión espectral yin yang",
@@ -847,8 +847,8 @@
         "range": 2,
         "effect": "Crea una ilusión espectral con la energía yin yang del Kitsu.",
         "description": "Crea una ilusión espectral con la energía yin yang del Kitsu.",
-        "damage_min": 9,
-        "damage_max": 12
+        "damage_min": 12,
+        "damage_max": 14
       },
       {
         "name": "Argucia del Kitsu yin yang",
@@ -856,8 +856,8 @@
         "range": 0,
         "effect": "Maniobra evasiva imbuida con la afinidad yin yang del Kitsu.",
         "description": "Maniobra evasiva imbuida con la afinidad yin yang del Kitsu.",
-        "damage_min": 3,
-        "damage_max": 5
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Fusión Kitsu",
@@ -865,8 +865,8 @@
         "range": 0,
         "effect": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
         "description": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
-        "damage_min": 4,
-        "damage_max": 6
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Evolución",
@@ -874,8 +874,8 @@
         "range": 0,
         "effect": "Sólo puede utilizarla un Kitsu fusionado en el campo para evolucionar a su forma estabilizada correspondiente.",
         "description": "Sólo puede utilizarla un Kitsu fusionado en el campo para evolucionar a su forma estabilizada correspondiente.",
-        "damage_min": 5,
-        "damage_max": 7
+        "damage_min": 0,
+        "damage_max": 0
       }
     ],
     "hp_min": 1800,
@@ -901,8 +901,8 @@
         "range": 3,
         "effect": "Daño elemental adaptado al color silvestre evolucionado del Kitsu.",
         "description": "Daño elemental adaptado al color silvestre evolucionado del Kitsu.",
-        "damage_min": 8,
-        "damage_max": 13
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Ilusión espectral silvestre evolucionado",
@@ -910,8 +910,8 @@
         "range": 2,
         "effect": "Crea una ilusión espectral con la energía silvestre evolucionado del Kitsu.",
         "description": "Crea una ilusión espectral con la energía silvestre evolucionado del Kitsu.",
-        "damage_min": 10,
-        "damage_max": 14
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Argucia del Kitsu silvestre evolucionado",
@@ -919,8 +919,8 @@
         "range": 0,
         "effect": "Maniobra evasiva imbuida con la afinidad silvestre evolucionado del Kitsu.",
         "description": "Maniobra evasiva imbuida con la afinidad silvestre evolucionado del Kitsu.",
-        "damage_min": 4,
-        "damage_max": 6
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -944,8 +944,8 @@
         "range": 3,
         "effect": "Daño elemental adaptado al color kumiawase del Kitsu.",
         "description": "Daño elemental adaptado al color kumiawase del Kitsu.",
-        "damage_min": 8,
-        "damage_max": 13
+        "damage_min": 12,
+        "damage_max": 14
       },
       {
         "name": "Ilusión espectral kumiawase",
@@ -953,8 +953,8 @@
         "range": 2,
         "effect": "Crea una ilusión espectral con la energía kumiawase del Kitsu.",
         "description": "Crea una ilusión espectral con la energía kumiawase del Kitsu.",
-        "damage_min": 10,
-        "damage_max": 14
+        "damage_min": 14,
+        "damage_max": 16
       },
       {
         "name": "Argucia del Kitsu kumiawase",
@@ -962,8 +962,8 @@
         "range": 0,
         "effect": "Maniobra evasiva imbuida con la afinidad kumiawase del Kitsu.",
         "description": "Maniobra evasiva imbuida con la afinidad kumiawase del Kitsu.",
-        "damage_min": 4,
-        "damage_max": 6
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -987,8 +987,8 @@
         "range": 3,
         "effect": "Daño elemental adaptado al color nishiki evolucionado del Kitsu.",
         "description": "Daño elemental adaptado al color nishiki evolucionado del Kitsu.",
-        "damage_min": 8,
-        "damage_max": 13
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Ilusión espectral nishiki evolucionado",
@@ -996,8 +996,8 @@
         "range": 2,
         "effect": "Crea una ilusión espectral con la energía nishiki evolucionado del Kitsu.",
         "description": "Crea una ilusión espectral con la energía nishiki evolucionado del Kitsu.",
-        "damage_min": 10,
-        "damage_max": 14
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Argucia del Kitsu nishiki evolucionado",
@@ -1005,8 +1005,8 @@
         "range": 0,
         "effect": "Maniobra evasiva imbuida con la afinidad nishiki evolucionado del Kitsu.",
         "description": "Maniobra evasiva imbuida con la afinidad nishiki evolucionado del Kitsu.",
-        "damage_min": 4,
-        "damage_max": 6
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -1030,8 +1030,8 @@
         "range": 3,
         "effect": "Daño elemental adaptado al color penta evolucionado del Kitsu.",
         "description": "Daño elemental adaptado al color penta evolucionado del Kitsu.",
-        "damage_min": 8,
-        "damage_max": 13
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Ilusión espectral penta evolucionado",
@@ -1039,8 +1039,8 @@
         "range": 2,
         "effect": "Crea una ilusión espectral con la energía penta evolucionado del Kitsu.",
         "description": "Crea una ilusión espectral con la energía penta evolucionado del Kitsu.",
-        "damage_min": 10,
-        "damage_max": 14
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Argucia del Kitsu penta evolucionado",
@@ -1048,8 +1048,8 @@
         "range": 0,
         "effect": "Maniobra evasiva imbuida con la afinidad penta evolucionado del Kitsu.",
         "description": "Maniobra evasiva imbuida con la afinidad penta evolucionado del Kitsu.",
-        "damage_min": 4,
-        "damage_max": 6
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -1073,8 +1073,8 @@
         "range": 3,
         "effect": "Daño elemental adaptado al color yin yang evolucionado del Kitsu.",
         "description": "Daño elemental adaptado al color yin yang evolucionado del Kitsu.",
-        "damage_min": 8,
-        "damage_max": 13
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Ilusión espectral yin yang evolucionado",
@@ -1082,8 +1082,8 @@
         "range": 2,
         "effect": "Crea una ilusión espectral con la energía yin yang evolucionado del Kitsu.",
         "description": "Crea una ilusión espectral con la energía yin yang evolucionado del Kitsu.",
-        "damage_min": 10,
-        "damage_max": 14
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Argucia del Kitsu yin yang evolucionado",
@@ -1091,8 +1091,8 @@
         "range": 0,
         "effect": "Maniobra evasiva imbuida con la afinidad yin yang evolucionado del Kitsu.",
         "description": "Maniobra evasiva imbuida con la afinidad yin yang evolucionado del Kitsu.",
-        "damage_min": 4,
-        "damage_max": 6
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -1118,8 +1118,8 @@
         "range": 3,
         "effect": "Proyectiles gelatinosos que infligen daño a distancia.",
         "description": "Proyectiles gelatinosos que infligen daño a distancia.",
-        "damage_min": 6,
-        "damage_max": 9
+        "damage_min": 8,
+        "damage_max": 10
       },
       {
         "name": "Hueso de durazno",
@@ -1127,8 +1127,8 @@
         "range": 2,
         "effect": "Golpe característico de gelatina con energía de durazno.",
         "description": "Golpe característico de gelatina con energía de durazno.",
-        "damage_min": 8,
-        "damage_max": 10
+        "damage_min": 10,
+        "damage_max": 12
       }
     ]
   },
@@ -1154,8 +1154,8 @@
         "range": 3,
         "effect": "Proyectiles gelatinosos que infligen daño a distancia.",
         "description": "Proyectiles gelatinosos que infligen daño a distancia.",
-        "damage_min": 6,
-        "damage_max": 9
+        "damage_min": 8,
+        "damage_max": 10
       },
       {
         "name": "Hueso de frambuesa",
@@ -1163,8 +1163,8 @@
         "range": 2,
         "effect": "Golpe característico de gelatina con energía de frambuesa.",
         "description": "Golpe característico de gelatina con energía de frambuesa.",
-        "damage_min": 8,
-        "damage_max": 10
+        "damage_min": 10,
+        "damage_max": 12
       }
     ]
   },
@@ -1190,17 +1190,17 @@
         "range": 3,
         "effect": "Proyectiles gelatinosos que infligen daño a distancia.",
         "description": "Proyectiles gelatinosos que infligen daño a distancia.",
-        "damage_min": 6,
-        "damage_max": 9
+        "damage_min": 8,
+        "damage_max": 10
       },
       {
-        "name": "Hueso de lactosada",
+        "name": "Hueso descalcificado",
         "cost": 4,
         "range": 2,
         "effect": "Golpe característico de gelatina con energía de lactosada.",
         "description": "Golpe característico de gelatina con energía de lactosada.",
-        "damage_min": 8,
-        "damage_max": 10
+        "damage_min": 10,
+        "damage_max": 12
       }
     ]
   },
@@ -1226,17 +1226,17 @@
         "range": 3,
         "effect": "Proyectiles gelatinosos que infligen daño a distancia.",
         "description": "Proyectiles gelatinosos que infligen daño a distancia.",
-        "damage_min": 6,
-        "damage_max": 9
+        "damage_min": 8,
+        "damage_max": 10
       },
       {
-        "name": "Hueso de moka",
+        "name": "Hueso chocolatoso",
         "cost": 4,
         "range": 2,
         "effect": "Golpe característico de gelatina con energía de moka.",
         "description": "Golpe característico de gelatina con energía de moka.",
-        "damage_min": 8,
-        "damage_max": 10
+        "damage_min": 10,
+        "damage_max": 12
       }
     ]
   },
@@ -1262,17 +1262,17 @@
         "range": 3,
         "effect": "Proyectiles gelatinosos que infligen daño a distancia.",
         "description": "Proyectiles gelatinosos que infligen daño a distancia.",
-        "damage_min": 6,
-        "damage_max": 9
+        "damage_min": 8,
+        "damage_max": 10
       },
       {
-        "name": "Hueso de nociva",
+        "name": "Hueso ácido",
         "cost": 4,
         "range": 2,
         "effect": "Golpe característico de gelatina con energía de nociva.",
         "description": "Golpe característico de gelatina con energía de nociva.",
-        "damage_min": 8,
-        "damage_max": 10
+        "damage_min": 10,
+        "damage_max": 12
       }
     ]
   },
@@ -1298,17 +1298,17 @@
         "range": 3,
         "effect": "Proyectiles gelatinosos que infligen daño a distancia.",
         "description": "Proyectiles gelatinosos que infligen daño a distancia.",
-        "damage_min": 6,
-        "damage_max": 9
+        "damage_min": 8,
+        "damage_max": 10
       },
       {
-        "name": "Hueso de obscura",
+        "name": "Hueso maléfico",
         "cost": 4,
         "range": 2,
         "effect": "Golpe característico de gelatina con energía de obscura.",
         "description": "Golpe característico de gelatina con energía de obscura.",
-        "damage_min": 2,
-        "damage_max": 4
+        "damage_min": 10,
+        "damage_max": 12
       }
     ]
   },
@@ -1334,8 +1334,8 @@
         "range": 3,
         "effect": "Proyectiles gelatinosos que infligen daño a distancia.",
         "description": "Proyectiles gelatinosos que infligen daño a distancia.",
-        "damage_min": 6,
-        "damage_max": 9
+        "damage_min": 8,
+        "damage_max": 10
       },
       {
         "name": "Hueso de uva",
@@ -1343,8 +1343,8 @@
         "range": 2,
         "effect": "Golpe característico de gelatina con energía de uva.",
         "description": "Golpe característico de gelatina con energía de uva.",
-        "damage_min": 8,
-        "damage_max": 10
+        "damage_min": 10,
+        "damage_max": 12
       }
     ]
   },
@@ -1368,8 +1368,8 @@
         "range": 0,
         "effect": "Refuerza la protección de la Gelatina Real con una capa helada.",
         "description": "Refuerza la protección de la Gelatina Real con una capa helada.",
-        "damage_min": 3,
-        "damage_max": 5
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Invocación de Gelatina de Durazno",
@@ -1377,8 +1377,8 @@
         "range": 1,
         "effect": "Invoca una Gelatina de Durazno aliada.",
         "description": "Invoca una Gelatina de Durazno aliada.",
-        "damage_min": 10,
-        "damage_max": 14
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Hueso de durazno",
@@ -1386,8 +1386,8 @@
         "range": 2,
         "effect": "Golpe característico de gelatina con energía de durazno.",
         "description": "Golpe característico de gelatina con energía de durazno.",
-        "damage_min": 10,
-        "damage_max": 14
+        "damage_min": 14,
+        "damage_max": 16
       }
     ]
   },
@@ -1411,8 +1411,8 @@
         "range": 0,
         "effect": "Refuerza la protección de la Gelatina Real con una capa helada.",
         "description": "Refuerza la protección de la Gelatina Real con una capa helada.",
-        "damage_min": 3,
-        "damage_max": 5
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Invocación de Gelatina de Frambuesa",
@@ -1420,8 +1420,8 @@
         "range": 1,
         "effect": "Invoca una Gelatina de Frambuesa aliada.",
         "description": "Invoca una Gelatina de Frambuesa aliada.",
-        "damage_min": 10,
-        "damage_max": 14
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Hueso de frambuesa",
@@ -1429,8 +1429,8 @@
         "range": 2,
         "effect": "Golpe característico de gelatina con energía de frambuesa.",
         "description": "Golpe característico de gelatina con energía de frambuesa.",
-        "damage_min": 10,
-        "damage_max": 14
+        "damage_min": 14,
+        "damage_max": 16
       }
     ]
   },
@@ -1454,8 +1454,8 @@
         "range": 0,
         "effect": "Refuerza la protección de la Gelatina Real con una capa helada.",
         "description": "Refuerza la protección de la Gelatina Real con una capa helada.",
-        "damage_min": 3,
-        "damage_max": 5
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Invocación de Gelatina lactosada",
@@ -1463,17 +1463,17 @@
         "range": 1,
         "effect": "Invoca una Gelatina lactosada aliada.",
         "description": "Invoca una Gelatina lactosada aliada.",
-        "damage_min": 10,
-        "damage_max": 14
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
-        "name": "Hueso de lactosada",
+        "name": "Hueso descalcificado",
         "cost": 4,
         "range": 2,
         "effect": "Golpe característico de gelatina con energía de lactosada.",
         "description": "Golpe característico de gelatina con energía de lactosada.",
-        "damage_min": 10,
-        "damage_max": 14
+        "damage_min": 14,
+        "damage_max": 16
       }
     ]
   },
@@ -1497,8 +1497,8 @@
         "range": 0,
         "effect": "Refuerza la protección de la Gelatina Real con una capa helada.",
         "description": "Refuerza la protección de la Gelatina Real con una capa helada.",
-        "damage_min": 3,
-        "damage_max": 5
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Invocación de Gelatina moka",
@@ -1506,17 +1506,17 @@
         "range": 1,
         "effect": "Invoca una Gelatina moka aliada.",
         "description": "Invoca una Gelatina moka aliada.",
-        "damage_min": 10,
-        "damage_max": 14
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
-        "name": "Hueso de moka",
+        "name": "Hueso chocolatoso",
         "cost": 4,
         "range": 2,
         "effect": "Golpe característico de gelatina con energía de moka.",
         "description": "Golpe característico de gelatina con energía de moka.",
-        "damage_min": 10,
-        "damage_max": 14
+        "damage_min": 14,
+        "damage_max": 16
       }
     ]
   },
@@ -1540,8 +1540,8 @@
         "range": 0,
         "effect": "Refuerza la protección de la Gelatina Real con una capa helada.",
         "description": "Refuerza la protección de la Gelatina Real con una capa helada.",
-        "damage_min": 3,
-        "damage_max": 5
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Invocación de Gelatina nociva",
@@ -1549,17 +1549,17 @@
         "range": 1,
         "effect": "Invoca una Gelatina nociva aliada.",
         "description": "Invoca una Gelatina nociva aliada.",
-        "damage_min": 10,
-        "damage_max": 14
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
-        "name": "Hueso de nociva",
+        "name": "Hueso ácido",
         "cost": 4,
         "range": 2,
         "effect": "Golpe característico de gelatina con energía de nociva.",
         "description": "Golpe característico de gelatina con energía de nociva.",
-        "damage_min": 10,
-        "damage_max": 14
+        "damage_min": 14,
+        "damage_max": 16
       }
     ]
   },
@@ -1583,8 +1583,8 @@
         "range": 0,
         "effect": "Refuerza la protección de la Gelatina Real con una capa helada.",
         "description": "Refuerza la protección de la Gelatina Real con una capa helada.",
-        "damage_min": 3,
-        "damage_max": 5
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Invocación de Gelatina obscura",
@@ -1592,17 +1592,17 @@
         "range": 1,
         "effect": "Invoca una Gelatina obscura aliada.",
         "description": "Invoca una Gelatina obscura aliada.",
-        "damage_min": 4,
-        "damage_max": 6
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
-        "name": "Hueso de obscura",
+        "name": "Hueso maléfico",
         "cost": 4,
         "range": 2,
         "effect": "Golpe característico de gelatina con energía de obscura.",
         "description": "Golpe característico de gelatina con energía de obscura.",
-        "damage_min": 4,
-        "damage_max": 6
+        "damage_min": 14,
+        "damage_max": 16
       }
     ]
   },
@@ -1626,8 +1626,8 @@
         "range": 0,
         "effect": "Refuerza la protección de la Gelatina Real con una capa helada.",
         "description": "Refuerza la protección de la Gelatina Real con una capa helada.",
-        "damage_min": 3,
-        "damage_max": 5
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Invocación de Gelatina de Uva",
@@ -1635,8 +1635,8 @@
         "range": 1,
         "effect": "Invoca una Gelatina de Uva aliada.",
         "description": "Invoca una Gelatina de Uva aliada.",
-        "damage_min": 10,
-        "damage_max": 14
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Hueso de uva",
@@ -1644,8 +1644,8 @@
         "range": 2,
         "effect": "Golpe característico de gelatina con energía de uva.",
         "description": "Golpe característico de gelatina con energía de uva.",
-        "damage_min": 10,
-        "damage_max": 14
+        "damage_min": 14,
+        "damage_max": 16
       }
     ]
   },
@@ -1671,8 +1671,8 @@
         "range": 3,
         "effect": "Invoca o coordina una presencia escarahoja aliada según el color de la criatura.",
         "description": "Invoca o coordina una presencia escarahoja aliada según el color de la criatura.",
-        "damage_min": 6,
-        "damage_max": 9
+        "damage_min": 8,
+        "damage_max": 10
       },
       {
         "name": "Escarafuerza",
@@ -1680,8 +1680,8 @@
         "range": 0,
         "effect": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón elemental.",
         "description": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón elemental.",
-        "damage_min": 1,
-        "damage_max": 3
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Dispersión Elemental",
@@ -1689,8 +1689,8 @@
         "range": 3,
         "effect": "Dispersa energía de su elemento para dañar o presionar una zona cercana.",
         "description": "Dispersa energía de su elemento para dañar o presionar una zona cercana.",
-        "damage_min": 8,
-        "damage_max": 11
+        "damage_min": 10,
+        "damage_max": 12
       },
       {
         "name": "Espíritu Elemental",
@@ -1698,8 +1698,8 @@
         "range": 0,
         "effect": "Canaliza el espíritu de su color para recuperar PdE y sostener el combate.",
         "description": "Canaliza el espíritu de su color para recuperar PdE y sostener el combate.",
-        "damage_min": 1,
-        "damage_max": 3
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Fusión Escarahoja",
@@ -1707,8 +1707,8 @@
         "range": 1,
         "effect": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas.",
         "description": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas.",
-        "damage_min": 3,
-        "damage_max": 5
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -1734,8 +1734,8 @@
         "range": 3,
         "effect": "Invoca o coordina una presencia escarahoja aliada según el color de la criatura.",
         "description": "Invoca o coordina una presencia escarahoja aliada según el color de la criatura.",
-        "damage_min": 6,
-        "damage_max": 9
+        "damage_min": 8,
+        "damage_max": 10
       },
       {
         "name": "Escarafuerza",
@@ -1743,8 +1743,8 @@
         "range": 0,
         "effect": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón elemental.",
         "description": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón elemental.",
-        "damage_min": 1,
-        "damage_max": 3
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Dispersión Elemental",
@@ -1752,8 +1752,8 @@
         "range": 3,
         "effect": "Dispersa energía de su elemento para dañar o presionar una zona cercana.",
         "description": "Dispersa energía de su elemento para dañar o presionar una zona cercana.",
-        "damage_min": 8,
-        "damage_max": 11
+        "damage_min": 10,
+        "damage_max": 12
       },
       {
         "name": "Espíritu Elemental",
@@ -1761,8 +1761,8 @@
         "range": 0,
         "effect": "Canaliza el espíritu de su color para recuperar PdE y sostener el combate.",
         "description": "Canaliza el espíritu de su color para recuperar PdE y sostener el combate.",
-        "damage_min": 1,
-        "damage_max": 3
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Fusión Escarahoja",
@@ -1770,8 +1770,8 @@
         "range": 1,
         "effect": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas.",
         "description": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas.",
-        "damage_min": 3,
-        "damage_max": 5
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -1797,8 +1797,8 @@
         "range": 3,
         "effect": "Invoca o coordina una presencia escarahoja aliada según el color de la criatura.",
         "description": "Invoca o coordina una presencia escarahoja aliada según el color de la criatura.",
-        "damage_min": 6,
-        "damage_max": 9
+        "damage_min": 8,
+        "damage_max": 10
       },
       {
         "name": "Escarafuerza",
@@ -1806,8 +1806,8 @@
         "range": 0,
         "effect": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón elemental.",
         "description": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón elemental.",
-        "damage_min": 1,
-        "damage_max": 3
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Dispersión Elemental",
@@ -1815,8 +1815,8 @@
         "range": 3,
         "effect": "Dispersa energía de su elemento para dañar o presionar una zona cercana.",
         "description": "Dispersa energía de su elemento para dañar o presionar una zona cercana.",
-        "damage_min": 8,
-        "damage_max": 11
+        "damage_min": 10,
+        "damage_max": 12
       },
       {
         "name": "Espíritu Elemental",
@@ -1824,8 +1824,8 @@
         "range": 0,
         "effect": "Canaliza el espíritu de su color para recuperar PdE y sostener el combate.",
         "description": "Canaliza el espíritu de su color para recuperar PdE y sostener el combate.",
-        "damage_min": 1,
-        "damage_max": 3
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Fusión Escarahoja",
@@ -1833,8 +1833,8 @@
         "range": 1,
         "effect": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas.",
         "description": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas.",
-        "damage_min": 3,
-        "damage_max": 5
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -1860,8 +1860,8 @@
         "range": 3,
         "effect": "Invoca o coordina una presencia escarahoja aliada según el color de la criatura.",
         "description": "Invoca o coordina una presencia escarahoja aliada según el color de la criatura.",
-        "damage_min": 6,
-        "damage_max": 9
+        "damage_min": 8,
+        "damage_max": 10
       },
       {
         "name": "Escarafuerza",
@@ -1869,8 +1869,8 @@
         "range": 0,
         "effect": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón elemental.",
         "description": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón elemental.",
-        "damage_min": 1,
-        "damage_max": 3
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Dispersión Elemental",
@@ -1878,8 +1878,8 @@
         "range": 3,
         "effect": "Dispersa energía de su elemento para dañar o presionar una zona cercana.",
         "description": "Dispersa energía de su elemento para dañar o presionar una zona cercana.",
-        "damage_min": 8,
-        "damage_max": 11
+        "damage_min": 10,
+        "damage_max": 12
       },
       {
         "name": "Espíritu Elemental",
@@ -1887,8 +1887,8 @@
         "range": 0,
         "effect": "Canaliza el espíritu de su color para recuperar PdE y sostener el combate.",
         "description": "Canaliza el espíritu de su color para recuperar PdE y sostener el combate.",
-        "damage_min": 1,
-        "damage_max": 3
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Fusión Escarahoja",
@@ -1896,8 +1896,8 @@
         "range": 1,
         "effect": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas.",
         "description": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas.",
-        "damage_min": 3,
-        "damage_max": 5
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -1923,8 +1923,8 @@
         "range": 3,
         "effect": "Invoca o coordina una presencia escarahoja aliada según el color de la criatura.",
         "description": "Invoca o coordina una presencia escarahoja aliada según el color de la criatura.",
-        "damage_min": 6,
-        "damage_max": 9
+        "damage_min": 8,
+        "damage_max": 10
       },
       {
         "name": "Escarafuerza",
@@ -1932,8 +1932,8 @@
         "range": 0,
         "effect": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón elemental.",
         "description": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón elemental.",
-        "damage_min": 1,
-        "damage_max": 3
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Dispersión Elemental",
@@ -1941,8 +1941,8 @@
         "range": 3,
         "effect": "Dispersa energía de su elemento para dañar o presionar una zona cercana.",
         "description": "Dispersa energía de su elemento para dañar o presionar una zona cercana.",
-        "damage_min": 8,
-        "damage_max": 11
+        "damage_min": 10,
+        "damage_max": 12
       },
       {
         "name": "Espíritu Elemental",
@@ -1950,8 +1950,8 @@
         "range": 0,
         "effect": "Canaliza el espíritu de su color para recuperar PdE y sostener el combate.",
         "description": "Canaliza el espíritu de su color para recuperar PdE y sostener el combate.",
-        "damage_min": 1,
-        "damage_max": 3
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Fusión Escarahoja",
@@ -1959,8 +1959,8 @@
         "range": 1,
         "effect": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas.",
         "description": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas.",
-        "damage_min": 3,
-        "damage_max": 5
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -1986,8 +1986,8 @@
         "range": 3,
         "effect": "Reduce la movilidad del objetivo y lo deja expuesto a la presión de la fusión.",
         "description": "Reduce la movilidad del objetivo y lo deja expuesto a la presión de la fusión.",
-        "damage_min": 2,
-        "damage_max": 4
+        "damage_min": 10,
+        "damage_max": 12
       },
       {
         "name": "Escarafuerza",
@@ -1995,8 +1995,8 @@
         "range": 0,
         "effect": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón fusionado.",
         "description": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón fusionado.",
-        "damage_min": 2,
-        "damage_max": 4
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Elemental Dispersión",
@@ -2004,8 +2004,8 @@
         "range": 3,
         "effect": "Libera energía elemental mezclada para dañar o controlar una zona cercana.",
         "description": "Libera energía elemental mezclada para dañar o controlar una zona cercana.",
-        "damage_min": 9,
-        "damage_max": 13
+        "damage_min": 12,
+        "damage_max": 14
       },
       {
         "name": "Desaparición en Grupo",
@@ -2013,8 +2013,8 @@
         "range": 0,
         "effect": "Oculta temporalmente a la fusión y a aliados cercanos para reorganizar el combate.",
         "description": "Oculta temporalmente a la fusión y a aliados cercanos para reorganizar el combate.",
-        "damage_min": 3,
-        "damage_max": 5
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Evolución",
@@ -2022,8 +2022,8 @@
         "range": 0,
         "effect": "El hechizo Evolución sólo lo puede utilizar 1 sola Escarahoja fusionada en el campo, haya o no más Escarahojas fusionadas en combate.",
         "description": "El hechizo Evolución sólo lo puede utilizar 1 sola Escarahoja fusionada en el campo, haya o no más Escarahojas fusionadas en combate.",
-        "damage_min": 4,
-        "damage_max": 6
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -2049,8 +2049,8 @@
         "range": 3,
         "effect": "Reduce la movilidad del objetivo y lo deja expuesto a la presión de la fusión.",
         "description": "Reduce la movilidad del objetivo y lo deja expuesto a la presión de la fusión.",
-        "damage_min": 2,
-        "damage_max": 4
+        "damage_min": 10,
+        "damage_max": 12
       },
       {
         "name": "Escarafuerza",
@@ -2058,8 +2058,8 @@
         "range": 0,
         "effect": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón fusionado.",
         "description": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón fusionado.",
-        "damage_min": 2,
-        "damage_max": 4
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Elemental Dispersión",
@@ -2067,8 +2067,8 @@
         "range": 3,
         "effect": "Libera energía elemental mezclada para dañar o controlar una zona cercana.",
         "description": "Libera energía elemental mezclada para dañar o controlar una zona cercana.",
-        "damage_min": 9,
-        "damage_max": 13
+        "damage_min": 12,
+        "damage_max": 14
       },
       {
         "name": "Desaparición en Grupo",
@@ -2076,8 +2076,8 @@
         "range": 0,
         "effect": "Oculta temporalmente a la fusión y a aliados cercanos para reorganizar el combate.",
         "description": "Oculta temporalmente a la fusión y a aliados cercanos para reorganizar el combate.",
-        "damage_min": 3,
-        "damage_max": 5
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Evolución",
@@ -2085,8 +2085,8 @@
         "range": 0,
         "effect": "El hechizo Evolución sólo lo puede utilizar 1 sola Escarahoja fusionada en el campo, haya o no más Escarahojas fusionadas en combate.",
         "description": "El hechizo Evolución sólo lo puede utilizar 1 sola Escarahoja fusionada en el campo, haya o no más Escarahojas fusionadas en combate.",
-        "damage_min": 4,
-        "damage_max": 6
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -2112,8 +2112,8 @@
         "range": 3,
         "effect": "Reduce la movilidad del objetivo y lo deja expuesto a la presión de la fusión.",
         "description": "Reduce la movilidad del objetivo y lo deja expuesto a la presión de la fusión.",
-        "damage_min": 2,
-        "damage_max": 4
+        "damage_min": 10,
+        "damage_max": 12
       },
       {
         "name": "Escarafuerza",
@@ -2121,8 +2121,8 @@
         "range": 0,
         "effect": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón fusionado.",
         "description": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón fusionado.",
-        "damage_min": 2,
-        "damage_max": 4
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Elemental Dispersión",
@@ -2130,8 +2130,8 @@
         "range": 3,
         "effect": "Libera energía elemental mezclada para dañar o controlar una zona cercana.",
         "description": "Libera energía elemental mezclada para dañar o controlar una zona cercana.",
-        "damage_min": 9,
-        "damage_max": 13
+        "damage_min": 12,
+        "damage_max": 14
       },
       {
         "name": "Desaparición en Grupo",
@@ -2139,8 +2139,8 @@
         "range": 0,
         "effect": "Oculta temporalmente a la fusión y a aliados cercanos para reorganizar el combate.",
         "description": "Oculta temporalmente a la fusión y a aliados cercanos para reorganizar el combate.",
-        "damage_min": 3,
-        "damage_max": 5
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Evolución",
@@ -2148,8 +2148,8 @@
         "range": 0,
         "effect": "El hechizo Evolución sólo lo puede utilizar 1 sola Escarahoja fusionada en el campo, haya o no más Escarahojas fusionadas en combate.",
         "description": "El hechizo Evolución sólo lo puede utilizar 1 sola Escarahoja fusionada en el campo, haya o no más Escarahojas fusionadas en combate.",
-        "damage_min": 4,
-        "damage_max": 6
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -2175,8 +2175,8 @@
         "range": 3,
         "effect": "Reduce la movilidad del objetivo y lo deja expuesto a la presión de la fusión.",
         "description": "Reduce la movilidad del objetivo y lo deja expuesto a la presión de la fusión.",
-        "damage_min": 2,
-        "damage_max": 4
+        "damage_min": 10,
+        "damage_max": 12
       },
       {
         "name": "Escarafuerza",
@@ -2184,8 +2184,8 @@
         "range": 0,
         "effect": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón fusionado.",
         "description": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón fusionado.",
-        "damage_min": 2,
-        "damage_max": 4
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Elemental Dispersión",
@@ -2193,8 +2193,8 @@
         "range": 3,
         "effect": "Libera energía elemental mezclada para dañar o controlar una zona cercana.",
         "description": "Libera energía elemental mezclada para dañar o controlar una zona cercana.",
-        "damage_min": 9,
-        "damage_max": 13
+        "damage_min": 12,
+        "damage_max": 14
       },
       {
         "name": "Desaparición en Grupo",
@@ -2202,8 +2202,8 @@
         "range": 0,
         "effect": "Oculta temporalmente a la fusión y a aliados cercanos para reorganizar el combate.",
         "description": "Oculta temporalmente a la fusión y a aliados cercanos para reorganizar el combate.",
-        "damage_min": 3,
-        "damage_max": 5
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Evolución",
@@ -2211,8 +2211,8 @@
         "range": 0,
         "effect": "El hechizo Evolución sólo lo puede utilizar 1 sola Escarahoja fusionada en el campo, haya o no más Escarahojas fusionadas en combate.",
         "description": "El hechizo Evolución sólo lo puede utilizar 1 sola Escarahoja fusionada en el campo, haya o no más Escarahojas fusionadas en combate.",
-        "damage_min": 4,
-        "damage_max": 6
+        "damage_min": 0,
+        "damage_max": 0
       }
     ]
   },
@@ -2238,8 +2238,8 @@
         "range": 0,
         "effect": "Empuja a los enemigos cercanos para recuperar espacio táctico.",
         "description": "Empuja a los enemigos cercanos para recuperar espacio táctico.",
-        "damage_min": 3,
-        "damage_max": 5
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Cura Afrodisíaca",
@@ -2247,8 +2247,8 @@
         "range": 3,
         "effect": "Restaura PdE a un aliado y refuerza su permanencia en combate.",
         "description": "Restaura PdE a un aliado y refuerza su permanencia en combate.",
-        "damage_min": 4,
-        "damage_max": 6
+        "damage_min": 0,
+        "damage_max": 0
       },
       {
         "name": "Picota",
@@ -2256,8 +2256,8 @@
         "range": 1,
         "effect": "Golpe contundente de corto alcance que castiga al objetivo marcado.",
         "description": "Golpe contundente de corto alcance que castiga al objetivo marcado.",
-        "damage_min": 10,
-        "damage_max": 14
+        "damage_min": 14,
+        "damage_max": 16
       },
       {
         "name": "Humo Calcinador",
@@ -2265,8 +2265,8 @@
         "range": 3,
         "effect": "Nube ardiente que daña y dificulta la respuesta de los enemigos alcanzados.",
         "description": "Nube ardiente que daña y dificulta la respuesta de los enemigos alcanzados.",
-        "damage_min": 12,
-        "damage_max": 17
+        "damage_min": 16,
+        "damage_max": 18
       }
     ]
   }

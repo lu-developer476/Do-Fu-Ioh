@@ -19,9 +19,9 @@ const FUSION_RECIPES = {
   'Kitsu nishiki': ['Kitsu mizu', 'Kitsu midori no mizu'],
   'Kitsu penta': ['Kitsu amatista', 'Kitsu anaranjado', 'Kitsu carmine', 'Kitsu midori no mizu', 'Kitsu junsuina hikari'],
   'Kitsu yin yang': ['Kitsu dākuburakku', 'Kitsu junsuina hikari'],
-  'Escarahoja duocromada': ['Escarahoja anaranjada', 'Escarahoja violeta'],
+  'Escarahoja duocromada': ['Escarahoja anaranjada', 'Escarahoja tostada'],
   'Escarahoja mecanizada': ['Escarahoja tostada', 'Escarahoja limonada'],
-  'Escarahoja tricolor': ['Escarahoja anaranjada', 'Escarahoja limonada', 'Escarahoja violeta'],
+  'Escarahoja tricolor': ['Escarahoja sonrosada', 'Escarahoja violeta'],
   'Escarahoja variopinta': ['Escarahoja anaranjada', 'Escarahoja limonada', 'Escarahoja sonrosada', 'Escarahoja tostada', 'Escarahoja violeta']
 };
 const EVOLUTION_RECIPES = {

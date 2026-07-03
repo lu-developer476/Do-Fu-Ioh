@@ -1126,16 +1126,34 @@
     "hp_max": 450,
     "spells": [
       {
-        "name": "Carga de Escarahoja",
+        "name": "Escarainvoc",
         "cost": 3,
-        "range": 2,
-        "effect": "Daño cuerpo a cuerpo extendido; si avanzó este turno causa más daño."
+        "range": 3,
+        "effect": "Invoca o coordina una presencia escarahoja aliada según el color de la criatura."
       },
       {
-        "name": "Coraza Elemental",
+        "name": "Escarafuerza",
         "cost": 3,
         "range": 0,
-        "effect": "Recupera PdE según su variante elemental."
+        "effect": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón elemental."
+      },
+      {
+        "name": "Dispersión Elemental",
+        "cost": 4,
+        "range": 3,
+        "effect": "Dispersa energía de su elemento para dañar o presionar una zona cercana."
+      },
+      {
+        "name": "Espíritu Elemental",
+        "cost": 3,
+        "range": 0,
+        "effect": "Canaliza el espíritu de su color para recuperar PdE y sostener el combate."
+      },
+      {
+        "name": "Fusión Escarahoja",
+        "cost": 5,
+        "range": 1,
+        "effect": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas."
       }
     ]
   },
@@ -1156,16 +1174,34 @@
     "hp_max": 450,
     "spells": [
       {
-        "name": "Carga de Escarahoja",
+        "name": "Escarainvoc",
         "cost": 3,
-        "range": 2,
-        "effect": "Daño cuerpo a cuerpo extendido; si avanzó este turno causa más daño."
+        "range": 3,
+        "effect": "Invoca o coordina una presencia escarahoja aliada según el color de la criatura."
       },
       {
-        "name": "Coraza Elemental",
+        "name": "Escarafuerza",
         "cost": 3,
         "range": 0,
-        "effect": "Recupera PdE según su variante elemental."
+        "effect": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón elemental."
+      },
+      {
+        "name": "Dispersión Elemental",
+        "cost": 4,
+        "range": 3,
+        "effect": "Dispersa energía de su elemento para dañar o presionar una zona cercana."
+      },
+      {
+        "name": "Espíritu Elemental",
+        "cost": 3,
+        "range": 0,
+        "effect": "Canaliza el espíritu de su color para recuperar PdE y sostener el combate."
+      },
+      {
+        "name": "Fusión Escarahoja",
+        "cost": 5,
+        "range": 1,
+        "effect": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas."
       }
     ]
   },
@@ -1186,16 +1222,34 @@
     "hp_max": 450,
     "spells": [
       {
-        "name": "Carga de Escarahoja",
+        "name": "Escarainvoc",
         "cost": 3,
-        "range": 2,
-        "effect": "Daño cuerpo a cuerpo extendido; si avanzó este turno causa más daño."
+        "range": 3,
+        "effect": "Invoca o coordina una presencia escarahoja aliada según el color de la criatura."
       },
       {
-        "name": "Coraza Elemental",
+        "name": "Escarafuerza",
         "cost": 3,
         "range": 0,
-        "effect": "Recupera PdE según su variante elemental."
+        "effect": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón elemental."
+      },
+      {
+        "name": "Dispersión Elemental",
+        "cost": 4,
+        "range": 3,
+        "effect": "Dispersa energía de su elemento para dañar o presionar una zona cercana."
+      },
+      {
+        "name": "Espíritu Elemental",
+        "cost": 3,
+        "range": 0,
+        "effect": "Canaliza el espíritu de su color para recuperar PdE y sostener el combate."
+      },
+      {
+        "name": "Fusión Escarahoja",
+        "cost": 5,
+        "range": 1,
+        "effect": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas."
       }
     ]
   },
@@ -1216,16 +1270,34 @@
     "hp_max": 450,
     "spells": [
       {
-        "name": "Carga de Escarahoja",
+        "name": "Escarainvoc",
         "cost": 3,
-        "range": 2,
-        "effect": "Daño cuerpo a cuerpo extendido; si avanzó este turno causa más daño."
+        "range": 3,
+        "effect": "Invoca o coordina una presencia escarahoja aliada según el color de la criatura."
       },
       {
-        "name": "Coraza Elemental",
+        "name": "Escarafuerza",
         "cost": 3,
         "range": 0,
-        "effect": "Recupera PdE según su variante elemental."
+        "effect": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón elemental."
+      },
+      {
+        "name": "Dispersión Elemental",
+        "cost": 4,
+        "range": 3,
+        "effect": "Dispersa energía de su elemento para dañar o presionar una zona cercana."
+      },
+      {
+        "name": "Espíritu Elemental",
+        "cost": 3,
+        "range": 0,
+        "effect": "Canaliza el espíritu de su color para recuperar PdE y sostener el combate."
+      },
+      {
+        "name": "Fusión Escarahoja",
+        "cost": 5,
+        "range": 1,
+        "effect": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas."
       }
     ]
   },
@@ -1246,16 +1318,34 @@
     "hp_max": 450,
     "spells": [
       {
-        "name": "Carga de Escarahoja",
+        "name": "Escarainvoc",
         "cost": 3,
-        "range": 2,
-        "effect": "Daño cuerpo a cuerpo extendido; si avanzó este turno causa más daño."
+        "range": 3,
+        "effect": "Invoca o coordina una presencia escarahoja aliada según el color de la criatura."
       },
       {
-        "name": "Coraza Elemental",
+        "name": "Escarafuerza",
         "cost": 3,
         "range": 0,
-        "effect": "Recupera PdE según su variante elemental."
+        "effect": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón elemental."
+      },
+      {
+        "name": "Dispersión Elemental",
+        "cost": 4,
+        "range": 3,
+        "effect": "Dispersa energía de su elemento para dañar o presionar una zona cercana."
+      },
+      {
+        "name": "Espíritu Elemental",
+        "cost": 3,
+        "range": 0,
+        "effect": "Canaliza el espíritu de su color para recuperar PdE y sostener el combate."
+      },
+      {
+        "name": "Fusión Escarahoja",
+        "cost": 5,
+        "range": 1,
+        "effect": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas."
       }
     ]
   },
@@ -1276,16 +1366,34 @@
     "hp_max": 650,
     "spells": [
       {
-        "name": "Mandíbulas Bicolores",
-        "cost": 4,
-        "range": 1,
-        "effect": "Daño de dos elementos adaptado a la fusión."
+        "name": "Inmovilización",
+        "cost": 3,
+        "range": 3,
+        "effect": "Reduce la movilidad del objetivo y lo deja expuesto a la presión de la fusión."
       },
       {
-        "name": "Caparazón Prismático",
+        "name": "Escarafuerza",
         "cost": 3,
         "range": 0,
-        "effect": "Gana PdE y resistencia temporal."
+        "effect": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón fusionado."
+      },
+      {
+        "name": "Elemental Dispersión",
+        "cost": 4,
+        "range": 3,
+        "effect": "Libera energía elemental mezclada para dañar o controlar una zona cercana."
+      },
+      {
+        "name": "Desaparición en Grupo",
+        "cost": 4,
+        "range": 0,
+        "effect": "Oculta temporalmente a la fusión y a aliados cercanos para reorganizar el combate."
+      },
+      {
+        "name": "Evolución",
+        "cost": 5,
+        "range": 0,
+        "effect": "El hechizo Evolución sólo lo puede utilizar 1 sola Escarahoja fusionada en el campo, haya o no más Escarahojas fusionadas en combate."
       }
     ]
   },
@@ -1306,16 +1414,34 @@
     "hp_max": 650,
     "spells": [
       {
-        "name": "Mandíbulas Bicolores",
-        "cost": 4,
-        "range": 1,
-        "effect": "Daño de dos elementos adaptado a la fusión."
+        "name": "Inmovilización",
+        "cost": 3,
+        "range": 3,
+        "effect": "Reduce la movilidad del objetivo y lo deja expuesto a la presión de la fusión."
       },
       {
-        "name": "Caparazón Prismático",
+        "name": "Escarafuerza",
         "cost": 3,
         "range": 0,
-        "effect": "Gana PdE y resistencia temporal."
+        "effect": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón fusionado."
+      },
+      {
+        "name": "Elemental Dispersión",
+        "cost": 4,
+        "range": 3,
+        "effect": "Libera energía elemental mezclada para dañar o controlar una zona cercana."
+      },
+      {
+        "name": "Desaparición en Grupo",
+        "cost": 4,
+        "range": 0,
+        "effect": "Oculta temporalmente a la fusión y a aliados cercanos para reorganizar el combate."
+      },
+      {
+        "name": "Evolución",
+        "cost": 5,
+        "range": 0,
+        "effect": "El hechizo Evolución sólo lo puede utilizar 1 sola Escarahoja fusionada en el campo, haya o no más Escarahojas fusionadas en combate."
       }
     ]
   },
@@ -1336,16 +1462,34 @@
     "hp_max": 650,
     "spells": [
       {
-        "name": "Mandíbulas Bicolores",
-        "cost": 4,
-        "range": 1,
-        "effect": "Daño de dos elementos adaptado a la fusión."
+        "name": "Inmovilización",
+        "cost": 3,
+        "range": 3,
+        "effect": "Reduce la movilidad del objetivo y lo deja expuesto a la presión de la fusión."
       },
       {
-        "name": "Caparazón Prismático",
+        "name": "Escarafuerza",
         "cost": 3,
         "range": 0,
-        "effect": "Gana PdE y resistencia temporal."
+        "effect": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón fusionado."
+      },
+      {
+        "name": "Elemental Dispersión",
+        "cost": 4,
+        "range": 3,
+        "effect": "Libera energía elemental mezclada para dañar o controlar una zona cercana."
+      },
+      {
+        "name": "Desaparición en Grupo",
+        "cost": 4,
+        "range": 0,
+        "effect": "Oculta temporalmente a la fusión y a aliados cercanos para reorganizar el combate."
+      },
+      {
+        "name": "Evolución",
+        "cost": 5,
+        "range": 0,
+        "effect": "El hechizo Evolución sólo lo puede utilizar 1 sola Escarahoja fusionada en el campo, haya o no más Escarahojas fusionadas en combate."
       }
     ]
   },
@@ -1366,21 +1510,39 @@
     "hp_max": 650,
     "spells": [
       {
-        "name": "Mandíbulas Bicolores",
-        "cost": 4,
-        "range": 1,
-        "effect": "Daño de dos elementos adaptado a la fusión."
+        "name": "Inmovilización",
+        "cost": 3,
+        "range": 3,
+        "effect": "Reduce la movilidad del objetivo y lo deja expuesto a la presión de la fusión."
       },
       {
-        "name": "Caparazón Prismático",
+        "name": "Escarafuerza",
         "cost": 3,
         "range": 0,
-        "effect": "Gana PdE y resistencia temporal."
+        "effect": "Aumenta su potencia ofensiva y refuerza brevemente su caparazón fusionado."
+      },
+      {
+        "name": "Elemental Dispersión",
+        "cost": 4,
+        "range": 3,
+        "effect": "Libera energía elemental mezclada para dañar o controlar una zona cercana."
+      },
+      {
+        "name": "Desaparición en Grupo",
+        "cost": 4,
+        "range": 0,
+        "effect": "Oculta temporalmente a la fusión y a aliados cercanos para reorganizar el combate."
+      },
+      {
+        "name": "Evolución",
+        "cost": 5,
+        "range": 0,
+        "effect": "El hechizo Evolución sólo lo puede utilizar 1 sola Escarahoja fusionada en el campo, haya o no más Escarahojas fusionadas en combate."
       }
     ]
   },
   {
-    "name": "Escarajefe Dorado",
+    "name": "Escarasubjefe Bronce",
     "family": "Escarahojas",
     "stage": "evolution",
     "level_min": 65,
@@ -1389,23 +1551,35 @@
     "shell": 630,
     "action_points": 10,
     "movement_points": 6,
-    "description": "Jefe mayor de las Escarahojas adaptado de los Escarajefes dorados de Dofus Retro, Dofus Touch y Dofus. Su caparazón brillante concentra mando de enjambre, defensa superior y presión táctica sobre el tablero.",
+    "description": "Subjefe de bronce de la familia Escarahoja. Su caparazón oscuro y metálico impone autoridad sobre el enjambre, combinando apoyo, control de espacio y humo abrasador para sostener la presión del combate.",
     "image": "public/images/escarahojas/evolutions/escarasubjefe-bronce.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "hp_min": 1800,
     "hp_max": 2575,
     "spells": [
       {
-        "name": "Orden del Escarajefe Dorado",
-        "cost": 5,
-        "range": 4,
-        "effect": "Daño de mando a distancia inspirado en jefes Escarahojas."
+        "name": "Liberación",
+        "cost": 3,
+        "range": 0,
+        "effect": "Empuja a los enemigos cercanos para recuperar espacio táctico."
       },
       {
-        "name": "Armadura Dorada",
+        "name": "Cura Afrodisíaca",
         "cost": 4,
-        "range": 0,
-        "effect": "Gran recuperación de PdE y bloqueo táctico."
+        "range": 3,
+        "effect": "Restaura PdE a un aliado y refuerza su permanencia en combate."
+      },
+      {
+        "name": "Picota",
+        "cost": 4,
+        "range": 1,
+        "effect": "Golpe contundente de corto alcance que castiga al objetivo marcado."
+      },
+      {
+        "name": "Humo Calcinador",
+        "cost": 5,
+        "range": 3,
+        "effect": "Nube ardiente que daña y dificulta la respuesta de los enemigos alcanzados."
       }
     ]
   }

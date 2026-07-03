@@ -156,6 +156,7 @@ class KitsuCatalogDataTests(SimpleTestCase):
             'Kitsu amatista': 'Espíritu kitsune de tonalidades violetas vinculado a las energías arcanas de Pandala.',
             'Kitsu anaranjado': 'Variante ardiente de los Kitsus cuya energía recuerda a las brasas de un fuego controlado.',
             'Kitsu carmine': 'Espíritu kitsu de tonalidad rojiza profunda asociado con la intensidad del Wakfu.',
+            'Kitsu androide': 'Kitsu artificial reforzado con piezas tecnomágicas. Su núcleo mecánico estabiliza el Wakfu y convierte sus movimientos en patrones precisos y calculados.',
             'Kitsu dākuburakku': 'Kitsu oscuro que canaliza energías sombrías del Mundo de los Doce.',
             'Kitsu junsuina hikari': 'Manifestación espiritual del kitsu ligada a la pureza y la luz.',
             'Kitsu magenta': 'Espíritu kitsune de energía vibrante, errática y caótica. Su coloración intensa delata una afinidad con corrientes mágicas difíciles de controlar.',
@@ -234,12 +235,31 @@ class PioCatalogDataTests(SimpleTestCase):
     def test_pio_base_components_include_fusion_spell(self):
         cards = {card['name']: card for card in serialized_cards_seed_data()}
 
-        for name in ['Pío albino', 'Pío negruzco', 'Pío anaranjado', 'Pío castaño']:
+        for name in ['Pío albino', 'Pío negruzco', 'Pío anaranjado', 'Pío castaño', 'Pío cyborg']:
             with self.subTest(card=name):
                 self.assertEqual(cards[name]['spells'][-1]['name'], 'Fusión Pío')
                 self.assertEqual(cards[name]['spells'][-1]['damage_min'], 0)
                 self.assertEqual(cards[name]['spells'][-1]['damage_max'], 0)
                 self.assertIn('Pío compatible', cards[name]['spells'][-1]['effect'])
+
+    def test_new_cyborg_base_monsters_are_available(self):
+        cards = {card['name']: card for card in serialized_cards_seed_data()}
+
+        expected = {
+            'Pío cyborg': ('Píos', 'public/images/pios/base/pio-cyborg.png', 85, 105, 5, 5),
+            'Kitsu androide': ('Kitsus', 'public/images/kitsus/base/kitsu-androide.png', 1500, 300, 9, 6),
+        }
+
+        for name, (family, image, hp, shell, action_points, movement_points) in expected.items():
+            with self.subTest(card=name):
+                card = cards[name]
+                self.assertEqual(card['family'], family)
+                self.assertEqual(card['stage'], 'base')
+                self.assertEqual(card['image'], image.replace('public/', '/static/'))
+                self.assertEqual(card['hp'], hp)
+                self.assertEqual(card['shell'], shell)
+                self.assertEqual(card['action_points'], action_points)
+                self.assertEqual(card['movement_points'], movement_points)
 
 
 class GelatinaCatalogDataTests(SimpleTestCase):

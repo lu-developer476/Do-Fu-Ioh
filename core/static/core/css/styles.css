@@ -1842,3 +1842,92 @@ body {
   .site-navbar::before,
   .site-footer::before { animation: none; }
 }
+
+.icon-close,
+.modal-close-x {
+  display: inline-grid;
+  place-items: center;
+  width: 2.25rem;
+  min-width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border-radius: 999px;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.modal-close-x {
+  justify-self: end;
+  margin: -6px -6px 4px 0;
+}
+
+.card-info-controls {
+  display: grid;
+  gap: 6px;
+}
+
+.card-info-disclosure {
+  border: 1px solid rgba(214, 184, 142, .72);
+  border-radius: 10px;
+  background: rgba(24, 43, 29, .45);
+  overflow: hidden;
+}
+
+.card-info-disclosure summary {
+  cursor: pointer;
+  list-style: none;
+  padding: .5rem .65rem;
+  text-align: center;
+  font-weight: 800;
+  color: var(--text);
+  background: rgba(24, 43, 29, .7);
+}
+
+.card-info-disclosure summary::-webkit-details-marker { display: none; }
+
+.card-info-disclosure p {
+  margin: 0;
+  padding: .5rem .65rem;
+  font-size: .76rem;
+  line-height: 1.35;
+  color: #fff7d7;
+  text-align: left;
+  border-top: 1px solid rgba(214, 184, 142, .22);
+}
+
+.hand-select-button,
+.catalog-select-button { width: 100%; }
+
+.spell-choice-modal {
+  gap: 10px;
+}
+
+.spell-choice-dialog .spell-choice-list {
+  margin-top: 0;
+}
+
+.pause-shade {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 20;
+  pointer-events: none;
+  border-radius: 18px;
+  opacity: 0;
+  transform: scale(.98);
+  transition: opacity .18s ease, transform .18s ease;
+  background: radial-gradient(circle, rgba(7, 12, 9, .58), rgba(7, 12, 9, .82));
+  color: #fff4c2;
+  font-size: clamp(2.8rem, 9vw, 7rem);
+  font-weight: 900;
+  letter-spacing: .18em;
+  text-shadow: 0 8px 28px rgba(0, 0, 0, .75), 0 0 24px rgba(255, 224, 130, .45);
+}
+
+.pause-shade.is-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.board-action-ring { position: relative; }

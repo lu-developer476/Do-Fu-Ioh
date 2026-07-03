@@ -258,14 +258,14 @@ async function chooseSpellForAttack(attacker, target) {
   if (!spells.length) { setActionFeedback('No hay hechizos disponibles: faltan PA o el objetivo está fuera de rango.', 'error'); return null; }
   const dialog = $('#spell-choice-dialog'); const list = $('#spell-choice-list'); const title = $('#spell-choice-title'); const targetText = $('#spell-choice-target');
   if (!dialog?.showModal || !list) return chooseBestSpell(attacker, target);
-  title.textContent = `${attacker.card.name} ataca a ${target.card.name}`; targetText.textContent = 'Seleccioná el hechizo que se usará para resolver el ataque.'; clearElement(list);
+  title.textContent = 'Elegí un hechizo'; targetText.textContent = ''; clearElement(list);
   return new Promise((resolve) => {
     let done = false; const finish = (spell) => { if (done) return; done = true; dialog.close(); resolve(spell); };
     spells.forEach((spell) => { const button = document.createElement('button'); button.type = 'button'; button.className = 'spell-choice-option'; appendTextElement(button, 'strong', spell.name); appendTextElement(button, 'span', `${spell.cost ?? '-'} PA · rango ${spell.range ?? '-'} · daño ${spellDamageLabel(spell, attacker.card)}`); appendTextElement(button, 'small', spell.description || spell.effect || 'Sin descripción.'); button.addEventListener('click', () => finish(spell)); list.appendChild(button); });
     $('#spell-choice-cancel')?.addEventListener('click', () => finish(null), { once: true }); dialog.addEventListener('cancel', () => finish(null), { once: true }); dialog.showModal();
   });
 }
-async function onArenaCardClick(unit, side) { const { me, enemy, mySide } = resolveSides(); if (!me || !enemy) return; if (side === 'host') { const active = me.units?.find((item) => item.id === appState.selectedUnitId); if (active && active.id === unit.id && virtualEvolutionSpell(active)) { if (!isMyTurn(mySide)) return setActionFeedback('La IA está jugando ahora; el Registro detalla sus jugadas.', 'error'); try { await sendAction({ action: 'attack', attacker_id: active.id, target_id: active.id, spell_name: 'Evolución' }); return setActionFeedback(`${active.card.name} intentó evolucionar.`, 'success'); } catch (err) { return setActionFeedback(err.message, 'error'); } } if (active && active.id !== unit.id && fusionRecipeForBattle(active, unit)) { if (!isMyTurn(mySide)) return setActionFeedback('La IA está jugando ahora; el Registro detalla sus jugadas.', 'error'); const spell = await chooseSpellForAttack(active, unit); if (!spell) return setActionFeedback('Fusión cancelada.', 'normal'); try { await sendAction({ action: 'attack', attacker_id: active.id, target_id: unit.id, spell_name: spell.name }); return setActionFeedback(`${active.card.name} se fusionó con ${unit.card.name}.`, 'success'); } catch (err) { return setActionFeedback(err.message, 'error'); } } appState.selectedUnitId = unit.id; appState.selectedHandIndex = null; setActionFeedback(`${unit.card.name} seleccionado. Elegí un rival para atacar, un aliado compatible para fusionar o una casilla para mover.`, 'normal'); renderGame(); return; } const attacker = me.units?.find((item) => item.id === appState.selectedUnitId); if (!attacker) return setActionFeedback('Seleccioná primero una unidad propia para atacar.', 'error'); if (!isMyTurn(mySide)) return setActionFeedback('La IA está jugando ahora; el Registro detalla sus jugadas.', 'error'); const spell = await chooseSpellForAttack(attacker, unit); if (!spell) return setActionFeedback('Ataque cancelado.', 'normal'); try { await sendAction({ action: 'attack', attacker_id: attacker.id, target_id: unit.id, spell_name: spell.name }); setActionFeedback(`${attacker.card.name} usó ${spell.name} contra ${unit.card.name}.`, 'success'); } catch (err) { setActionFeedback(err.message, 'error'); } }
+async function onArenaCardClick(unit, side) { const { me, enemy, mySide } = resolveSides(); if (!me || !enemy) return; if (side === 'host') { const active = me.units?.find((item) => item.id === appState.selectedUnitId); if (active && active.id === unit.id && virtualEvolutionSpell(active)) { if (!isMyTurn(mySide)) return setActionFeedback('La IA está jugando ahora; el Registro detalla sus jugadas.', 'error'); try { await sendAction({ action: 'attack', attacker_id: active.id, target_id: active.id, spell_name: 'Evolución' }); return setActionFeedback(`${active.card.name} intentó evolucionar.`, 'success'); } catch (err) { return setActionFeedback(err.message, 'error'); } } if (active && active.id !== unit.id && fusionRecipeForBattle(active, unit)) { if (!isMyTurn(mySide)) return setActionFeedback('La IA está jugando ahora; el Registro detalla sus jugadas.', 'error'); const spell = await chooseSpellForAttack(active, unit); if (!spell) return setActionFeedback('Fusión cancelada.', 'normal'); try { await sendAction({ action: 'attack', attacker_id: active.id, target_id: unit.id, spell_name: spell.name }); return setActionFeedback(`${active.card.name} se fusionó con ${unit.card.name}.`, 'success'); } catch (err) { return setActionFeedback(err.message, 'error'); } } appState.selectedUnitId = unit.id; appState.selectedHandIndex = null; renderGame(); return; } const attacker = me.units?.find((item) => item.id === appState.selectedUnitId); if (!attacker) return setActionFeedback('Seleccioná primero una unidad propia para atacar.', 'error'); if (!isMyTurn(mySide)) return setActionFeedback('La IA está jugando ahora; el Registro detalla sus jugadas.', 'error'); const spell = await chooseSpellForAttack(attacker, unit); if (!spell) return setActionFeedback('Ataque cancelado.', 'normal'); try { await sendAction({ action: 'attack', attacker_id: attacker.id, target_id: unit.id, spell_name: spell.name }); setActionFeedback(`${attacker.card.name} usó ${spell.name} contra ${unit.card.name}.`, 'success'); } catch (err) { setActionFeedback(err.message, 'error'); } }
 
 async function onBoardCellClick(x, y) {
   const { me, enemy, mySide } = resolveSides();
@@ -319,6 +319,26 @@ function formatSpells(card = {}) {
   return `Hechizos: ${spells.map((spell) => `${spell.name} (${spell.cost ?? '-'} PA, rango ${spell.range ?? '-'}, daño ${spellDamageLabel(spell, card)}): ${spell.description || spell.effect || 'Sin descripción.'}`).join(' · ')}`;
 }
 function appendCardDescription(parent, card = {}) { appendTextElement(parent, 'p', card.description || 'Sin descripción disponible.', 'card-description'); }
+function appendCardInfoControls(parent, card = {}) {
+  const controls = document.createElement('div');
+  controls.className = 'card-info-controls';
+  const description = document.createElement('details');
+  description.className = 'card-info-disclosure';
+  appendTextElement(description, 'summary', 'Descripción');
+  appendTextElement(description, 'p', `Familia: ${card.family || '-'}`);
+  appendTextElement(description, 'p', `Tipo de monstruo: ${card.monster_type || card.type || 'Monstruo'}`);
+  appendTextElement(description, 'p', `Forma: ${stageLabel(card.stage)}`);
+  appendTextElement(description, 'p', card.description || 'Sin descripción disponible.');
+  const spells = document.createElement('details');
+  spells.className = 'card-info-disclosure';
+  appendTextElement(spells, 'summary', 'Hechizos');
+  const list = Array.isArray(card.spells) ? card.spells : [];
+  if (!list.length) appendTextElement(spells, 'p', 'Sin hechizos configurados.');
+  list.forEach((spell) => appendTextElement(spells, 'p', `${spell.name} (${spell.cost ?? '-'} PA · rango ${spell.range ?? '-'} · daño ${spellDamageLabel(spell, card)}): ${spell.description || spell.effect || 'Sin descripción.'}`));
+  controls.append(description, spells);
+  parent.appendChild(controls);
+  return controls;
+}
 function unitTooltip(unit) {
   return `${unit.card.name}
 PdV: ${unit.hp_current}/${unit.card.hp}
@@ -346,8 +366,7 @@ function renderCatalog() {
     article.appendChild(createCardImageElement(cardImage(card), card.name, 'card-image-catalog'));
     appendTextElement(article, 'h4', card.name);
     appendBadgeRow(article, [stageLabel(card.stage), card.family, summarizeCardStats(card)]);
-    appendCardDescription(article, card);
-    appendTextElement(article, 'p', formatSpells(card), 'spell-summary');
+    appendCardInfoControls(article, card);
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'ghost catalog-select-button';
@@ -397,22 +416,25 @@ function renderHand(hand = [], canPlay = false) {
   clearElement(handEl);
   if (!hand.length) return renderEmptyState(handEl, EMPTY_MESSAGES.hand);
   hand.forEach((card, index) => {
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = `card hand-card ${appState.selectedHandIndex === index ? 'selected' : ''}`.trim();
-    button.appendChild(createCardImageElement(cardImage(card), card.name, 'card-image-hand'));
-    appendTextElement(button, 'h4', card.name, 'hand-card-title');
-    appendBadgeRow(button, [stageLabel(card.stage), card.family, summarizeCardStats(card)]);
-    appendCardDescription(button, card);
-    appendTextElement(button, 'p', formatSpells(card), 'spell-summary');
-    button.addEventListener('click', () => {
+    const article = document.createElement('article');
+    article.className = `card hand-card ${appState.selectedHandIndex === index ? 'selected' : ''}`.trim();
+    article.appendChild(createCardImageElement(cardImage(card), card.name, 'card-image-hand'));
+    appendTextElement(article, 'h4', card.name, 'hand-card-title');
+    appendBadgeRow(article, [stageLabel(card.stage), card.family, summarizeCardStats(card)]);
+    appendCardInfoControls(article, card);
+    const select = document.createElement('button');
+    select.type = 'button';
+    select.className = 'ghost hand-select-button';
+    select.textContent = appState.selectedHandIndex === index ? 'Cancelar selección' : 'Invocar';
+    select.addEventListener('click', () => {
       if (!canPlay) return setActionFeedback('La IA está jugando ahora; el Registro detalla sus jugadas.', 'error');
       const isSame = appState.selectedHandIndex === index;
       appState.selectedHandIndex = isSame ? null : index; appState.selectedUnitId = null;
       setActionFeedback(isSame ? 'Selección cancelada.' : `Carta seleccionada: ${card.name}. Elegí un espacio libre.`, 'normal');
       renderGame();
     });
-    handEl.appendChild(button);
+    article.appendChild(select);
+    handEl.appendChild(article);
   });
 }
 
@@ -474,7 +496,7 @@ function populateFamilyFilter(cards = []) {
   [...new Set(cards.map((card) => card.family).filter(Boolean))].forEach((family) => { familyFilter.appendChild(createFamilyFilterButton(family, family)); });
 }
 function loadCards() { appState.cards = localSeedCards(); populateFamilyFilter(appState.cards); syncFamilySelects(); renderOstControls(); renderCatalog(); return Promise.resolve(); }
-function loadActiveMatch() { loadStoredMatch(); updateDerivedCombat(); renderGame(); return Promise.resolve(); }
+function loadActiveMatch() { localStorage.removeItem(STORAGE_KEY); appState.roomCode = null; appState.match = null; updateDerivedCombat(); renderGame(); return Promise.resolve(); }
 function requestedHandSize() { return Number(document.querySelector('input[name="initial-hand-size"]:checked')?.value || 5); }
 async function createAIMatch(selectedCardIds = []) { startLocalMatch(selectedCardIds, requestedHandSize()); renderGame(); setStatus(selectedCardIds.length ? 'Duelo local creado con la selección manual como mano disponible.' : 'Duelo local creado con mano aleatoria.'); }
 async function shuffleMonsters() { await createAIMatch(); setActionFeedback(`Cartas barajadas. Mano Disponible tiene ${appState.match.initial_hand_size} carta(s) aleatoria(s).`, 'success'); }
@@ -568,14 +590,30 @@ function syncFamilySelects() {
 }
 function syncModalDeckScope() { const current = document.querySelector('input[name="deck-scope"]:checked')?.value || 'all'; const currentTier = document.querySelector('input[name="deck-tier"]:checked')?.value || 'all'; document.querySelectorAll('input[name="modal-deck-scope"]').forEach((input) => { input.checked = input.value === current; }); document.querySelectorAll('input[name="modal-deck-tier"]').forEach((input) => { input.checked = input.value === currentTier; }); const modalFamily = $('#modal-family-select'); if (modalFamily && $('#match-family-select')) modalFamily.value = $('#match-family-select').value; }
 function applyModalDeckScope() { const selected = document.querySelector('input[name="modal-deck-scope"]:checked')?.value; const selectedTier = document.querySelector('input[name="modal-deck-tier"]:checked')?.value; const target = selected && document.querySelector(`input[name="deck-scope"][value="${selected}"]`); const tierTarget = selectedTier && document.querySelector(`input[name="deck-tier"][value="${selectedTier}"]`); if (target) target.checked = true; if (tierTarget) tierTarget.checked = true; if ($('#modal-family-select') && $('#match-family-select')) $('#match-family-select').value = $('#modal-family-select').value; }
+function updatePauseShade() { const shade = $('#pause-shade'); if (shade) shade.classList.toggle('is-visible', Boolean(appState.match?.paused)); }
 function setMatchPaused(paused) { if (!appState.match) return setActionFeedback('No hay duelo activo.', 'error'); if (appState.match.winner) return setActionFeedback('La partida ya terminó; reiniciala para seguir jugando.', 'error'); appState.match.paused = paused; appendLog(paused ? 'Partida pausada por el jugador.' : 'Partida reanudada por el jugador.'); persistMatch(); renderGame(); setActionFeedback(paused ? 'Partida pausada.' : 'Partida reanudada.', 'success'); }
 function abandonMatch() { if (!appState.match) return setActionFeedback('No hay duelo activo.', 'error'); if (appState.match.winner) return setActionFeedback('La partida ya estaba terminada.', 'error'); appendLog('El jugador abandonó la partida.'); appState.match.winner = 'guest'; persistMatch(); renderGame(); setActionFeedback('Abandonaste la partida. La IA gana el duelo.', 'error'); }
 function restartMatch() { const cfg = appState.lastMatchConfig || { selectedIds: [...appState.selectedCatalogCardIds], handSize: requestedHandSize() }; startLocalMatch(cfg.selectedIds || [], cfg.handSize || requestedHandSize()); renderGame(); setActionFeedback('Partida reiniciada con la misma configuración.', 'success'); }
+function showSuccessDialog(title, message) { const dialog = $('#success-dialog'); if (!dialog?.showModal) return; $('#success-title').textContent = title; $('#success-message').textContent = message; dialog.showModal(); }
+function confirmDecision(title, message) {
+  const dialog = $('#decision-dialog'); if (!dialog?.showModal) return Promise.resolve(window.confirm(message));
+  $('#decision-title').textContent = title; $('#decision-message').textContent = message;
+  return new Promise((resolve) => {
+    let done = false; const finish = (value) => { if (done) return; done = true; dialog.close(); resolve(value); };
+    $('#decision-confirm')?.addEventListener('click', () => finish(true), { once: true });
+    $('#decision-cancel')?.addEventListener('click', () => finish(false), { once: true });
+    $('#decision-close')?.addEventListener('click', () => finish(false), { once: true });
+    dialog.addEventListener('cancel', () => finish(false), { once: true });
+    dialog.showModal();
+  });
+}
+async function confirmRestartMatch() { if (await confirmDecision('Reiniciar partida', '¿Realmente querés reiniciar la partida?')) { restartMatch(); showSuccessDialog('Partida reiniciada', 'La partida se reinició correctamente.'); } }
+async function confirmAbandonMatch() { if (await confirmDecision('Abandonar partida', '¿Realmente querés abandonar la partida?')) { abandonMatch(); showSuccessDialog('Partida abandonada', 'Abandonaste la partida.'); } }
 function openHandDialog() { const dialog = $('#hand-dialog'); if (dialog?.showModal) dialog.showModal(); }
-function syncBoardActionButtons() { const hasMatch = Boolean(appState.match); const isBusy = Boolean(appState.aiPlayback); const finished = Boolean(appState.match?.winner); ['#end-turn-btn', '#pause-match-btn', '#restart-match-btn', '#abandon-match-btn'].forEach((selector) => { const button = $(selector); if (!button) return; button.disabled = !hasMatch || isBusy || (finished && selector !== '#restart-match-btn'); }); const pause = $('#pause-match-btn'); if (pause) pause.textContent = appState.match?.paused ? 'Reanudar' : 'Pausar'; }
+function syncBoardActionButtons() { const hasMatch = Boolean(appState.match); const isBusy = Boolean(appState.aiPlayback); const finished = Boolean(appState.match?.winner); ['#end-turn-btn', '#pause-match-btn', '#restart-match-btn', '#abandon-match-btn'].forEach((selector) => { const button = $(selector); if (!button) return; button.disabled = !hasMatch || isBusy || (finished && selector !== '#restart-match-btn'); }); const pause = $('#pause-match-btn'); if (pause) pause.textContent = appState.match?.paused ? 'Reanudar' : 'Pausar'; updatePauseShade(); }
 
 function boot() {
-  renderGame(); $('#open-new-match-panel')?.addEventListener('click', (event) => { event.preventDefault(); openInitialHandDialog(); }); bindAsyncButton('#create-ai-match', () => { openInitialHandDialog(); return Promise.resolve(); }); $('#create-manual-match')?.addEventListener('click', chooseManualMatchSetup); $('#close-new-match-panel')?.addEventListener('click', closeNewMatchPanel); bindAsyncButton('#shuffle-monsters', shuffleMonsters); bindAsyncButton('#create-selected-match', createSelectedMatch); bindAsyncButton('#end-turn-btn', endTurn); bindAsyncButton('#pause-match-btn', () => { setMatchPaused(!appState.match?.paused); return Promise.resolve(); }); bindAsyncButton('#restart-match-btn', () => { restartMatch(); return Promise.resolve(); }); bindAsyncButton('#abandon-match-btn', () => { abandonMatch(); return Promise.resolve(); }); $('#open-hand-dialog')?.addEventListener('click', openHandDialog); $('#close-hand-dialog')?.addEventListener('click', () => $('#hand-dialog')?.close()); $('#modal-random-hand')?.addEventListener('click', async () => { applyModalHandSize(); applyModalDeckScope(); closeInitialHandDialog(); await createAIMatch(); }); $('#modal-manual-hand')?.addEventListener('click', () => { applyModalHandSize(); applyModalDeckScope(); closeInitialHandDialog(); setActionFeedback('Abrí Bestiario, elegí cartas y presioná Usar selección desde Mano.', 'normal'); document.querySelector('#catalog-panel')?.closest('details')?.setAttribute('open', ''); });
+  renderGame(); $('#open-new-match-panel')?.addEventListener('click', (event) => { event.preventDefault(); openInitialHandDialog(); }); bindAsyncButton('#create-ai-match', () => { openInitialHandDialog(); return Promise.resolve(); }); $('#create-manual-match')?.addEventListener('click', chooseManualMatchSetup); $('#close-new-match-panel')?.addEventListener('click', closeNewMatchPanel); bindAsyncButton('#shuffle-monsters', shuffleMonsters); bindAsyncButton('#create-selected-match', createSelectedMatch); bindAsyncButton('#end-turn-btn', endTurn); bindAsyncButton('#pause-match-btn', () => { setMatchPaused(!appState.match?.paused); return Promise.resolve(); }); bindAsyncButton('#restart-match-btn', confirmRestartMatch); bindAsyncButton('#abandon-match-btn', confirmAbandonMatch); $('#open-hand-dialog')?.addEventListener('click', openHandDialog); $('#close-hand-dialog')?.addEventListener('click', () => $('#hand-dialog')?.close()); $('#modal-random-hand')?.addEventListener('click', async () => { applyModalHandSize(); applyModalDeckScope(); closeInitialHandDialog(); await createAIMatch(); }); $('#modal-manual-hand')?.addEventListener('click', () => { applyModalHandSize(); applyModalDeckScope(); closeInitialHandDialog(); setActionFeedback('Abrí Bestiario, elegí cartas y presioná Usar selección desde Mano.', 'normal'); document.querySelector('#catalog-panel')?.closest('details')?.setAttribute('open', ''); });
   loadCards().then(loadActiveMatch).catch((err) => { setStatus(err.message || 'No se pudo iniciar el juego.', true); setActionFeedback('No se pudo cargar el duelo. Iniciá un nuevo enfrentamiento o usá la selección manual.', 'error'); renderGame(); }).finally(() => { if (!appState.match) { setStatus('Sin duelo local activo. Iniciá uno nuevo o prepará una selección manual.'); openNewMatchPanel(); } });
 }
 document.addEventListener('DOMContentLoaded', boot, { once: true });

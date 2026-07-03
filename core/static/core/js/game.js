@@ -319,22 +319,46 @@ function formatSpells(card = {}) {
   return `Hechizos: ${spells.map((spell) => `${spell.name} (${spell.cost ?? '-'} PA, rango ${spell.range ?? '-'}, daño ${spellDamageLabel(spell, card)}): ${spell.description || spell.effect || 'Sin descripción.'}`).join(' · ')}`;
 }
 function appendCardDescription(parent, card = {}) { appendTextElement(parent, 'p', card.description || 'Sin descripción disponible.', 'card-description'); }
+function appendCardDescriptionContent(parent, card = {}) {
+  appendTextElement(parent, 'p', `Familia: ${card.family || '-'}`);
+  appendTextElement(parent, 'p', `Tipo de monstruo: ${card.monster_type || card.type || 'Monstruo'}`);
+  appendTextElement(parent, 'p', `Forma: ${stageLabel(card.stage)}`);
+  appendTextElement(parent, 'p', card.description || 'Sin descripción disponible.');
+}
+function appendCardSpellsContent(parent, card = {}) {
+  const list = Array.isArray(card.spells) ? card.spells : [];
+  if (!list.length) {
+    appendTextElement(parent, 'p', 'Sin hechizos configurados.');
+    return;
+  }
+  list.forEach((spell) => appendTextElement(parent, 'p', `${spell.name} (${spell.cost ?? '-'} PA · rango ${spell.range ?? '-'} · daño ${spellDamageLabel(spell, card)}): ${spell.description || spell.effect || 'Sin descripción.'}`));
+}
+function openCardInfoDialog(card = {}, section = 'description') {
+  const dialog = $('#card-info-dialog');
+  const title = $('#card-info-title');
+  const body = $('#card-info-body');
+  if (!dialog?.showModal || !body) return;
+  clearElement(body);
+  const isSpells = section === 'spells';
+  if (title) title.textContent = `${isSpells ? 'Hechizos' : 'Descripción'} · ${card.name || 'Carta'}`;
+  appendTextElement(body, 'p', card.name || 'Carta sin nombre', 'card-info-card-name');
+  if (isSpells) appendCardSpellsContent(body, card);
+  else appendCardDescriptionContent(body, card);
+  dialog.showModal();
+}
 function appendCardInfoControls(parent, card = {}) {
   const controls = document.createElement('div');
   controls.className = 'card-info-controls';
-  const description = document.createElement('details');
-  description.className = 'card-info-disclosure';
-  appendTextElement(description, 'summary', 'Descripción');
-  appendTextElement(description, 'p', `Familia: ${card.family || '-'}`);
-  appendTextElement(description, 'p', `Tipo de monstruo: ${card.monster_type || card.type || 'Monstruo'}`);
-  appendTextElement(description, 'p', `Forma: ${stageLabel(card.stage)}`);
-  appendTextElement(description, 'p', card.description || 'Sin descripción disponible.');
-  const spells = document.createElement('details');
-  spells.className = 'card-info-disclosure';
-  appendTextElement(spells, 'summary', 'Hechizos');
-  const list = Array.isArray(card.spells) ? card.spells : [];
-  if (!list.length) appendTextElement(spells, 'p', 'Sin hechizos configurados.');
-  list.forEach((spell) => appendTextElement(spells, 'p', `${spell.name} (${spell.cost ?? '-'} PA · rango ${spell.range ?? '-'} · daño ${spellDamageLabel(spell, card)}): ${spell.description || spell.effect || 'Sin descripción.'}`));
+  const description = document.createElement('button');
+  description.type = 'button';
+  description.className = 'card-info-button';
+  description.textContent = 'Descripción';
+  description.addEventListener('click', () => openCardInfoDialog(card, 'description'));
+  const spells = document.createElement('button');
+  spells.type = 'button';
+  spells.className = 'card-info-button';
+  spells.textContent = 'Hechizos';
+  spells.addEventListener('click', () => openCardInfoDialog(card, 'spells'));
   controls.append(description, spells);
   parent.appendChild(controls);
   return controls;

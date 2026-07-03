@@ -1885,14 +1885,57 @@ body {
 
 .card-info-disclosure summary::-webkit-details-marker { display: none; }
 
-.card-info-disclosure p {
+.card-info-button {
+  width: 100%;
+  min-height: 2.7rem;
+  border: 1px solid rgba(214, 184, 142, .72);
+  border-radius: 10px;
+  background: rgba(24, 43, 29, .45);
+  color: var(--text);
+  font-weight: 800;
+  text-align: center;
+}
+
+.card-info-button:hover,
+.card-info-button:focus-visible {
+  background: linear-gradient(120deg, #d6e13e, #85b53b);
+  color: #17301f;
+}
+
+.card-info-modal {
+  max-width: min(92vw, 520px);
+}
+
+.card-info-modal h2 {
   margin: 0;
-  padding: .5rem .65rem;
-  font-size: .76rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.card-info-body {
+  display: grid;
+  gap: 8px;
+}
+
+.card-info-body p {
+  margin: 0;
+  padding: .65rem .75rem;
+  border: 1px solid rgba(214, 184, 142, .22);
+  border-radius: 10px;
+  background: rgba(24, 43, 29, .45);
+  font-size: .95rem;
   line-height: 1.35;
   color: #fff7d7;
   text-align: left;
-  border-top: 1px solid rgba(214, 184, 142, .22);
+}
+
+.card-info-body .card-info-card-name {
+  border-color: rgba(214, 184, 142, .62);
+  color: var(--accent-soft);
+  font-weight: 800;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: .08em;
 }
 
 .hand-select-button,

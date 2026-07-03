@@ -148,6 +148,34 @@ class KitsuCatalogDataTests(SimpleTestCase):
                 self.assertEqual(card['action_points'], action_points)
                 self.assertEqual(card['movement_points'], movement_points)
 
+
+    def test_kitsu_descriptions_match_reference_texts(self):
+        cards = {card['name']: card for card in load_cards_seed_data()}
+
+        expected = {
+            'Kitsu amatista': 'Espíritu kitsune de tonalidades violetas vinculado a las energías arcanas de Pandala.',
+            'Kitsu anaranjado': 'Variante ardiente de los Kitsus cuya energía recuerda a las brasas de un fuego controlado.',
+            'Kitsu carmine': 'Espíritu kitsu de tonalidad rojiza profunda asociado con la intensidad del Wakfu.',
+            'Kitsu dākuburakku': 'Kitsu oscuro que canaliza energías sombrías del Mundo de los Doce.',
+            'Kitsu junsuina hikari': 'Manifestación espiritual del kitsu ligada a la pureza y la luz.',
+            'Kitsu magenta': 'Espíritu kitsune de energía vibrante, errática y caótica. Su coloración intensa delata una afinidad con corrientes mágicas difíciles de controlar.',
+            'Kitsu midori no mizu': 'Rara manifestación kitsune de la energía del agua como un manantial cargado de vida. Su presencia sugiere equilibrio entre fluidez y naturaleza, reflejando tonalidades esmeraldas.',
+            'Kitsu mizu': 'Variante acuática inspirada en los antiguos Kitsus de Pandala. Su pelaje azul concentra una energía fluida, fría y constante, propia de los espíritus del agua.',
+            'Kitsu silvestre': 'Forma más salvaje y agresiva del linaje que habita zonas naturales. Conserva el misticismo de Pandala, pero con un instinto más salvaje y territorial.',
+            'Kitsu nishiki': 'Fusión espiritual entre Kitsu Mizu y Kitsu Midori no Mizu. Su pelaje de 2 colores recuerda a los koi ornamentales y refleja una armonía acuática poco frecuente.',
+            'Kitsu penta': 'Manifestación extremadamente inestable surgida de la unión de cinco energías kitsu. Su energía es enorme, pero también inestable, como si varias voluntades convivieran en un mismo cuerpo.',
+            'Kitsu yin yang': 'Fusión nacida del equilibrio entre la oscuridad del Kitsu dākuburakku y la pureza del Kitsu junsuina hikari. En él conviven dos corrientes opuestas de una misma esencia.',
+            'Kitsu silvestre evolucionado': 'Evolución base del Kitsu silvestre. Al madurar, su vínculo con Pandala se refuerza y su instinto cazador se vuelve más preciso y dominante.',
+            'Kitsu kumiawase': 'Evolución base del Kitsu amatista y magenta que representa la armonía entre 2 energías complementarias. Su nombre refleja la unión en una forma más estable y poderosa.',
+            'Kitsu nishiki evolucionado': 'Evolución de la fusión Kitsu nishiki. Su pelaje gana brillo ceremonial y su cuerpo canaliza con más estabilidad las corrientes espirituales del agua.',
+            'Kitsu penta evolucionado': 'Evolución de la fusión Kitsu penta. La enorme mezcla de energías deja de ser caótica y se transforma en una presencia majestuosa y peligrosa.',
+            'Kitsu yin yang evolucionado': 'Evolución de la fusión Kitsu yin yang. Su cuerpo domina mejor la tensión entre luz y sombra, convirtiendo ese equilibrio en una fuerza propia.',
+        }
+
+        for name, description in expected.items():
+            with self.subTest(card=name):
+                self.assertEqual(cards[name]['description'], description)
+
     def test_kitsu_reference_spells_are_defined(self):
         cards = {card['name']: card for card in serialized_cards_seed_data()}
         kitsus = [card for card in cards.values() if card['family'] == 'Kitsus']

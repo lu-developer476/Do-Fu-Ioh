@@ -203,22 +203,33 @@ class KitsuCatalogDataTests(SimpleTestCase):
 
 
 class PioCatalogDataTests(SimpleTestCase):
-    def test_pio_fusions_only_include_evolution_spell(self):
+    def test_pio_otonial_includes_evolution_spell(self):
         cards = {card['name']: card for card in serialized_cards_seed_data()}
 
-        for name in ['Pío otoñal', 'Pío combinado']:
-            with self.subTest(card=name):
-                card = cards[name]
-                self.assertEqual(card['stage'], 'fusion')
-                self.assertEqual(
-                    [spell['name'] for spell in card['spells']],
-                    [
-                        f"Picoteo {name.removeprefix('Pío ').lower()}",
-                        f"Plumaje {name.removeprefix('Pío ').lower()}",
-                        'Evolución',
-                    ],
-                )
-                self.assertIn('Pío fusionado', card['spells'][2]['effect'])
+        card = cards['Pío otoñal']
+        self.assertEqual(card['stage'], 'fusion')
+        self.assertEqual(
+            [spell['name'] for spell in card['spells']],
+            [
+                'Picoteo otoñal',
+                'Plumaje otoñal',
+                'Evolución',
+            ],
+        )
+        self.assertIn('Pío fusionado', card['spells'][2]['effect'])
+
+    def test_pio_combinado_does_not_evolve_to_pioloro(self):
+        cards = {card['name']: card for card in serialized_cards_seed_data()}
+
+        card = cards['Pío combinado']
+        self.assertEqual(card['stage'], 'fusion')
+        self.assertEqual(
+            [spell['name'] for spell in card['spells']],
+            [
+                'Picoteo combinado',
+                'Plumaje combinado',
+            ],
+        )
 
     def test_pio_base_components_include_fusion_spell(self):
         cards = {card['name']: card for card in serialized_cards_seed_data()}

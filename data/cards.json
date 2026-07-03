@@ -257,15 +257,6 @@
         "description": "Efecto de apoyo o defensa basado en el plumaje combinado del Pío.",
         "damage_min": 30,
         "damage_max": 39
-      },
-      {
-        "name": "Evolución",
-        "cost": 5,
-        "range": 0,
-        "effect": "Sólo puede utilizarla un Pío fusionado en el campo para evolucionar a su forma superior correspondiente.",
-        "description": "Sólo puede utilizarla un Pío fusionado en el campo para evolucionar a su forma superior correspondiente.",
-        "damage_min": 34,
-        "damage_max": 45
       }
     ]
   },

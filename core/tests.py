@@ -101,6 +101,8 @@ class KitsuCatalogDataTests(SimpleTestCase):
                 self.assertEqual(card['shell'], shell)
                 self.assertEqual(card['action_points'], action_points)
                 self.assertEqual(card['movement_points'], movement_points)
+                self.assertEqual(card['hp_min'], hp)
+                self.assertEqual(card['hp_max'], hp)
 
     def test_kitsu_evolutions_match_reference_stats(self):
         cards = {card['name']: card for card in load_cards_seed_data()}
@@ -138,12 +140,36 @@ class KitsuCatalogDataTests(SimpleTestCase):
                         f'Kitsinición {spell_suffix}',
                         f'Ilusión espectral {spell_suffix}',
                         f'Argucia del Kitsu {spell_suffix}',
-                    ],
+                    ] + (['Fusión Kitsu', 'Evolución'] if card['stage'] == 'fusion' else []),
                 )
-                self.assertEqual(len(card['spells']), 3)
+                self.assertEqual(len(card['spells']), 5 if card['stage'] == 'fusion' else 3)
+                if card['stage'] == 'fusion':
+                    self.assertIn('Kitsus compatibles', card['spells'][3]['effect'])
+                    self.assertIn('Kitsu fusionado', card['spells'][4]['effect'])
                 for spell in card['spells']:
                     self.assertIn('cost', spell)
                     self.assertIn('range', spell)
+
+
+class PioCatalogDataTests(SimpleTestCase):
+    def test_pio_fusions_include_fusion_and_evolution_spells(self):
+        cards = {card['name']: card for card in serialized_cards_seed_data()}
+
+        for name in ['Pío otoñal', 'Pío combinado']:
+            with self.subTest(card=name):
+                card = cards[name]
+                self.assertEqual(card['stage'], 'fusion')
+                self.assertEqual(
+                    [spell['name'] for spell in card['spells']],
+                    [
+                        f"Picoteo {name.removeprefix('Pío ').lower()}",
+                        f"Plumaje {name.removeprefix('Pío ').lower()}",
+                        'Fusión Pío',
+                        'Evolución',
+                    ],
+                )
+                self.assertIn('Pío compatible', card['spells'][2]['effect'])
+                self.assertIn('Pío fusionado', card['spells'][3]['effect'])
 
 
 class GelatinaCatalogDataTests(SimpleTestCase):

@@ -1596,3 +1596,49 @@ button.danger { border-color: rgba(255, 143, 107, .9); color: #ffe7dd; backgroun
 }
 
 .ost-panel { grid-template-columns: 1fr; }
+
+/* Responsive animated combat background for desktop, tablet and mobile. */
+html { min-height: 100%; background: #132217; }
+body { position: relative; overflow-x: hidden; }
+body::before,
+body::after { will-change: transform; }
+.card-game-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 12% 28%, rgba(255, 143, 107, .12), transparent 16rem),
+    radial-gradient(circle at 86% 34%, rgba(99, 198, 255, .10), transparent 18rem),
+    linear-gradient(120deg, rgba(19, 34, 23, .94), rgba(33, 54, 27, .84));
+  animation: combat-aurora 18s ease-in-out infinite alternate;
+}
+
+@keyframes combat-aurora {
+  from { transform: scale(1) translate3d(0, 0, 0); filter: hue-rotate(0deg) saturate(1); }
+  to { transform: scale(1.08) translate3d(-1.5rem, 1rem, 0); filter: hue-rotate(14deg) saturate(1.18); }
+}
+
+@media (min-width: 901px) {
+  body::before { animation-duration: 26s; }
+  body::after { animation-duration: 42s; opacity: .42; }
+}
+
+@media (min-width: 641px) and (max-width: 900px) {
+  body::before { inset: -24vmax; animation-duration: 22s; }
+  body::after { opacity: .32; background-size: auto, 34px 34px; }
+  .card-game-shell::before { animation-duration: 16s; }
+}
+
+@media (max-width: 640px) {
+  body::before { inset: -32vmax; filter: blur(7px); animation-duration: 18s; }
+  body::after { opacity: .24; animation-duration: 30s; }
+  .card-game-shell::before { animation-duration: 14s; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before,
+  body::after,
+  .card-game-shell::before { animation: none; }
+}

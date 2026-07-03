@@ -15,7 +15,8 @@ const familyFilter = $('#family-filter');
 const FUSION_RECIPES = {
   'Pío combinado': ['Pío albino', 'Pío negruzco'],
   'Pío otoñal': ['Pío anaranjado', 'Pío castaño'],
-  'Kitsu nishiki': ['Kitsu mizu', 'Kitsu magenta'],
+  'Kitsu kumiawase': ['Kitsu amatista', 'Kitsu magenta'],
+  'Kitsu nishiki': ['Kitsu mizu', 'Kitsu midori no mizu'],
   'Kitsu penta': ['Kitsu amatista', 'Kitsu anaranjado', 'Kitsu carmine', 'Kitsu midori no mizu', 'Kitsu junsuina hikari'],
   'Kitsu yin yang': ['Kitsu dākuburakku', 'Kitsu junsuina hikari'],
   'Escarahoja duocromada': ['Escarahoja anaranjada', 'Escarahoja violeta'],
@@ -26,6 +27,7 @@ const FUSION_RECIPES = {
 const EVOLUTION_RECIPES = {
   'Pío combinado': 'Píoloro',
   'Pío otoñal': 'Píoloro',
+  'Kitsu silvestre': 'Kitsu silvestre evolucionado',
   'Kitsu nishiki': 'Kitsu nishiki evolucionado',
   'Kitsu penta': 'Kitsu penta evolucionado',
   'Kitsu yin yang': 'Kitsu yin yang evolucionado',
@@ -107,10 +109,14 @@ function distance(a, b) { return Math.abs(a.x - b.x) + Math.abs(a.y - b.y); }
 function buildUnit(side, card, position) { return { id: randomId(side), owner: side, battle_label: nextSummonLabel(side), slot: position.x, x: position.x, y: position.y, card, hp_current: card.hp, shell_current: card.shell || 0, pa_current: card.action_points || 1, move_points: movementRange(card), can_act: true, summoned_turn: appState.match.turn.number, attack_range: spellRange(card), attackable_unit_ids: [] }; }
 function deployCells(side) { const rows = DEPLOY_ROWS[side] || []; const occupied = new Set([...(appState.match?.host.units || []), ...(appState.match?.guest.units || [])].map((unit) => `${unit.x},${unit.y}`)); const cells = []; rows.forEach((y) => { for (let x = 0; x < BOARD_WIDTH; x += 1) if (!occupied.has(`${x},${y}`)) cells.push({ x, y }); }); return cells; }
 function openSlots(player) { return deployCells(player.side).slice(0, BOARD_WIDTH).map((cell) => cell.x); }
-function fusionRecipeForPair(unit, target) { if (!unit || !target || unit.owner !== target.owner) return null; const names = [unit.card.name, target.card.name].sort(); return Object.entries(FUSION_RECIPES).find(([, req]) => req.length === 2 && req.slice().sort().every((name, index) => name === names[index])) || null; }
-function virtualFusionSpell(unit, target) { const recipe = fusionRecipeForPair(unit, target); if (!recipe) return null; return { name: `Fusión: ${recipe[0]}`, cost: 3, range: 1, damage_min: 0, damage_max: 0, description: `Fusiona ${recipe[1].join(' + ')} para crear ${recipe[0]}.` }; }
-function virtualEvolutionSpell(unit) { return EVOLUTION_RECIPES[unit?.card?.name] ? { name: 'Evolución', cost: 5, range: 0, damage_min: 0, damage_max: 0, description: 'Asciende a la forma definitiva si sobrevivió 3 turnos completos.' } : null; }
-function usableSpells(unit, target = null) { const baseSpells = Array.isArray(unit?.card?.spells) && unit.card.spells.length ? unit.card.spells : [defaultSpell(unit?.card || {})]; const specials = [target ? virtualFusionSpell(unit, target) : virtualEvolutionSpell(unit)].filter(Boolean); const spells = [...baseSpells, ...specials]; return spells.filter((spell) => (Number(spell.cost) || 1) <= (unit?.pa_current || 0) && (!target || distance(unit, target) <= (Number(spell.range) || unit.attack_range || 1))); }
+function namesMatchRecipe(names = [], requirements = []) { const sortedNames = names.slice().sort(); const sortedReq = requirements.slice().sort(); return sortedNames.length === sortedReq.length && sortedReq.every((name, index) => name === sortedNames[index]); }
+function fusionRecipeForPair(unit, target) { if (!unit || !target || unit.owner !== target.owner) return null; const names = [unit.card.name, target.card.name]; return Object.entries(FUSION_RECIPES).find(([, req]) => req.length === 2 && namesMatchRecipe(names, req)) || null; }
+function fusionUnitsForRecipe(anchor, recipeName) { const requirements = FUSION_RECIPES[recipeName] || []; const allies = (appState.match?.[anchor.owner]?.units || []).filter((unit) => unit.id === anchor.id || distance(anchor, unit) <= 1); const selected = []; for (const requiredName of requirements) { const unit = allies.find((candidate) => candidate.card.name === requiredName && !selected.some((item) => item.id === candidate.id)); if (!unit) return []; selected.push(unit); } return selected.some((unit) => unit.id === anchor.id) ? selected : []; }
+function fusionRecipeForBattle(unit, target = null) { if (!unit || (target && unit.owner !== target.owner)) return null; const pair = fusionRecipeForPair(unit, target); if (pair) return pair; return Object.entries(FUSION_RECIPES).find(([name, req]) => req.includes(unit.card.name) && (!target || req.includes(target.card.name)) && fusionUnitsForRecipe(unit, name).length === req.length) || null; }
+function virtualFusionSpell(unit, target) { const recipe = fusionRecipeForBattle(unit, target); if (!recipe) return null; return { name: `Fusión: ${recipe[0]}`, cost: 0, range: 1, damage_min: 0, damage_max: 0, description: `Fusiona ${recipe[1].join(' + ')} para crear ${recipe[0]}.` }; }
+function virtualEvolutionSpell(unit) { return EVOLUTION_RECIPES[unit?.card?.name] ? { name: 'Evolución', cost: 0, range: 0, damage_min: 0, damage_max: 0, description: 'Asciende a la forma definitiva durante el combate.' } : null; }
+function spellCost(spell = {}) { return Math.max(0, Number(spell.cost) || 0); }
+function usableSpells(unit, target = null) { const baseSpells = Array.isArray(unit?.card?.spells) && unit.card.spells.length ? unit.card.spells : [defaultSpell(unit?.card || {})]; const specials = [target ? virtualFusionSpell(unit, target) : virtualEvolutionSpell(unit)].filter(Boolean); const spells = [...specials, ...baseSpells]; return spells.filter((spell) => spellCost(spell) <= (unit?.pa_current || 0) && (!target || distance(unit, target) <= Math.max(0, Number(spell.range) || unit.attack_range || 1))); }
 function chooseBestSpell(unit, target = null) { return usableSpells(unit, target).sort((a, b) => estimateDamage(unit.card, b) - estimateDamage(unit.card, a) || (Number(a.cost) || 1) - (Number(b.cost) || 1))[0] || defaultSpell(unit?.card || {}); }
 function updateDerivedCombat() { if (!appState.match) return; ['host', 'guest'].forEach((side) => { const enemy = side === 'host' ? appState.match.guest : appState.match.host; appState.match[side].units.forEach((unit) => { unit.move_points = Number.isFinite(Number(unit.move_points)) ? Math.max(0, Number(unit.move_points)) : movementRange(unit.card); unit.attack_range = spellRange(unit.card); unit.attackable_unit_ids = unit.can_act && unit.pa_current > 0 ? enemy.units.filter((target) => distance(unit, target) <= unit.attack_range).map((target) => target.id).sort() : []; }); }); }
 function checkWinner(actingSide) { const alive = (p) => Boolean(p.units.length || p.hand.length || p.library.length); const host = alive(appState.match.host); const guest = alive(appState.match.guest); if (!host || !guest) appState.match.winner = host ? 'host' : guest ? 'guest' : actingSide; }
@@ -119,7 +125,7 @@ function pickInitialCards(selectedIds = [], count = 5, poolCards = currentCardPo
 function startLocalMatch(selectedIds = [], requestedCount = 5) { const handSize = INITIAL_HAND_OPTIONS.has(Number(requestedCount)) ? Number(requestedCount) : 5; const pool = currentCardPool(); const hostCards = pickInitialCards(selectedIds, handSize, pool); const guestCards = shuffle(pool.length ? pool : appState.cards).slice(0, handSize); appState.lastMatchConfig = { selectedIds, handSize }; const roomCode = `local-${Date.now()}`; appState.roomCode = roomCode; appState.match = { room_code: roomCode, mode: 'local_vs_ai', ai_difficulty: 'normal', arena: { slots: BOARD_WIDTH }, board: { width: BOARD_WIDTH, height: BOARD_HEIGHT }, initial_hand_size: handSize, turn: { number: 1, active_side: 'host' }, host: createPlayer('host', hostCards), guest: createPlayer('guest', guestCards), winner: null, paused: false, log: [`Duelo local iniciado con ${handSize} carta(s) iniciales contra la IA.`, `Bestiario activo: ${(pool.length && pool.length !== appState.cards.length) ? pool[0].family : 'todo el bestiario'}.`, `Duelo preparado en la arena local.`] }; resetSelections(); updateDerivedCombat(); persistMatch(); }
 function applySummon(side, handIndex, position) { const player = appState.match[side]; if (!deployCells(side).some((cell) => cell.x === position.x && cell.y === position.y)) throw new Error('Esa celda no está disponible para invocar.'); const card = player.hand[handIndex]; if (!card) throw new Error('Carta inválida.'); player.hand.splice(handIndex, 1); player.summons_this_turn += 1; player.units.push(buildUnit(side, card, position)); appendLog(`${formatSideLabel(side)} invocó ${card.name} en (${position.x + 1}, ${position.y + 1}).`); }
 function applyMove(side, unitId, position) { const unit = appState.match[side].units.find((item) => item.id === unitId); if (!unit || !unit.can_act || unit.move_points <= 0) throw new Error('Movimiento inválido: los desplazamientos consumen PM.'); if (position.x < 0 || position.y < 0 || position.x >= BOARD_WIDTH || position.y >= BOARD_HEIGHT || unitAt(position.x, position.y)) throw new Error('La celda está ocupada o fuera del tablero.'); const spentPm = distance(unit, position); if (spentPm > unit.move_points) throw new Error('La celda está fuera del rango de movimiento.'); const from = { x: unit.x, y: unit.y }; unit.x = position.x; unit.y = position.y; unit.slot = position.x; unit.move_points -= spentPm; unit.can_act = unit.pa_current > 0 || unit.move_points > 0; pushCombatEffect({ x: from.x, y: from.y, text: 'Salida', tone: 'move ghost' }); pushCombatEffect({ x: position.x, y: position.y, text: `-${spentPm} PM`, tone: 'move' }); appendLog(`${formatSideLabel(side)} movió ${unit.card.name} de (${from.x + 1}, ${from.y + 1}) a (${position.x + 1}, ${position.y + 1}) y gastó ${spentPm} PM.`); }
-function applyAttack(side, attackerId, targetId, spellName = null) { const actor = appState.match[side]; const enemySide = side === 'host' ? 'guest' : 'host'; const enemy = appState.match[enemySide]; const attacker = actor.units.find((unit) => unit.id === attackerId); const target = enemy.units.find((unit) => unit.id === targetId) || actor.units.find((unit) => unit.id === targetId); const spell = (attacker?.card?.spells || []).find((item) => item.name === spellName) || virtualFusionSpell(attacker, target) || virtualEvolutionSpell(attacker) || defaultSpell(attacker?.card || {}); const cost = Math.max(1, Number(spell.cost) || 1); const range = Math.max(1, Number(spell.range) || attacker?.attack_range || 1); if (!attacker || !target || attacker.pa_current < cost || !attacker.can_act || distance(attacker, target) > range) throw new Error('Hechizo inválido, sin PA suficientes o fuera de rango.'); if (isFusionSpell(spell)) return applyFusionSpell(side, attacker, target, cost, spell); if (isEvolutionSpell(spell)) return applyEvolutionSpell(side, attacker, cost); attacker.pa_current -= cost; attacker.can_act = attacker.pa_current > 0 || attacker.move_points > 0; const previousHp = target.hp_current; const previousShell = target.shell_current; const power = estimateDamage(attacker.card, spell); const shieldDamage = Math.min(target.shell_current, power); target.shell_current = Math.max(0, target.shell_current - shieldDamage); const hpDamage = Math.max(0, power - shieldDamage); target.hp_current -= hpDamage; const hpLost = Math.max(0, previousHp - Math.max(0, target.hp_current)); pushCombatEffect({ x: attacker.x, y: attacker.y, text: `-${cost} PA`, tone: 'cast' }); if (shieldDamage > 0) pushCombatEffect({ x: target.x, y: target.y, text: `-${previousShell - target.shell_current} PdE`, tone: 'shield' }); if (hpDamage > 0) { pushCombatEffect({ x: target.x, y: target.y, text: `-${hpDamage} daño`, tone: 'damage' }); pushCombatEffect({ x: target.x, y: target.y, text: `-${hpLost} PdV`, tone: 'hp' }); } appendLog(`${formatSideLabel(side)} usó ${spell.name} con ${attacker.card.name} contra ${target.card.name}: ${shieldDamage} PdE absorbidos y ${hpLost} PdV perdidos.`); if (target.hp_current <= 0) { enemy.units = enemy.units.filter((unit) => unit.id !== target.id); appendLog(`${target.card.name} fue derrotado por ${attacker.card.name}.`); } }
+function applyAttack(side, attackerId, targetId, spellName = null) { const actor = appState.match[side]; const enemySide = side === 'host' ? 'guest' : 'host'; const enemy = appState.match[enemySide]; const attacker = actor.units.find((unit) => unit.id === attackerId); const target = enemy.units.find((unit) => unit.id === targetId) || actor.units.find((unit) => unit.id === targetId); const spell = (attacker?.card?.spells || []).find((item) => item.name === spellName) || virtualFusionSpell(attacker, target) || virtualEvolutionSpell(attacker) || defaultSpell(attacker?.card || {}); const cost = spellCost(spell); const range = isEvolutionSpell(spell) ? 0 : Math.max(1, Number(spell.range) || attacker?.attack_range || 1); if (!attacker || !target || attacker.pa_current < cost || !attacker.can_act || distance(attacker, target) > range) throw new Error('Hechizo inválido, sin PA suficientes o fuera de rango.'); if (isFusionSpell(spell)) return applyFusionSpell(side, attacker, target, cost, spell); if (isEvolutionSpell(spell)) return applyEvolutionSpell(side, attacker, cost); attacker.pa_current -= cost; attacker.can_act = attacker.pa_current > 0 || attacker.move_points > 0; const previousHp = target.hp_current; const previousShell = target.shell_current; const power = estimateDamage(attacker.card, spell); const shieldDamage = Math.min(target.shell_current, power); target.shell_current = Math.max(0, target.shell_current - shieldDamage); const hpDamage = Math.max(0, power - shieldDamage); target.hp_current -= hpDamage; const hpLost = Math.max(0, previousHp - Math.max(0, target.hp_current)); pushCombatEffect({ x: attacker.x, y: attacker.y, text: `-${cost} PA`, tone: 'cast' }); if (shieldDamage > 0) pushCombatEffect({ x: target.x, y: target.y, text: `-${previousShell - target.shell_current} PdE`, tone: 'shield' }); if (hpDamage > 0) { pushCombatEffect({ x: target.x, y: target.y, text: `-${hpDamage} daño`, tone: 'damage' }); pushCombatEffect({ x: target.x, y: target.y, text: `-${hpLost} PdV`, tone: 'hp' }); } appendLog(`${formatSideLabel(side)} usó ${spell.name} con ${attacker.card.name} contra ${target.card.name}: ${shieldDamage} PdE absorbidos y ${hpLost} PdV perdidos.`); if (target.hp_current <= 0) { enemy.units = enemy.units.filter((unit) => unit.id !== target.id); appendLog(`${target.card.name} fue derrotado por ${attacker.card.name}.`); } }
 
 function replaceUnitWithCard(side, unitsToRemove, newCard, anchorUnit, logMessage) {
   const player = appState.match[side];
@@ -133,25 +139,27 @@ function replaceUnitWithCard(side, unitsToRemove, newCard, anchorUnit, logMessag
 function applyFusionSpell(side, attacker, target, cost, spell = {}) {
   if (target.owner !== side) throw new Error('La fusión sólo puede elegir monstruos aliados adyacentes.');
   if (distance(attacker, target) !== 1) throw new Error('Los monstruos requisito deben estar en casillas aledañas.');
-  const names = [attacker.card.name, target.card.name].sort();
-  const fusionName = (spell.name || '').startsWith('Fusión: ') ? spell.name.replace('Fusión: ', '') : Object.entries(FUSION_RECIPES).find(([, req]) => req.length === 2 && req.slice().sort().every((name, index) => name === names[index]))?.[0];
+  const fusionName = (spell.name || '').startsWith('Fusión: ') ? spell.name.replace('Fusión: ', '') : fusionRecipeForBattle(attacker, target)?.[0];
   const fusionCard = fusionName && findCardByName(fusionName);
-  if (!fusionCard) throw new Error('Estos monstruos no cumplen una receta de fusión disponible.');
+  const fusionUnits = fusionName ? fusionUnitsForRecipe(attacker, fusionName) : [];
+  if (!fusionCard || !fusionUnits.length) throw new Error('Estos monstruos no cumplen una receta de fusión disponible.');
   attacker.pa_current -= cost;
-  replaceUnitWithCard(side, [attacker, target], fusionCard, attacker, `${formatSideLabel(side)} fusionó ${names.join(' + ')} y creó ${fusionName}.`);
+  replaceUnitWithCard(side, fusionUnits, fusionCard, attacker, `${formatSideLabel(side)} fusionó ${fusionUnits.map((unit) => unit.card.name).sort().join(' + ')} y creó ${fusionName}.`);
 }
 function applyEvolutionSpell(side, attacker, cost) {
   const evolutionName = EVOLUTION_RECIPES[attacker.card.name];
   const evolutionCard = evolutionName && findCardByName(evolutionName);
   if (!evolutionCard) throw new Error('Este monstruo no tiene evolución configurada.');
-  if ((appState.match.turn.number - (attacker.summoned_turn || appState.match.turn.number)) < 3) throw new Error('La evolución requiere sobrevivir 3 turnos; se habilita desde el 4° turno.');
+  if (attacker.card.stage !== 'fusion' && !['Kitsu silvestre'].includes(attacker.card.name)) throw new Error('Sólo una fusión o Kitsu silvestre puede evolucionar durante el combate.');
   attacker.pa_current -= cost;
   replaceUnitWithCard(side, [attacker], evolutionCard, attacker, `${formatSideLabel(side)} evolucionó ${attacker.card.name} a ${evolutionName}.`);
 }
 
 function regenerateShields(player) { const turn = appState.match.turn?.number || 1; if (turn % 2 !== 0) return; player.units.forEach((unit) => { const maxShell = Number(unit.card.shell) || 0; if (!maxShell || unit.shell_current >= maxShell) return; const restored = Math.min(maxShell - unit.shell_current, Math.max(1, Math.ceil(maxShell * shellRegenPercent(unit.card)))); unit.shell_current += restored; appendLog(`${unit.card.name} regeneró ${restored} PdE (${Math.round(shellRegenPercent(unit.card) * 100)}%).`); }); }
 function endSideTurn(side) { const nextSide = side === 'host' ? 'guest' : 'host'; appState.match.turn.active_side = nextSide; if (nextSide === 'host') appState.match.turn.number += 1; resetTurn(appState.match[nextSide]); regenerateShields(appState.match[nextSide]); appendLog(`Fin del turno de ${formatSideLabel(side)}.`); }
-function stepToward(unit, target) { const candidates = [{ x: unit.x + Math.sign(target.x - unit.x), y: unit.y }, { x: unit.x, y: unit.y + Math.sign(target.y - unit.y) }, { x: unit.x + Math.sign(target.x - unit.x), y: unit.y + Math.sign(target.y - unit.y) }].filter((cell) => cell.x >= 0 && cell.y >= 0 && cell.x < BOARD_WIDTH && cell.y < BOARD_HEIGHT && !unitAt(cell.x, cell.y)); return candidates.sort((a, b) => distance(a, target) - distance(b, target))[0]; }
+function stepToward(unit, target) { const steps = []; for (let dx = -1; dx <= 1; dx += 1) for (let dy = -1; dy <= 1; dy += 1) if (Math.abs(dx) + Math.abs(dy) === 1) steps.push({ x: unit.x + dx, y: unit.y + dy }); const candidates = steps.filter((cell) => cell.x >= 0 && cell.y >= 0 && cell.x < BOARD_WIDTH && cell.y < BOARD_HEIGHT && !unitAt(cell.x, cell.y) && distance(cell, target) < distance(unit, target)); return candidates.sort((a, b) => distance(a, target) - distance(b, target))[0]; }
+function adjacentAllyFusion(unit, units = []) { return units.find((ally) => ally.id !== unit.id && fusionRecipeForBattle(unit, ally) && distance(unit, ally) === 1); }
+function canEvolveNow(unit) { return Boolean(EVOLUTION_RECIPES[unit?.card?.name] && (unit.card.stage === 'fusion' || unit.card.name === 'Kitsu silvestre')); }
 async function runAiTurn() {
   if (appState.match?.paused) return;
   if (appState.match.winner || appState.match.turn.active_side !== 'guest') return;
@@ -167,12 +175,20 @@ async function runAiTurn() {
     refreshCounts(); updateDerivedCombat(); renderGame(); await delay();
   }
   for (const unit of [...ai.units]) {
-    while (!appState.match.winner && unit.can_act && appState.match.host.units.length) {
+    let safety = 0;
+    while (!appState.match.winner && unit.can_act && safety < 8) {
+      safety += 1;
+      if (canEvolveNow(unit)) { applyAttack('guest', unit.id, unit.id, 'Evolución'); refreshCounts(); updateDerivedCombat(); renderGame(); await delay(); break; }
+      const fusionAlly = adjacentAllyFusion(unit, ai.units);
+      if (fusionAlly) { const spell = virtualFusionSpell(unit, fusionAlly); applyAttack('guest', unit.id, fusionAlly.id, spell.name); refreshCounts(); updateDerivedCombat(); renderGame(); await delay(); break; }
+      if (!appState.match.host.units.length) break;
       const target = [...appState.match.host.units].sort((a, b) => distance(unit, a) - distance(unit, b) || a.hp_current - b.hp_current)[0];
-      if (distance(unit, target) <= unit.attack_range) { const spell = chooseBestSpell(unit, target); applyAttack('guest', unit.id, target.id, spell?.name); checkWinner('guest'); }
-      else { const nextCell = stepToward(unit, target); if (!nextCell) break; applyMove('guest', unit.id, nextCell); }
+      const spell = usableSpells(unit, target).filter((item) => !isFusionSpell(item) && !isEvolutionSpell(item)).sort((a, b) => estimateDamage(unit.card, b) - estimateDamage(unit.card, a))[0];
+      if (spell && distance(unit, target) <= Math.max(1, Number(spell.range) || unit.attack_range)) { applyAttack('guest', unit.id, target.id, spell.name); checkWinner('guest'); }
+      else { const nextCell = stepToward(unit, target); if (!nextCell || unit.move_points <= 0) { unit.can_act = false; break; } applyMove('guest', unit.id, nextCell); }
       refreshCounts(); updateDerivedCombat(); renderGame(); await delay();
     }
+    if (safety >= 8) { unit.can_act = false; appendLog(`La IA agotó el plan de ${unit.card.name} y cedió la acción para evitar trabas.`); }
   }
   if (!appState.match.winner) endSideTurn('guest');
   appState.aiPlayback = false;
@@ -192,7 +208,7 @@ async function chooseSpellForAttack(attacker, target) {
     $('#spell-choice-cancel')?.addEventListener('click', () => finish(null), { once: true }); dialog.addEventListener('cancel', () => finish(null), { once: true }); dialog.showModal();
   });
 }
-async function onArenaCardClick(unit, side) { const { me, enemy, mySide } = resolveSides(); if (!me || !enemy) return; if (side === 'host') { const active = me.units?.find((item) => item.id === appState.selectedUnitId); if (active && active.id === unit.id && virtualEvolutionSpell(active)) { if (!isMyTurn(mySide)) return setActionFeedback('La IA está jugando ahora; el Registro detalla sus jugadas.', 'error'); try { await sendAction({ action: 'attack', attacker_id: active.id, target_id: active.id, spell_name: 'Evolución' }); return setActionFeedback(`${active.card.name} intentó evolucionar.`, 'success'); } catch (err) { return setActionFeedback(err.message, 'error'); } } if (active && active.id !== unit.id && fusionRecipeForPair(active, unit)) { if (!isMyTurn(mySide)) return setActionFeedback('La IA está jugando ahora; el Registro detalla sus jugadas.', 'error'); const spell = await chooseSpellForAttack(active, unit); if (!spell) return setActionFeedback('Fusión cancelada.', 'normal'); try { await sendAction({ action: 'attack', attacker_id: active.id, target_id: unit.id, spell_name: spell.name }); return setActionFeedback(`${active.card.name} se fusionó con ${unit.card.name}.`, 'success'); } catch (err) { return setActionFeedback(err.message, 'error'); } } appState.selectedUnitId = unit.id; appState.selectedHandIndex = null; setActionFeedback(`${unit.card.name} seleccionado. Elegí un rival para atacar, un aliado compatible para fusionar o una casilla para mover.`, 'normal'); renderGame(); return; } const attacker = me.units?.find((item) => item.id === appState.selectedUnitId); if (!attacker) return setActionFeedback('Seleccioná primero una unidad propia para atacar.', 'error'); if (!isMyTurn(mySide)) return setActionFeedback('La IA está jugando ahora; el Registro detalla sus jugadas.', 'error'); const spell = await chooseSpellForAttack(attacker, unit); if (!spell) return setActionFeedback('Ataque cancelado.', 'normal'); try { await sendAction({ action: 'attack', attacker_id: attacker.id, target_id: unit.id, spell_name: spell.name }); setActionFeedback(`${attacker.card.name} usó ${spell.name} contra ${unit.card.name}.`, 'success'); } catch (err) { setActionFeedback(err.message, 'error'); } }
+async function onArenaCardClick(unit, side) { const { me, enemy, mySide } = resolveSides(); if (!me || !enemy) return; if (side === 'host') { const active = me.units?.find((item) => item.id === appState.selectedUnitId); if (active && active.id === unit.id && virtualEvolutionSpell(active)) { if (!isMyTurn(mySide)) return setActionFeedback('La IA está jugando ahora; el Registro detalla sus jugadas.', 'error'); try { await sendAction({ action: 'attack', attacker_id: active.id, target_id: active.id, spell_name: 'Evolución' }); return setActionFeedback(`${active.card.name} intentó evolucionar.`, 'success'); } catch (err) { return setActionFeedback(err.message, 'error'); } } if (active && active.id !== unit.id && fusionRecipeForBattle(active, unit)) { if (!isMyTurn(mySide)) return setActionFeedback('La IA está jugando ahora; el Registro detalla sus jugadas.', 'error'); const spell = await chooseSpellForAttack(active, unit); if (!spell) return setActionFeedback('Fusión cancelada.', 'normal'); try { await sendAction({ action: 'attack', attacker_id: active.id, target_id: unit.id, spell_name: spell.name }); return setActionFeedback(`${active.card.name} se fusionó con ${unit.card.name}.`, 'success'); } catch (err) { return setActionFeedback(err.message, 'error'); } } appState.selectedUnitId = unit.id; appState.selectedHandIndex = null; setActionFeedback(`${unit.card.name} seleccionado. Elegí un rival para atacar, un aliado compatible para fusionar o una casilla para mover.`, 'normal'); renderGame(); return; } const attacker = me.units?.find((item) => item.id === appState.selectedUnitId); if (!attacker) return setActionFeedback('Seleccioná primero una unidad propia para atacar.', 'error'); if (!isMyTurn(mySide)) return setActionFeedback('La IA está jugando ahora; el Registro detalla sus jugadas.', 'error'); const spell = await chooseSpellForAttack(attacker, unit); if (!spell) return setActionFeedback('Ataque cancelado.', 'normal'); try { await sendAction({ action: 'attack', attacker_id: attacker.id, target_id: unit.id, spell_name: spell.name }); setActionFeedback(`${attacker.card.name} usó ${spell.name} contra ${unit.card.name}.`, 'success'); } catch (err) { setActionFeedback(err.message, 'error'); } }
 
 async function onBoardCellClick(x, y) {
   const { me, enemy, mySide } = resolveSides();
@@ -429,28 +445,44 @@ function applyModalHandSize() { const selected = document.querySelector('input[n
 function openInitialHandDialog() { const dialog = $('#match-setup-dialog'); syncModalHandSize(); syncModalDeckScope(); if (dialog?.showModal) dialog.showModal(); }
 
 
+
 let audioContext = null;
 let activeOst = null;
 const OST_TRACKS = [
-  { name: 'Bosque táctico', notes: [196, 247, 294, 330] },
-  { name: 'Píos en guardia', notes: [220, 262, 330, 392] },
-  { name: 'Gelatina real', notes: [164, 196, 246, 293] },
-  { name: 'Kitsu nocturno', notes: [185, 233, 277, 370] },
-  { name: 'Escarahoja de bronce', notes: [147, 196, 220, 294] }
+  { name: 'Emboscada en Astrub', bpm: 148, lead: [220, 247, 262, 330, 294, 262, 247, 196], bass: [55, 55, 73, 82], wave: 'sawtooth' },
+  { name: 'Carga de Píos Furiosos', bpm: 172, lead: [392, 330, 392, 440, 523, 494, 440, 392, 330, 294, 330, 392], bass: [98, 98, 110, 123], wave: 'square' },
+  { name: 'Trono de Gelatina Real', bpm: 132, lead: [196, 247, 294, 370, 349, 294, 247, 185], bass: [49, 65, 73, 92], wave: 'triangle' },
+  { name: 'Danza Kitsu de Medianoche', bpm: 156, lead: [277, 311, 370, 415, 370, 311, 277, 233, 277, 349], bass: [69, 69, 92, 104], wave: 'sawtooth' },
+  { name: 'Marcha Escarahoja Blindada', bpm: 118, lead: [147, 196, 220, 294, 262, 220, 196, 147], bass: [36, 49, 55, 49], wave: 'square' }
 ];
+function playTone(gain, frequency, duration, type = 'sine', volume = 1, detune = 0) {
+  const osc = audioContext.createOscillator(); const env = audioContext.createGain();
+  osc.type = type; osc.frequency.value = frequency; osc.detune.value = detune;
+  env.gain.setValueAtTime(0.0001, audioContext.currentTime);
+  env.gain.exponentialRampToValueAtTime(0.018 * volume, audioContext.currentTime + 0.025);
+  env.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + duration);
+  osc.connect(env); env.connect(gain); osc.start(); osc.stop(audioContext.currentTime + duration + 0.03);
+}
+function playNoise(gain, duration = 0.05, volume = 0.45) {
+  const buffer = audioContext.createBuffer(1, audioContext.sampleRate * duration, audioContext.sampleRate);
+  const data = buffer.getChannelData(0); for (let i = 0; i < data.length; i += 1) data[i] = (Math.random() * 2 - 1) * (1 - i / data.length);
+  const source = audioContext.createBufferSource(); const env = audioContext.createGain();
+  source.buffer = buffer; env.gain.value = 0.025 * volume; source.connect(env); env.connect(gain); source.start();
+}
 function playOst(index = 0) {
   stopOst();
   audioContext = audioContext || new (window.AudioContext || window.webkitAudioContext)();
   const track = OST_TRACKS[index % OST_TRACKS.length];
-  const gain = audioContext.createGain(); gain.gain.value = 0.025; gain.connect(audioContext.destination);
-  let step = 0;
+  const gain = audioContext.createGain(); gain.gain.value = 0.7; gain.connect(audioContext.destination);
+  let step = 0; const beatMs = Math.max(90, Math.round(60000 / track.bpm / 2));
   activeOst = setInterval(() => {
-    const osc = audioContext.createOscillator();
-    osc.type = step % 2 ? 'triangle' : 'sine';
-    osc.frequency.value = track.notes[step % track.notes.length];
-    osc.connect(gain); osc.start(); osc.stop(audioContext.currentTime + 0.22);
+    const lead = track.lead[step % track.lead.length]; const bass = track.bass[Math.floor(step / 2) % track.bass.length];
+    playTone(gain, bass, beatMs / 1000 * 0.9, 'sawtooth', step % 4 === 0 ? 1.2 : 0.8, -8);
+    if (step % 2 === 0) playTone(gain, lead, beatMs / 1000 * 0.72, track.wave, 0.72);
+    if (step % 4 === 2) playTone(gain, lead * 1.5, beatMs / 1000 * 0.45, 'triangle', 0.35, 5);
+    if (step % 2 === 0) playNoise(gain, 0.035, step % 8 === 0 ? 0.9 : 0.42);
     step += 1;
-  }, 280);
+  }, beatMs);
   setActionFeedback(`OST de combate activa: ${track.name}.`, 'success');
 }
 function stopOst() { if (activeOst) clearInterval(activeOst); activeOst = null; }

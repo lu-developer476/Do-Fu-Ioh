@@ -250,7 +250,7 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Kitsinición amatista",
+        "name": "Kitsnición amatista",
         "cost": 3,
         "range": 3,
         "effect": "Daño elemental adaptado al color amatista del Kitsu."
@@ -286,7 +286,7 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Kitsinición anaranjado",
+        "name": "Kitsnición anaranjado",
         "cost": 3,
         "range": 3,
         "effect": "Daño elemental adaptado al color anaranjado del Kitsu."
@@ -322,7 +322,7 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Kitsinición carmine",
+        "name": "Kitsnición carmine",
         "cost": 3,
         "range": 3,
         "effect": "Daño elemental adaptado al color carmine del Kitsu."
@@ -358,7 +358,7 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Kitsinición dākuburakku",
+        "name": "Kitsnición dākuburakku",
         "cost": 3,
         "range": 3,
         "effect": "Daño elemental adaptado al color dākuburakku del Kitsu."
@@ -394,7 +394,7 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Kitsinición junsuina hikari",
+        "name": "Kitsnición junsuina hikari",
         "cost": 3,
         "range": 3,
         "effect": "Daño elemental adaptado al color junsuina hikari del Kitsu."
@@ -430,7 +430,7 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Kitsinición magenta",
+        "name": "Kitsnición magenta",
         "cost": 3,
         "range": 3,
         "effect": "Daño elemental adaptado al color magenta del Kitsu."
@@ -466,7 +466,7 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Kitsinición midori no mizu",
+        "name": "Kitsnición midori no mizu",
         "cost": 3,
         "range": 3,
         "effect": "Daño elemental adaptado al color midori no mizu del Kitsu."
@@ -502,7 +502,7 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Kitsinición mizu",
+        "name": "Kitsnición mizu",
         "cost": 3,
         "range": 3,
         "effect": "Daño elemental adaptado al color mizu del Kitsu."
@@ -538,7 +538,7 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Kitsinición silvestre",
+        "name": "Kitsnición silvestre",
         "cost": 3,
         "range": 3,
         "effect": "Daño elemental adaptado al color silvestre del Kitsu."
@@ -572,7 +572,7 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Kitsinición nishiki",
+        "name": "Kitsnición nishiki",
         "cost": 3,
         "range": 3,
         "effect": "Daño elemental adaptado al color nishiki del Kitsu."
@@ -620,7 +620,7 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Kitsinición penta",
+        "name": "Kitsnición penta",
         "cost": 3,
         "range": 3,
         "effect": "Daño elemental adaptado al color penta del Kitsu."
@@ -668,7 +668,7 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Kitsinición yin yang",
+        "name": "Kitsnición yin yang",
         "cost": 3,
         "range": 3,
         "effect": "Daño elemental adaptado al color yin yang del Kitsu."
@@ -716,7 +716,7 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Kitsinición silvestre evolucionado",
+        "name": "Kitsnición silvestre evolucionado",
         "cost": 3,
         "range": 3,
         "effect": "Daño elemental adaptado al color silvestre evolucionado del Kitsu."
@@ -750,7 +750,7 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Kitsinición kumiawase",
+        "name": "Kitsnición kumiawase",
         "cost": 3,
         "range": 3,
         "effect": "Daño elemental adaptado al color kumiawase del Kitsu."
@@ -784,7 +784,7 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Kitsinición nishiki evolucionado",
+        "name": "Kitsnición nishiki evolucionado",
         "cost": 3,
         "range": 3,
         "effect": "Daño elemental adaptado al color nishiki evolucionado del Kitsu."
@@ -818,7 +818,7 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Kitsinición penta evolucionado",
+        "name": "Kitsnición penta evolucionado",
         "cost": 3,
         "range": 3,
         "effect": "Daño elemental adaptado al color penta evolucionado del Kitsu."
@@ -852,7 +852,7 @@
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Kitsinición yin yang evolucionado",
+        "name": "Kitsnición yin yang evolucionado",
         "cost": 3,
         "range": 3,
         "effect": "Daño elemental adaptado al color yin yang evolucionado del Kitsu."
@@ -1363,7 +1363,7 @@
         "name": "Fusión Escarahoja",
         "cost": 5,
         "range": 1,
-        "effect": "Permite fusionarse sólo con la Escarahoja compatible indicada por las descripciones de las Escarahojas fusionadas."
+        "effect": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas."
       }
     ]
   },
@@ -1411,7 +1411,7 @@
         "name": "Fusión Escarahoja",
         "cost": 5,
         "range": 1,
-        "effect": "Permite fusionarse sólo con la Escarahoja compatible indicada por las descripciones de las Escarahojas fusionadas."
+        "effect": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas."
       }
     ]
   },
@@ -1459,7 +1459,7 @@
         "name": "Fusión Escarahoja",
         "cost": 5,
         "range": 1,
-        "effect": "Permite fusionarse sólo con la Escarahoja compatible indicada por las descripciones de las Escarahojas fusionadas."
+        "effect": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas."
       }
     ]
   },
@@ -1507,7 +1507,7 @@
         "name": "Fusión Escarahoja",
         "cost": 5,
         "range": 1,
-        "effect": "Permite fusionarse sólo con la Escarahoja compatible indicada por las descripciones de las Escarahojas fusionadas."
+        "effect": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas."
       }
     ]
   },
@@ -1555,7 +1555,7 @@
         "name": "Fusión Escarahoja",
         "cost": 5,
         "range": 1,
-        "effect": "Permite fusionarse sólo con la Escarahoja compatible indicada por las descripciones de las Escarahojas fusionadas."
+        "effect": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas."
       }
     ]
   },
@@ -1603,7 +1603,7 @@
         "name": "Evolución",
         "cost": 5,
         "range": 0,
-        "effect": "Sólo puede utilizarla una Escarahoja fusionada en el campo, aunque haya más fusiones en combate."
+        "effect": "El hechizo Evolución sólo lo puede utilizar 1 sola Escarahoja fusionada en el campo, haya o no más Escarahojas fusionadas en combate."
       }
     ]
   },
@@ -1651,7 +1651,7 @@
         "name": "Evolución",
         "cost": 5,
         "range": 0,
-        "effect": "Sólo puede utilizarla una Escarahoja fusionada en el campo, aunque haya más fusiones en combate."
+        "effect": "El hechizo Evolución sólo lo puede utilizar 1 sola Escarahoja fusionada en el campo, haya o no más Escarahojas fusionadas en combate."
       }
     ]
   },
@@ -1699,7 +1699,7 @@
         "name": "Evolución",
         "cost": 5,
         "range": 0,
-        "effect": "Sólo puede utilizarla una Escarahoja fusionada en el campo, aunque haya más fusiones en combate."
+        "effect": "El hechizo Evolución sólo lo puede utilizar 1 sola Escarahoja fusionada en el campo, haya o no más Escarahojas fusionadas en combate."
       }
     ]
   },
@@ -1747,7 +1747,7 @@
         "name": "Evolución",
         "cost": 5,
         "range": 0,
-        "effect": "Sólo puede utilizarla una Escarahoja fusionada en el campo, aunque haya más fusiones en combate."
+        "effect": "El hechizo Evolución sólo lo puede utilizar 1 sola Escarahoja fusionada en el campo, haya o no más Escarahojas fusionadas en combate."
       }
     ]
   },

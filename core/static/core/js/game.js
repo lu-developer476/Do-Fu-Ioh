@@ -5,7 +5,7 @@ const STAGE_RANK = { base: 0, fusion: 1, evolution: 2 };
 const MAX_ENERGY = 10;
 const FREE_SUMMON_COST = 0;
 const BOARD_WIDTH = 9;
-const BOARD_HEIGHT = 13;
+const BOARD_HEIGHT = 9;
 const DEPLOY_ROWS = { host: [BOARD_HEIGHT - 1], guest: [0] };
 const INITIAL_HAND_OPTIONS = new Set([1, 2, 5]);
 const appState = { cards: [], roomCode: null, match: null, selectedHandIndex: null, selectedUnitId: null, selectedCatalogCardIds: new Set(), selectedFamily: '', actionFeedback: { message: 'Seleccioná una carta o una unidad para continuar.', tone: 'normal' }, clientLog: [], combatEffects: [], aiPlayback: false, hasPromptedInitialHand: false, lastMatchConfig: null, audio: { ctx: null, enabled: true, unlocked: false } };
@@ -492,18 +492,21 @@ function bindAsyncButton(selector, handler) {
 }
 function syncModalHandSize() { const current = String(requestedHandSize()); document.querySelectorAll('input[name="modal-initial-hand-size"]').forEach((input) => { input.checked = input.value === current; }); }
 function applyModalHandSize() { const selected = document.querySelector('input[name="modal-initial-hand-size"]:checked')?.value; const target = selected && document.querySelector(`input[name="initial-hand-size"][value="${selected}"]`); if (target) target.checked = true; }
-function openInitialHandDialog() { const dialog = $('#match-setup-dialog'); syncModalHandSize(); syncModalDeckScope(); if (dialog?.showModal) dialog.showModal(); }
+function closeNewMatchPanel() { $('#close-new-match-panel')?.closest('details')?.removeAttribute('open'); }
+function chooseManualMatchSetup() { setActionFeedback('Abrí Bestiario, elegí cartas y presioná Usar selección desde Mano.', 'normal'); closeNewMatchPanel(); }
+function openInitialHandDialog() { createAIMatch(); closeNewMatchPanel(); }
+function openNewMatchPanel() { document.querySelector('.nav-popover summary')?.parentElement?.setAttribute('open', ''); }
 
 
 
 let audioContext = null;
 let activeOst = null;
 const OST_TRACKS = [
-  { name: 'Emboscada en Astrub', bpm: 148, lead: [220, 247, 262, 330, 294, 262, 247, 196], bass: [55, 55, 73, 82], wave: 'sawtooth' },
-  { name: 'Carga de Píos Furiosos', bpm: 172, lead: [392, 330, 392, 440, 523, 494, 440, 392, 330, 294, 330, 392], bass: [98, 98, 110, 123], wave: 'square' },
-  { name: 'Trono de Gelatina Real', bpm: 132, lead: [196, 247, 294, 370, 349, 294, 247, 185], bass: [49, 65, 73, 92], wave: 'triangle' },
-  { name: 'Danza Kitsu de Medianoche', bpm: 156, lead: [277, 311, 370, 415, 370, 311, 277, 233, 277, 349], bass: [69, 69, 92, 104], wave: 'sawtooth' },
-  { name: 'Marcha Escarahoja Blindada', bpm: 118, lead: [147, 196, 220, 294, 262, 220, 196, 147], bass: [36, 49, 55, 49], wave: 'square' }
+  { name: 'Brotes del Primer Duelo', bpm: 137, lead: [262, 311, 349, 415, 392, 330, 294, 349, 247, 294, 330, 392], bass: [65, 82, 98, 73, 87], wave: 'triangle' },
+  { name: 'Plumas sobre Brasa Verde', bpm: 166, lead: [330, 494, 440, 370, 523, 587, 494, 392, 466, 415, 349, 554], bass: [82, 110, 123, 98, 92, 117], wave: 'square' },
+  { name: 'Marea Ámbar de Gel', bpm: 123, lead: [185, 233, 277, 311, 370, 349, 277, 208, 247, 294, 330], bass: [46, 58, 69, 78, 62], wave: 'sine' },
+  { name: 'Faroles del Zorro Umbrío', bpm: 151, lead: [277, 370, 415, 311, 466, 415, 349, 294, 392, 330, 247, 311], bass: [69, 104, 92, 78, 87], wave: 'sawtooth' },
+  { name: 'Quitina de Sol Partido', bpm: 112, lead: [147, 220, 262, 330, 294, 247, 196, 233, 277, 349], bass: [36, 55, 73, 49, 65], wave: 'triangle' }
 ];
 function playTone(gain, frequency, duration, type = 'sine', volume = 1, detune = 0) {
   const osc = audioContext.createOscillator(); const env = audioContext.createGain();
@@ -561,7 +564,7 @@ function restartMatch() { const cfg = appState.lastMatchConfig || { selectedIds:
 function openHandDialog() { const dialog = $('#hand-dialog'); if (dialog?.showModal) dialog.showModal(); }
 
 function boot() {
-  renderGame(); bindAsyncButton('#create-ai-match', () => { openInitialHandDialog(); return Promise.resolve(); }); bindAsyncButton('#shuffle-monsters', shuffleMonsters); bindAsyncButton('#create-selected-match', createSelectedMatch); bindAsyncButton('#end-turn-btn', endTurn); bindAsyncButton('#pause-match-btn', () => { setMatchPaused(!appState.match?.paused); return Promise.resolve(); }); bindAsyncButton('#restart-match-btn', () => { restartMatch(); return Promise.resolve(); }); bindAsyncButton('#abandon-match-btn', () => { abandonMatch(); return Promise.resolve(); }); $('#open-hand-dialog')?.addEventListener('click', openHandDialog); $('#close-hand-dialog')?.addEventListener('click', () => $('#hand-dialog')?.close()); $('#modal-random-hand')?.addEventListener('click', () => { applyModalHandSize(); applyModalDeckScope(); createAIMatch(); }); $('#modal-manual-hand')?.addEventListener('click', () => { applyModalHandSize(); applyModalDeckScope(); setActionFeedback('Abrí Bestiario, elegí cartas y presioná Usar selección desde Mano.', 'normal'); });
-  loadCards().then(loadActiveMatch).catch((err) => { setStatus(err.message || 'No se pudo iniciar el juego.', true); setActionFeedback('No se pudo cargar el duelo. Iniciá un nuevo enfrentamiento o usá la selección manual.', 'error'); renderGame(); }).finally(() => { if (!appState.match) { setStatus('Sin duelo local activo. Iniciá uno nuevo o prepará una selección manual.'); openInitialHandDialog(); } });
+  renderGame(); bindAsyncButton('#create-ai-match', () => { openInitialHandDialog(); return Promise.resolve(); }); $('#create-manual-match')?.addEventListener('click', chooseManualMatchSetup); $('#close-new-match-panel')?.addEventListener('click', closeNewMatchPanel); bindAsyncButton('#shuffle-monsters', shuffleMonsters); bindAsyncButton('#create-selected-match', createSelectedMatch); bindAsyncButton('#end-turn-btn', endTurn); bindAsyncButton('#pause-match-btn', () => { setMatchPaused(!appState.match?.paused); return Promise.resolve(); }); bindAsyncButton('#restart-match-btn', () => { restartMatch(); return Promise.resolve(); }); bindAsyncButton('#abandon-match-btn', () => { abandonMatch(); return Promise.resolve(); }); $('#open-hand-dialog')?.addEventListener('click', openHandDialog); $('#close-hand-dialog')?.addEventListener('click', () => $('#hand-dialog')?.close()); $('#modal-random-hand')?.addEventListener('click', () => { applyModalHandSize(); applyModalDeckScope(); createAIMatch(); }); $('#modal-manual-hand')?.addEventListener('click', () => { applyModalHandSize(); applyModalDeckScope(); setActionFeedback('Abrí Bestiario, elegí cartas y presioná Usar selección desde Mano.', 'normal'); });
+  loadCards().then(loadActiveMatch).catch((err) => { setStatus(err.message || 'No se pudo iniciar el juego.', true); setActionFeedback('No se pudo cargar el duelo. Iniciá un nuevo enfrentamiento o usá la selección manual.', 'error'); renderGame(); }).finally(() => { if (!appState.match) { setStatus('Sin duelo local activo. Iniciá uno nuevo o prepará una selección manual.'); openNewMatchPanel(); } });
 }
 document.addEventListener('DOMContentLoaded', boot, { once: true });

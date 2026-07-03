@@ -1719,3 +1719,75 @@ body {
   .hand-choice-dialog { width: min(96vw, 520px); }
   .hand-choice-modal { padding: 14px; }
 }
+
+/* Board-centered combat controls and compact 9x9 arena sizing. */
+.new-match-actions {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.new-match-actions #close-new-match-panel {
+  grid-column: 1 / -1;
+}
+
+.board-action-ring {
+  display: grid;
+  grid-template-columns: minmax(120px, .22fr) minmax(0, auto) minmax(120px, .22fr);
+  grid-template-areas:
+    "end board pause"
+    "restart board abandon";
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+.board-action-ring .board-frame { grid-area: board; }
+.board-action {
+  width: min(100%, 150px);
+  min-height: 46px;
+  justify-self: center;
+}
+.board-action-end { grid-area: end; align-self: end; }
+.board-action-pause { grid-area: pause; align-self: end; }
+.board-action-restart { grid-area: restart; align-self: start; }
+.board-action-abandon { grid-area: abandon; align-self: start; }
+
+@media (min-width: 901px) {
+  :root {
+    --board-cell-size: min(5.2vw, calc((100vh - 280px) / 9), 54px);
+  }
+  .card-game-shell { width: min(100%, 1080px); }
+  .token-name { font-size: clamp(.48rem, .76vw, .68rem); }
+  .token-owner { font-size: clamp(.42rem, .62vw, .54rem); }
+  .token-stat span { font-size: clamp(.48rem, .72vw, .64rem); }
+}
+
+@media (min-width: 641px) and (max-width: 900px) {
+  :root {
+    --board-cell-size: min(9vw, calc((100vh - 270px) / 9), 52px);
+    --board-gap: 3px;
+  }
+  .board-action-ring {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "end pause"
+      "board board"
+      "restart abandon";
+  }
+  .board-action { width: 100%; }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --board-cell-size: min(10vw, calc((100vh - 300px) / 9), 38px);
+    --board-gap: 2px;
+  }
+  .board-action-ring {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "end pause"
+      "board board"
+      "restart abandon";
+    gap: 8px;
+  }
+  .board-action { width: 100%; min-height: 42px; padding-inline: .45rem; }
+  .board-action-ring .board-frame { width: 100%; overflow-x: auto; }
+}

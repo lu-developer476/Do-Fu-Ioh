@@ -46,12 +46,10 @@
               <label><input type="radio" name="deck-tier" value="special" /> <span>Fusiones, evoluciones y jefes</span></label>
             </fieldset>
           </div>
-          <div class="duel-action-grid">
-            <button id="create-ai-match" data-loading-label="Creando partida...">Nueva partida</button>
-            <button id="end-turn-btn" class="ghost" data-loading-label="Procesando turno...">Finalizar turno</button>
-            <button id="pause-match-btn" class="ghost" data-loading-label="Pausando...">Pausar</button>
-            <button id="restart-match-btn" class="ghost" data-loading-label="Reiniciando...">Reiniciar</button>
-            <button id="abandon-match-btn" class="ghost danger" data-loading-label="Abandonando...">Abandonar</button>
+          <div class="duel-action-grid new-match-actions">
+            <button id="create-ai-match" data-loading-label="Creando partida...">Mano al azar</button>
+            <button id="create-manual-match" class="ghost" type="button">Elegir manualmente</button>
+            <button id="close-new-match-panel" class="ghost" type="button">Cerrar</button>
           </div>
         </div>
       </details>
@@ -99,7 +97,13 @@
       <div id="action-feedback" class="action-feedback feedback-normal" aria-live="polite" aria-atomic="true">Seleccioná una carta o una unidad para continuar.</div>
 
       <section class="board-panel tactical-preview" aria-label="Arena de juego">
-        <div class="board-frame"><div class="board-scroll"><div id="tactical-board" class="board tactical-board"></div></div></div>
+        <div class="board-action-ring" aria-label="Controles de combate">
+          <button id="end-turn-btn" class="ghost board-action board-action-end" data-loading-label="Procesando turno...">Finalizar turno</button>
+          <button id="pause-match-btn" class="ghost board-action board-action-pause" data-loading-label="Pausando...">Pausar</button>
+          <div class="board-frame"><div class="board-scroll"><div id="tactical-board" class="board tactical-board"></div></div></div>
+          <button id="restart-match-btn" class="ghost board-action board-action-restart" data-loading-label="Reiniciando...">Reiniciar</button>
+          <button id="abandon-match-btn" class="ghost danger board-action board-action-abandon" data-loading-label="Abandonando...">Abandonar</button>
+        </div>
       </section>
     </section>
 

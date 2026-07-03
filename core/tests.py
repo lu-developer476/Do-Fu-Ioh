@@ -48,15 +48,24 @@ class CardSeedSourceValidationTests(SimpleTestCase):
             'Espíritu Elemental',
             'Fusión Escarahoja',
         ]
-        for name in [
+        base_names = [
             'Escarahoja anaranjada',
             'Escarahoja limonada',
             'Escarahoja sonrosada',
             'Escarahoja tostada',
             'Escarahoja violeta',
-        ]:
+        ]
+        for name in base_names:
             with self.subTest(card=name):
-                self.assertEqual([spell['name'] for spell in cards[name]['spells']], expected_base_spells)
+                card = cards[name]
+                self.assertEqual(card['stage'], 'base')
+                self.assertEqual(card['family'], 'Escarahojas')
+                self.assertEqual([spell['name'] for spell in card['spells']], expected_base_spells)
+                self.assertEqual(len(card['spells']), 5)
+                self.assertEqual(
+                    card['spells'][-1]['effect'],
+                    'Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas.',
+                )
 
         expected_fusion_spells = [
             'Inmovilización',
@@ -65,20 +74,33 @@ class CardSeedSourceValidationTests(SimpleTestCase):
             'Desaparición en Grupo',
             'Evolución',
         ]
-        for name in [
+        fusion_names = [
             'Escarahoja duocromada',
             'Escarahoja mecanizada',
             'Escarahoja tricolor',
             'Escarahoja variopinta',
-        ]:
+        ]
+        for name in fusion_names:
             with self.subTest(card=name):
-                self.assertEqual([spell['name'] for spell in cards[name]['spells']], expected_fusion_spells)
-                self.assertIn('Sólo puede utilizarla una Escarahoja fusionada', cards[name]['spells'][-1]['effect'])
+                card = cards[name]
+                self.assertEqual(card['stage'], 'fusion')
+                self.assertEqual(card['family'], 'Escarahojas')
+                self.assertEqual([spell['name'] for spell in card['spells']], expected_fusion_spells)
+                self.assertEqual(len(card['spells']), 5)
+                self.assertEqual(
+                    card['spells'][-1]['effect'],
+                    'El hechizo Evolución sólo lo puede utilizar 1 sola Escarahoja fusionada en el campo, '
+                    'haya o no más Escarahojas fusionadas en combate.',
+                )
 
+        bronze = cards['Escarasubjefe Bronce']
+        self.assertEqual(bronze['family'], 'Escarahojas')
         self.assertEqual(
-            [spell['name'] for spell in cards['Escarasubjefe Bronce']['spells']],
+            [spell['name'] for spell in bronze['spells']],
             ['Liberación', 'Cura Afrodisíaca', 'Picota', 'Humo Calcinador'],
         )
+        self.assertEqual(len(bronze['spells']), 4)
+        self.assertNotIn('Escarajefe Dorado', cards)
 
 
 class KitsuCatalogDataTests(SimpleTestCase):

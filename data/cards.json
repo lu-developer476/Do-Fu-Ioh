@@ -1327,7 +1327,7 @@
         "name": "Fusión Escarahoja",
         "cost": 5,
         "range": 1,
-        "effect": "Permite fusionarse sólo con la Escarahoja compatible indicada por las descripciones de las Escarahojas fusionadas."
+        "effect": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas."
       }
     ]
   },
@@ -1375,7 +1375,7 @@
         "name": "Fusión Escarahoja",
         "cost": 5,
         "range": 1,
-        "effect": "Permite fusionarse sólo con la Escarahoja compatible indicada por las descripciones de las Escarahojas fusionadas."
+        "effect": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas."
       }
     ]
   },
@@ -1423,7 +1423,7 @@
         "name": "Fusión Escarahoja",
         "cost": 5,
         "range": 1,
-        "effect": "Permite fusionarse sólo con la Escarahoja compatible indicada por las descripciones de las Escarahojas fusionadas."
+        "effect": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas."
       }
     ]
   },
@@ -1471,7 +1471,7 @@
         "name": "Fusión Escarahoja",
         "cost": 5,
         "range": 1,
-        "effect": "Permite fusionarse sólo con la Escarahoja compatible indicada por las descripciones de las Escarahojas fusionadas."
+        "effect": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas."
       }
     ]
   },
@@ -1519,7 +1519,7 @@
         "name": "Fusión Escarahoja",
         "cost": 5,
         "range": 1,
-        "effect": "Permite fusionarse sólo con la Escarahoja compatible indicada por las descripciones de las Escarahojas fusionadas."
+        "effect": "Sólo aplicable según lo descripto en los textos de las Escarahojas combinadas."
       }
     ]
   },
@@ -1567,7 +1567,7 @@
         "name": "Evolución",
         "cost": 5,
         "range": 0,
-        "effect": "Sólo puede utilizarla una Escarahoja fusionada en el campo, aunque haya más fusiones en combate."
+        "effect": "El hechizo Evolución sólo lo puede utilizar 1 sola Escarahoja fusionada en el campo, haya o no más Escarahojas fusionadas en combate."
       }
     ]
   },
@@ -1615,7 +1615,7 @@
         "name": "Evolución",
         "cost": 5,
         "range": 0,
-        "effect": "Sólo puede utilizarla una Escarahoja fusionada en el campo, aunque haya más fusiones en combate."
+        "effect": "El hechizo Evolución sólo lo puede utilizar 1 sola Escarahoja fusionada en el campo, haya o no más Escarahojas fusionadas en combate."
       }
     ]
   },
@@ -1663,7 +1663,7 @@
         "name": "Evolución",
         "cost": 5,
         "range": 0,
-        "effect": "Sólo puede utilizarla una Escarahoja fusionada en el campo, aunque haya más fusiones en combate."
+        "effect": "El hechizo Evolución sólo lo puede utilizar 1 sola Escarahoja fusionada en el campo, haya o no más Escarahojas fusionadas en combate."
       }
     ]
   },
@@ -1711,7 +1711,7 @@
         "name": "Evolución",
         "cost": 5,
         "range": 0,
-        "effect": "Sólo puede utilizarla una Escarahoja fusionada en el campo, aunque haya más fusiones en combate."
+        "effect": "El hechizo Evolución sólo lo puede utilizar 1 sola Escarahoja fusionada en el campo, haya o no más Escarahojas fusionadas en combate."
       }
     ]
   },

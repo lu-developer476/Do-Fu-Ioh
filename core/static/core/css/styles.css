@@ -1378,3 +1378,79 @@ body { padding-top: 78px; }
 @media (max-width: 480px) {
   .segmented-control { grid-template-columns: 1fr; }
 }
+
+/* Navbar popovers for setup, catalog and duel log. */
+.nav-popover {
+  position: relative;
+}
+.nav-popover summary {
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  min-height: 52px;
+  padding: .65rem 1rem;
+  color: #f7f3dc;
+  font-size: .95rem;
+  font-weight: 900;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 0 rgba(0,0,0,.35);
+  cursor: pointer;
+}
+.nav-popover summary::-webkit-details-marker { display: none; }
+.nav-popover[open] summary,
+.nav-popover summary:hover,
+.nav-popover summary:focus-visible {
+  color: #25320f;
+  background: linear-gradient(180deg, #c7ed37, #8fbf20);
+  border-radius: 12px;
+  outline: none;
+}
+.nav-popover-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 120;
+  width: min(92vw, 360px);
+  max-height: min(72vh, 720px);
+  overflow: auto;
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: linear-gradient(165deg, rgba(66, 101, 74, .99), rgba(32, 51, 38, .99));
+  box-shadow: 0 22px 46px rgba(0,0,0,.44), inset 0 0 0 1px rgba(232, 213, 181, .14);
+}
+.nav-popover-wide .nav-popover-panel { width: min(92vw, 760px); }
+.nav-popover-right .nav-popover-panel { right: 0; }
+.nav-popover-panel .catalog { max-height: 52vh; }
+.nav-popover-panel .match-log { max-height: 46vh; }
+
+/* Desktop board refinement: keep the full 9x13 arena visible, centered and proportional. */
+@media (min-width: 901px) {
+  :root {
+    --board-cell-size: min(6.4vw, calc((100vh - 250px) / 13), 72px);
+    --board-gap: 5px;
+  }
+  .card-game-shell { width: min(100%, 1180px); padding: 22px; }
+  .duel-panel { padding: 18px; }
+  .board-panel { justify-items: center; }
+  .board-frame { display: flex; justify-content: center; }
+  .board-scroll { width: auto; max-width: 100%; overflow: visible; }
+  .board,
+  .tactical-board {
+    width: auto;
+    min-width: 0;
+    grid-template-columns: repeat(9, var(--board-cell-size));
+    padding: 10px;
+  }
+  .cell { width: var(--board-cell-size); }
+  .play-dashboard { grid-template-columns: minmax(0, 1fr); }
+  .hand-panel .card-row { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+}
+
+@media (max-width: 760px) {
+  .nav-popover { position: static; }
+  .nav-popover-panel { left: 10px; right: 10px; width: auto; }
+}

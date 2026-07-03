@@ -25,7 +25,6 @@ const FUSION_RECIPES = {
   'Escarahoja variopinta': ['Escarahoja anaranjada', 'Escarahoja limonada', 'Escarahoja sonrosada', 'Escarahoja tostada', 'Escarahoja violeta']
 };
 const EVOLUTION_RECIPES = {
-  'Pío combinado': 'Píoloro',
   'Pío otoñal': 'Píoloro',
   'Kitsu silvestre': 'Kitsu silvestre evolucionado',
   'Kitsu nishiki': 'Kitsu nishiki evolucionado',

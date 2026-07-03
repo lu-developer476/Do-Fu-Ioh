@@ -123,6 +123,8 @@ class KitsuCatalogDataTests(SimpleTestCase):
                 self.assertEqual(card['shell'], shell)
                 self.assertEqual(card['action_points'], action_points)
                 self.assertEqual(card['movement_points'], movement_points)
+                self.assertEqual(card['hp_min'], hp)
+                self.assertEqual(card['hp_max'], hp)
 
     def test_kitsu_evolutions_match_reference_stats(self):
         cards = {card['name']: card for card in load_cards_seed_data()}
@@ -148,22 +150,92 @@ class KitsuCatalogDataTests(SimpleTestCase):
 
     def test_kitsu_reference_spells_are_defined(self):
         cards = {card['name']: card for card in serialized_cards_seed_data()}
+        kitsus = [card for card in cards.values() if card['family'] == 'Kitsus']
 
-        for name in (
-            'Kitsu nishiki',
-            'Kitsu penta',
-            'Kitsu yin yang',
-            'Kitsu silvestre evolucionado',
-            'Kitsu kumiawase',
-            'Kitsu nishiki evolucionado',
-            'Kitsu penta evolucionado',
-            'Kitsu yin yang evolucionado',
-        ):
+        for card in kitsus:
+            spell_suffix = card['name'].removeprefix('Kitsu ')
+
+            with self.subTest(card=card['name']):
+                self.assertEqual(
+                    [spell['name'] for spell in card['spells']],
+                    [
+                        f'Kitsnición {spell_suffix}',
+                        f'Ilusión espectral {spell_suffix}',
+                        f'Argucia del Kitsu {spell_suffix}',
+                    ],
+                )
+                self.assertEqual(len(card['spells']), 3)
+                for spell in card['spells']:
+                    self.assertIn('cost', spell)
+                    self.assertIn('range', spell)
+
+
+class GelatinaCatalogDataTests(SimpleTestCase):
+    def test_common_gelatinas_use_color_spells(self):
+        cards = {card['name']: card for card in serialized_cards_seed_data()}
+
+        expected_colors = {
+            'Gelatina de durazno': 'durazno',
+            'Gelatina de frambuesa': 'frambuesa',
+            'Gelatina lactosada': 'lactosada',
+            'Gelatina moka': 'moka',
+            'Gelatina nociva': 'nociva',
+            'Gelatina obscura': 'obscura',
+            'Gelatina de uva': 'uva',
+        }
+
+        for name, color in expected_colors.items():
             with self.subTest(card=name):
-                self.assertGreaterEqual(len(cards[name]['spells']), 2)
-                self.assertIn('name', cards[name]['spells'][0])
-                self.assertIn('cost', cards[name]['spells'][0])
-                self.assertIn('range', cards[name]['spells'][0])
+                spells = cards[name]['spells']
+                self.assertEqual(len(spells), 2)
+                self.assertEqual([spell['name'] for spell in spells], ['Gelpikes', f'Hueso de {color}'])
+
+    def test_royal_gelatinas_use_protection_summon_and_color_spells(self):
+        cards = {card['name']: card for card in serialized_cards_seed_data()}
+
+        expected_spells = {
+            'Gelatina de durazno Real': [
+                'Helada Protectora',
+                'Invocación de Gelatina de Durazno',
+                'Hueso de durazno',
+            ],
+            'Gelatina de frambuesa Real': [
+                'Helada Protectora',
+                'Invocación de Gelatina de Frambuesa',
+                'Hueso de frambuesa',
+            ],
+            'Gelatina lactosada Real': [
+                'Helada Protectora',
+                'Invocación de Gelatina lactosada',
+                'Hueso de lactosada',
+            ],
+            'Gelatina moka Real': [
+                'Helada Protectora',
+                'Invocación de Gelatina moka',
+                'Hueso de moka',
+            ],
+            'Gelatina nociva Real': [
+                'Helada Protectora',
+                'Invocación de Gelatina nociva',
+                'Hueso de nociva',
+            ],
+            'Gelatina obscura Real': [
+                'Helada Protectora',
+                'Invocación de Gelatina obscura',
+                'Hueso de obscura',
+            ],
+            'Gelatina de uva Real': [
+                'Helada Protectora',
+                'Invocación de Gelatina de Uva',
+                'Hueso de uva',
+            ],
+        }
+
+        for name, spell_names in expected_spells.items():
+            with self.subTest(card=name):
+                spells = cards[name]['spells']
+                self.assertEqual(len(spells), 3)
+                self.assertEqual([spell['name'] for spell in spells], spell_names)
 
 
 class BackendlessModeTests(TestCase):

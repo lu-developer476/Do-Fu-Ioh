@@ -178,7 +178,7 @@ class PioCatalogDataTests(SimpleTestCase):
     def test_pio_fusions_only_include_evolution_spell(self):
         cards = {card['name']: card for card in serialized_cards_seed_data()}
 
-        for name in ['Pío otoñal', 'Pío combinado']:
+        for name in ['Pío otoñal']:
             with self.subTest(card=name):
                 card = cards[name]
                 self.assertEqual(card['stage'], 'fusion')
@@ -195,12 +195,24 @@ class PioCatalogDataTests(SimpleTestCase):
     def test_pio_base_components_include_fusion_spell(self):
         cards = {card['name']: card for card in serialized_cards_seed_data()}
 
-        for name in ['Pío albino', 'Pío negruzco', 'Pío anaranjado', 'Pío castaño']:
+        for name in ['Pío anaranjado', 'Pío castaño']:
             with self.subTest(card=name):
                 self.assertEqual(cards[name]['spells'][-1]['name'], 'Fusión Pío')
                 self.assertEqual(cards[name]['spells'][-1]['damage_min'], 0)
                 self.assertEqual(cards[name]['spells'][-1]['damage_max'], 0)
                 self.assertIn('Pío compatible', cards[name]['spells'][-1]['effect'])
+
+
+    def test_pio_combined_is_evolution_of_autumnal(self):
+        cards = {card['name']: card for card in serialized_cards_seed_data()}
+
+        card = cards['Pío combinado']
+        self.assertEqual(card['stage'], 'evolution')
+        self.assertIn('Evolución poco común del Pío otoñal', card['description'])
+        self.assertEqual(
+            [spell['name'] for spell in card['spells']],
+            ['Picoteo combinado', 'Plumaje combinado'],
+        )
 
 
 class GelatinaCatalogDataTests(SimpleTestCase):

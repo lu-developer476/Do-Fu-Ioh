@@ -13,7 +13,6 @@ const $ = (sel) => document.querySelector(sel);
 const familyFilter = $('#family-filter');
 
 const FUSION_RECIPES = {
-  'Pío combinado': ['Pío albino', 'Pío negruzco'],
   'Pío otoñal': ['Pío anaranjado', 'Pío castaño'],
   'Kitsu kumiawase': ['Kitsu amatista', 'Kitsu magenta'],
   'Kitsu nishiki': ['Kitsu mizu', 'Kitsu midori no mizu'],
@@ -25,8 +24,7 @@ const FUSION_RECIPES = {
   'Escarahoja variopinta': ['Escarahoja anaranjada', 'Escarahoja limonada', 'Escarahoja sonrosada', 'Escarahoja tostada', 'Escarahoja violeta']
 };
 const EVOLUTION_RECIPES = {
-  'Pío combinado': 'Píoloro',
-  'Pío otoñal': 'Píoloro',
+  'Pío otoñal': 'Pío combinado',
   'Kitsu silvestre': 'Kitsu silvestre evolucionado',
   'Kitsu nishiki': 'Kitsu nishiki evolucionado',
   'Kitsu penta': 'Kitsu penta evolucionado',

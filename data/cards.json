@@ -227,51 +227,6 @@
   {
     "name": "Pío combinado",
     "family": "Píos",
-    "stage": "fusion",
-    "level_min": 20,
-    "level_max": 25,
-    "hp": 105,
-    "shell": 100,
-    "action_points": 5,
-    "movement_points": 5,
-    "description": "Criatura surgida de la mezcla entre el Pío albino y el Pío negruzco. Su plumaje contrastado refleja la combinación de energías opuestas. Su instinto es mucho más feroz.",
-    "image": "public/images/pios/fusions/pio-combinado.png",
-    "image_fallback": "core/img/placeholders/card-placeholder.svg",
-    "hp_min": 75,
-    "hp_max": 105,
-    "spells": [
-      {
-        "name": "Picoteo combinado",
-        "cost": 3,
-        "range": 1,
-        "effect": "Daño cuerpo a cuerpo del picoteo característico del Pío combinado.",
-        "description": "Daño cuerpo a cuerpo del picoteo característico del Pío combinado.",
-        "damage_min": 36,
-        "damage_max": 48
-      },
-      {
-        "name": "Plumaje combinado",
-        "cost": 4,
-        "range": 2,
-        "effect": "Efecto de apoyo o defensa basado en el plumaje combinado del Pío.",
-        "description": "Efecto de apoyo o defensa basado en el plumaje combinado del Pío.",
-        "damage_min": 30,
-        "damage_max": 39
-      },
-      {
-        "name": "Evolución",
-        "cost": 5,
-        "range": 0,
-        "effect": "Sólo puede utilizarla un Pío fusionado en el campo para evolucionar a su forma superior correspondiente.",
-        "description": "Sólo puede utilizarla un Pío fusionado en el campo para evolucionar a su forma superior correspondiente.",
-        "damage_min": 34,
-        "damage_max": 45
-      }
-    ]
-  },
-  {
-    "name": "Píoloro",
-    "family": "Píos",
     "stage": "evolution",
     "level_min": 45,
     "level_max": 50,
@@ -280,26 +235,26 @@
     "action_points": 7,
     "movement_points": 6,
     "description": "Evolución poco común del Pío otoñal. Estas aves desarrollan un plumaje más vistoso y un comportamiento más astuto tras sobrevivir múltiples combates. Gana porte, astucia y una presencia más dominante que la de cualquier pío corriente.",
-    "image": "public/images/pios/evolutions/pioloro.png",
+    "image": "public/images/pios/fusions/pio-combinado.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "hp_min": 150,
     "hp_max": 175,
     "spells": [
       {
-        "name": "Picoteo píoloro",
+        "name": "Picoteo combinado",
         "cost": 4,
         "range": 3,
-        "effect": "Daño cuerpo a cuerpo del picoteo característico del Pío píoloro.",
-        "description": "Daño cuerpo a cuerpo del picoteo característico del Pío píoloro.",
+        "effect": "Daño cuerpo a cuerpo del picoteo característico del Pío combinado.",
+        "description": "Daño cuerpo a cuerpo del picoteo característico del Pío combinado.",
         "damage_min": 62,
         "damage_max": 80
       },
       {
-        "name": "Plumaje píoloro",
+        "name": "Plumaje combinado",
         "cost": 5,
         "range": 1,
-        "effect": "Efecto de apoyo o defensa basado en el plumaje píoloro del Pío.",
-        "description": "Efecto de apoyo o defensa basado en el plumaje píoloro del Pío.",
+        "effect": "Efecto de apoyo o defensa basado en el plumaje combinado del Pío.",
+        "description": "Efecto de apoyo o defensa basado en el plumaje combinado del Pío.",
         "damage_min": 49,
         "damage_max": 63
       }

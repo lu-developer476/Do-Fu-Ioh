@@ -1642,3 +1642,80 @@ body::after { will-change: transform; }
   body::after,
   .card-game-shell::before { animation: none; }
 }
+
+/* Final responsive polish: dialogs/popovers should never create gray browser scrollbars. */
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.hand-choice-dialog {
+  width: min(94vw, 520px);
+  max-height: min(92dvh, 720px);
+  overflow: hidden;
+}
+
+.hand-choice-modal,
+.nav-popover-panel {
+  max-width: calc(100vw - 20px);
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+}
+
+.hand-choice-modal {
+  max-height: calc(92dvh - 2px);
+  overflow-y: auto;
+}
+
+.hand-navbar-panel {
+  width: min(92vw, 860px);
+}
+
+.hand-navbar-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.hand-navbar-panel .card-row {
+  max-height: 58vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+@media (min-width: 901px) {
+  :root {
+    --board-cell-size: min(5.6vw, calc((100vh - 315px) / 13), 58px);
+    --board-gap: 3px;
+  }
+
+  body { padding-top: 72px; }
+  .site-footer { padding-block: 10px 14px; }
+  .card-game-shell { padding-block: 12px; }
+  .duel-panel { padding: 12px; gap: 10px; }
+  .action-feedback { padding: .62rem .85rem; }
+  .board, .tactical-board { padding: 8px; border-width: 4px; }
+}
+
+@media (max-width: 760px) {
+  body { padding-top: 116px; overflow-x: hidden; }
+  .navbar-links { max-width: 100%; overflow-x: auto; }
+  .nav-popover-panel { left: 8px; right: 8px; width: auto; }
+  .hand-navbar-actions,
+  .modal-actions { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  body { overflow-x: hidden; }
+  .arcade-shell.card-game-shell {
+    grid-template-columns: minmax(0, 1fr);
+    min-width: 0;
+  }
+  .board-scroll {
+    overflow: visible;
+  }
+  .hand-choice-dialog { width: min(96vw, 520px); }
+  .hand-choice-modal { padding: 14px; }
+}

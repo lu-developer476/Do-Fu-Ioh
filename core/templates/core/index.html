@@ -22,7 +22,7 @@
           <div class="duel-control-card">
             <span class="control-eyebrow">Cartas iniciales</span>
             <fieldset class="segmented-control" aria-label="Cartas iniciales">
-              <legend class="control-label">Cartas iniciales</legend>
+              <legend class="control-label visually-hidden">Cartas iniciales</legend>
               <label><input type="radio" name="initial-hand-size" value="1" /> <span>1 carta</span></label>
               <label><input type="radio" name="initial-hand-size" value="2" checked /> <span>2 cartas</span></label>
               <label><input type="radio" name="initial-hand-size" value="5" /> <span>5 cartas</span></label>
@@ -37,10 +37,17 @@
             </fieldset>
             <select id="match-family-select" aria-label="Familia para la nueva partida"></select>
           </div>
+          <div class="duel-control-card">
+            <span class="control-eyebrow">Variedad de cartas</span>
+            <fieldset class="segmented-control" aria-label="Tipos de cartas permitidas">
+              <legend class="control-label visually-hidden">Tipos de cartas permitidas</legend>
+              <label><input type="radio" name="deck-tier" value="all" checked /> <span>Todas</span></label>
+              <label><input type="radio" name="deck-tier" value="base" /> <span>Básicas</span></label>
+              <label><input type="radio" name="deck-tier" value="special" /> <span>Fusiones, evoluciones y jefes</span></label>
+            </fieldset>
+          </div>
           <div class="duel-action-grid">
             <button id="create-ai-match" data-loading-label="Creando partida...">Nueva partida</button>
-            <button id="shuffle-monsters" class="ghost" data-loading-label="Barajando cartas...">Barajar cartas</button>
-            <button id="create-selected-match" class="ghost" data-loading-label="Preparando selección...">Usar selección</button>
             <button id="end-turn-btn" class="ghost" data-loading-label="Procesando turno...">Finalizar turno</button>
             <button id="pause-match-btn" class="ghost" data-loading-label="Pausando...">Pausar</button>
             <button id="restart-match-btn" class="ghost" data-loading-label="Reiniciando...">Reiniciar</button>
@@ -60,7 +67,17 @@
           <div id="catalog" class="catalog"></div>
         </div>
       </details>
-      <button id="open-hand-dialog" class="nav-button" type="button">Mano</button>
+      <details class="nav-popover nav-popover-wide nav-popover-right hand-nav-popover">
+        <summary>Mano</summary>
+        <div class="nav-popover-panel hand-panel hand-navbar-panel" aria-labelledby="hand-heading">
+          <div id="hand-panel" class="panel-heading"><h2 id="hand-heading">Mano disponible</h2><span class="panel-caption">Seleccioná e invocá</span></div>
+          <div class="hand-navbar-actions">
+            <button id="shuffle-monsters" class="ghost" type="button" data-loading-label="Barajando cartas...">Barajar cartas</button>
+            <button id="create-selected-match" class="ghost" type="button" data-loading-label="Preparando selección...">Usar selección</button>
+          </div>
+          <div id="hand" class="card-row"></div>
+        </div>
+      </details>
       <details class="nav-popover nav-popover-wide nav-popover-right">
         <summary>Registro</summary>
         <div id="duel-log-panel" class="nav-popover-panel duel-status-panel" aria-label="Estado y registro del duelo">
@@ -86,21 +103,13 @@
       </section>
     </section>
 
-    <dialog id="hand-dialog" class="hand-choice-dialog hand-window-dialog">
-      <section class="panel compact-panel hand-panel hand-choice-modal" aria-labelledby="hand-heading">
-        <div id="hand-panel" class="panel-heading"><h2 id="hand-heading">Mano disponible</h2><span class="panel-caption">Seleccioná e invocá</span></div>
-        <div id="hand" class="card-row"></div>
-      <div class="modal-actions modal-actions-single"><button id="close-hand-dialog" class="ghost" type="button">Cerrar mano</button></div>
-      </section>
-    </dialog>
-
     <dialog id="match-setup-dialog" class="hand-choice-dialog">
       <form method="dialog" class="hand-choice-modal">
         <p class="kicker">Nueva Partida</p>
         <h2>Configurá el estilo de juego</h2>
         <p>Elegí cuántas cartas iniciales usar, si querés una familia concreta o todo el bestiario, y si la mano será aleatoria o manual.</p>
         <fieldset class="segmented-control modal-segmented" aria-label="Cartas iniciales para la nueva partida">
-          <legend class="control-label">Cartas iniciales</legend>
+          <legend class="control-label visually-hidden">Cartas iniciales</legend>
           <label><input type="radio" name="modal-initial-hand-size" value="1" /> <span>1 carta</span></label>
           <label><input type="radio" name="modal-initial-hand-size" value="2" checked /> <span>2 cartas</span></label>
           <label><input type="radio" name="modal-initial-hand-size" value="5" /> <span>5 cartas</span></label>
@@ -111,6 +120,13 @@
           <label><input type="radio" name="modal-deck-scope" value="all" checked /> <span>Todo</span></label>
         </fieldset>
         <select id="modal-family-select" aria-label="Familia para la nueva partida"></select>
+        <fieldset class="segmented-control modal-segmented" aria-label="Tipos de cartas permitidas modal">
+          <legend class="control-label visually-hidden">Tipos de cartas permitidas</legend>
+          <label><input type="radio" name="modal-deck-tier" value="all" checked /> <span>Todas</span></label>
+          <label><input type="radio" name="modal-deck-tier" value="base" /> <span>Básicas</span></label>
+          <label><input type="radio" name="modal-deck-tier" value="special" /> <span>Fusiones, evoluciones y jefes</span></label>
+        </fieldset>
+
         <div class="modal-actions">
           <button id="modal-random-hand" value="random">Mano al azar</button>
           <button id="modal-manual-hand" class="ghost" value="manual">Elegir manualmente</button>

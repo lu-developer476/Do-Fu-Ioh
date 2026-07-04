@@ -559,11 +559,24 @@ function closeInitialHandDialog() { const dialog = $('#match-setup-dialog'); if 
 let audioContext = null;
 let activeOst = null;
 const OST_TRACKS = [
-  { name: 'Brotes del Primer Duelo', bpm: 137, lead: [262, 311, 349, 415, 392, 330, 294, 349, 247, 294, 330, 392], bass: [65, 82, 98, 73, 87], wave: 'triangle' },
-  { name: 'Plumas sobre Brasa Verde', bpm: 166, lead: [330, 494, 440, 370, 523, 587, 494, 392, 466, 415, 349, 554], bass: [82, 110, 123, 98, 92, 117], wave: 'square' },
-  { name: 'Marea Ámbar de Gel', bpm: 123, lead: [185, 233, 277, 311, 370, 349, 277, 208, 247, 294, 330], bass: [46, 58, 69, 78, 62], wave: 'sine' },
-  { name: 'Faroles del Zorro Umbrío', bpm: 151, lead: [277, 370, 415, 311, 466, 415, 349, 294, 392, 330, 247, 311], bass: [69, 104, 92, 78, 87], wave: 'sawtooth' },
-  { name: 'Quitina de Sol Partido', bpm: 112, lead: [147, 220, 262, 330, 294, 247, 196, 233, 277, 349], bass: [36, 55, 73, 49, 65], wave: 'triangle' }
+  {
+    name: 'Forja de Wakfu Roto',
+    bpm: 168,
+    lead: [330, 494, 440, 370, 523, 587, 494, 392, 466, 415, 349, 554],
+    bass: [82, 110, 123, 98, 92, 117],
+    wave: 'square',
+    accentWave: 'sawtooth',
+    percussion: 'spark',
+  },
+  {
+    name: 'Ritual del Bosque Profundo',
+    bpm: 104,
+    lead: [147, 220, 262, 330, 294, 247, 196, 233, 277, 349],
+    bass: [36, 55, 73, 49, 65],
+    wave: 'triangle',
+    accentWave: 'sine',
+    percussion: 'pulse',
+  },
 ];
 function playOstTone(gain, frequency, duration, type = 'sine', volume = 1, detune = 0) {
   const osc = audioContext.createOscillator(); const env = audioContext.createGain();
@@ -589,8 +602,9 @@ function playOst(index = 0) {
     const lead = track.lead[step % track.lead.length]; const bass = track.bass[Math.floor(step / 2) % track.bass.length];
     playOstTone(gain, bass, beatMs / 1000 * 0.9, 'sawtooth', step % 4 === 0 ? 1.2 : 0.8, -8);
     if (step % 2 === 0) playOstTone(gain, lead, beatMs / 1000 * 0.72, track.wave, 0.72);
-    if (step % 4 === 2) playOstTone(gain, lead * 1.5, beatMs / 1000 * 0.45, 'triangle', 0.35, 5);
-    if (step % 2 === 0) playNoise(gain, 0.03, step % 8 === 0 ? 0.55 : 0.24);
+    if (step % 4 === 2) playOstTone(gain, lead * 1.5, beatMs / 1000 * 0.45, track.accentWave, 0.35, 5);
+    if (track.percussion === 'spark' && step % 2 === 0) playNoise(gain, 0.03, step % 8 === 0 ? 0.62 : 0.28);
+    if (track.percussion === 'pulse' && step % 4 === 0) playNoise(gain, 0.08, step % 8 === 0 ? 0.36 : 0.18);
     step += 1;
   }, beatMs);
   setActionFeedback(`OST de combate activa: ${track.name}.`, 'success');

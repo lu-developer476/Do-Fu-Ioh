@@ -1708,7 +1708,7 @@
     "shell": 500,
     "action_points": 10,
     "movement_points": 5,
-    "description": "Evolución de Gelatina obscura. Domina aquellos ambientes sombríos, inaccesibles tanto para jugadores como otros monstruos. Usa esa ventaja para ocultar sus ataques y mantener el sigilo.",
+    "description": "Evolución de la Gelatina obscura. Domina aquellos ambientes sombríos, inaccesibles tanto para jugadores como otros monstruos. Usa esa ventaja para ocultar sus ataques y mantener el sigilo.",
     "image": "public/images/gelatinas/evolutions/gelatina-obscura-real.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -1751,7 +1751,7 @@
     "shell": 500,
     "action_points": 10,
     "movement_points": 5,
-    "description": "Evolución de Gelatina de uva. Su madurez y energía frutal condensada se ha intensificado extremadamente en una masa más poderosa, volviéndola tan vistosa como peligrosa.",
+    "description": "Evolución de la Gelatina de uva. Su madurez y energía frutal condensada se ha intensificado extremadamente en una masa más poderosa, volviéndola tan vistosa como peligrosa.",
     "image": "public/images/gelatinas/evolutions/gelatina-uva-real.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [

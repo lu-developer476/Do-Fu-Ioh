@@ -191,12 +191,12 @@ class KitsuCatalogDataTests(SimpleTestCase):
                         f'Kitsnición {spell_suffix}',
                         f'Ilusión espectral {spell_suffix}',
                         f'Argucia del Kitsu {spell_suffix}',
-                    ] + (['Evolución'] if card['stage'] == 'fusion' else ['Fusión Kitsu'] if card['stage'] == 'base' and card['name'] != 'Kitsu silvestre' else []),
+                    ] + (['Evolución'] if card['stage'] == 'fusion' else ['Fusión Kitsu'] if card['stage'] == 'base' and card['name'] not in {'Kitsu silvestre', 'Kitsu androide'} else []),
                 )
-                self.assertEqual(len(card['spells']), 4 if (card['stage'] == 'fusion' or (card['stage'] == 'base' and card['name'] != 'Kitsu silvestre')) else 3)
+                self.assertEqual(len(card['spells']), 4 if (card['stage'] == 'fusion' or (card['stage'] == 'base' and card['name'] not in {'Kitsu silvestre', 'Kitsu androide'})) else 3)
                 if card['stage'] == 'fusion':
                     self.assertIn('Kitsu fusionado', card['spells'][3]['effect'])
-                if card['stage'] == 'base' and card['name'] != 'Kitsu silvestre':
+                if card['stage'] == 'base' and card['name'] not in {'Kitsu silvestre', 'Kitsu androide'}:
                     self.assertIn('Kitsus compatibles', card['spells'][3]['effect'])
                 for spell in card['spells']:
                     self.assertIn('cost', spell)
@@ -235,7 +235,7 @@ class PioCatalogDataTests(SimpleTestCase):
     def test_pio_base_components_include_fusion_spell(self):
         cards = {card['name']: card for card in serialized_cards_seed_data()}
 
-        for name in ['Pío albino', 'Pío negruzco', 'Pío anaranjado', 'Pío castaño', 'Pío cyborg']:
+        for name in ['Pío albino', 'Pío negruzco', 'Pío anaranjado', 'Pío castaño']:
             with self.subTest(card=name):
                 self.assertEqual(cards[name]['spells'][-1]['name'], 'Fusión Pío')
                 self.assertEqual(cards[name]['spells'][-1]['damage_min'], 0)
@@ -247,7 +247,7 @@ class PioCatalogDataTests(SimpleTestCase):
 
         expected = {
             'Pío cyborg': ('Píos', 'public/images/pios/base/pio-cyborg.png', 85, 105, 5, 5),
-            'Kitsu androide': ('Kitsus', 'public/images/kitsus/base/kitsu-androide.png', 1500, 300, 9, 6),
+            'Kitsu androide': ('Kitsus', 'core/images/kitsu-androide.svg', 1500, 300, 9, 6),
         }
 
         for name, (family, image, hp, shell, action_points, movement_points) in expected.items():
@@ -255,7 +255,7 @@ class PioCatalogDataTests(SimpleTestCase):
                 card = cards[name]
                 self.assertEqual(card['family'], family)
                 self.assertEqual(card['stage'], 'base')
-                self.assertEqual(card['image'], image.replace('public/', '/static/'))
+                self.assertEqual(card['image'], image.replace('public/', '/static/').replace('core/', '/static/core/'))
                 self.assertEqual(card['hp'], hp)
                 self.assertEqual(card['shell'], shell)
                 self.assertEqual(card['action_points'], action_points)

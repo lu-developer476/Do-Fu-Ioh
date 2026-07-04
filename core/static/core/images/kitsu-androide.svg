@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 768 768" role="img" aria-labelledby="title desc">
+  <title id="title">Kitsu androide</title>
+  <desc id="desc">Retrato estilizado de un Kitsu androide con placas metálicas y brillo verde.</desc>
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="38%" r="65%">
+      <stop offset="0" stop-color="#6ef5cf" stop-opacity=".45"/>
+      <stop offset=".48" stop-color="#214f48"/>
+      <stop offset="1" stop-color="#07110f"/>
+    </radialGradient>
+    <linearGradient id="metal" x1="12%" y1="6%" x2="88%" y2="92%">
+      <stop offset="0" stop-color="#f4ffe8"/>
+      <stop offset=".25" stop-color="#b7c8b6"/>
+      <stop offset=".5" stop-color="#6c837d"/>
+      <stop offset=".78" stop-color="#283f3d"/>
+      <stop offset="1" stop-color="#0c1717"/>
+    </linearGradient>
+    <linearGradient id="greenGlow" x1="0" x2="1">
+      <stop offset="0" stop-color="#bfff3d"/>
+      <stop offset="1" stop-color="#29f6c2"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="768" height="768" rx="64" fill="url(#bg)"/>
+  <g opacity=".32" stroke="#85ffd7" stroke-width="3" fill="none">
+    <path d="M85 161h126l53 53h241l54-54h124"/>
+    <path d="M103 602h135l44-44h204l45 45h133"/>
+    <path d="M91 253h84m418 0h84M76 504h99m418 0h99"/>
+  </g>
+  <g transform="translate(0 4)">
+    <path d="M193 335c-24-112 4-205 55-256 39 61 66 109 81 163" fill="#1b2b2a" stroke="#9db2a7" stroke-width="10"/>
+    <path d="M575 335c24-112-4-205-55-256-39 61-66 109-81 163" fill="#1b2b2a" stroke="#9db2a7" stroke-width="10"/>
+    <path d="M250 179c26 41 44 78 57 115l-72-10c-2-38 3-72 15-105zM518 179c-26 41-44 78-57 115l72-10c2-38-3-72-15-105z" fill="url(#greenGlow)" opacity=".78"/>
+    <path d="M174 377c0-128 93-220 210-220s210 92 210 220c0 142-87 253-210 253S174 519 174 377z" fill="url(#metal)" stroke="#d4dfce" stroke-width="12"/>
+    <path d="M256 346c29-41 71-63 128-63s99 22 128 63l-36 52H292z" fill="#172322" stroke="#8ea49d" stroke-width="8"/>
+    <path d="M239 438c36 28 76 42 145 42s109-14 145-42c-13 104-69 158-145 158s-132-54-145-158z" fill="#253936" stroke="#a3b4ad" stroke-width="8"/>
+    <path d="M302 372c15-22 44-31 78-26l-20 48h-58zM466 372c-15-22-44-31-78-26l20 48h58z" fill="#07120f" stroke="#c7ffc1" stroke-width="6"/>
+    <circle cx="337" cy="371" r="15" fill="#baff35" filter="url(#glow)"/>
+    <circle cx="431" cy="371" r="15" fill="#34ffd2" filter="url(#glow)"/>
+    <path d="M384 402l-29 48h58z" fill="#111b1a" stroke="#d9e7d2" stroke-width="7"/>
+    <path d="M323 516c35 22 87 22 122 0" fill="none" stroke="#0df0bc" stroke-width="10" stroke-linecap="round" filter="url(#glow)"/>
+    <path d="M199 413l-75 24c-28 9-46 35-44 65l4 69 98-48c25-12 41-37 41-65v-31zM569 413l75 24c28 9 46 35 44 65l-4 69-98-48c-25-12-41-37-41-65v-31z" fill="#526761" stroke="#c6d6ca" stroke-width="8"/>
+    <path d="M173 552c58 97 124 141 211 141s153-44 211-141c-56 34-121 52-211 52s-155-18-211-52z" fill="#121f1e" stroke="#7d938c" stroke-width="8"/>
+  </g>
+  <g fill="none" stroke="url(#greenGlow)" stroke-width="8" stroke-linecap="round" filter="url(#glow)">
+    <path d="M144 191l-48 48m576-48l-48 48M146 650l-58 35m592-35l-58 35"/>
+  </g>
+</svg>

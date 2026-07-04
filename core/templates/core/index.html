@@ -5,15 +5,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="csrf-token" content="{{ csrf_token }}" />
-  <title>Do-Fu-Ióh</title>
+  <title>•</title>
   <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}" />
   <link rel="stylesheet" href="{% static 'core/css/styles.css' %}" />
 </head>
 <body>
   <header class="site-navbar" aria-label="Navegación principal">
     <a class="navbar-brand" href="#arena" aria-label="Ir al tablero de combate">
-      <span class="brand-mark">D</span>
-      <span>Do-Fu-Ióh</span>
+      <span class="brand-mark">•</span>
     </a>
     <nav class="navbar-links" aria-label="Secciones de juego">
       <details class="nav-popover">
@@ -110,6 +109,7 @@
 
     <dialog id="match-setup-dialog" class="hand-choice-dialog">
       <form method="dialog" class="hand-choice-modal">
+        <button id="match-setup-close" class="ghost icon-close modal-close-x" value="cancel" aria-label="Cerrar">×</button>
         <p class="kicker">Nueva Partida</p>
         <h2>Configurá el estilo de juego</h2>
         <p>Elegí cuántas cartas iniciales usar, si querés una familia concreta o todo el bestiario, y si la mano será aleatoria o manual.</p>

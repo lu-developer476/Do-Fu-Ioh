@@ -374,6 +374,17 @@ class BackendlessModeTests(TestCase):
         self.assertIn('function renderBoard(', source)
         self.assertIn('function chooseSpellForAttack(', source)
 
+
+    def test_frontend_offers_two_distinct_combat_ost_tracks(self):
+        script = Path(__file__).resolve().parent / 'static' / 'core' / 'js' / 'game.js'
+        source = script.read_text(encoding='utf-8')
+
+        self.assertEqual(source.count("name: 'Forja de Wakfu Roto'"), 1)
+        self.assertEqual(source.count("name: 'Ritual del Bosque Profundo'"), 1)
+        self.assertNotIn("name: 'Brotes del Primer Duelo'", source)
+        self.assertIn("percussion === 'spark'", source)
+        self.assertIn("percussion === 'pulse'", source)
+
     def test_health_does_not_depend_on_database(self):
         response = self.client.get('/health/')
 

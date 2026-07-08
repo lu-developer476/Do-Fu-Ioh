@@ -451,7 +451,7 @@
     "action_points": 9,
     "movement_points": 6,
     "description": "Kitsu artificial reforzado con piezas tecnomágicas. Su núcleo mecánico estabiliza el Wakfu y convierte sus movimientos en patrones precisos y calculados.",
-    "image": "core/images/kitsu-androide.svg",
+    "image": "public/images/kitsus/base/kitsu-androide.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "hp_min": 1500,
     "hp_max": 1500,

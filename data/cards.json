@@ -2417,30 +2417,18 @@
     "shell": 180,
     "action_points": 5,
     "movement_points": 4,
-    "description": "Pequeñas versiones de los Blops que conservan su afinidad elemental: cada Biblop resiste con fuerza su propio elemento y es vulnerable al opuesto. Son monstruos ágiles de corto alcance que alternan Biblopétalo para atacar y Biblopimiento para recuperarse en combate.",
+    "description": "Pequeña invocación de la familia Blops. Estos biblops acompañan a los Blops de su color y hostigan a los aventureros con una bibloptería rápida de corto alcance.",
     "image": "public/images/blops/base/biblop-amarillo.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Biblopétalo",
-        "cost": 4,
-        "range_min": 1,
-        "range": 2,
-        "effect": "Inflige de 29 a 41 PdV de daño a corta distancia.",
-        "description": "Lanza un pétalo ofensivo a 1-2 casillas e inflige de 29 a 41 PdV de daño.",
-        "damage_min": 29,
-        "damage_max": 41
-      },
-      {
-        "name": "Biblopimiento",
-        "cost": 1,
-        "range": 1,
-        "effect": "Cura de 19 a 34 PdV en una casilla adyacente.",
-        "description": "Condimenta el combate con una cura cercana que restaura de 19 a 34 PdV.",
-        "healing_min": 19,
-        "healing_max": 34,
-        "damage_min": 19,
-        "damage_max": 34
+        "name": "Gran Bibloptería",
+        "cost": 2,
+        "range": "1-2",
+        "effect": "Inflige 20 a 55 PdV de daño al objetivo.",
+        "description": "Versión ligera de la Gran Bibloptería usada por los biblops a corto alcance.",
+        "damage_min": 20,
+        "damage_max": 55
       }
     ],
     "shell_min": 150,
@@ -2458,30 +2446,18 @@
     "shell": 180,
     "action_points": 5,
     "movement_points": 4,
-    "description": "Pequeñas versiones de los Blops que conservan su afinidad elemental: cada Biblop resiste con fuerza su propio elemento y es vulnerable al opuesto. Son monstruos ágiles de corto alcance que alternan Biblopétalo para atacar y Biblopimiento para recuperarse en combate.",
+    "description": "Pequeña invocación de la familia Blops. Estos biblops acompañan a los Blops de su color y hostigan a los aventureros con una bibloptería rápida de corto alcance.",
     "image": "public/images/blops/base/biblop-amarronado.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Biblopétalo",
-        "cost": 4,
-        "range_min": 1,
-        "range": 2,
-        "effect": "Inflige de 29 a 41 PdV de daño a corta distancia.",
-        "description": "Lanza un pétalo ofensivo a 1-2 casillas e inflige de 29 a 41 PdV de daño.",
-        "damage_min": 29,
-        "damage_max": 41
-      },
-      {
-        "name": "Biblopimiento",
-        "cost": 1,
-        "range": 1,
-        "effect": "Cura de 19 a 34 PdV en una casilla adyacente.",
-        "description": "Condimenta el combate con una cura cercana que restaura de 19 a 34 PdV.",
-        "healing_min": 19,
-        "healing_max": 34,
-        "damage_min": 19,
-        "damage_max": 34
+        "name": "Gran Bibloptería",
+        "cost": 2,
+        "range": "1-2",
+        "effect": "Inflige 20 a 55 PdV de daño al objetivo.",
+        "description": "Versión ligera de la Gran Bibloptería usada por los biblops a corto alcance.",
+        "damage_min": 20,
+        "damage_max": 55
       }
     ],
     "shell_min": 150,
@@ -2499,30 +2475,18 @@
     "shell": 180,
     "action_points": 5,
     "movement_points": 4,
-    "description": "Pequeñas versiones de los Blops que conservan su afinidad elemental: cada Biblop resiste con fuerza su propio elemento y es vulnerable al opuesto. Son monstruos ágiles de corto alcance que alternan Biblopétalo para atacar y Biblopimiento para recuperarse en combate.",
+    "description": "Pequeña invocación de la familia Blops. Estos biblops acompañan a los Blops de su color y hostigan a los aventureros con una bibloptería rápida de corto alcance.",
     "image": "public/images/blops/base/biblop-naranja.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Biblopétalo",
-        "cost": 4,
-        "range_min": 1,
-        "range": 2,
-        "effect": "Inflige de 29 a 41 PdV de daño a corta distancia.",
-        "description": "Lanza un pétalo ofensivo a 1-2 casillas e inflige de 29 a 41 PdV de daño.",
-        "damage_min": 29,
-        "damage_max": 41
-      },
-      {
-        "name": "Biblopimiento",
-        "cost": 1,
-        "range": 1,
-        "effect": "Cura de 19 a 34 PdV en una casilla adyacente.",
-        "description": "Condimenta el combate con una cura cercana que restaura de 19 a 34 PdV.",
-        "healing_min": 19,
-        "healing_max": 34,
-        "damage_min": 19,
-        "damage_max": 34
+        "name": "Gran Bibloptería",
+        "cost": 2,
+        "range": "1-2",
+        "effect": "Inflige 20 a 55 PdV de daño al objetivo.",
+        "description": "Versión ligera de la Gran Bibloptería usada por los biblops a corto alcance.",
+        "damage_min": 20,
+        "damage_max": 55
       }
     ],
     "shell_min": 150,
@@ -2540,30 +2504,18 @@
     "shell": 180,
     "action_points": 5,
     "movement_points": 4,
-    "description": "Pequeñas versiones de los Blops que conservan su afinidad elemental: cada Biblop resiste con fuerza su propio elemento y es vulnerable al opuesto. Son monstruos ágiles de corto alcance que alternan Biblopétalo para atacar y Biblopimiento para recuperarse en combate.",
+    "description": "Pequeña invocación de la familia Blops. Estos biblops acompañan a los Blops de su color y hostigan a los aventureros con una bibloptería rápida de corto alcance.",
     "image": "public/images/blops/base/biblop-opaco.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Biblopétalo",
-        "cost": 4,
-        "range_min": 1,
-        "range": 2,
-        "effect": "Inflige de 29 a 41 PdV de daño a corta distancia.",
-        "description": "Lanza un pétalo ofensivo a 1-2 casillas e inflige de 29 a 41 PdV de daño.",
-        "damage_min": 29,
-        "damage_max": 41
-      },
-      {
-        "name": "Biblopimiento",
-        "cost": 1,
-        "range": 1,
-        "effect": "Cura de 19 a 34 PdV en una casilla adyacente.",
-        "description": "Condimenta el combate con una cura cercana que restaura de 19 a 34 PdV.",
-        "healing_min": 19,
-        "healing_max": 34,
-        "damage_min": 19,
-        "damage_max": 34
+        "name": "Gran Bibloptería",
+        "cost": 2,
+        "range": "1-2",
+        "effect": "Inflige 20 a 55 PdV de daño al objetivo.",
+        "description": "Versión ligera de la Gran Bibloptería usada por los biblops a corto alcance.",
+        "damage_min": 20,
+        "damage_max": 55
       }
     ],
     "shell_min": 150,
@@ -2581,30 +2533,18 @@
     "shell": 180,
     "action_points": 5,
     "movement_points": 4,
-    "description": "Pequeñas versiones de los Blops que conservan su afinidad elemental: cada Biblop resiste con fuerza su propio elemento y es vulnerable al opuesto. Son monstruos ágiles de corto alcance que alternan Biblopétalo para atacar y Biblopimiento para recuperarse en combate.",
+    "description": "Pequeña invocación de la familia Blops. Estos biblops acompañan a los Blops de su color y hostigan a los aventureros con una bibloptería rápida de corto alcance.",
     "image": "public/images/blops/base/biblop-rosado.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Biblopétalo",
-        "cost": 4,
-        "range_min": 1,
-        "range": 2,
-        "effect": "Inflige de 29 a 41 PdV de daño a corta distancia.",
-        "description": "Lanza un pétalo ofensivo a 1-2 casillas e inflige de 29 a 41 PdV de daño.",
-        "damage_min": 29,
-        "damage_max": 41
-      },
-      {
-        "name": "Biblopimiento",
-        "cost": 1,
-        "range": 1,
-        "effect": "Cura de 19 a 34 PdV en una casilla adyacente.",
-        "description": "Condimenta el combate con una cura cercana que restaura de 19 a 34 PdV.",
-        "healing_min": 19,
-        "healing_max": 34,
-        "damage_min": 19,
-        "damage_max": 34
+        "name": "Gran Bibloptería",
+        "cost": 2,
+        "range": "1-2",
+        "effect": "Inflige 20 a 55 PdV de daño al objetivo.",
+        "description": "Versión ligera de la Gran Bibloptería usada por los biblops a corto alcance.",
+        "damage_min": 20,
+        "damage_max": 55
       }
     ],
     "shell_min": 150,
@@ -2622,30 +2562,18 @@
     "shell": 180,
     "action_points": 5,
     "movement_points": 4,
-    "description": "Pequeñas versiones de los Blops que conservan su afinidad elemental: cada Biblop resiste con fuerza su propio elemento y es vulnerable al opuesto. Son monstruos ágiles de corto alcance que alternan Biblopétalo para atacar y Biblopimiento para recuperarse en combate.",
+    "description": "Pequeña invocación de la familia Blops. Estos biblops acompañan a los Blops de su color y hostigan a los aventureros con una bibloptería rápida de corto alcance.",
     "image": "public/images/blops/base/biblop-transparente.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Biblopétalo",
-        "cost": 4,
-        "range_min": 1,
-        "range": 2,
-        "effect": "Inflige de 29 a 41 PdV de daño a corta distancia.",
-        "description": "Lanza un pétalo ofensivo a 1-2 casillas e inflige de 29 a 41 PdV de daño.",
-        "damage_min": 29,
-        "damage_max": 41
-      },
-      {
-        "name": "Biblopimiento",
-        "cost": 1,
-        "range": 1,
-        "effect": "Cura de 19 a 34 PdV en una casilla adyacente.",
-        "description": "Condimenta el combate con una cura cercana que restaura de 19 a 34 PdV.",
-        "healing_min": 19,
-        "healing_max": 34,
-        "damage_min": 19,
-        "damage_max": 34
+        "name": "Gran Bibloptería",
+        "cost": 2,
+        "range": "1-2",
+        "effect": "Inflige 20 a 55 PdV de daño al objetivo.",
+        "description": "Versión ligera de la Gran Bibloptería usada por los biblops a corto alcance.",
+        "damage_min": 20,
+        "damage_max": 55
       }
     ],
     "shell_min": 150,
@@ -2663,30 +2591,18 @@
     "shell": 180,
     "action_points": 5,
     "movement_points": 4,
-    "description": "Pequeñas versiones de los Blops que conservan su afinidad elemental: cada Biblop resiste con fuerza su propio elemento y es vulnerable al opuesto. Son monstruos ágiles de corto alcance que alternan Biblopétalo para atacar y Biblopimiento para recuperarse en combate.",
+    "description": "Pequeña invocación de la familia Blops. Estos biblops acompañan a los Blops de su color y hostigan a los aventureros con una bibloptería rápida de corto alcance.",
     "image": "public/images/blops/base/biblop-violeta.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Biblopétalo",
-        "cost": 4,
-        "range_min": 1,
-        "range": 2,
-        "effect": "Inflige de 29 a 41 PdV de daño a corta distancia.",
-        "description": "Lanza un pétalo ofensivo a 1-2 casillas e inflige de 29 a 41 PdV de daño.",
-        "damage_min": 29,
-        "damage_max": 41
-      },
-      {
-        "name": "Biblopimiento",
-        "cost": 1,
-        "range": 1,
-        "effect": "Cura de 19 a 34 PdV en una casilla adyacente.",
-        "description": "Condimenta el combate con una cura cercana que restaura de 19 a 34 PdV.",
-        "healing_min": 19,
-        "healing_max": 34,
-        "damage_min": 19,
-        "damage_max": 34
+        "name": "Gran Bibloptería",
+        "cost": 2,
+        "range": "1-2",
+        "effect": "Inflige 20 a 55 PdV de daño al objetivo.",
+        "description": "Versión ligera de la Gran Bibloptería usada por los biblops a corto alcance.",
+        "damage_min": 20,
+        "damage_max": 55
       }
     ],
     "shell_min": 150,
@@ -2698,33 +2614,69 @@
     "stage": "evolution",
     "level_min": 60,
     "level_max": 80,
-    "hp": 760,
-    "hp_min": 760,
-    "hp_max": 760,
-    "shell": 220,
-    "action_points": 8,
-    "movement_points": 5,
-    "description": "Carta provisional de Blop Amarillo. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "hp": 1365,
+    "hp_min": 1365,
+    "hp_max": 1365,
+    "shell": 570,
+    "action_points": 11,
+    "movement_points": 6,
+    "description": "Monstruo de la familia de los Blops, criaturas gelatinosas y coloridas del Mundo de los Doce que aparecen en la zona y la mazmorra de los Blops. Su combate gira alrededor de la presión a corta y media distancia: dañan con pétalos y biblopterías, reducen PM, ocultan aliados y pueden invocar biblops de apoyo.",
     "image": "public/images/blops/evolutions/blop-amarillo.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Ataque de Blop Amarillo",
-        "cost": 2,
-        "range": 1,
-        "effect": "Daño básico provisional de Blop Amarillo.",
-        "description": "Daño básico provisional de Blop Amarillo.",
-        "damage_min": 55,
-        "damage_max": 75
+        "name": "Biblopétalo",
+        "cost": 4,
+        "range": "1-2",
+        "effect": "Inflige 52 a 74 PdV de daño al objetivo.",
+        "description": "Ataque de pétalos a corta distancia que inflige 52 a 74 PdV de daño.",
+        "damage_min": 52,
+        "damage_max": 74
       },
       {
-        "name": "Impulso de Blop",
-        "cost": 3,
-        "range": 2,
-        "effect": "Hechizo provisional a distancia de la familia Blops.",
-        "description": "Hechizo provisional a distancia de la familia Blops.",
-        "damage_min": 45,
-        "damage_max": 65
+        "name": "Biblopición",
+        "cost": 4,
+        "range": 1,
+        "effect": "Invoca 1 biblop amarillo del color del lanzador. No evolucionable.",
+        "description": "Invoca un biblop amarillo de apoyo que no puede evolucionar.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Oculta Biblop",
+        "cost": 2,
+        "range": "2-6",
+        "effect": "Vuelve invisible al objetivo durante 2 turnos.",
+        "description": "Oculta a un aliado o invocación al volverlo invisible durante 2 turnos.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Biflo Koalak",
+        "cost": 5,
+        "range": "2-7",
+        "effect": "Quita 2 PM al objetivo. Usable cada 3 turnos.",
+        "description": "Traba al objetivo a distancia retirándole 2 PM. Reutilización: 3 turnos.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Bibloblopación",
+        "cost": 5,
+        "range": 1,
+        "effect": "Invoca 1 biblop aleatorio. No evolucionable. Usable cada 5 turnos.",
+        "description": "Invoca un biblop aleatorio que no puede evolucionar. Reutilización: 5 turnos.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Gran Bibloptería",
+        "cost": 4,
+        "range": "1-3",
+        "effect": "Inflige 42 a 175 PdV de daño al objetivo.",
+        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 42 y 175 PdV de daño.",
+        "damage_min": 42,
+        "damage_max": 175
       }
     ]
   },
@@ -2734,33 +2686,69 @@
     "stage": "evolution",
     "level_min": 60,
     "level_max": 80,
-    "hp": 760,
-    "hp_min": 760,
-    "hp_max": 760,
-    "shell": 220,
-    "action_points": 8,
-    "movement_points": 5,
-    "description": "Carta provisional de Blop Amarronado. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "hp": 1365,
+    "hp_min": 1365,
+    "hp_max": 1365,
+    "shell": 570,
+    "action_points": 11,
+    "movement_points": 6,
+    "description": "Monstruo de la familia de los Blops, criaturas gelatinosas y coloridas del Mundo de los Doce que aparecen en la zona y la mazmorra de los Blops. Su combate gira alrededor de la presión a corta y media distancia: dañan con pétalos y biblopterías, reducen PM, ocultan aliados y pueden invocar biblops de apoyo.",
     "image": "public/images/blops/evolutions/blop-amarronado.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Ataque de Blop Amarronado",
-        "cost": 2,
-        "range": 1,
-        "effect": "Daño básico provisional de Blop Amarronado.",
-        "description": "Daño básico provisional de Blop Amarronado.",
-        "damage_min": 55,
-        "damage_max": 75
+        "name": "Biblopétalo",
+        "cost": 4,
+        "range": "1-2",
+        "effect": "Inflige 52 a 74 PdV de daño al objetivo.",
+        "description": "Ataque de pétalos a corta distancia que inflige 52 a 74 PdV de daño.",
+        "damage_min": 52,
+        "damage_max": 74
       },
       {
-        "name": "Impulso de Blop",
-        "cost": 3,
-        "range": 2,
-        "effect": "Hechizo provisional a distancia de la familia Blops.",
-        "description": "Hechizo provisional a distancia de la familia Blops.",
-        "damage_min": 45,
-        "damage_max": 65
+        "name": "Biblopición",
+        "cost": 4,
+        "range": 1,
+        "effect": "Invoca 1 biblop amarronado del color del lanzador. No evolucionable.",
+        "description": "Invoca un biblop amarronado de apoyo que no puede evolucionar.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Oculta Biblop",
+        "cost": 2,
+        "range": "2-6",
+        "effect": "Vuelve invisible al objetivo durante 2 turnos.",
+        "description": "Oculta a un aliado o invocación al volverlo invisible durante 2 turnos.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Biflo Koalak",
+        "cost": 5,
+        "range": "2-7",
+        "effect": "Quita 2 PM al objetivo. Usable cada 3 turnos.",
+        "description": "Traba al objetivo a distancia retirándole 2 PM. Reutilización: 3 turnos.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Bibloblopación",
+        "cost": 5,
+        "range": 1,
+        "effect": "Invoca 1 biblop aleatorio. No evolucionable. Usable cada 5 turnos.",
+        "description": "Invoca un biblop aleatorio que no puede evolucionar. Reutilización: 5 turnos.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Gran Bibloptería",
+        "cost": 4,
+        "range": "1-3",
+        "effect": "Inflige 42 a 175 PdV de daño al objetivo.",
+        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 42 y 175 PdV de daño.",
+        "damage_min": 42,
+        "damage_max": 175
       }
     ]
   },
@@ -2770,33 +2758,69 @@
     "stage": "evolution",
     "level_min": 60,
     "level_max": 80,
-    "hp": 760,
-    "hp_min": 760,
-    "hp_max": 760,
-    "shell": 220,
-    "action_points": 8,
-    "movement_points": 5,
-    "description": "Carta provisional de Blop Naranja. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "hp": 1365,
+    "hp_min": 1365,
+    "hp_max": 1365,
+    "shell": 570,
+    "action_points": 11,
+    "movement_points": 6,
+    "description": "Monstruo de la familia de los Blops, criaturas gelatinosas y coloridas del Mundo de los Doce que aparecen en la zona y la mazmorra de los Blops. Su combate gira alrededor de la presión a corta y media distancia: dañan con pétalos y biblopterías, reducen PM, ocultan aliados y pueden invocar biblops de apoyo.",
     "image": "public/images/blops/evolutions/blop-naranja.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Ataque de Blop Naranja",
-        "cost": 2,
-        "range": 1,
-        "effect": "Daño básico provisional de Blop Naranja.",
-        "description": "Daño básico provisional de Blop Naranja.",
-        "damage_min": 55,
-        "damage_max": 75
+        "name": "Biblopétalo",
+        "cost": 4,
+        "range": "1-2",
+        "effect": "Inflige 52 a 74 PdV de daño al objetivo.",
+        "description": "Ataque de pétalos a corta distancia que inflige 52 a 74 PdV de daño.",
+        "damage_min": 52,
+        "damage_max": 74
       },
       {
-        "name": "Impulso de Blop",
-        "cost": 3,
-        "range": 2,
-        "effect": "Hechizo provisional a distancia de la familia Blops.",
-        "description": "Hechizo provisional a distancia de la familia Blops.",
-        "damage_min": 45,
-        "damage_max": 65
+        "name": "Biblopición",
+        "cost": 4,
+        "range": 1,
+        "effect": "Invoca 1 biblop naranja del color del lanzador. No evolucionable.",
+        "description": "Invoca un biblop naranja de apoyo que no puede evolucionar.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Oculta Biblop",
+        "cost": 2,
+        "range": "2-6",
+        "effect": "Vuelve invisible al objetivo durante 2 turnos.",
+        "description": "Oculta a un aliado o invocación al volverlo invisible durante 2 turnos.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Biflo Koalak",
+        "cost": 5,
+        "range": "2-7",
+        "effect": "Quita 2 PM al objetivo. Usable cada 3 turnos.",
+        "description": "Traba al objetivo a distancia retirándole 2 PM. Reutilización: 3 turnos.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Bibloblopación",
+        "cost": 5,
+        "range": 1,
+        "effect": "Invoca 1 biblop aleatorio. No evolucionable. Usable cada 5 turnos.",
+        "description": "Invoca un biblop aleatorio que no puede evolucionar. Reutilización: 5 turnos.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Gran Bibloptería",
+        "cost": 4,
+        "range": "1-3",
+        "effect": "Inflige 42 a 175 PdV de daño al objetivo.",
+        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 42 y 175 PdV de daño.",
+        "damage_min": 42,
+        "damage_max": 175
       }
     ]
   },
@@ -2806,33 +2830,69 @@
     "stage": "evolution",
     "level_min": 60,
     "level_max": 80,
-    "hp": 760,
-    "hp_min": 760,
-    "hp_max": 760,
-    "shell": 220,
-    "action_points": 8,
-    "movement_points": 5,
-    "description": "Carta provisional de Blop Opaco. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "hp": 1365,
+    "hp_min": 1365,
+    "hp_max": 1365,
+    "shell": 570,
+    "action_points": 11,
+    "movement_points": 6,
+    "description": "Monstruo de la familia de los Blops, criaturas gelatinosas y coloridas del Mundo de los Doce que aparecen en la zona y la mazmorra de los Blops. Su combate gira alrededor de la presión a corta y media distancia: dañan con pétalos y biblopterías, reducen PM, ocultan aliados y pueden invocar biblops de apoyo.",
     "image": "public/images/blops/evolutions/blop-opaco.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Ataque de Blop Opaco",
-        "cost": 2,
-        "range": 1,
-        "effect": "Daño básico provisional de Blop Opaco.",
-        "description": "Daño básico provisional de Blop Opaco.",
-        "damage_min": 55,
-        "damage_max": 75
+        "name": "Biblopétalo",
+        "cost": 4,
+        "range": "1-2",
+        "effect": "Inflige 52 a 74 PdV de daño al objetivo.",
+        "description": "Ataque de pétalos a corta distancia que inflige 52 a 74 PdV de daño.",
+        "damage_min": 52,
+        "damage_max": 74
       },
       {
-        "name": "Impulso de Blop",
-        "cost": 3,
-        "range": 2,
-        "effect": "Hechizo provisional a distancia de la familia Blops.",
-        "description": "Hechizo provisional a distancia de la familia Blops.",
-        "damage_min": 45,
-        "damage_max": 65
+        "name": "Biblopición",
+        "cost": 4,
+        "range": 1,
+        "effect": "Invoca 1 biblop opaco del color del lanzador. No evolucionable.",
+        "description": "Invoca un biblop opaco de apoyo que no puede evolucionar.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Oculta Biblop",
+        "cost": 2,
+        "range": "2-6",
+        "effect": "Vuelve invisible al objetivo durante 2 turnos.",
+        "description": "Oculta a un aliado o invocación al volverlo invisible durante 2 turnos.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Biflo Koalak",
+        "cost": 5,
+        "range": "2-7",
+        "effect": "Quita 2 PM al objetivo. Usable cada 3 turnos.",
+        "description": "Traba al objetivo a distancia retirándole 2 PM. Reutilización: 3 turnos.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Bibloblopación",
+        "cost": 5,
+        "range": 1,
+        "effect": "Invoca 1 biblop aleatorio. No evolucionable. Usable cada 5 turnos.",
+        "description": "Invoca un biblop aleatorio que no puede evolucionar. Reutilización: 5 turnos.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Gran Bibloptería",
+        "cost": 4,
+        "range": "1-3",
+        "effect": "Inflige 42 a 175 PdV de daño al objetivo.",
+        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 42 y 175 PdV de daño.",
+        "damage_min": 42,
+        "damage_max": 175
       }
     ]
   },
@@ -2842,33 +2902,69 @@
     "stage": "evolution",
     "level_min": 60,
     "level_max": 80,
-    "hp": 760,
-    "hp_min": 760,
-    "hp_max": 760,
-    "shell": 220,
-    "action_points": 8,
-    "movement_points": 5,
-    "description": "Carta provisional de Blop Rosado. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "hp": 1365,
+    "hp_min": 1365,
+    "hp_max": 1365,
+    "shell": 570,
+    "action_points": 11,
+    "movement_points": 6,
+    "description": "Monstruo de la familia de los Blops, criaturas gelatinosas y coloridas del Mundo de los Doce que aparecen en la zona y la mazmorra de los Blops. Su combate gira alrededor de la presión a corta y media distancia: dañan con pétalos y biblopterías, reducen PM, ocultan aliados y pueden invocar biblops de apoyo.",
     "image": "public/images/blops/evolutions/blop-rosado.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Ataque de Blop Rosado",
-        "cost": 2,
-        "range": 1,
-        "effect": "Daño básico provisional de Blop Rosado.",
-        "description": "Daño básico provisional de Blop Rosado.",
-        "damage_min": 55,
-        "damage_max": 75
+        "name": "Biblopétalo",
+        "cost": 4,
+        "range": "1-2",
+        "effect": "Inflige 52 a 74 PdV de daño al objetivo.",
+        "description": "Ataque de pétalos a corta distancia que inflige 52 a 74 PdV de daño.",
+        "damage_min": 52,
+        "damage_max": 74
       },
       {
-        "name": "Impulso de Blop",
-        "cost": 3,
-        "range": 2,
-        "effect": "Hechizo provisional a distancia de la familia Blops.",
-        "description": "Hechizo provisional a distancia de la familia Blops.",
-        "damage_min": 45,
-        "damage_max": 65
+        "name": "Biblopición",
+        "cost": 4,
+        "range": 1,
+        "effect": "Invoca 1 biblop rosado del color del lanzador. No evolucionable.",
+        "description": "Invoca un biblop rosado de apoyo que no puede evolucionar.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Oculta Biblop",
+        "cost": 2,
+        "range": "2-6",
+        "effect": "Vuelve invisible al objetivo durante 2 turnos.",
+        "description": "Oculta a un aliado o invocación al volverlo invisible durante 2 turnos.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Biflo Koalak",
+        "cost": 5,
+        "range": "2-7",
+        "effect": "Quita 2 PM al objetivo. Usable cada 3 turnos.",
+        "description": "Traba al objetivo a distancia retirándole 2 PM. Reutilización: 3 turnos.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Bibloblopación",
+        "cost": 5,
+        "range": 1,
+        "effect": "Invoca 1 biblop aleatorio. No evolucionable. Usable cada 5 turnos.",
+        "description": "Invoca un biblop aleatorio que no puede evolucionar. Reutilización: 5 turnos.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Gran Bibloptería",
+        "cost": 4,
+        "range": "1-3",
+        "effect": "Inflige 42 a 175 PdV de daño al objetivo.",
+        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 42 y 175 PdV de daño.",
+        "damage_min": 42,
+        "damage_max": 175
       }
     ]
   },
@@ -2878,33 +2974,69 @@
     "stage": "evolution",
     "level_min": 60,
     "level_max": 80,
-    "hp": 760,
-    "hp_min": 760,
-    "hp_max": 760,
-    "shell": 220,
-    "action_points": 8,
-    "movement_points": 5,
-    "description": "Carta provisional de Blop Transparente. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "hp": 1365,
+    "hp_min": 1365,
+    "hp_max": 1365,
+    "shell": 570,
+    "action_points": 11,
+    "movement_points": 6,
+    "description": "Monstruo de la familia de los Blops, criaturas gelatinosas y coloridas del Mundo de los Doce que aparecen en la zona y la mazmorra de los Blops. Su combate gira alrededor de la presión a corta y media distancia: dañan con pétalos y biblopterías, reducen PM, ocultan aliados y pueden invocar biblops de apoyo.",
     "image": "public/images/blops/evolutions/blop-transparente.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Ataque de Blop Transparente",
-        "cost": 2,
-        "range": 1,
-        "effect": "Daño básico provisional de Blop Transparente.",
-        "description": "Daño básico provisional de Blop Transparente.",
-        "damage_min": 55,
-        "damage_max": 75
+        "name": "Biblopétalo",
+        "cost": 4,
+        "range": "1-2",
+        "effect": "Inflige 52 a 74 PdV de daño al objetivo.",
+        "description": "Ataque de pétalos a corta distancia que inflige 52 a 74 PdV de daño.",
+        "damage_min": 52,
+        "damage_max": 74
       },
       {
-        "name": "Impulso de Blop",
-        "cost": 3,
-        "range": 2,
-        "effect": "Hechizo provisional a distancia de la familia Blops.",
-        "description": "Hechizo provisional a distancia de la familia Blops.",
-        "damage_min": 45,
-        "damage_max": 65
+        "name": "Biblopición",
+        "cost": 4,
+        "range": 1,
+        "effect": "Invoca 1 biblop transparente del color del lanzador. No evolucionable.",
+        "description": "Invoca un biblop transparente de apoyo que no puede evolucionar.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Oculta Biblop",
+        "cost": 2,
+        "range": "2-6",
+        "effect": "Vuelve invisible al objetivo durante 2 turnos.",
+        "description": "Oculta a un aliado o invocación al volverlo invisible durante 2 turnos.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Biflo Koalak",
+        "cost": 5,
+        "range": "2-7",
+        "effect": "Quita 2 PM al objetivo. Usable cada 3 turnos.",
+        "description": "Traba al objetivo a distancia retirándole 2 PM. Reutilización: 3 turnos.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Bibloblopación",
+        "cost": 5,
+        "range": 1,
+        "effect": "Invoca 1 biblop aleatorio. No evolucionable. Usable cada 5 turnos.",
+        "description": "Invoca un biblop aleatorio que no puede evolucionar. Reutilización: 5 turnos.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Gran Bibloptería",
+        "cost": 4,
+        "range": "1-3",
+        "effect": "Inflige 42 a 175 PdV de daño al objetivo.",
+        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 42 y 175 PdV de daño.",
+        "damage_min": 42,
+        "damage_max": 175
       }
     ]
   },
@@ -2914,33 +3046,69 @@
     "stage": "evolution",
     "level_min": 60,
     "level_max": 80,
-    "hp": 760,
-    "hp_min": 760,
-    "hp_max": 760,
-    "shell": 220,
-    "action_points": 8,
-    "movement_points": 5,
-    "description": "Carta provisional de Blop Violeta. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "hp": 1365,
+    "hp_min": 1365,
+    "hp_max": 1365,
+    "shell": 570,
+    "action_points": 11,
+    "movement_points": 6,
+    "description": "Monstruo de la familia de los Blops, criaturas gelatinosas y coloridas del Mundo de los Doce que aparecen en la zona y la mazmorra de los Blops. Su combate gira alrededor de la presión a corta y media distancia: dañan con pétalos y biblopterías, reducen PM, ocultan aliados y pueden invocar biblops de apoyo.",
     "image": "public/images/blops/evolutions/blop-violeta.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Ataque de Blop Violeta",
-        "cost": 2,
-        "range": 1,
-        "effect": "Daño básico provisional de Blop Violeta.",
-        "description": "Daño básico provisional de Blop Violeta.",
-        "damage_min": 55,
-        "damage_max": 75
+        "name": "Biblopétalo",
+        "cost": 4,
+        "range": "1-2",
+        "effect": "Inflige 52 a 74 PdV de daño al objetivo.",
+        "description": "Ataque de pétalos a corta distancia que inflige 52 a 74 PdV de daño.",
+        "damage_min": 52,
+        "damage_max": 74
       },
       {
-        "name": "Impulso de Blop",
-        "cost": 3,
-        "range": 2,
-        "effect": "Hechizo provisional a distancia de la familia Blops.",
-        "description": "Hechizo provisional a distancia de la familia Blops.",
-        "damage_min": 45,
-        "damage_max": 65
+        "name": "Biblopición",
+        "cost": 4,
+        "range": 1,
+        "effect": "Invoca 1 biblop violeta del color del lanzador. No evolucionable.",
+        "description": "Invoca un biblop violeta de apoyo que no puede evolucionar.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Oculta Biblop",
+        "cost": 2,
+        "range": "2-6",
+        "effect": "Vuelve invisible al objetivo durante 2 turnos.",
+        "description": "Oculta a un aliado o invocación al volverlo invisible durante 2 turnos.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Biflo Koalak",
+        "cost": 5,
+        "range": "2-7",
+        "effect": "Quita 2 PM al objetivo. Usable cada 3 turnos.",
+        "description": "Traba al objetivo a distancia retirándole 2 PM. Reutilización: 3 turnos.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Bibloblopación",
+        "cost": 5,
+        "range": 1,
+        "effect": "Invoca 1 biblop aleatorio. No evolucionable. Usable cada 5 turnos.",
+        "description": "Invoca un biblop aleatorio que no puede evolucionar. Reutilización: 5 turnos.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Gran Bibloptería",
+        "cost": 4,
+        "range": "1-3",
+        "effect": "Inflige 42 a 175 PdV de daño al objetivo.",
+        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 42 y 175 PdV de daño.",
+        "damage_min": 42,
+        "damage_max": 175
       }
     ]
   },

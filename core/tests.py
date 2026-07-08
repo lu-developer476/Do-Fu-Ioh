@@ -385,7 +385,7 @@ class SpellBalanceTests(SimpleTestCase):
             with self.subTest(card=card['name']):
                 self.assertGreater(len(card['spells']), 0)
                 for spell in card['spells']:
-                    if 'Fusión' in spell['name']:
+                    if 'Fusión' in spell['name'] or spell.get('non_damage') is True:
                         self.assertEqual(spell['damage_min'], 0, spell['name'])
                         self.assertEqual(spell['damage_max'], 0, spell['name'])
                     else:

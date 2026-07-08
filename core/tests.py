@@ -421,3 +421,28 @@ class BackendlessModeTests(TestCase):
 
         self.assertEqual(response.status_code, 410)
         self.assertIn('navegador', response.json()['message'])
+
+class NewMonsterImageCatalogTests(SimpleTestCase):
+    def test_new_monster_image_families_are_in_catalog(self):
+        cards = {card['image']: card for card in load_cards_seed_data()}
+        image_paths = sorted(str(path) for path in Path('public/images').glob('blops/**/*.png'))
+        image_paths += sorted(str(path) for path in Path('public/images').glob('jalatos/**/*.png'))
+        image_paths += sorted(str(path) for path in Path('public/images').glob('dragons/**/*.png'))
+
+        self.assertGreaterEqual(len(image_paths), 1)
+        for image_path in image_paths:
+            with self.subTest(image=image_path):
+                self.assertIn(image_path, cards)
+                self.assertIn(cards[image_path]['family'], {'Blops', 'Jalatos', 'Dragones'})
+                self.assertTrue(cards[image_path]['spells'])
+
+    def test_new_monster_images_resolve_to_static_urls(self):
+        cards = {
+            card['image']: card
+            for card in serialized_cards_seed_data()
+            if card['family'] in {'Blops', 'Jalatos', 'Dragones'}
+        }
+
+        for image_path, card in cards.items():
+            with self.subTest(card=card['name']):
+                self.assertTrue(image_path.startswith('/static/images/'))

@@ -2404,5 +2404,1193 @@
         "damage_max": 426
       }
     ]
+  },
+  {
+    "name": "Biblop Amarillo",
+    "family": "Blops",
+    "stage": "base",
+    "level_min": 20,
+    "level_max": 35,
+    "hp": 220,
+    "hp_min": 160,
+    "hp_max": 220,
+    "shell": 80,
+    "action_points": 6,
+    "movement_points": 4,
+    "description": "Carta provisional de Biblop Amarillo. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/blops/base/biblop-amarillo.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Biblop Amarillo",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Biblop Amarillo.",
+        "description": "Daño básico provisional de Biblop Amarillo.",
+        "damage_min": 28,
+        "damage_max": 38
+      },
+      {
+        "name": "Impulso de Blop",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Blops.",
+        "description": "Hechizo provisional a distancia de la familia Blops.",
+        "damage_min": 22,
+        "damage_max": 34
+      }
+    ]
+  },
+  {
+    "name": "Biblop Amarronado",
+    "family": "Blops",
+    "stage": "base",
+    "level_min": 20,
+    "level_max": 35,
+    "hp": 220,
+    "hp_min": 160,
+    "hp_max": 220,
+    "shell": 80,
+    "action_points": 6,
+    "movement_points": 4,
+    "description": "Carta provisional de Biblop Amarronado. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/blops/base/biblop-amarronado.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Biblop Amarronado",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Biblop Amarronado.",
+        "description": "Daño básico provisional de Biblop Amarronado.",
+        "damage_min": 28,
+        "damage_max": 38
+      },
+      {
+        "name": "Impulso de Blop",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Blops.",
+        "description": "Hechizo provisional a distancia de la familia Blops.",
+        "damage_min": 22,
+        "damage_max": 34
+      }
+    ]
+  },
+  {
+    "name": "Biblop Naranja",
+    "family": "Blops",
+    "stage": "base",
+    "level_min": 20,
+    "level_max": 35,
+    "hp": 220,
+    "hp_min": 160,
+    "hp_max": 220,
+    "shell": 80,
+    "action_points": 6,
+    "movement_points": 4,
+    "description": "Carta provisional de Biblop Naranja. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/blops/base/biblop-naranja.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Biblop Naranja",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Biblop Naranja.",
+        "description": "Daño básico provisional de Biblop Naranja.",
+        "damage_min": 28,
+        "damage_max": 38
+      },
+      {
+        "name": "Impulso de Blop",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Blops.",
+        "description": "Hechizo provisional a distancia de la familia Blops.",
+        "damage_min": 22,
+        "damage_max": 34
+      }
+    ]
+  },
+  {
+    "name": "Biblop Opaco",
+    "family": "Blops",
+    "stage": "base",
+    "level_min": 20,
+    "level_max": 35,
+    "hp": 220,
+    "hp_min": 160,
+    "hp_max": 220,
+    "shell": 80,
+    "action_points": 6,
+    "movement_points": 4,
+    "description": "Carta provisional de Biblop Opaco. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/blops/base/biblop-opaco.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Biblop Opaco",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Biblop Opaco.",
+        "description": "Daño básico provisional de Biblop Opaco.",
+        "damage_min": 28,
+        "damage_max": 38
+      },
+      {
+        "name": "Impulso de Blop",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Blops.",
+        "description": "Hechizo provisional a distancia de la familia Blops.",
+        "damage_min": 22,
+        "damage_max": 34
+      }
+    ]
+  },
+  {
+    "name": "Biblop Rosado",
+    "family": "Blops",
+    "stage": "base",
+    "level_min": 20,
+    "level_max": 35,
+    "hp": 220,
+    "hp_min": 160,
+    "hp_max": 220,
+    "shell": 80,
+    "action_points": 6,
+    "movement_points": 4,
+    "description": "Carta provisional de Biblop Rosado. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/blops/base/biblop-rosado.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Biblop Rosado",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Biblop Rosado.",
+        "description": "Daño básico provisional de Biblop Rosado.",
+        "damage_min": 28,
+        "damage_max": 38
+      },
+      {
+        "name": "Impulso de Blop",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Blops.",
+        "description": "Hechizo provisional a distancia de la familia Blops.",
+        "damage_min": 22,
+        "damage_max": 34
+      }
+    ]
+  },
+  {
+    "name": "Biblop Transparente",
+    "family": "Blops",
+    "stage": "base",
+    "level_min": 20,
+    "level_max": 35,
+    "hp": 220,
+    "hp_min": 160,
+    "hp_max": 220,
+    "shell": 80,
+    "action_points": 6,
+    "movement_points": 4,
+    "description": "Carta provisional de Biblop Transparente. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/blops/base/biblop-transparente.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Biblop Transparente",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Biblop Transparente.",
+        "description": "Daño básico provisional de Biblop Transparente.",
+        "damage_min": 28,
+        "damage_max": 38
+      },
+      {
+        "name": "Impulso de Blop",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Blops.",
+        "description": "Hechizo provisional a distancia de la familia Blops.",
+        "damage_min": 22,
+        "damage_max": 34
+      }
+    ]
+  },
+  {
+    "name": "Biblop Violeta",
+    "family": "Blops",
+    "stage": "base",
+    "level_min": 20,
+    "level_max": 35,
+    "hp": 220,
+    "hp_min": 160,
+    "hp_max": 220,
+    "shell": 80,
+    "action_points": 6,
+    "movement_points": 4,
+    "description": "Carta provisional de Biblop Violeta. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/blops/base/biblop-violeta.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Biblop Violeta",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Biblop Violeta.",
+        "description": "Daño básico provisional de Biblop Violeta.",
+        "damage_min": 28,
+        "damage_max": 38
+      },
+      {
+        "name": "Impulso de Blop",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Blops.",
+        "description": "Hechizo provisional a distancia de la familia Blops.",
+        "damage_min": 22,
+        "damage_max": 34
+      }
+    ]
+  },
+  {
+    "name": "Blop Amarillo",
+    "family": "Blops",
+    "stage": "evolution",
+    "level_min": 60,
+    "level_max": 80,
+    "hp": 760,
+    "hp_min": 760,
+    "hp_max": 760,
+    "shell": 220,
+    "action_points": 8,
+    "movement_points": 5,
+    "description": "Carta provisional de Blop Amarillo. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/blops/evolutions/blop-amarillo.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Blop Amarillo",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Blop Amarillo.",
+        "description": "Daño básico provisional de Blop Amarillo.",
+        "damage_min": 55,
+        "damage_max": 75
+      },
+      {
+        "name": "Impulso de Blop",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Blops.",
+        "description": "Hechizo provisional a distancia de la familia Blops.",
+        "damage_min": 45,
+        "damage_max": 65
+      }
+    ]
+  },
+  {
+    "name": "Blop Amarronado",
+    "family": "Blops",
+    "stage": "evolution",
+    "level_min": 60,
+    "level_max": 80,
+    "hp": 760,
+    "hp_min": 760,
+    "hp_max": 760,
+    "shell": 220,
+    "action_points": 8,
+    "movement_points": 5,
+    "description": "Carta provisional de Blop Amarronado. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/blops/evolutions/blop-amarronado.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Blop Amarronado",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Blop Amarronado.",
+        "description": "Daño básico provisional de Blop Amarronado.",
+        "damage_min": 55,
+        "damage_max": 75
+      },
+      {
+        "name": "Impulso de Blop",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Blops.",
+        "description": "Hechizo provisional a distancia de la familia Blops.",
+        "damage_min": 45,
+        "damage_max": 65
+      }
+    ]
+  },
+  {
+    "name": "Blop Naranja",
+    "family": "Blops",
+    "stage": "evolution",
+    "level_min": 60,
+    "level_max": 80,
+    "hp": 760,
+    "hp_min": 760,
+    "hp_max": 760,
+    "shell": 220,
+    "action_points": 8,
+    "movement_points": 5,
+    "description": "Carta provisional de Blop Naranja. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/blops/evolutions/blop-naranja.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Blop Naranja",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Blop Naranja.",
+        "description": "Daño básico provisional de Blop Naranja.",
+        "damage_min": 55,
+        "damage_max": 75
+      },
+      {
+        "name": "Impulso de Blop",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Blops.",
+        "description": "Hechizo provisional a distancia de la familia Blops.",
+        "damage_min": 45,
+        "damage_max": 65
+      }
+    ]
+  },
+  {
+    "name": "Blop Opaco",
+    "family": "Blops",
+    "stage": "evolution",
+    "level_min": 60,
+    "level_max": 80,
+    "hp": 760,
+    "hp_min": 760,
+    "hp_max": 760,
+    "shell": 220,
+    "action_points": 8,
+    "movement_points": 5,
+    "description": "Carta provisional de Blop Opaco. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/blops/evolutions/blop-opaco.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Blop Opaco",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Blop Opaco.",
+        "description": "Daño básico provisional de Blop Opaco.",
+        "damage_min": 55,
+        "damage_max": 75
+      },
+      {
+        "name": "Impulso de Blop",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Blops.",
+        "description": "Hechizo provisional a distancia de la familia Blops.",
+        "damage_min": 45,
+        "damage_max": 65
+      }
+    ]
+  },
+  {
+    "name": "Blop Rosado",
+    "family": "Blops",
+    "stage": "evolution",
+    "level_min": 60,
+    "level_max": 80,
+    "hp": 760,
+    "hp_min": 760,
+    "hp_max": 760,
+    "shell": 220,
+    "action_points": 8,
+    "movement_points": 5,
+    "description": "Carta provisional de Blop Rosado. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/blops/evolutions/blop-rosado.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Blop Rosado",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Blop Rosado.",
+        "description": "Daño básico provisional de Blop Rosado.",
+        "damage_min": 55,
+        "damage_max": 75
+      },
+      {
+        "name": "Impulso de Blop",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Blops.",
+        "description": "Hechizo provisional a distancia de la familia Blops.",
+        "damage_min": 45,
+        "damage_max": 65
+      }
+    ]
+  },
+  {
+    "name": "Blop Transparente",
+    "family": "Blops",
+    "stage": "evolution",
+    "level_min": 60,
+    "level_max": 80,
+    "hp": 760,
+    "hp_min": 760,
+    "hp_max": 760,
+    "shell": 220,
+    "action_points": 8,
+    "movement_points": 5,
+    "description": "Carta provisional de Blop Transparente. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/blops/evolutions/blop-transparente.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Blop Transparente",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Blop Transparente.",
+        "description": "Daño básico provisional de Blop Transparente.",
+        "damage_min": 55,
+        "damage_max": 75
+      },
+      {
+        "name": "Impulso de Blop",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Blops.",
+        "description": "Hechizo provisional a distancia de la familia Blops.",
+        "damage_min": 45,
+        "damage_max": 65
+      }
+    ]
+  },
+  {
+    "name": "Blop Violeta",
+    "family": "Blops",
+    "stage": "evolution",
+    "level_min": 60,
+    "level_max": 80,
+    "hp": 760,
+    "hp_min": 760,
+    "hp_max": 760,
+    "shell": 220,
+    "action_points": 8,
+    "movement_points": 5,
+    "description": "Carta provisional de Blop Violeta. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/blops/evolutions/blop-violeta.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Blop Violeta",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Blop Violeta.",
+        "description": "Daño básico provisional de Blop Violeta.",
+        "damage_min": 55,
+        "damage_max": 75
+      },
+      {
+        "name": "Impulso de Blop",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Blops.",
+        "description": "Hechizo provisional a distancia de la familia Blops.",
+        "damage_min": 45,
+        "damage_max": 65
+      }
+    ]
+  },
+  {
+    "name": "Blop Amarillo Real",
+    "family": "Blops",
+    "stage": "evolution",
+    "level_min": 60,
+    "level_max": 80,
+    "hp": 760,
+    "hp_min": 760,
+    "hp_max": 760,
+    "shell": 220,
+    "action_points": 8,
+    "movement_points": 5,
+    "description": "Carta provisional de Blop Amarillo Real. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/blops/royals/blop-amarillo-real.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Blop Amarillo Real",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Blop Amarillo Real.",
+        "description": "Daño básico provisional de Blop Amarillo Real.",
+        "damage_min": 55,
+        "damage_max": 75
+      },
+      {
+        "name": "Impulso de Blop",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Blops.",
+        "description": "Hechizo provisional a distancia de la familia Blops.",
+        "damage_min": 45,
+        "damage_max": 65
+      }
+    ]
+  },
+  {
+    "name": "Blop Amarronado Real",
+    "family": "Blops",
+    "stage": "evolution",
+    "level_min": 60,
+    "level_max": 80,
+    "hp": 760,
+    "hp_min": 760,
+    "hp_max": 760,
+    "shell": 220,
+    "action_points": 8,
+    "movement_points": 5,
+    "description": "Carta provisional de Blop Amarronado Real. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/blops/royals/blop-amarronado-real.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Blop Amarronado Real",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Blop Amarronado Real.",
+        "description": "Daño básico provisional de Blop Amarronado Real.",
+        "damage_min": 55,
+        "damage_max": 75
+      },
+      {
+        "name": "Impulso de Blop",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Blops.",
+        "description": "Hechizo provisional a distancia de la familia Blops.",
+        "damage_min": 45,
+        "damage_max": 65
+      }
+    ]
+  },
+  {
+    "name": "Blop Multiforme Real",
+    "family": "Blops",
+    "stage": "evolution",
+    "level_min": 60,
+    "level_max": 80,
+    "hp": 760,
+    "hp_min": 760,
+    "hp_max": 760,
+    "shell": 220,
+    "action_points": 8,
+    "movement_points": 5,
+    "description": "Carta provisional de Blop Multiforme Real. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/blops/royals/blop-multiforme-real.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Blop Multiforme Real",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Blop Multiforme Real.",
+        "description": "Daño básico provisional de Blop Multiforme Real.",
+        "damage_min": 55,
+        "damage_max": 75
+      },
+      {
+        "name": "Impulso de Blop",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Blops.",
+        "description": "Hechizo provisional a distancia de la familia Blops.",
+        "damage_min": 45,
+        "damage_max": 65
+      }
+    ]
+  },
+  {
+    "name": "Blop Naranja Real",
+    "family": "Blops",
+    "stage": "evolution",
+    "level_min": 60,
+    "level_max": 80,
+    "hp": 760,
+    "hp_min": 760,
+    "hp_max": 760,
+    "shell": 220,
+    "action_points": 8,
+    "movement_points": 5,
+    "description": "Carta provisional de Blop Naranja Real. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/blops/royals/blop-naranja-real.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Blop Naranja Real",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Blop Naranja Real.",
+        "description": "Daño básico provisional de Blop Naranja Real.",
+        "damage_min": 55,
+        "damage_max": 75
+      },
+      {
+        "name": "Impulso de Blop",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Blops.",
+        "description": "Hechizo provisional a distancia de la familia Blops.",
+        "damage_min": 45,
+        "damage_max": 65
+      }
+    ]
+  },
+  {
+    "name": "Blop Opaco Real",
+    "family": "Blops",
+    "stage": "evolution",
+    "level_min": 60,
+    "level_max": 80,
+    "hp": 760,
+    "hp_min": 760,
+    "hp_max": 760,
+    "shell": 220,
+    "action_points": 8,
+    "movement_points": 5,
+    "description": "Carta provisional de Blop Opaco Real. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/blops/royals/blop-opaco-real.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Blop Opaco Real",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Blop Opaco Real.",
+        "description": "Daño básico provisional de Blop Opaco Real.",
+        "damage_min": 55,
+        "damage_max": 75
+      },
+      {
+        "name": "Impulso de Blop",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Blops.",
+        "description": "Hechizo provisional a distancia de la familia Blops.",
+        "damage_min": 45,
+        "damage_max": 65
+      }
+    ]
+  },
+  {
+    "name": "Blop Rosado Real",
+    "family": "Blops",
+    "stage": "evolution",
+    "level_min": 60,
+    "level_max": 80,
+    "hp": 760,
+    "hp_min": 760,
+    "hp_max": 760,
+    "shell": 220,
+    "action_points": 8,
+    "movement_points": 5,
+    "description": "Carta provisional de Blop Rosado Real. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/blops/royals/blop-rosado-real.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Blop Rosado Real",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Blop Rosado Real.",
+        "description": "Daño básico provisional de Blop Rosado Real.",
+        "damage_min": 55,
+        "damage_max": 75
+      },
+      {
+        "name": "Impulso de Blop",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Blops.",
+        "description": "Hechizo provisional a distancia de la familia Blops.",
+        "damage_min": 45,
+        "damage_max": 65
+      }
+    ]
+  },
+  {
+    "name": "Blop Transparente Real",
+    "family": "Blops",
+    "stage": "evolution",
+    "level_min": 60,
+    "level_max": 80,
+    "hp": 760,
+    "hp_min": 760,
+    "hp_max": 760,
+    "shell": 220,
+    "action_points": 8,
+    "movement_points": 5,
+    "description": "Carta provisional de Blop Transparente Real. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/blops/royals/blop-transparente-real.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Blop Transparente Real",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Blop Transparente Real.",
+        "description": "Daño básico provisional de Blop Transparente Real.",
+        "damage_min": 55,
+        "damage_max": 75
+      },
+      {
+        "name": "Impulso de Blop",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Blops.",
+        "description": "Hechizo provisional a distancia de la familia Blops.",
+        "damage_min": 45,
+        "damage_max": 65
+      }
+    ]
+  },
+  {
+    "name": "Blop Violeta Real",
+    "family": "Blops",
+    "stage": "evolution",
+    "level_min": 60,
+    "level_max": 80,
+    "hp": 760,
+    "hp_min": 760,
+    "hp_max": 760,
+    "shell": 220,
+    "action_points": 8,
+    "movement_points": 5,
+    "description": "Carta provisional de Blop Violeta Real. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/blops/royals/blop-violeta-real.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Blop Violeta Real",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Blop Violeta Real.",
+        "description": "Daño básico provisional de Blop Violeta Real.",
+        "damage_min": 55,
+        "damage_max": 75
+      },
+      {
+        "name": "Impulso de Blop",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Blops.",
+        "description": "Hechizo provisional a distancia de la familia Blops.",
+        "damage_min": 45,
+        "damage_max": 65
+      }
+    ]
+  },
+  {
+    "name": "Dragohuevo De Morganita Despierto",
+    "family": "Dragones",
+    "stage": "evolution",
+    "level_min": 60,
+    "level_max": 80,
+    "hp": 760,
+    "hp_min": 760,
+    "hp_max": 760,
+    "shell": 220,
+    "action_points": 8,
+    "movement_points": 5,
+    "description": "Carta provisional de Dragohuevo De Morganita Despierto. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/dragons/dragohuevos/dragohuevo-de-morganita-despierto.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Dragohuevo De Morganita Despierto",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Dragohuevo De Morganita Despierto.",
+        "description": "Daño básico provisional de Dragohuevo De Morganita Despierto.",
+        "damage_min": 56,
+        "damage_max": 76
+      },
+      {
+        "name": "Impulso de Dragone",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Dragones.",
+        "description": "Hechizo provisional a distancia de la familia Dragones.",
+        "damage_min": 44,
+        "damage_max": 68
+      }
+    ]
+  },
+  {
+    "name": "Dragohuevo Morganita Inmaduro",
+    "family": "Dragones",
+    "stage": "base",
+    "level_min": 20,
+    "level_max": 35,
+    "hp": 220,
+    "hp_min": 160,
+    "hp_max": 220,
+    "shell": 80,
+    "action_points": 6,
+    "movement_points": 4,
+    "description": "Carta provisional de Dragohuevo Morganita Inmaduro. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/dragons/dragohuevos/dragohuevo-morganita-inmaduro.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Dragohuevo Morganita Inmaduro",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Dragohuevo Morganita Inmaduro.",
+        "description": "Daño básico provisional de Dragohuevo Morganita Inmaduro.",
+        "damage_min": 28,
+        "damage_max": 38
+      },
+      {
+        "name": "Impulso de Dragone",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Dragones.",
+        "description": "Hechizo provisional a distancia de la familia Dragones.",
+        "damage_min": 22,
+        "damage_max": 34
+      }
+    ]
+  },
+  {
+    "name": "Dragohuevo Morganita",
+    "family": "Dragones",
+    "stage": "base",
+    "level_min": 20,
+    "level_max": 35,
+    "hp": 220,
+    "hp_min": 160,
+    "hp_max": 220,
+    "shell": 80,
+    "action_points": 6,
+    "movement_points": 4,
+    "description": "Carta provisional de Dragohuevo Morganita. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/dragons/dragohuevos/dragohuevo-morganita.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Dragohuevo Morganita",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Dragohuevo Morganita.",
+        "description": "Daño básico provisional de Dragohuevo Morganita.",
+        "damage_min": 28,
+        "damage_max": 38
+      },
+      {
+        "name": "Impulso de Dragone",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Dragones.",
+        "description": "Hechizo provisional a distancia de la familia Dragones.",
+        "damage_min": 22,
+        "damage_max": 34
+      }
+    ]
+  },
+  {
+    "name": "Dragoss Amatista Despierto",
+    "family": "Dragones",
+    "stage": "evolution",
+    "level_min": 60,
+    "level_max": 80,
+    "hp": 760,
+    "hp_min": 760,
+    "hp_max": 760,
+    "shell": 220,
+    "action_points": 8,
+    "movement_points": 5,
+    "description": "Carta provisional de Dragoss Amatista Despierto. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/dragons/dragoss/dragoss-amatista-despierto.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Dragoss Amatista Despierto",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Dragoss Amatista Despierto.",
+        "description": "Daño básico provisional de Dragoss Amatista Despierto.",
+        "damage_min": 55,
+        "damage_max": 75
+      },
+      {
+        "name": "Impulso de Dragone",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Dragones.",
+        "description": "Hechizo provisional a distancia de la familia Dragones.",
+        "damage_min": 45,
+        "damage_max": 65
+      }
+    ]
+  },
+  {
+    "name": "Dragoss Amatista",
+    "family": "Dragones",
+    "stage": "base",
+    "level_min": 20,
+    "level_max": 35,
+    "hp": 220,
+    "hp_min": 160,
+    "hp_max": 220,
+    "shell": 80,
+    "action_points": 6,
+    "movement_points": 4,
+    "description": "Carta provisional de Dragoss Amatista. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/dragons/dragoss/dragoss-amatista.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Dragoss Amatista",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Dragoss Amatista.",
+        "description": "Daño básico provisional de Dragoss Amatista.",
+        "damage_min": 28,
+        "damage_max": 38
+      },
+      {
+        "name": "Impulso de Dragone",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Dragones.",
+        "description": "Hechizo provisional a distancia de la familia Dragones.",
+        "damage_min": 22,
+        "damage_max": 34
+      }
+    ]
+  },
+  {
+    "name": "Jalatin Azul",
+    "family": "Jalatos",
+    "stage": "base",
+    "level_min": 20,
+    "level_max": 35,
+    "hp": 220,
+    "hp_min": 160,
+    "hp_max": 220,
+    "shell": 80,
+    "action_points": 6,
+    "movement_points": 4,
+    "description": "Carta provisional de Jalatin Azul. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/jalatos/base/jalatin-azul.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Jalatin Azul",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Jalatin Azul.",
+        "description": "Daño básico provisional de Jalatin Azul.",
+        "damage_min": 28,
+        "damage_max": 38
+      },
+      {
+        "name": "Impulso de Jalato",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Jalatos.",
+        "description": "Hechizo provisional a distancia de la familia Jalatos.",
+        "damage_min": 22,
+        "damage_max": 34
+      }
+    ]
+  },
+  {
+    "name": "Jalato Castaño",
+    "family": "Jalatos",
+    "stage": "evolution",
+    "level_min": 60,
+    "level_max": 80,
+    "hp": 760,
+    "hp_min": 760,
+    "hp_max": 760,
+    "shell": 220,
+    "action_points": 8,
+    "movement_points": 5,
+    "description": "Carta provisional de Jalato Castaño. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/jalatos/evolutions/jalato-castaño.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Jalato Castaño",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Jalato Castaño.",
+        "description": "Daño básico provisional de Jalato Castaño.",
+        "damage_min": 55,
+        "damage_max": 75
+      },
+      {
+        "name": "Impulso de Jalato",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Jalatos.",
+        "description": "Hechizo provisional a distancia de la familia Jalatos.",
+        "damage_min": 45,
+        "damage_max": 65
+      }
+    ]
+  },
+  {
+    "name": "Jalato Gris",
+    "family": "Jalatos",
+    "stage": "evolution",
+    "level_min": 60,
+    "level_max": 80,
+    "hp": 760,
+    "hp_min": 760,
+    "hp_max": 760,
+    "shell": 220,
+    "action_points": 8,
+    "movement_points": 5,
+    "description": "Carta provisional de Jalato Gris. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/jalatos/evolutions/jalato-gris.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Jalato Gris",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Jalato Gris.",
+        "description": "Daño básico provisional de Jalato Gris.",
+        "damage_min": 55,
+        "damage_max": 75
+      },
+      {
+        "name": "Impulso de Jalato",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Jalatos.",
+        "description": "Hechizo provisional a distancia de la familia Jalatos.",
+        "damage_min": 45,
+        "damage_max": 65
+      }
+    ]
+  },
+  {
+    "name": "Jalato Azul Virreal",
+    "family": "Jalatos",
+    "stage": "evolution",
+    "level_min": 60,
+    "level_max": 80,
+    "hp": 760,
+    "hp_min": 760,
+    "hp_max": 760,
+    "shell": 220,
+    "action_points": 8,
+    "movement_points": 5,
+    "description": "Carta provisional de Jalato Azul Virreal. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/jalatos/royals/jalato-azul-virreal.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Jalato Azul Virreal",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Jalato Azul Virreal.",
+        "description": "Daño básico provisional de Jalato Azul Virreal.",
+        "damage_min": 55,
+        "damage_max": 75
+      },
+      {
+        "name": "Impulso de Jalato",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Jalatos.",
+        "description": "Hechizo provisional a distancia de la familia Jalatos.",
+        "damage_min": 45,
+        "damage_max": 65
+      }
+    ]
+  },
+  {
+    "name": "Jalato Castaño Virreal",
+    "family": "Jalatos",
+    "stage": "evolution",
+    "level_min": 60,
+    "level_max": 80,
+    "hp": 760,
+    "hp_min": 760,
+    "hp_max": 760,
+    "shell": 220,
+    "action_points": 8,
+    "movement_points": 5,
+    "description": "Carta provisional de Jalato Castaño Virreal. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/jalatos/royals/jalato-castaño-virreal.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Jalato Castaño Virreal",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Jalato Castaño Virreal.",
+        "description": "Daño básico provisional de Jalato Castaño Virreal.",
+        "damage_min": 55,
+        "damage_max": 75
+      },
+      {
+        "name": "Impulso de Jalato",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Jalatos.",
+        "description": "Hechizo provisional a distancia de la familia Jalatos.",
+        "damage_min": 45,
+        "damage_max": 65
+      }
+    ]
+  },
+  {
+    "name": "Jalato Negro Real",
+    "family": "Jalatos",
+    "stage": "evolution",
+    "level_min": 60,
+    "level_max": 80,
+    "hp": 760,
+    "hp_min": 760,
+    "hp_max": 760,
+    "shell": 220,
+    "action_points": 8,
+    "movement_points": 5,
+    "description": "Carta provisional de Jalato Negro Real. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "image": "public/images/jalatos/royals/jalato-negro-real.png",
+    "image_fallback": "core/img/placeholders/card-placeholder.svg",
+    "spells": [
+      {
+        "name": "Ataque de Jalato Negro Real",
+        "cost": 2,
+        "range": 1,
+        "effect": "Daño básico provisional de Jalato Negro Real.",
+        "description": "Daño básico provisional de Jalato Negro Real.",
+        "damage_min": 55,
+        "damage_max": 75
+      },
+      {
+        "name": "Impulso de Jalato",
+        "cost": 3,
+        "range": 2,
+        "effect": "Hechizo provisional a distancia de la familia Jalatos.",
+        "description": "Hechizo provisional a distancia de la familia Jalatos.",
+        "damage_min": 45,
+        "damage_max": 65
+      }
+    ]
   }
 ]

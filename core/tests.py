@@ -330,13 +330,62 @@ class GelatinaCatalogDataTests(SimpleTestCase):
                 self.assertEqual([spell['name'] for spell in spells], spell_names)
 
 
+class BlopCatalogDataTests(SimpleTestCase):
+    def test_common_blops_match_reference_stats_and_spells(self):
+        cards = {card['name']: card for card in load_cards_seed_data()}
+        names = [
+            'Blop Amarillo',
+            'Blop Amarronado',
+            'Blop Naranja',
+            'Blop Opaco',
+            'Blop Rosado',
+            'Blop Transparente',
+            'Blop Violeta',
+        ]
+
+        for name in names:
+            with self.subTest(card=name):
+                card = cards[name]
+                self.assertEqual(card['hp'], 1365)
+                self.assertEqual(card['hp_min'], 1365)
+                self.assertEqual(card['hp_max'], 1365)
+                self.assertEqual(card['shell'], 570)
+                self.assertEqual(card['action_points'], 11)
+                self.assertEqual(card['movement_points'], 6)
+                self.assertEqual(
+                    [spell['name'] for spell in card['spells']],
+                    [
+                        'Biblopétalo',
+                        'Biblopición',
+                        'Oculta Biblop',
+                        'Biflo Koalak',
+                        'Bibloblopación',
+                        'Gran Bibloptería',
+                    ],
+                )
+
+    def test_biblops_use_short_range_biblopteria(self):
+        cards = {card['name']: card for card in load_cards_seed_data()}
+
+        for name, card in cards.items():
+            if not name.startswith('Biblop '):
+                continue
+            with self.subTest(card=name):
+                self.assertEqual(len(card['spells']), 1)
+                self.assertEqual(card['spells'][0]['name'], 'Gran Bibloptería')
+                self.assertEqual(card['spells'][0]['cost'], 2)
+                self.assertEqual(card['spells'][0]['range'], '1-2')
+                self.assertEqual(card['spells'][0]['damage_min'], 20)
+                self.assertEqual(card['spells'][0]['damage_max'], 55)
+
+
 class SpellBalanceTests(SimpleTestCase):
     def test_every_catalog_spell_has_positive_damage(self):
         for card in load_cards_seed_data():
             with self.subTest(card=card['name']):
                 self.assertGreater(len(card['spells']), 0)
                 for spell in card['spells']:
-                    if 'Fusión' in spell['name']:
+                    if 'Fusión' in spell['name'] or spell.get('non_damage') is True:
                         self.assertEqual(spell['damage_min'], 0, spell['name'])
                         self.assertEqual(spell['damage_max'], 0, spell['name'])
                     else:

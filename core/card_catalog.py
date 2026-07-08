@@ -180,7 +180,12 @@ def _normalized_card_payload(item):
     for index, spell in enumerate(payload['spells'], start=1):
         if not isinstance(spell, dict):
             raise ValueError(f'spells[{index}] debe ser un objeto')
-        allows_zero_damage = 'fusión' in str(spell.get('name', '')).lower() or 'fusion' in str(spell.get('name', '')).lower()
+        spell_name = str(spell.get('name', '')).lower()
+        allows_zero_damage = (
+            'fusión' in spell_name
+            or 'fusion' in spell_name
+            or spell.get('non_damage') is True
+        )
         for field in ('damage_min', 'damage_max'):
             if not isinstance(spell.get(field), int) or spell[field] < 0 or (spell[field] == 0 and not allows_zero_damage):
                 raise ValueError(f'spells[{index}].{field} debe ser un entero mayor a 0 salvo hechizos de fusión')

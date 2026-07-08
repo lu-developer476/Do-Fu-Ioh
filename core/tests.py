@@ -247,7 +247,7 @@ class PioCatalogDataTests(SimpleTestCase):
 
         expected = {
             'Pío cyborg': ('Píos', 'public/images/pios/base/pio-cyborg.png', 85, 105, 5, 5),
-            'Kitsu androide': ('Kitsus', 'core/images/kitsu-androide.svg', 1500, 300, 9, 6),
+            'Kitsu androide': ('Kitsus', 'public/images/kitsus/base/kitsu-androide.png', 1500, 300, 9, 6),
         }
 
         for name, (family, image, hp, shell, action_points, movement_points) in expected.items():

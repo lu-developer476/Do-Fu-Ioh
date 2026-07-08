@@ -2417,7 +2417,7 @@
     "shell": 80,
     "action_points": 6,
     "movement_points": 4,
-    "description": "Carta provisional de Biblop Amarillo. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "description": "Los Biblops son la forma joven de la familia Blops: masas gelatinosas de las llanuras que hostigan con golpes simples y sirven como antesala de variantes más robustas.",
     "image": "public/images/blops/base/biblop-amarillo.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -2453,7 +2453,7 @@
     "shell": 80,
     "action_points": 6,
     "movement_points": 4,
-    "description": "Carta provisional de Biblop Amarronado. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "description": "Los Biblops son la forma joven de la familia Blops: masas gelatinosas de las llanuras que hostigan con golpes simples y sirven como antesala de variantes más robustas.",
     "image": "public/images/blops/base/biblop-amarronado.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -2489,7 +2489,7 @@
     "shell": 80,
     "action_points": 6,
     "movement_points": 4,
-    "description": "Carta provisional de Biblop Naranja. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "description": "Los Biblops son la forma joven de la familia Blops: masas gelatinosas de las llanuras que hostigan con golpes simples y sirven como antesala de variantes más robustas.",
     "image": "public/images/blops/base/biblop-naranja.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -2525,7 +2525,7 @@
     "shell": 80,
     "action_points": 6,
     "movement_points": 4,
-    "description": "Carta provisional de Biblop Opaco. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "description": "Los Biblops son la forma joven de la familia Blops: masas gelatinosas de las llanuras que hostigan con golpes simples y sirven como antesala de variantes más robustas.",
     "image": "public/images/blops/base/biblop-opaco.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -2561,7 +2561,7 @@
     "shell": 80,
     "action_points": 6,
     "movement_points": 4,
-    "description": "Carta provisional de Biblop Rosado. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "description": "Los Biblops son la forma joven de la familia Blops: masas gelatinosas de las llanuras que hostigan con golpes simples y sirven como antesala de variantes más robustas.",
     "image": "public/images/blops/base/biblop-rosado.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -2597,7 +2597,7 @@
     "shell": 80,
     "action_points": 6,
     "movement_points": 4,
-    "description": "Carta provisional de Biblop Transparente. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "description": "Los Biblops son la forma joven de la familia Blops: masas gelatinosas de las llanuras que hostigan con golpes simples y sirven como antesala de variantes más robustas.",
     "image": "public/images/blops/base/biblop-transparente.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -2633,7 +2633,7 @@
     "shell": 80,
     "action_points": 6,
     "movement_points": 4,
-    "description": "Carta provisional de Biblop Violeta. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "description": "Los Biblops son la forma joven de la familia Blops: masas gelatinosas de las llanuras que hostigan con golpes simples y sirven como antesala de variantes más robustas.",
     "image": "public/images/blops/base/biblop-violeta.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -2669,7 +2669,7 @@
     "shell": 220,
     "action_points": 8,
     "movement_points": 5,
-    "description": "Carta provisional de Blop Amarillo. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "description": "Los Blops son criaturas gelatinosas de las llanuras con afinidad elemental por color. Avanzan en grupo, combinan presión a distancia con empujes cortos y preparan el terreno para sus versiones reales.",
     "image": "public/images/blops/evolutions/blop-amarillo.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -2690,6 +2690,15 @@
         "description": "Hechizo provisional a distancia de la familia Blops.",
         "damage_min": 45,
         "damage_max": 65
+      },
+      {
+        "name": "Memoria de Blop",
+        "cost": 1,
+        "range": 0,
+        "effect": "Cura el 10% de la vida restante del monstruo.",
+        "description": "Hechizo compartido por toda la familia Blops que recupera una parte de la vitalidad restante del lanzador.",
+        "damage_min": 1,
+        "damage_max": 1
       }
     ]
   },
@@ -2705,7 +2714,7 @@
     "shell": 220,
     "action_points": 8,
     "movement_points": 5,
-    "description": "Carta provisional de Blop Amarronado. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "description": "Los Blops son criaturas gelatinosas de las llanuras con afinidad elemental por color. Avanzan en grupo, combinan presión a distancia con empujes cortos y preparan el terreno para sus versiones reales.",
     "image": "public/images/blops/evolutions/blop-amarronado.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -2726,6 +2735,15 @@
         "description": "Hechizo provisional a distancia de la familia Blops.",
         "damage_min": 45,
         "damage_max": 65
+      },
+      {
+        "name": "Memoria de Blop",
+        "cost": 1,
+        "range": 0,
+        "effect": "Cura el 10% de la vida restante del monstruo.",
+        "description": "Hechizo compartido por toda la familia Blops que recupera una parte de la vitalidad restante del lanzador.",
+        "damage_min": 1,
+        "damage_max": 1
       }
     ]
   },
@@ -2741,7 +2759,7 @@
     "shell": 220,
     "action_points": 8,
     "movement_points": 5,
-    "description": "Carta provisional de Blop Naranja. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "description": "Los Blops son criaturas gelatinosas de las llanuras con afinidad elemental por color. Avanzan en grupo, combinan presión a distancia con empujes cortos y preparan el terreno para sus versiones reales.",
     "image": "public/images/blops/evolutions/blop-naranja.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -2762,6 +2780,15 @@
         "description": "Hechizo provisional a distancia de la familia Blops.",
         "damage_min": 45,
         "damage_max": 65
+      },
+      {
+        "name": "Memoria de Blop",
+        "cost": 1,
+        "range": 0,
+        "effect": "Cura el 10% de la vida restante del monstruo.",
+        "description": "Hechizo compartido por toda la familia Blops que recupera una parte de la vitalidad restante del lanzador.",
+        "damage_min": 1,
+        "damage_max": 1
       }
     ]
   },
@@ -2777,7 +2804,7 @@
     "shell": 220,
     "action_points": 8,
     "movement_points": 5,
-    "description": "Carta provisional de Blop Opaco. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "description": "Los Blops son criaturas gelatinosas de las llanuras con afinidad elemental por color. Avanzan en grupo, combinan presión a distancia con empujes cortos y preparan el terreno para sus versiones reales.",
     "image": "public/images/blops/evolutions/blop-opaco.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -2798,6 +2825,15 @@
         "description": "Hechizo provisional a distancia de la familia Blops.",
         "damage_min": 45,
         "damage_max": 65
+      },
+      {
+        "name": "Memoria de Blop",
+        "cost": 1,
+        "range": 0,
+        "effect": "Cura el 10% de la vida restante del monstruo.",
+        "description": "Hechizo compartido por toda la familia Blops que recupera una parte de la vitalidad restante del lanzador.",
+        "damage_min": 1,
+        "damage_max": 1
       }
     ]
   },
@@ -2813,7 +2849,7 @@
     "shell": 220,
     "action_points": 8,
     "movement_points": 5,
-    "description": "Carta provisional de Blop Rosado. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "description": "Los Blops son criaturas gelatinosas de las llanuras con afinidad elemental por color. Avanzan en grupo, combinan presión a distancia con empujes cortos y preparan el terreno para sus versiones reales.",
     "image": "public/images/blops/evolutions/blop-rosado.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -2834,6 +2870,15 @@
         "description": "Hechizo provisional a distancia de la familia Blops.",
         "damage_min": 45,
         "damage_max": 65
+      },
+      {
+        "name": "Memoria de Blop",
+        "cost": 1,
+        "range": 0,
+        "effect": "Cura el 10% de la vida restante del monstruo.",
+        "description": "Hechizo compartido por toda la familia Blops que recupera una parte de la vitalidad restante del lanzador.",
+        "damage_min": 1,
+        "damage_max": 1
       }
     ]
   },
@@ -2849,7 +2894,7 @@
     "shell": 220,
     "action_points": 8,
     "movement_points": 5,
-    "description": "Carta provisional de Blop Transparente. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "description": "Los Blops son criaturas gelatinosas de las llanuras con afinidad elemental por color. Avanzan en grupo, combinan presión a distancia con empujes cortos y preparan el terreno para sus versiones reales.",
     "image": "public/images/blops/evolutions/blop-transparente.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -2870,6 +2915,15 @@
         "description": "Hechizo provisional a distancia de la familia Blops.",
         "damage_min": 45,
         "damage_max": 65
+      },
+      {
+        "name": "Memoria de Blop",
+        "cost": 1,
+        "range": 0,
+        "effect": "Cura el 10% de la vida restante del monstruo.",
+        "description": "Hechizo compartido por toda la familia Blops que recupera una parte de la vitalidad restante del lanzador.",
+        "damage_min": 1,
+        "damage_max": 1
       }
     ]
   },
@@ -2885,7 +2939,7 @@
     "shell": 220,
     "action_points": 8,
     "movement_points": 5,
-    "description": "Carta provisional de Blop Violeta. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "description": "Los Blops son criaturas gelatinosas de las llanuras con afinidad elemental por color. Avanzan en grupo, combinan presión a distancia con empujes cortos y preparan el terreno para sus versiones reales.",
     "image": "public/images/blops/evolutions/blop-violeta.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -2906,6 +2960,15 @@
         "description": "Hechizo provisional a distancia de la familia Blops.",
         "damage_min": 45,
         "damage_max": 65
+      },
+      {
+        "name": "Memoria de Blop",
+        "cost": 1,
+        "range": 0,
+        "effect": "Cura el 10% de la vida restante del monstruo.",
+        "description": "Hechizo compartido por toda la familia Blops que recupera una parte de la vitalidad restante del lanzador.",
+        "damage_min": 1,
+        "damage_max": 1
       }
     ]
   },
@@ -2921,7 +2984,7 @@
     "shell": 220,
     "action_points": 8,
     "movement_points": 5,
-    "description": "Carta provisional de Blop Amarillo Real. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "description": "Los Blops Reales son guardianes de mazmorra de la raza Blops. Conservan la identidad elemental de su color, pegan con más contundencia que los Blops comunes y representan el escalón jefe de la familia.",
     "image": "public/images/blops/royals/blop-amarillo-real.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -2942,6 +3005,15 @@
         "description": "Hechizo provisional a distancia de la familia Blops.",
         "damage_min": 45,
         "damage_max": 65
+      },
+      {
+        "name": "Memoria de Blop",
+        "cost": 1,
+        "range": 0,
+        "effect": "Cura el 10% de la vida restante del monstruo.",
+        "description": "Hechizo compartido por toda la familia Blops que recupera una parte de la vitalidad restante del lanzador.",
+        "damage_min": 1,
+        "damage_max": 1
       }
     ]
   },
@@ -2957,7 +3029,7 @@
     "shell": 220,
     "action_points": 8,
     "movement_points": 5,
-    "description": "Carta provisional de Blop Amarronado Real. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "description": "Los Blops Reales son guardianes de mazmorra de la raza Blops. Conservan la identidad elemental de su color, pegan con más contundencia que los Blops comunes y representan el escalón jefe de la familia.",
     "image": "public/images/blops/royals/blop-amarronado-real.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -2978,6 +3050,15 @@
         "description": "Hechizo provisional a distancia de la familia Blops.",
         "damage_min": 45,
         "damage_max": 65
+      },
+      {
+        "name": "Memoria de Blop",
+        "cost": 1,
+        "range": 0,
+        "effect": "Cura el 10% de la vida restante del monstruo.",
+        "description": "Hechizo compartido por toda la familia Blops que recupera una parte de la vitalidad restante del lanzador.",
+        "damage_min": 1,
+        "damage_max": 1
       }
     ]
   },
@@ -2985,35 +3066,54 @@
     "name": "Blop Multiforme Real",
     "family": "Blops",
     "stage": "evolution",
-    "level_min": 60,
-    "level_max": 80,
-    "hp": 760,
-    "hp_min": 760,
-    "hp_max": 760,
-    "shell": 220,
-    "action_points": 8,
-    "movement_points": 5,
-    "description": "Carta provisional de Blop Multiforme Real. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "level_min": 120,
+    "level_max": 120,
+    "hp": 11700,
+    "hp_min": 11700,
+    "hp_max": 11700,
+    "shell": 6000,
+    "action_points": 10,
+    "movement_points": 2,
+    "description": "El Blop Multiforme Real concentra la familia Blops en un solo jefe: es un guardián resistente que alterna autosupervivencia, mejora de movilidad y potencia, daño en área con estado Incurable y ataques a distancia. Toda la familia comparte Memoria de Blop, una cura basada en la vida restante.",
     "image": "public/images/blops/royals/blop-multiforme-real.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Ataque de Blop Multiforme Real",
-        "cost": 2,
-        "range": 1,
-        "effect": "Daño básico provisional de Blop Multiforme Real.",
-        "description": "Daño básico provisional de Blop Multiforme Real.",
-        "damage_min": 55,
-        "damage_max": 75
+        "name": "Blopacificación",
+        "cost": 3,
+        "range": 0,
+        "effect": "Otorga 2 PM y 300% de potencia durante 2 turnos. Usable 1 vez cada 3 turnos.",
+        "description": "El Blop Multiforme Real se potencia y gana movilidad para reposicionarse antes de presionar al equipo rival.",
+        "damage_min": 1,
+        "damage_max": 1
       },
       {
-        "name": "Impulso de Blop",
-        "cost": 3,
-        "range": 2,
-        "effect": "Hechizo provisional a distancia de la familia Blops.",
-        "description": "Hechizo provisional a distancia de la familia Blops.",
-        "damage_min": 45,
-        "damage_max": 65
+        "name": "Blopagación",
+        "cost": 8,
+        "range": 0,
+        "effect": "Otorga el estado Incurable por 1 turno y genera daño en radio de 1 casilla. Usable 2 veces por turno.",
+        "description": "Explosión cercana que castiga a los objetivos agrupados alrededor del lanzador e impide curaciones durante el turno afectado.",
+        "damage_min": 141,
+        "damage_max": 163
+      },
+      {
+        "name": "Blovocación",
+        "cost": 6,
+        "range": 4,
+        "range_min": 1,
+        "effect": "Inflige daño a distancia. Usable 2 veces por turno.",
+        "description": "Ataque de alcance medio con daño variable que permite al jefe presionar sin entrar necesariamente en contacto.",
+        "damage_min": 95,
+        "damage_max": 289
+      },
+      {
+        "name": "Memoria de Blop",
+        "cost": 1,
+        "range": 0,
+        "effect": "Cura el 10% de la vida restante del monstruo.",
+        "description": "Hechizo compartido por toda la familia Blops que recupera una parte de la vitalidad restante del lanzador.",
+        "damage_min": 1,
+        "damage_max": 1
       }
     ]
   },
@@ -3029,7 +3129,7 @@
     "shell": 220,
     "action_points": 8,
     "movement_points": 5,
-    "description": "Carta provisional de Blop Naranja Real. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "description": "Los Blops Reales son guardianes de mazmorra de la raza Blops. Conservan la identidad elemental de su color, pegan con más contundencia que los Blops comunes y representan el escalón jefe de la familia.",
     "image": "public/images/blops/royals/blop-naranja-real.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -3050,6 +3150,15 @@
         "description": "Hechizo provisional a distancia de la familia Blops.",
         "damage_min": 45,
         "damage_max": 65
+      },
+      {
+        "name": "Memoria de Blop",
+        "cost": 1,
+        "range": 0,
+        "effect": "Cura el 10% de la vida restante del monstruo.",
+        "description": "Hechizo compartido por toda la familia Blops que recupera una parte de la vitalidad restante del lanzador.",
+        "damage_min": 1,
+        "damage_max": 1
       }
     ]
   },
@@ -3065,7 +3174,7 @@
     "shell": 220,
     "action_points": 8,
     "movement_points": 5,
-    "description": "Carta provisional de Blop Opaco Real. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "description": "Los Blops Reales son guardianes de mazmorra de la raza Blops. Conservan la identidad elemental de su color, pegan con más contundencia que los Blops comunes y representan el escalón jefe de la familia.",
     "image": "public/images/blops/royals/blop-opaco-real.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -3086,6 +3195,15 @@
         "description": "Hechizo provisional a distancia de la familia Blops.",
         "damage_min": 45,
         "damage_max": 65
+      },
+      {
+        "name": "Memoria de Blop",
+        "cost": 1,
+        "range": 0,
+        "effect": "Cura el 10% de la vida restante del monstruo.",
+        "description": "Hechizo compartido por toda la familia Blops que recupera una parte de la vitalidad restante del lanzador.",
+        "damage_min": 1,
+        "damage_max": 1
       }
     ]
   },
@@ -3101,7 +3219,7 @@
     "shell": 220,
     "action_points": 8,
     "movement_points": 5,
-    "description": "Carta provisional de Blop Rosado Real. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "description": "Los Blops Reales son guardianes de mazmorra de la raza Blops. Conservan la identidad elemental de su color, pegan con más contundencia que los Blops comunes y representan el escalón jefe de la familia.",
     "image": "public/images/blops/royals/blop-rosado-real.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -3122,6 +3240,15 @@
         "description": "Hechizo provisional a distancia de la familia Blops.",
         "damage_min": 45,
         "damage_max": 65
+      },
+      {
+        "name": "Memoria de Blop",
+        "cost": 1,
+        "range": 0,
+        "effect": "Cura el 10% de la vida restante del monstruo.",
+        "description": "Hechizo compartido por toda la familia Blops que recupera una parte de la vitalidad restante del lanzador.",
+        "damage_min": 1,
+        "damage_max": 1
       }
     ]
   },
@@ -3137,7 +3264,7 @@
     "shell": 220,
     "action_points": 8,
     "movement_points": 5,
-    "description": "Carta provisional de Blop Transparente Real. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "description": "Los Blops Reales son guardianes de mazmorra de la raza Blops. Conservan la identidad elemental de su color, pegan con más contundencia que los Blops comunes y representan el escalón jefe de la familia.",
     "image": "public/images/blops/royals/blop-transparente-real.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -3158,6 +3285,15 @@
         "description": "Hechizo provisional a distancia de la familia Blops.",
         "damage_min": 45,
         "damage_max": 65
+      },
+      {
+        "name": "Memoria de Blop",
+        "cost": 1,
+        "range": 0,
+        "effect": "Cura el 10% de la vida restante del monstruo.",
+        "description": "Hechizo compartido por toda la familia Blops que recupera una parte de la vitalidad restante del lanzador.",
+        "damage_min": 1,
+        "damage_max": 1
       }
     ]
   },
@@ -3173,7 +3309,7 @@
     "shell": 220,
     "action_points": 8,
     "movement_points": 5,
-    "description": "Carta provisional de Blop Violeta Real. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "description": "Los Blops Reales son guardianes de mazmorra de la raza Blops. Conservan la identidad elemental de su color, pegan con más contundencia que los Blops comunes y representan el escalón jefe de la familia.",
     "image": "public/images/blops/royals/blop-violeta-real.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -3194,6 +3330,15 @@
         "description": "Hechizo provisional a distancia de la familia Blops.",
         "damage_min": 45,
         "damage_max": 65
+      },
+      {
+        "name": "Memoria de Blop",
+        "cost": 1,
+        "range": 0,
+        "effect": "Cura el 10% de la vida restante del monstruo.",
+        "description": "Hechizo compartido por toda la familia Blops que recupera una parte de la vitalidad restante del lanzador.",
+        "damage_min": 1,
+        "damage_max": 1
       }
     ]
   },

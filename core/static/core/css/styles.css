@@ -2023,3 +2023,35 @@ body {
 }
 
 .board-action-ring { position: relative; }
+
+/* Wider desktop arena and unit control modal. */
+@media (min-width: 901px) {
+  :root {
+    --board-cell-size: min(calc((100vw - 380px) / 13), calc((100vh - 260px) / 9), 64px);
+  }
+  .arcade-shell.card-game-shell,
+  .card-game-shell {
+    width: min(100%, calc(100vw - 28px));
+    padding-inline: 14px;
+  }
+  .duel-panel { width: 100%; }
+  .board-action-ring {
+    grid-template-columns: minmax(116px, .16fr) minmax(0, auto) minmax(116px, .16fr);
+    justify-content: stretch;
+  }
+}
+
+.unit-control-modal { max-width: min(92vw, 560px); }
+.unit-control-modal h2 { margin: 0; text-transform: uppercase; letter-spacing: .08em; }
+.unit-control-body { display: grid; gap: 10px; }
+.card-image-unit-modal { width: 100%; height: 150px; object-fit: contain; }
+.unit-control-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.unit-control-description {
+  margin: 0;
+  padding: .7rem .8rem;
+  border: 1px solid rgba(214, 184, 142, .22);
+  border-radius: 10px;
+  background: rgba(24, 43, 29, .45);
+  color: #fff7d7;
+}
+.unit-control-spells:empty { display: none; }

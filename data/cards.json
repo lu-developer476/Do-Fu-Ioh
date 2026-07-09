@@ -2417,18 +2417,47 @@
     "shell": 180,
     "action_points": 5,
     "movement_points": 4,
-    "description": "Pequeña invocación de la familia Blops. Estos biblops acompañan a los Blops de su color y hostigan a los aventureros con una bibloptería rápida de corto alcance.",
+    "description": "Biblops de la familia Blops: pequeñas criaturas gelatinosas y coloridas que suelen aparecer junto a los Blops en la zona y la mazmorra de los Blops. Aunque son invocaciones menores, presionan de cerca con Biblopétalo y Gran Bibloptería, pueden curar con Biblopimiento y sostenerse con Memoria de Blop, por lo que conviene rematarlos antes de que acumulen apoyo en el combate.",
     "image": "public/images/blops/base/biblop-amarillo.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
+      {
+        "name": "Biblopétalo",
+        "cost": 4,
+        "range": "1-2",
+        "effect": "Inflige 29 a 41 PdV de daño al objetivo.",
+        "description": "Ataque de pétalos a corta distancia que inflige 29 a 41 PdV de daño.",
+        "damage_min": 29,
+        "damage_max": 41
+      },
+      {
+        "name": "Biblopimiento",
+        "cost": 1,
+        "range": 1,
+        "effect": "Cura 19 a 34 PdV al objetivo.",
+        "description": "Curación de contacto que devuelve entre 19 y 34 PdV.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true
+      },
       {
         "name": "Gran Bibloptería",
         "cost": 2,
         "range": "1-2",
         "effect": "Inflige 20 a 55 PdV de daño al objetivo.",
-        "description": "Versión ligera de la Gran Bibloptería usada por los biblops a corto alcance.",
+        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 20 y 55 PdV de daño.",
         "damage_min": 20,
         "damage_max": 55
+      },
+      {
+        "name": "Memoria de Blop",
+        "cost": 1,
+        "range": 0,
+        "effect": "Cura el 10% de la vida restante del monstruo.",
+        "description": "Hechizo compartido por la familia Blops que recupera el 10% de la vida restante del lanzador.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true
       }
     ],
     "shell_min": 150,
@@ -2446,18 +2475,47 @@
     "shell": 180,
     "action_points": 5,
     "movement_points": 4,
-    "description": "Pequeña invocación de la familia Blops. Estos biblops acompañan a los Blops de su color y hostigan a los aventureros con una bibloptería rápida de corto alcance.",
+    "description": "Biblops de la familia Blops: pequeñas criaturas gelatinosas y coloridas que suelen aparecer junto a los Blops en la zona y la mazmorra de los Blops. Aunque son invocaciones menores, presionan de cerca con Biblopétalo y Gran Bibloptería, pueden curar con Biblopimiento y sostenerse con Memoria de Blop, por lo que conviene rematarlos antes de que acumulen apoyo en el combate.",
     "image": "public/images/blops/base/biblop-amarronado.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
+      {
+        "name": "Biblopétalo",
+        "cost": 4,
+        "range": "1-2",
+        "effect": "Inflige 29 a 41 PdV de daño al objetivo.",
+        "description": "Ataque de pétalos a corta distancia que inflige 29 a 41 PdV de daño.",
+        "damage_min": 29,
+        "damage_max": 41
+      },
+      {
+        "name": "Biblopimiento",
+        "cost": 1,
+        "range": 1,
+        "effect": "Cura 19 a 34 PdV al objetivo.",
+        "description": "Curación de contacto que devuelve entre 19 y 34 PdV.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true
+      },
       {
         "name": "Gran Bibloptería",
         "cost": 2,
         "range": "1-2",
         "effect": "Inflige 20 a 55 PdV de daño al objetivo.",
-        "description": "Versión ligera de la Gran Bibloptería usada por los biblops a corto alcance.",
+        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 20 y 55 PdV de daño.",
         "damage_min": 20,
         "damage_max": 55
+      },
+      {
+        "name": "Memoria de Blop",
+        "cost": 1,
+        "range": 0,
+        "effect": "Cura el 10% de la vida restante del monstruo.",
+        "description": "Hechizo compartido por la familia Blops que recupera el 10% de la vida restante del lanzador.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true
       }
     ],
     "shell_min": 150,
@@ -2475,18 +2533,47 @@
     "shell": 180,
     "action_points": 5,
     "movement_points": 4,
-    "description": "Pequeña invocación de la familia Blops. Estos biblops acompañan a los Blops de su color y hostigan a los aventureros con una bibloptería rápida de corto alcance.",
+    "description": "Biblops de la familia Blops: pequeñas criaturas gelatinosas y coloridas que suelen aparecer junto a los Blops en la zona y la mazmorra de los Blops. Aunque son invocaciones menores, presionan de cerca con Biblopétalo y Gran Bibloptería, pueden curar con Biblopimiento y sostenerse con Memoria de Blop, por lo que conviene rematarlos antes de que acumulen apoyo en el combate.",
     "image": "public/images/blops/base/biblop-naranja.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
+      {
+        "name": "Biblopétalo",
+        "cost": 4,
+        "range": "1-2",
+        "effect": "Inflige 29 a 41 PdV de daño al objetivo.",
+        "description": "Ataque de pétalos a corta distancia que inflige 29 a 41 PdV de daño.",
+        "damage_min": 29,
+        "damage_max": 41
+      },
+      {
+        "name": "Biblopimiento",
+        "cost": 1,
+        "range": 1,
+        "effect": "Cura 19 a 34 PdV al objetivo.",
+        "description": "Curación de contacto que devuelve entre 19 y 34 PdV.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true
+      },
       {
         "name": "Gran Bibloptería",
         "cost": 2,
         "range": "1-2",
         "effect": "Inflige 20 a 55 PdV de daño al objetivo.",
-        "description": "Versión ligera de la Gran Bibloptería usada por los biblops a corto alcance.",
+        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 20 y 55 PdV de daño.",
         "damage_min": 20,
         "damage_max": 55
+      },
+      {
+        "name": "Memoria de Blop",
+        "cost": 1,
+        "range": 0,
+        "effect": "Cura el 10% de la vida restante del monstruo.",
+        "description": "Hechizo compartido por la familia Blops que recupera el 10% de la vida restante del lanzador.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true
       }
     ],
     "shell_min": 150,
@@ -2504,18 +2591,47 @@
     "shell": 180,
     "action_points": 5,
     "movement_points": 4,
-    "description": "Pequeña invocación de la familia Blops. Estos biblops acompañan a los Blops de su color y hostigan a los aventureros con una bibloptería rápida de corto alcance.",
+    "description": "Biblops de la familia Blops: pequeñas criaturas gelatinosas y coloridas que suelen aparecer junto a los Blops en la zona y la mazmorra de los Blops. Aunque son invocaciones menores, presionan de cerca con Biblopétalo y Gran Bibloptería, pueden curar con Biblopimiento y sostenerse con Memoria de Blop, por lo que conviene rematarlos antes de que acumulen apoyo en el combate.",
     "image": "public/images/blops/base/biblop-opaco.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
+      {
+        "name": "Biblopétalo",
+        "cost": 4,
+        "range": "1-2",
+        "effect": "Inflige 29 a 41 PdV de daño al objetivo.",
+        "description": "Ataque de pétalos a corta distancia que inflige 29 a 41 PdV de daño.",
+        "damage_min": 29,
+        "damage_max": 41
+      },
+      {
+        "name": "Biblopimiento",
+        "cost": 1,
+        "range": 1,
+        "effect": "Cura 19 a 34 PdV al objetivo.",
+        "description": "Curación de contacto que devuelve entre 19 y 34 PdV.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true
+      },
       {
         "name": "Gran Bibloptería",
         "cost": 2,
         "range": "1-2",
         "effect": "Inflige 20 a 55 PdV de daño al objetivo.",
-        "description": "Versión ligera de la Gran Bibloptería usada por los biblops a corto alcance.",
+        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 20 y 55 PdV de daño.",
         "damage_min": 20,
         "damage_max": 55
+      },
+      {
+        "name": "Memoria de Blop",
+        "cost": 1,
+        "range": 0,
+        "effect": "Cura el 10% de la vida restante del monstruo.",
+        "description": "Hechizo compartido por la familia Blops que recupera el 10% de la vida restante del lanzador.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true
       }
     ],
     "shell_min": 150,
@@ -2533,18 +2649,47 @@
     "shell": 180,
     "action_points": 5,
     "movement_points": 4,
-    "description": "Pequeña invocación de la familia Blops. Estos biblops acompañan a los Blops de su color y hostigan a los aventureros con una bibloptería rápida de corto alcance.",
+    "description": "Biblops de la familia Blops: pequeñas criaturas gelatinosas y coloridas que suelen aparecer junto a los Blops en la zona y la mazmorra de los Blops. Aunque son invocaciones menores, presionan de cerca con Biblopétalo y Gran Bibloptería, pueden curar con Biblopimiento y sostenerse con Memoria de Blop, por lo que conviene rematarlos antes de que acumulen apoyo en el combate.",
     "image": "public/images/blops/base/biblop-rosado.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
+      {
+        "name": "Biblopétalo",
+        "cost": 4,
+        "range": "1-2",
+        "effect": "Inflige 29 a 41 PdV de daño al objetivo.",
+        "description": "Ataque de pétalos a corta distancia que inflige 29 a 41 PdV de daño.",
+        "damage_min": 29,
+        "damage_max": 41
+      },
+      {
+        "name": "Biblopimiento",
+        "cost": 1,
+        "range": 1,
+        "effect": "Cura 19 a 34 PdV al objetivo.",
+        "description": "Curación de contacto que devuelve entre 19 y 34 PdV.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true
+      },
       {
         "name": "Gran Bibloptería",
         "cost": 2,
         "range": "1-2",
         "effect": "Inflige 20 a 55 PdV de daño al objetivo.",
-        "description": "Versión ligera de la Gran Bibloptería usada por los biblops a corto alcance.",
+        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 20 y 55 PdV de daño.",
         "damage_min": 20,
         "damage_max": 55
+      },
+      {
+        "name": "Memoria de Blop",
+        "cost": 1,
+        "range": 0,
+        "effect": "Cura el 10% de la vida restante del monstruo.",
+        "description": "Hechizo compartido por la familia Blops que recupera el 10% de la vida restante del lanzador.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true
       }
     ],
     "shell_min": 150,
@@ -2562,18 +2707,47 @@
     "shell": 180,
     "action_points": 5,
     "movement_points": 4,
-    "description": "Pequeña invocación de la familia Blops. Estos biblops acompañan a los Blops de su color y hostigan a los aventureros con una bibloptería rápida de corto alcance.",
+    "description": "Biblops de la familia Blops: pequeñas criaturas gelatinosas y coloridas que suelen aparecer junto a los Blops en la zona y la mazmorra de los Blops. Aunque son invocaciones menores, presionan de cerca con Biblopétalo y Gran Bibloptería, pueden curar con Biblopimiento y sostenerse con Memoria de Blop, por lo que conviene rematarlos antes de que acumulen apoyo en el combate.",
     "image": "public/images/blops/base/biblop-transparente.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
+      {
+        "name": "Biblopétalo",
+        "cost": 4,
+        "range": "1-2",
+        "effect": "Inflige 29 a 41 PdV de daño al objetivo.",
+        "description": "Ataque de pétalos a corta distancia que inflige 29 a 41 PdV de daño.",
+        "damage_min": 29,
+        "damage_max": 41
+      },
+      {
+        "name": "Biblopimiento",
+        "cost": 1,
+        "range": 1,
+        "effect": "Cura 19 a 34 PdV al objetivo.",
+        "description": "Curación de contacto que devuelve entre 19 y 34 PdV.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true
+      },
       {
         "name": "Gran Bibloptería",
         "cost": 2,
         "range": "1-2",
         "effect": "Inflige 20 a 55 PdV de daño al objetivo.",
-        "description": "Versión ligera de la Gran Bibloptería usada por los biblops a corto alcance.",
+        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 20 y 55 PdV de daño.",
         "damage_min": 20,
         "damage_max": 55
+      },
+      {
+        "name": "Memoria de Blop",
+        "cost": 1,
+        "range": 0,
+        "effect": "Cura el 10% de la vida restante del monstruo.",
+        "description": "Hechizo compartido por la familia Blops que recupera el 10% de la vida restante del lanzador.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true
       }
     ],
     "shell_min": 150,
@@ -2591,18 +2765,47 @@
     "shell": 180,
     "action_points": 5,
     "movement_points": 4,
-    "description": "Pequeña invocación de la familia Blops. Estos biblops acompañan a los Blops de su color y hostigan a los aventureros con una bibloptería rápida de corto alcance.",
+    "description": "Biblops de la familia Blops: pequeñas criaturas gelatinosas y coloridas que suelen aparecer junto a los Blops en la zona y la mazmorra de los Blops. Aunque son invocaciones menores, presionan de cerca con Biblopétalo y Gran Bibloptería, pueden curar con Biblopimiento y sostenerse con Memoria de Blop, por lo que conviene rematarlos antes de que acumulen apoyo en el combate.",
     "image": "public/images/blops/base/biblop-violeta.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
+      {
+        "name": "Biblopétalo",
+        "cost": 4,
+        "range": "1-2",
+        "effect": "Inflige 29 a 41 PdV de daño al objetivo.",
+        "description": "Ataque de pétalos a corta distancia que inflige 29 a 41 PdV de daño.",
+        "damage_min": 29,
+        "damage_max": 41
+      },
+      {
+        "name": "Biblopimiento",
+        "cost": 1,
+        "range": 1,
+        "effect": "Cura 19 a 34 PdV al objetivo.",
+        "description": "Curación de contacto que devuelve entre 19 y 34 PdV.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true
+      },
       {
         "name": "Gran Bibloptería",
         "cost": 2,
         "range": "1-2",
         "effect": "Inflige 20 a 55 PdV de daño al objetivo.",
-        "description": "Versión ligera de la Gran Bibloptería usada por los biblops a corto alcance.",
+        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 20 y 55 PdV de daño.",
         "damage_min": 20,
         "damage_max": 55
+      },
+      {
+        "name": "Memoria de Blop",
+        "cost": 1,
+        "range": 0,
+        "effect": "Cura el 10% de la vida restante del monstruo.",
+        "description": "Hechizo compartido por la familia Blops que recupera el 10% de la vida restante del lanzador.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true
       }
     ],
     "shell_min": 150,

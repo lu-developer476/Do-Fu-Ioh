@@ -544,6 +544,16 @@ class BackendlessModeTests(TestCase):
         self.assertNotIn('No alcanza la energía para invocar.', source)
         self.assertNotIn('Ya invocaste este turno.', source)
 
+
+    def test_frontend_blocks_evolution_for_spell_summoned_units_only(self):
+        script = Path(__file__).resolve().parent / 'static' / 'core' / 'js' / 'game.js'
+        source = script.read_text(encoding='utf-8')
+
+        self.assertIn('summoned_by_spell: Boolean(options.summoned_by_spell)', source)
+        self.assertIn('!unit.summoned_by_spell', source)
+        self.assertIn('function canEvolveNow(unit) { return canUnitEvolve(unit); }', source)
+        self.assertIn('Los monstruos invocados no pueden evolucionar', source)
+
     def test_match_apis_are_disabled_in_backendless_mode(self):
         response = self.client.post('/api/match/create-vs-ai/', data='{}', content_type='application/json')
 

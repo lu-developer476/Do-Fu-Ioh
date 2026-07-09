@@ -2417,7 +2417,7 @@
     "shell": 180,
     "action_points": 5,
     "movement_points": 4,
-    "description": "Biblops de la familia Blops: pequeñas criaturas gelatinosas y coloridas que suelen aparecer junto a los Blops en la zona y la mazmorra de los Blops. Aunque son invocaciones menores, presionan de cerca con Biblopétalo y Gran Bibloptería, pueden curar con Biblopimiento y sostenerse con Memoria de Blop, por lo que conviene rematarlos antes de que acumulen apoyo en el combate.",
+    "description": "Biblop de la familia Blops: una criatura gelatinosa menor que suele acompañar o ser invocada por los Blops en sus combates. Aunque es más pequeño que el Blop adulto, aporta presión de corto alcance con Biblopétalo y Gran Bibloptería; por eso conviene controlarlo rápido antes de que el grupo de Blops acumule demasiadas invocaciones.",
     "image": "public/images/blops/base/biblop-amarillo.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -2445,7 +2445,7 @@
         "cost": 2,
         "range": "1-2",
         "effect": "Inflige 20 a 55 PdV de daño al objetivo.",
-        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 20 y 55 PdV de daño.",
+        "description": "Versión menor de Gran Bibloptería usada por biblops: cuesta 2 PA, alcanza 1 a 2 casillas e inflige 20 a 55 PdV de daño.",
         "damage_min": 20,
         "damage_max": 55
       },
@@ -2475,7 +2475,7 @@
     "shell": 180,
     "action_points": 5,
     "movement_points": 4,
-    "description": "Biblops de la familia Blops: pequeñas criaturas gelatinosas y coloridas que suelen aparecer junto a los Blops en la zona y la mazmorra de los Blops. Aunque son invocaciones menores, presionan de cerca con Biblopétalo y Gran Bibloptería, pueden curar con Biblopimiento y sostenerse con Memoria de Blop, por lo que conviene rematarlos antes de que acumulen apoyo en el combate.",
+    "description": "Biblop de la familia Blops: una criatura gelatinosa menor que suele acompañar o ser invocada por los Blops en sus combates. Aunque es más pequeño que el Blop adulto, aporta presión de corto alcance con Biblopétalo y Gran Bibloptería; por eso conviene controlarlo rápido antes de que el grupo de Blops acumule demasiadas invocaciones.",
     "image": "public/images/blops/base/biblop-amarronado.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -2503,7 +2503,7 @@
         "cost": 2,
         "range": "1-2",
         "effect": "Inflige 20 a 55 PdV de daño al objetivo.",
-        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 20 y 55 PdV de daño.",
+        "description": "Versión menor de Gran Bibloptería usada por biblops: cuesta 2 PA, alcanza 1 a 2 casillas e inflige 20 a 55 PdV de daño.",
         "damage_min": 20,
         "damage_max": 55
       },
@@ -2533,7 +2533,7 @@
     "shell": 180,
     "action_points": 5,
     "movement_points": 4,
-    "description": "Biblops de la familia Blops: pequeñas criaturas gelatinosas y coloridas que suelen aparecer junto a los Blops en la zona y la mazmorra de los Blops. Aunque son invocaciones menores, presionan de cerca con Biblopétalo y Gran Bibloptería, pueden curar con Biblopimiento y sostenerse con Memoria de Blop, por lo que conviene rematarlos antes de que acumulen apoyo en el combate.",
+    "description": "Biblop de la familia Blops: una criatura gelatinosa menor que suele acompañar o ser invocada por los Blops en sus combates. Aunque es más pequeño que el Blop adulto, aporta presión de corto alcance con Biblopétalo y Gran Bibloptería; por eso conviene controlarlo rápido antes de que el grupo de Blops acumule demasiadas invocaciones.",
     "image": "public/images/blops/base/biblop-naranja.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -2561,7 +2561,7 @@
         "cost": 2,
         "range": "1-2",
         "effect": "Inflige 20 a 55 PdV de daño al objetivo.",
-        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 20 y 55 PdV de daño.",
+        "description": "Versión menor de Gran Bibloptería usada por biblops: cuesta 2 PA, alcanza 1 a 2 casillas e inflige 20 a 55 PdV de daño.",
         "damage_min": 20,
         "damage_max": 55
       },
@@ -2591,7 +2591,7 @@
     "shell": 180,
     "action_points": 5,
     "movement_points": 4,
-    "description": "Biblops de la familia Blops: pequeñas criaturas gelatinosas y coloridas que suelen aparecer junto a los Blops en la zona y la mazmorra de los Blops. Aunque son invocaciones menores, presionan de cerca con Biblopétalo y Gran Bibloptería, pueden curar con Biblopimiento y sostenerse con Memoria de Blop, por lo que conviene rematarlos antes de que acumulen apoyo en el combate.",
+    "description": "Biblop de la familia Blops: una criatura gelatinosa menor que suele acompañar o ser invocada por los Blops en sus combates. Aunque es más pequeño que el Blop adulto, aporta presión de corto alcance con Biblopétalo y Gran Bibloptería; por eso conviene controlarlo rápido antes de que el grupo de Blops acumule demasiadas invocaciones.",
     "image": "public/images/blops/base/biblop-opaco.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -2619,7 +2619,7 @@
         "cost": 2,
         "range": "1-2",
         "effect": "Inflige 20 a 55 PdV de daño al objetivo.",
-        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 20 y 55 PdV de daño.",
+        "description": "Versión menor de Gran Bibloptería usada por biblops: cuesta 2 PA, alcanza 1 a 2 casillas e inflige 20 a 55 PdV de daño.",
         "damage_min": 20,
         "damage_max": 55
       },
@@ -2649,7 +2649,7 @@
     "shell": 180,
     "action_points": 5,
     "movement_points": 4,
-    "description": "Biblops de la familia Blops: pequeñas criaturas gelatinosas y coloridas que suelen aparecer junto a los Blops en la zona y la mazmorra de los Blops. Aunque son invocaciones menores, presionan de cerca con Biblopétalo y Gran Bibloptería, pueden curar con Biblopimiento y sostenerse con Memoria de Blop, por lo que conviene rematarlos antes de que acumulen apoyo en el combate.",
+    "description": "Biblop de la familia Blops: una criatura gelatinosa menor que suele acompañar o ser invocada por los Blops en sus combates. Aunque es más pequeño que el Blop adulto, aporta presión de corto alcance con Biblopétalo y Gran Bibloptería; por eso conviene controlarlo rápido antes de que el grupo de Blops acumule demasiadas invocaciones.",
     "image": "public/images/blops/base/biblop-rosado.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -2677,7 +2677,7 @@
         "cost": 2,
         "range": "1-2",
         "effect": "Inflige 20 a 55 PdV de daño al objetivo.",
-        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 20 y 55 PdV de daño.",
+        "description": "Versión menor de Gran Bibloptería usada por biblops: cuesta 2 PA, alcanza 1 a 2 casillas e inflige 20 a 55 PdV de daño.",
         "damage_min": 20,
         "damage_max": 55
       },
@@ -2707,7 +2707,7 @@
     "shell": 180,
     "action_points": 5,
     "movement_points": 4,
-    "description": "Biblops de la familia Blops: pequeñas criaturas gelatinosas y coloridas que suelen aparecer junto a los Blops en la zona y la mazmorra de los Blops. Aunque son invocaciones menores, presionan de cerca con Biblopétalo y Gran Bibloptería, pueden curar con Biblopimiento y sostenerse con Memoria de Blop, por lo que conviene rematarlos antes de que acumulen apoyo en el combate.",
+    "description": "Biblop de la familia Blops: una criatura gelatinosa menor que suele acompañar o ser invocada por los Blops en sus combates. Aunque es más pequeño que el Blop adulto, aporta presión de corto alcance con Biblopétalo y Gran Bibloptería; por eso conviene controlarlo rápido antes de que el grupo de Blops acumule demasiadas invocaciones.",
     "image": "public/images/blops/base/biblop-transparente.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -2735,7 +2735,7 @@
         "cost": 2,
         "range": "1-2",
         "effect": "Inflige 20 a 55 PdV de daño al objetivo.",
-        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 20 y 55 PdV de daño.",
+        "description": "Versión menor de Gran Bibloptería usada por biblops: cuesta 2 PA, alcanza 1 a 2 casillas e inflige 20 a 55 PdV de daño.",
         "damage_min": 20,
         "damage_max": 55
       },
@@ -2765,7 +2765,7 @@
     "shell": 180,
     "action_points": 5,
     "movement_points": 4,
-    "description": "Biblops de la familia Blops: pequeñas criaturas gelatinosas y coloridas que suelen aparecer junto a los Blops en la zona y la mazmorra de los Blops. Aunque son invocaciones menores, presionan de cerca con Biblopétalo y Gran Bibloptería, pueden curar con Biblopimiento y sostenerse con Memoria de Blop, por lo que conviene rematarlos antes de que acumulen apoyo en el combate.",
+    "description": "Biblop de la familia Blops: una criatura gelatinosa menor que suele acompañar o ser invocada por los Blops en sus combates. Aunque es más pequeño que el Blop adulto, aporta presión de corto alcance con Biblopétalo y Gran Bibloptería; por eso conviene controlarlo rápido antes de que el grupo de Blops acumule demasiadas invocaciones.",
     "image": "public/images/blops/base/biblop-violeta.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -2793,7 +2793,7 @@
         "cost": 2,
         "range": "1-2",
         "effect": "Inflige 20 a 55 PdV de daño al objetivo.",
-        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 20 y 55 PdV de daño.",
+        "description": "Versión menor de Gran Bibloptería usada por biblops: cuesta 2 PA, alcanza 1 a 2 casillas e inflige 20 a 55 PdV de daño.",
         "damage_min": 20,
         "damage_max": 55
       },
@@ -2823,7 +2823,7 @@
     "shell": 570,
     "action_points": 11,
     "movement_points": 6,
-    "description": "Monstruo de la familia de los Blops, criaturas gelatinosas y coloridas del Mundo de los Doce que aparecen en la zona y la mazmorra de los Blops. Su combate gira alrededor de la presión a corta y media distancia: dañan con pétalos y biblopterías, reducen PM, ocultan aliados y pueden invocar biblops de apoyo.",
+    "description": "Monstruo de la familia Blops: criaturas gelatinosas y coloridas vinculadas a las llanuras de Cania y a la Mazmorra de los Blops. Esta variante adulta combina 1.365 PdV, 570 PdE, 11 PA y 6 PM para pelear a corta y media distancia: golpea con Biblopétalo y Gran Bibloptería, retira PM con Biflo Koalak, vuelve invisibles a sus aliados con Oculta Biblop y refuerza el campo invocando biblops de su color o aleatorios.",
     "image": "public/images/blops/evolutions/blop-amarillo.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -2850,7 +2850,7 @@
         "cost": 2,
         "range": "2-6",
         "effect": "Vuelve invisible al objetivo durante 2 turnos.",
-        "description": "Oculta a un aliado o invocación al volverlo invisible durante 2 turnos.",
+        "description": "Vuelve invisible al objetivo durante 2 turnos para proteger aliados o invocaciones.",
         "damage_min": 1,
         "damage_max": 1
       },
@@ -2859,7 +2859,7 @@
         "cost": 5,
         "range": "2-7",
         "effect": "Quita 2 PM al objetivo. Usable cada 3 turnos.",
-        "description": "Traba al objetivo a distancia retirándole 2 PM. Reutilización: 3 turnos.",
+        "description": "Retira 2 PM a distancia para trabar el avance del objetivo. Reutilización: 3 turnos.",
         "damage_min": 1,
         "damage_max": 1
       },
@@ -2868,7 +2868,7 @@
         "cost": 5,
         "range": 1,
         "effect": "Invoca 1 biblop aleatorio. No evolucionable. Usable cada 5 turnos.",
-        "description": "Invoca un biblop aleatorio que no puede evolucionar. Reutilización: 5 turnos.",
+        "description": "Invoca un biblop aleatorio no evolucionable. Reutilización: 5 turnos.",
         "damage_min": 1,
         "damage_max": 1
       },
@@ -2877,7 +2877,7 @@
         "cost": 4,
         "range": "1-3",
         "effect": "Inflige 42 a 175 PdV de daño al objetivo.",
-        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 42 y 175 PdV de daño.",
+        "description": "Golpe de corto a medio alcance que inflige entre 42 y 175 PdV de daño.",
         "damage_min": 42,
         "damage_max": 175
       }
@@ -2895,7 +2895,7 @@
     "shell": 570,
     "action_points": 11,
     "movement_points": 6,
-    "description": "Monstruo de la familia de los Blops, criaturas gelatinosas y coloridas del Mundo de los Doce que aparecen en la zona y la mazmorra de los Blops. Su combate gira alrededor de la presión a corta y media distancia: dañan con pétalos y biblopterías, reducen PM, ocultan aliados y pueden invocar biblops de apoyo.",
+    "description": "Monstruo de la familia Blops: criaturas gelatinosas y coloridas vinculadas a las llanuras de Cania y a la Mazmorra de los Blops. Esta variante adulta combina 1.365 PdV, 570 PdE, 11 PA y 6 PM para pelear a corta y media distancia: golpea con Biblopétalo y Gran Bibloptería, retira PM con Biflo Koalak, vuelve invisibles a sus aliados con Oculta Biblop y refuerza el campo invocando biblops de su color o aleatorios.",
     "image": "public/images/blops/evolutions/blop-amarronado.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -2922,7 +2922,7 @@
         "cost": 2,
         "range": "2-6",
         "effect": "Vuelve invisible al objetivo durante 2 turnos.",
-        "description": "Oculta a un aliado o invocación al volverlo invisible durante 2 turnos.",
+        "description": "Vuelve invisible al objetivo durante 2 turnos para proteger aliados o invocaciones.",
         "damage_min": 1,
         "damage_max": 1
       },
@@ -2931,7 +2931,7 @@
         "cost": 5,
         "range": "2-7",
         "effect": "Quita 2 PM al objetivo. Usable cada 3 turnos.",
-        "description": "Traba al objetivo a distancia retirándole 2 PM. Reutilización: 3 turnos.",
+        "description": "Retira 2 PM a distancia para trabar el avance del objetivo. Reutilización: 3 turnos.",
         "damage_min": 1,
         "damage_max": 1
       },
@@ -2940,7 +2940,7 @@
         "cost": 5,
         "range": 1,
         "effect": "Invoca 1 biblop aleatorio. No evolucionable. Usable cada 5 turnos.",
-        "description": "Invoca un biblop aleatorio que no puede evolucionar. Reutilización: 5 turnos.",
+        "description": "Invoca un biblop aleatorio no evolucionable. Reutilización: 5 turnos.",
         "damage_min": 1,
         "damage_max": 1
       },
@@ -2949,7 +2949,7 @@
         "cost": 4,
         "range": "1-3",
         "effect": "Inflige 42 a 175 PdV de daño al objetivo.",
-        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 42 y 175 PdV de daño.",
+        "description": "Golpe de corto a medio alcance que inflige entre 42 y 175 PdV de daño.",
         "damage_min": 42,
         "damage_max": 175
       }
@@ -2967,7 +2967,7 @@
     "shell": 570,
     "action_points": 11,
     "movement_points": 6,
-    "description": "Monstruo de la familia de los Blops, criaturas gelatinosas y coloridas del Mundo de los Doce que aparecen en la zona y la mazmorra de los Blops. Su combate gira alrededor de la presión a corta y media distancia: dañan con pétalos y biblopterías, reducen PM, ocultan aliados y pueden invocar biblops de apoyo.",
+    "description": "Monstruo de la familia Blops: criaturas gelatinosas y coloridas vinculadas a las llanuras de Cania y a la Mazmorra de los Blops. Esta variante adulta combina 1.365 PdV, 570 PdE, 11 PA y 6 PM para pelear a corta y media distancia: golpea con Biblopétalo y Gran Bibloptería, retira PM con Biflo Koalak, vuelve invisibles a sus aliados con Oculta Biblop y refuerza el campo invocando biblops de su color o aleatorios.",
     "image": "public/images/blops/evolutions/blop-naranja.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -2994,7 +2994,7 @@
         "cost": 2,
         "range": "2-6",
         "effect": "Vuelve invisible al objetivo durante 2 turnos.",
-        "description": "Oculta a un aliado o invocación al volverlo invisible durante 2 turnos.",
+        "description": "Vuelve invisible al objetivo durante 2 turnos para proteger aliados o invocaciones.",
         "damage_min": 1,
         "damage_max": 1
       },
@@ -3003,7 +3003,7 @@
         "cost": 5,
         "range": "2-7",
         "effect": "Quita 2 PM al objetivo. Usable cada 3 turnos.",
-        "description": "Traba al objetivo a distancia retirándole 2 PM. Reutilización: 3 turnos.",
+        "description": "Retira 2 PM a distancia para trabar el avance del objetivo. Reutilización: 3 turnos.",
         "damage_min": 1,
         "damage_max": 1
       },
@@ -3012,7 +3012,7 @@
         "cost": 5,
         "range": 1,
         "effect": "Invoca 1 biblop aleatorio. No evolucionable. Usable cada 5 turnos.",
-        "description": "Invoca un biblop aleatorio que no puede evolucionar. Reutilización: 5 turnos.",
+        "description": "Invoca un biblop aleatorio no evolucionable. Reutilización: 5 turnos.",
         "damage_min": 1,
         "damage_max": 1
       },
@@ -3021,7 +3021,7 @@
         "cost": 4,
         "range": "1-3",
         "effect": "Inflige 42 a 175 PdV de daño al objetivo.",
-        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 42 y 175 PdV de daño.",
+        "description": "Golpe de corto a medio alcance que inflige entre 42 y 175 PdV de daño.",
         "damage_min": 42,
         "damage_max": 175
       }
@@ -3039,7 +3039,7 @@
     "shell": 570,
     "action_points": 11,
     "movement_points": 6,
-    "description": "Monstruo de la familia de los Blops, criaturas gelatinosas y coloridas del Mundo de los Doce que aparecen en la zona y la mazmorra de los Blops. Su combate gira alrededor de la presión a corta y media distancia: dañan con pétalos y biblopterías, reducen PM, ocultan aliados y pueden invocar biblops de apoyo.",
+    "description": "Monstruo de la familia Blops: criaturas gelatinosas y coloridas vinculadas a las llanuras de Cania y a la Mazmorra de los Blops. Esta variante adulta combina 1.365 PdV, 570 PdE, 11 PA y 6 PM para pelear a corta y media distancia: golpea con Biblopétalo y Gran Bibloptería, retira PM con Biflo Koalak, vuelve invisibles a sus aliados con Oculta Biblop y refuerza el campo invocando biblops de su color o aleatorios.",
     "image": "public/images/blops/evolutions/blop-opaco.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -3066,7 +3066,7 @@
         "cost": 2,
         "range": "2-6",
         "effect": "Vuelve invisible al objetivo durante 2 turnos.",
-        "description": "Oculta a un aliado o invocación al volverlo invisible durante 2 turnos.",
+        "description": "Vuelve invisible al objetivo durante 2 turnos para proteger aliados o invocaciones.",
         "damage_min": 1,
         "damage_max": 1
       },
@@ -3075,7 +3075,7 @@
         "cost": 5,
         "range": "2-7",
         "effect": "Quita 2 PM al objetivo. Usable cada 3 turnos.",
-        "description": "Traba al objetivo a distancia retirándole 2 PM. Reutilización: 3 turnos.",
+        "description": "Retira 2 PM a distancia para trabar el avance del objetivo. Reutilización: 3 turnos.",
         "damage_min": 1,
         "damage_max": 1
       },
@@ -3084,7 +3084,7 @@
         "cost": 5,
         "range": 1,
         "effect": "Invoca 1 biblop aleatorio. No evolucionable. Usable cada 5 turnos.",
-        "description": "Invoca un biblop aleatorio que no puede evolucionar. Reutilización: 5 turnos.",
+        "description": "Invoca un biblop aleatorio no evolucionable. Reutilización: 5 turnos.",
         "damage_min": 1,
         "damage_max": 1
       },
@@ -3093,7 +3093,7 @@
         "cost": 4,
         "range": "1-3",
         "effect": "Inflige 42 a 175 PdV de daño al objetivo.",
-        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 42 y 175 PdV de daño.",
+        "description": "Golpe de corto a medio alcance que inflige entre 42 y 175 PdV de daño.",
         "damage_min": 42,
         "damage_max": 175
       }
@@ -3111,7 +3111,7 @@
     "shell": 570,
     "action_points": 11,
     "movement_points": 6,
-    "description": "Monstruo de la familia de los Blops, criaturas gelatinosas y coloridas del Mundo de los Doce que aparecen en la zona y la mazmorra de los Blops. Su combate gira alrededor de la presión a corta y media distancia: dañan con pétalos y biblopterías, reducen PM, ocultan aliados y pueden invocar biblops de apoyo.",
+    "description": "Monstruo de la familia Blops: criaturas gelatinosas y coloridas vinculadas a las llanuras de Cania y a la Mazmorra de los Blops. Esta variante adulta combina 1.365 PdV, 570 PdE, 11 PA y 6 PM para pelear a corta y media distancia: golpea con Biblopétalo y Gran Bibloptería, retira PM con Biflo Koalak, vuelve invisibles a sus aliados con Oculta Biblop y refuerza el campo invocando biblops de su color o aleatorios.",
     "image": "public/images/blops/evolutions/blop-rosado.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -3138,7 +3138,7 @@
         "cost": 2,
         "range": "2-6",
         "effect": "Vuelve invisible al objetivo durante 2 turnos.",
-        "description": "Oculta a un aliado o invocación al volverlo invisible durante 2 turnos.",
+        "description": "Vuelve invisible al objetivo durante 2 turnos para proteger aliados o invocaciones.",
         "damage_min": 1,
         "damage_max": 1
       },
@@ -3147,7 +3147,7 @@
         "cost": 5,
         "range": "2-7",
         "effect": "Quita 2 PM al objetivo. Usable cada 3 turnos.",
-        "description": "Traba al objetivo a distancia retirándole 2 PM. Reutilización: 3 turnos.",
+        "description": "Retira 2 PM a distancia para trabar el avance del objetivo. Reutilización: 3 turnos.",
         "damage_min": 1,
         "damage_max": 1
       },
@@ -3156,7 +3156,7 @@
         "cost": 5,
         "range": 1,
         "effect": "Invoca 1 biblop aleatorio. No evolucionable. Usable cada 5 turnos.",
-        "description": "Invoca un biblop aleatorio que no puede evolucionar. Reutilización: 5 turnos.",
+        "description": "Invoca un biblop aleatorio no evolucionable. Reutilización: 5 turnos.",
         "damage_min": 1,
         "damage_max": 1
       },
@@ -3165,7 +3165,7 @@
         "cost": 4,
         "range": "1-3",
         "effect": "Inflige 42 a 175 PdV de daño al objetivo.",
-        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 42 y 175 PdV de daño.",
+        "description": "Golpe de corto a medio alcance que inflige entre 42 y 175 PdV de daño.",
         "damage_min": 42,
         "damage_max": 175
       }
@@ -3183,7 +3183,7 @@
     "shell": 570,
     "action_points": 11,
     "movement_points": 6,
-    "description": "Monstruo de la familia de los Blops, criaturas gelatinosas y coloridas del Mundo de los Doce que aparecen en la zona y la mazmorra de los Blops. Su combate gira alrededor de la presión a corta y media distancia: dañan con pétalos y biblopterías, reducen PM, ocultan aliados y pueden invocar biblops de apoyo.",
+    "description": "Monstruo de la familia Blops: criaturas gelatinosas y coloridas vinculadas a las llanuras de Cania y a la Mazmorra de los Blops. Esta variante adulta combina 1.365 PdV, 570 PdE, 11 PA y 6 PM para pelear a corta y media distancia: golpea con Biblopétalo y Gran Bibloptería, retira PM con Biflo Koalak, vuelve invisibles a sus aliados con Oculta Biblop y refuerza el campo invocando biblops de su color o aleatorios.",
     "image": "public/images/blops/evolutions/blop-transparente.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -3210,7 +3210,7 @@
         "cost": 2,
         "range": "2-6",
         "effect": "Vuelve invisible al objetivo durante 2 turnos.",
-        "description": "Oculta a un aliado o invocación al volverlo invisible durante 2 turnos.",
+        "description": "Vuelve invisible al objetivo durante 2 turnos para proteger aliados o invocaciones.",
         "damage_min": 1,
         "damage_max": 1
       },
@@ -3219,7 +3219,7 @@
         "cost": 5,
         "range": "2-7",
         "effect": "Quita 2 PM al objetivo. Usable cada 3 turnos.",
-        "description": "Traba al objetivo a distancia retirándole 2 PM. Reutilización: 3 turnos.",
+        "description": "Retira 2 PM a distancia para trabar el avance del objetivo. Reutilización: 3 turnos.",
         "damage_min": 1,
         "damage_max": 1
       },
@@ -3228,7 +3228,7 @@
         "cost": 5,
         "range": 1,
         "effect": "Invoca 1 biblop aleatorio. No evolucionable. Usable cada 5 turnos.",
-        "description": "Invoca un biblop aleatorio que no puede evolucionar. Reutilización: 5 turnos.",
+        "description": "Invoca un biblop aleatorio no evolucionable. Reutilización: 5 turnos.",
         "damage_min": 1,
         "damage_max": 1
       },
@@ -3237,7 +3237,7 @@
         "cost": 4,
         "range": "1-3",
         "effect": "Inflige 42 a 175 PdV de daño al objetivo.",
-        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 42 y 175 PdV de daño.",
+        "description": "Golpe de corto a medio alcance que inflige entre 42 y 175 PdV de daño.",
         "damage_min": 42,
         "damage_max": 175
       }
@@ -3255,7 +3255,7 @@
     "shell": 570,
     "action_points": 11,
     "movement_points": 6,
-    "description": "Monstruo de la familia de los Blops, criaturas gelatinosas y coloridas del Mundo de los Doce que aparecen en la zona y la mazmorra de los Blops. Su combate gira alrededor de la presión a corta y media distancia: dañan con pétalos y biblopterías, reducen PM, ocultan aliados y pueden invocar biblops de apoyo.",
+    "description": "Monstruo de la familia Blops: criaturas gelatinosas y coloridas vinculadas a las llanuras de Cania y a la Mazmorra de los Blops. Esta variante adulta combina 1.365 PdV, 570 PdE, 11 PA y 6 PM para pelear a corta y media distancia: golpea con Biblopétalo y Gran Bibloptería, retira PM con Biflo Koalak, vuelve invisibles a sus aliados con Oculta Biblop y refuerza el campo invocando biblops de su color o aleatorios.",
     "image": "public/images/blops/evolutions/blop-violeta.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
@@ -3282,7 +3282,7 @@
         "cost": 2,
         "range": "2-6",
         "effect": "Vuelve invisible al objetivo durante 2 turnos.",
-        "description": "Oculta a un aliado o invocación al volverlo invisible durante 2 turnos.",
+        "description": "Vuelve invisible al objetivo durante 2 turnos para proteger aliados o invocaciones.",
         "damage_min": 1,
         "damage_max": 1
       },
@@ -3291,7 +3291,7 @@
         "cost": 5,
         "range": "2-7",
         "effect": "Quita 2 PM al objetivo. Usable cada 3 turnos.",
-        "description": "Traba al objetivo a distancia retirándole 2 PM. Reutilización: 3 turnos.",
+        "description": "Retira 2 PM a distancia para trabar el avance del objetivo. Reutilización: 3 turnos.",
         "damage_min": 1,
         "damage_max": 1
       },
@@ -3300,7 +3300,7 @@
         "cost": 5,
         "range": 1,
         "effect": "Invoca 1 biblop aleatorio. No evolucionable. Usable cada 5 turnos.",
-        "description": "Invoca un biblop aleatorio que no puede evolucionar. Reutilización: 5 turnos.",
+        "description": "Invoca un biblop aleatorio no evolucionable. Reutilización: 5 turnos.",
         "damage_min": 1,
         "damage_max": 1
       },
@@ -3309,7 +3309,7 @@
         "cost": 4,
         "range": "1-3",
         "effect": "Inflige 42 a 175 PdV de daño al objetivo.",
-        "description": "Golpe de bibloptería de corto alcance que puede infligir entre 42 y 175 PdV de daño.",
+        "description": "Golpe de corto a medio alcance que inflige entre 42 y 175 PdV de daño.",
         "damage_min": 42,
         "damage_max": 175
       }

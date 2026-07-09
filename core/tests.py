@@ -574,6 +574,16 @@ class BackendlessModeTests(TestCase):
         self.assertIn('function canEvolveNow(unit) { return canUnitEvolve(unit); }', source)
         self.assertIn('Los monstruos invocados no pueden evolucionar', source)
 
+    def test_frontend_groups_fusion_rules_by_monster_family(self):
+        script = Path(__file__).resolve().parent / 'static' / 'core' / 'js' / 'game.js'
+        source = script.read_text(encoding='utf-8')
+
+        self.assertIn('const MONSTER_FUSION_RULES_BY_FAMILY', source)
+        self.assertIn("'Píos': {", source)
+        self.assertIn("'Kitsus': {", source)
+        self.assertIn("'Escarahojas': {", source)
+        self.assertIn('Object.values(MONSTER_FUSION_RULES_BY_FAMILY)', source)
+
     def test_match_apis_are_disabled_in_backendless_mode(self):
         response = self.client.post('/api/match/create-vs-ai/', data='{}', content_type='application/json')
 

@@ -3663,33 +3663,78 @@
     "stage": "evolution",
     "level_min": 60,
     "level_max": 80,
-    "hp": 760,
-    "hp_min": 760,
-    "hp_max": 760,
-    "shell": 220,
-    "action_points": 8,
+    "hp": 980,
+    "hp_min": 980,
+    "hp_max": 980,
+    "shell": 500,
+    "action_points": 9,
     "movement_points": 5,
-    "description": "Carta provisional de Dragohuevo De Morganita Despierto. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "description": "Forma despierta del Dragohuevo de morganita, diseñada a partir del rol oficial de los Dragohuevos despiertos como amenazas de alto impacto. Ya no depende de su cascarón inmóvil: avanza con gran movilidad, invoca meteoritos, drena PA y PM, se potencia con Ronda elemental y puede sacrificar vida para convertirse en un remate cristalino.",
     "image": "public/images/dragons/dragohuevos/dragohuevo-de-morganita-despierto.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Ataque de Dragohuevo De Morganita Despierto",
-        "cost": 2,
-        "range": 1,
-        "effect": "Daño básico provisional de Dragohuevo De Morganita Despierto.",
-        "description": "Daño básico provisional de Dragohuevo De Morganita Despierto.",
-        "damage_min": 56,
-        "damage_max": 76
+        "name": "Meteorito",
+        "cost": 3,
+        "range": 5,
+        "effect": "Inflige 300 a 400 PdV de daño en radio de 5 casillas.",
+        "description": "Hace caer un meteorito cargado de morganita que castiga una zona enorme del campo de batalla.",
+        "damage_min": 300,
+        "damage_max": 400
       },
       {
-        "name": "Impulso de Dragone",
+        "name": "Caída",
+        "cost": 1,
+        "range": "1-2",
+        "effect": "Quita 4 PM al objetivo. Usable 1 vez cada 2 turnos.",
+        "description": "Derriba al objetivo con una onda de choque corta que le arrebata movilidad.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Reconstitución",
+        "cost": 4,
+        "range": "2-4",
+        "effect": "Cura 20% de los PdV restantes del objetivo. Usable 1 vez por objetivo y 2 veces por turno.",
+        "description": "Reordena los fragmentos minerales del objetivo para devolverle una parte de sus PdV restantes.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Encascaración",
+        "cost": 2,
+        "range": 0,
+        "effect": "Pierde 25% de sus PdV restantes a cambio de 30% de potencia. Usable 1 vez cada 3 turnos.",
+        "description": "Endurece su propia cáscara despierta sacrificando vida para aumentar su potencia ofensiva.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Ronda elemental",
+        "cost": 1,
+        "range": "0-7",
+        "effect": "Incrementa sus estadísticas base en un 50% y añade 100 de potencia de forma infinita.",
+        "description": "Canaliza una ronda de energía elemental que escala sus estadísticas y potencia de manera permanente.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Dragoesparcido",
         "cost": 3,
-        "range": 2,
-        "effect": "Hechizo provisional a distancia de la familia Dragones.",
-        "description": "Hechizo provisional a distancia de la familia Dragones.",
-        "damage_min": 44,
-        "damage_max": 68
+        "range": "3-6",
+        "effect": "Inflige 25 a 60 PdV de daño. Usable 1 vez por objetivo y 2 veces por turno.",
+        "description": "Dispersa esquirlas dracónicas a distancia para hostigar a varios objetivos en un mismo turno.",
+        "damage_min": 25,
+        "damage_max": 60
+      },
+      {
+        "name": "Dragojaspe",
+        "cost": 4,
+        "range": "2-5",
+        "effect": "Inflige 80 a 100 PdV de daño y retira 2 PA al objetivo durante 2 turnos.",
+        "description": "Encierra al enemigo en vetas de jaspe morganita, dañándolo y entorpeciendo sus acciones.",
+        "damage_min": 80,
+        "damage_max": 100
       }
     ]
   },
@@ -3699,33 +3744,42 @@
     "stage": "base",
     "level_min": 20,
     "level_max": 35,
-    "hp": 220,
-    "hp_min": 160,
-    "hp_max": 220,
-    "shell": 80,
-    "action_points": 6,
-    "movement_points": 4,
-    "description": "Carta provisional de Dragohuevo Morganita Inmaduro. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "hp": 650,
+    "hp_min": 650,
+    "hp_max": 650,
+    "shell": 225,
+    "action_points": 3,
+    "movement_points": 1,
+    "description": "Dragohuevo de la familia de los Dragohuevos inspirado en el bestiario oficial: una cría de morganita todavía encerrada en su coraza mineral. Empieza el combate con poca movilidad, pero puede atrincherarse con Audacia, hundir a los enemigos cercanos y, si sobrevive hasta madurar, romper el cascarón para adoptar la forma del Dragohuevo morganita.",
     "image": "public/images/dragons/dragohuevos/dragohuevo-morganita-inmaduro.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Ataque de Dragohuevo Morganita Inmaduro",
-        "cost": 2,
-        "range": 1,
-        "effect": "Daño básico provisional de Dragohuevo Morganita Inmaduro.",
-        "description": "Daño básico provisional de Dragohuevo Morganita Inmaduro.",
-        "damage_min": 28,
-        "damage_max": 38
+        "name": "Audacia",
+        "cost": 1,
+        "range": 0,
+        "effect": "Aplica el estado Audaz: agrega 20% de PdV, +3 PA, +2 PM y 50 de potencia de daño infinitos. Cambia la apariencia al Dragohuevo morganita por 2 turnos. Usable a partir del 4.º turno de combate y una única vez.",
+        "description": "La cría fuerza su cascarón de morganita para volverse audaz: gana vida, PA, PM y potencia permanentes, y toma temporalmente el aspecto del Dragohuevo morganita.",
+        "damage_min": 1,
+        "damage_max": 1
       },
       {
-        "name": "Impulso de Dragone",
-        "cost": 3,
+        "name": "Hundimiento",
+        "cost": 1,
         "range": 2,
-        "effect": "Hechizo provisional a distancia de la familia Dragones.",
-        "description": "Hechizo provisional a distancia de la familia Dragones.",
-        "damage_min": 22,
-        "damage_max": 34
+        "effect": "Inflige 155 a 168 PdV de daño en un radio de 2 casillas. Usable 3 veces por objetivo.",
+        "description": "Provoca un hundimiento de cristales bajo los objetivos cercanos, ideal para castigar grupos que rodean al cascarón.",
+        "damage_min": 155,
+        "damage_max": 168
+      },
+      {
+        "name": "Crecimiento Dragohuevo",
+        "cost": 6,
+        "range": 0,
+        "effect": "Cambia la apariencia y los hechizos del monstruo a los del Dragohuevo morganita de forma infinita. Usable desde el 7.º turno de combate y sólo si no está bajo Audacia.",
+        "description": "Completa la maduración del cascarón y transforma de manera permanente al inmaduro en Dragohuevo morganita.",
+        "damage_min": 1,
+        "damage_max": 1
       }
     ]
   },
@@ -3735,33 +3789,60 @@
     "stage": "base",
     "level_min": 20,
     "level_max": 35,
-    "hp": 220,
-    "hp_min": 160,
-    "hp_max": 220,
-    "shell": 80,
-    "action_points": 6,
-    "movement_points": 4,
-    "description": "Carta provisional de Dragohuevo Morganita. Sus datos definitivos y hechizos personalizados se incorporarán cuando esté disponible la referencia del monstruo.",
+    "hp": 820,
+    "hp_min": 820,
+    "hp_max": 820,
+    "shell": 350,
+    "action_points": 3,
+    "movement_points": 1,
+    "description": "Dragohuevo mineral afín a la morganita, creado siguiendo la línea oficial de Dragohuevos que alternan formas inmaduras y despiertas. Es lento y acorazado, pero compensa con ataques de zona, reducción de alcance y un Despertar que prepara su evolución a una variante mucho más agresiva.",
     "image": "public/images/dragons/dragohuevos/dragohuevo-morganita.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [
       {
-        "name": "Ataque de Dragohuevo Morganita",
+        "name": "División",
         "cost": 2,
-        "range": 1,
-        "effect": "Daño básico provisional de Dragohuevo Morganita.",
-        "description": "Daño básico provisional de Dragohuevo Morganita.",
-        "damage_min": 28,
-        "damage_max": 38
+        "range": "1-5",
+        "effect": "Inflige 32 a 149 PdV de daño. Usable 1 vez por turno.",
+        "description": "Parte fragmentos de morganita y los proyecta a media distancia contra un enemigo.",
+        "damage_min": 32,
+        "damage_max": 149
       },
       {
-        "name": "Impulso de Dragone",
-        "cost": 3,
+        "name": "Disnea",
+        "cost": 1,
         "range": 2,
-        "effect": "Hechizo provisional a distancia de la familia Dragones.",
-        "description": "Hechizo provisional a distancia de la familia Dragones.",
-        "damage_min": 22,
-        "damage_max": 34
+        "effect": "Quita 2 de alcance al objetivo. Tiene 50% de probabilidad de aplicar -4 de alcance en radio de 1 casilla alrededor del objetivo.",
+        "description": "Satura el aire con polvo cristalino para asfixiar la visión táctica del enemigo y, a veces, de quienes estén junto a él.",
+        "damage_min": 1,
+        "damage_max": 1
+      },
+      {
+        "name": "Emplasto",
+        "cost": 3,
+        "range": "1-2",
+        "effect": "Inflige 48 a 95 PdV de daño. Usable 1 vez por objetivo y 2 veces por turno.",
+        "description": "Golpea con una masa compacta de cáscara y gema, eficaz contra objetivos cercanos.",
+        "damage_min": 48,
+        "damage_max": 95
+      },
+      {
+        "name": "Cascote",
+        "cost": 1,
+        "range": 1,
+        "effect": "Inflige 200 PdV de daño en radio de 1 casilla.",
+        "description": "Desprende un cascote de morganita que estalla alrededor del punto de impacto.",
+        "damage_min": 200,
+        "damage_max": 200
+      },
+      {
+        "name": "Despertar",
+        "cost": 6,
+        "range": 0,
+        "effect": "Cambia la apariencia y los hechizos del monstruo a los del Dragohuevo morganita despierto de forma infinita. Usable a partir del 3.º turno de combate.",
+        "description": "Rompe definitivamente la calma del Dragohuevo y libera la forma despierta de morganita.",
+        "damage_min": 1,
+        "damage_max": 1
       }
     ]
   },

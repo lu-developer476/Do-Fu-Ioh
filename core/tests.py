@@ -15,6 +15,26 @@ class CardSeedSourceValidationTests(SimpleTestCase):
             with self.assertRaises(CardSeedDataError):
                 load_cards_seed_data(path=path)
 
+
+    def test_serialized_seed_data_is_defensive_copy(self):
+        first = serialized_cards_seed_data()
+        original_name = first[0]['name']
+        first[0]['name'] = 'Mutación local'
+
+        second = serialized_cards_seed_data()
+
+        self.assertEqual(second[0]['name'], original_name)
+
+    def test_load_cards_seed_data_cache_refreshes_when_file_changes(self):
+        with TemporaryDirectory() as tmp_dir:
+            path = Path(tmp_dir) / 'cards.json'
+            path.write_text('[{"name": "A"}]', encoding='utf-8')
+            self.assertEqual(load_cards_seed_data(path=path), [{'name': 'A'}])
+
+            path.write_text('[{"name": "B"}, {"name": "C"}]', encoding='utf-8')
+
+            self.assertEqual(load_cards_seed_data(path=path), [{'name': 'B'}, {'name': 'C'}])
+
     def test_base_escarahojas_match_reference_stats(self):
         cards = {card['name']: card for card in load_cards_seed_data()}
         names = [

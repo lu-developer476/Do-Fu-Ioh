@@ -204,21 +204,36 @@ class KitsuCatalogDataTests(SimpleTestCase):
                         f'Astucia del Kitsu {spell_suffix}',
                         'Kitsupunta',
                     ] + expected_base_extras[card['name']]
-                else:
+                elif card['stage'] == 'fusion':
                     expected_names = [
                         f'Kitsnición {spell_suffix}',
                         f'Ilusión espectral {spell_suffix}',
-                        (f'Argucia {spell_suffix}' if card['name'] != 'Kitsu silvestre evolucionado' else f'Argucia del Kitsu {spell_suffix}'),
-                    ] + (['Evolución'] if card['stage'] == 'fusion' else [])
+                        f'Argucia {spell_suffix}',
+                        'Evolución',
+                    ]
+                else:
+                    expected_names = [
+                        'Kitsnición mejorada',
+                        'Ilusión fantasmal',
+                        'Argucia distintiva',
+                    ]
 
                 self.assertEqual([spell['name'] for spell in card['spells']], expected_names)
-                if card['stage'] in {'fusion', 'evolution'} and card['name'] != 'Kitsu silvestre evolucionado':
+                if card['stage'] == 'fusion':
                     self.assertIn('Kitsu base no evolucionable', card['spells'][1]['effect'])
                     self.assertEqual(card['spells'][1]['damage_min'], 0)
                     self.assertTrue(card['spells'][1]['non_damage'])
                     self.assertIn('75% de probabilidad de evadir', card['spells'][2]['effect'])
                     self.assertEqual(card['spells'][2]['evasion_chance_percent'], 75)
                     self.assertEqual(card['spells'][2]['evasion_decay_percent_per_turn'], 25)
+                if card['stage'] == 'evolution':
+                    self.assertIn('Kitsu base NO EVOLUCIONABLE', card['spells'][1]['effect'])
+                    self.assertEqual(card['spells'][1]['damage_min'], 0)
+                    self.assertTrue(card['spells'][1]['non_damage'])
+                    self.assertIn('100% de probabilidad de evadir', card['spells'][2]['effect'])
+                    self.assertEqual(card['spells'][2]['evasion_chance_percent'], 100)
+                    self.assertEqual(card['spells'][2]['evasion_duration_turns'], 5)
+                    self.assertEqual(card['spells'][2]['evasion_decay_percent_per_turn'], 20)
                 if card['stage'] == 'fusion':
                     self.assertIn('350 daño en área de 2 casillas', card['spells'][3]['effect'])
                     self.assertEqual(card['spells'][3]['damage_min'], 350)

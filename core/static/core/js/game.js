@@ -168,7 +168,7 @@ function fusionRecipeForPair(unit, target) { if (!unit || !target || unit.owner 
 function fusionUnitsForRecipe(anchor, recipeName) { const requirements = FUSION_RECIPES[recipeName] || []; const allies = (appState.match?.[anchor.owner]?.units || []).filter((unit) => unit.id === anchor.id || distance(anchor, unit) <= 1); const selected = []; for (const requiredName of requirements) { const unit = allies.find((candidate) => candidate.card.name === requiredName && !selected.some((item) => item.id === candidate.id)); if (!unit) return []; selected.push(unit); } return selected.some((unit) => unit.id === anchor.id) ? selected : []; }
 function fusionRecipeForBattle(unit, target = null) { if (!unit || (target && unit.owner !== target.owner)) return null; const pair = fusionRecipeForPair(unit, target); if (pair) return pair; return Object.entries(FUSION_RECIPES).find(([name, req]) => req.includes(unit.card.name) && (!target || req.includes(target.card.name)) && fusionUnitsForRecipe(unit, name).length === req.length) || null; }
 function virtualFusionSpell(unit, target) { const recipe = fusionRecipeForBattle(unit, target); if (!recipe) return null; const fusionLabel = recipe[0].replace(/^Kitsu /i, ''); return { name: `Fusión ${fusionLabel.charAt(0).toUpperCase()}${fusionLabel.slice(1)}`, cost: 0, range: 1, damage_min: 0, damage_max: 0, description: `Fusiona ${recipe[1].join(' + ')} para crear ${recipe[0]}.` }; }
-function virtualEvolutionSpell(unit) { return EVOLUTION_RECIPES[unit?.card?.name] ? { name: 'Evolución', cost: 0, range: 0, damage_min: 0, damage_max: 0, description: 'Asciende a la forma definitiva durante el combate.' } : null; }
+function virtualEvolutionSpell(unit) { return EVOLUTION_RECIPES[unit?.card?.name] ? { name: 'Evolución', cost: 0, range: 0, damage_min: 350, damage_max: 350, area_range: 2, usable_from_turn: 5, description: 'Hace 350 daño en área de 2 casillas y asciende a la evolución correspondiente desde el 5° turno.' } : null; }
 function spellCost(spell = {}) { return Math.max(0, Number(spell.cost) || 0); }
 function usableSpells(unit, target = null) { const baseSpells = Array.isArray(unit?.card?.spells) && unit.card.spells.length ? unit.card.spells : [defaultSpell(unit?.card || {})]; const specials = [target ? virtualFusionSpell(unit, target) : virtualEvolutionSpell(unit)].filter(Boolean); const spells = [...specials, ...baseSpells]; return spells.filter((spell) => spellCost(spell) <= (unit?.pa_current || 0) && (!target || distance(unit, target) <= Math.max(0, Number(spell.range) || unit.attack_range || 1))); }
 function chooseBestSpell(unit, target = null) { return usableSpells(unit, target).sort((a, b) => estimateDamage(unit.card, b) - estimateDamage(unit.card, a) || (Number(a.cost) || 1) - (Number(b.cost) || 1))[0] || defaultSpell(unit?.card || {}); }
@@ -205,8 +205,25 @@ function applyEvolutionSpell(side, attacker, cost) {
   const evolutionCard = evolutionName && findCardByName(evolutionName);
   if (!evolutionCard) throw new Error('Este monstruo no tiene evolución configurada.');
   if (attacker.card.stage !== 'fusion' && !['Kitsu silvestre'].includes(attacker.card.name)) throw new Error('Sólo una fusión o Kitsu silvestre puede evolucionar durante el combate.');
+  if ((appState.match.turn?.number || 1) < 5) throw new Error('Evolución sólo puede usarse a partir del 5° turno de combate.');
   attacker.pa_current -= cost;
-  playCombatSound('summon'); replaceUnitWithCard(side, [attacker], evolutionCard, attacker, `${formatSideLabel(side)} evolucionó ${attacker.card.name} a ${evolutionName}.`);
+  const enemySide = side === 'host' ? 'guest' : 'host';
+  const enemies = appState.match[enemySide].units || [];
+  let damaged = 0;
+  enemies.filter((unit) => distance(attacker, unit) <= 2).forEach((unit) => {
+    const previousHp = unit.hp_current;
+    const shieldDamage = Math.min(unit.shell_current, 350);
+    unit.shell_current = Math.max(0, unit.shell_current - shieldDamage);
+    const hpDamage = Math.max(0, 350 - shieldDamage);
+    unit.hp_current -= hpDamage;
+    damaged += 1;
+    if (shieldDamage > 0) pushCombatEffect({ x: unit.x, y: unit.y, text: `-${shieldDamage} PdE`, tone: 'shield' });
+    if (hpDamage > 0) pushCombatEffect({ x: unit.x, y: unit.y, text: `-${Math.max(0, previousHp - Math.max(0, unit.hp_current))} PdV`, tone: 'hp' });
+  });
+  appState.match[enemySide].units = enemies.filter((unit) => unit.hp_current > 0);
+  playCombatSound('summon');
+  playCombatSound('damage');
+  replaceUnitWithCard(side, [attacker], evolutionCard, attacker, `${formatSideLabel(side)} evolucionó ${attacker.card.name} a ${evolutionName} e infligió 350 de daño en área de 2 casillas a ${damaged} objetivo(s).`);
 }
 
 function regenerateShields(player) { const turn = appState.match.turn?.number || 1; if (turn % 2 !== 0) return; player.units.forEach((unit) => { const maxShell = Number(unit.card.shell) || 0; if (!maxShell || unit.shell_current >= maxShell) return; const restored = Math.min(maxShell - unit.shell_current, Math.max(1, Math.ceil(maxShell * shellRegenPercent(unit.card)))); unit.shell_current += restored; appendLog(`${unit.card.name} regeneró ${restored} PdE (${Math.round(shellRegenPercent(unit.card) * 100)}%).`); }); }

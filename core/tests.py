@@ -364,19 +364,35 @@ class BlopCatalogDataTests(SimpleTestCase):
                     ],
                 )
 
-    def test_biblops_use_short_range_biblopteria(self):
+    def test_biblops_match_reference_stats_and_spellkit(self):
         cards = {card['name']: card for card in load_cards_seed_data()}
+        expected_spells = {
+            'Biblopétalo': (4, '1-2', 29, 41, False),
+            'Biblopimiento': (1, 1, 0, 0, True),
+            'Gran Bibloptería': (2, '1-2', 20, 55, False),
+            'Memoria de Blop': (1, 0, 0, 0, True),
+        }
 
         for name, card in cards.items():
             if not name.startswith('Biblop '):
                 continue
             with self.subTest(card=name):
-                self.assertEqual(len(card['spells']), 1)
-                self.assertEqual(card['spells'][0]['name'], 'Gran Bibloptería')
-                self.assertEqual(card['spells'][0]['cost'], 2)
-                self.assertEqual(card['spells'][0]['range'], '1-2')
-                self.assertEqual(card['spells'][0]['damage_min'], 20)
-                self.assertEqual(card['spells'][0]['damage_max'], 55)
+                self.assertEqual(card['hp'], 270)
+                self.assertEqual(card['hp_min'], 210)
+                self.assertEqual(card['hp_max'], 270)
+                self.assertEqual(card['shell'], 180)
+                self.assertEqual(card['shell_min'], 150)
+                self.assertEqual(card['shell_max'], 180)
+                self.assertEqual(card['action_points'], 5)
+                self.assertEqual(card['movement_points'], 4)
+                self.assertEqual([spell['name'] for spell in card['spells']], list(expected_spells))
+                for spell in card['spells']:
+                    cost, spell_range, damage_min, damage_max, non_damage = expected_spells[spell['name']]
+                    self.assertEqual(spell['cost'], cost)
+                    self.assertEqual(spell['range'], spell_range)
+                    self.assertEqual(spell['damage_min'], damage_min)
+                    self.assertEqual(spell['damage_max'], damage_max)
+                    self.assertEqual(spell.get('non_damage', False), non_damage)
 
 
 class SpellBalanceTests(SimpleTestCase):

@@ -15,18 +15,25 @@ const $ = (sel) => document.querySelector(sel);
 const familyFilter = $('#family-filter');
 const stageFilter = $('#stage-filter');
 
-const FUSION_RECIPES = {
-  'Pío combinado': ['Pío albino', 'Pío negruzco'],
-  'Pío otoñal': ['Pío anaranjado', 'Pío castaño'],
-  'Kitsu kumiawase': ['Kitsu amatista', 'Kitsu magenta'],
-  'Kitsu nishiki': ['Kitsu mizu', 'Kitsu midori no mizu'],
-  'Kitsu penta': ['Kitsu amatista', 'Kitsu anaranjado', 'Kitsu carmine', 'Kitsu magenta', 'Kitsu silvestre'],
-  'Kitsu yin yang': ['Kitsu dākuburakku', 'Kitsu junsuina hikari'],
-  'Escarahoja duocromada': ['Escarahoja anaranjada', 'Escarahoja tostada'],
-  'Escarahoja mecanizada': ['Escarahoja tostada', 'Escarahoja limonada'],
-  'Escarahoja tricolor': ['Escarahoja sonrosada', 'Escarahoja violeta'],
-  'Escarahoja variopinta': ['Escarahoja anaranjada', 'Escarahoja limonada', 'Escarahoja sonrosada', 'Escarahoja tostada', 'Escarahoja violeta']
+const MONSTER_FUSION_RULES_BY_FAMILY = {
+  'Píos': {
+    'Pío combinado': ['Pío albino', 'Pío negruzco'],
+    'Pío otoñal': ['Pío anaranjado', 'Pío castaño']
+  },
+  'Kitsus': {
+    'Kitsu kumiawase': ['Kitsu amatista', 'Kitsu magenta'],
+    'Kitsu nishiki': ['Kitsu mizu', 'Kitsu midori no mizu'],
+    'Kitsu penta': ['Kitsu amatista', 'Kitsu anaranjado', 'Kitsu carmine', 'Kitsu magenta', 'Kitsu silvestre'],
+    'Kitsu yin yang': ['Kitsu dākuburakku', 'Kitsu junsuina hikari']
+  },
+  'Escarahojas': {
+    'Escarahoja duocromada': ['Escarahoja anaranjada', 'Escarahoja tostada'],
+    'Escarahoja mecanizada': ['Escarahoja tostada', 'Escarahoja limonada'],
+    'Escarahoja tricolor': ['Escarahoja sonrosada', 'Escarahoja violeta'],
+    'Escarahoja variopinta': ['Escarahoja anaranjada', 'Escarahoja limonada', 'Escarahoja sonrosada', 'Escarahoja tostada', 'Escarahoja violeta']
+  }
 };
+const FUSION_RECIPES = Object.fromEntries(Object.values(MONSTER_FUSION_RULES_BY_FAMILY).flatMap((recipes) => Object.entries(recipes)));
 const EVOLUTION_RECIPES = {
   'Pío otoñal': 'Píoloro',
   'Kitsu silvestre': 'Kitsu silvestre evolucionado',

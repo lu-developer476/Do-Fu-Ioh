@@ -180,24 +180,61 @@ class KitsuCatalogDataTests(SimpleTestCase):
     def test_kitsu_reference_spells_are_defined(self):
         cards = {card['name']: card for card in serialized_cards_seed_data()}
         kitsus = [card for card in cards.values() if card['family'] == 'Kitsus']
+        expected_base_extras = {
+            'Kitsu amatista': ['Fusión Kumiawase', 'Fusión Penta'],
+            'Kitsu anaranjado': ['Fusión Penta'],
+            'Kitsu androide': ['Aprendizaje'],
+            'Kitsu carmine': ['Fusión Penta'],
+            'Kitsu dākuburakku': ['Fusión Yin Yang'],
+            'Kitsu junsuina hikari': ['Fusión Yin Yang'],
+            'Kitsu magenta': ['Fusión Kumiawase', 'Fusión Penta'],
+            'Kitsu midori no mizu': ['Fusión Nishiki'],
+            'Kitsu mizu': ['Fusión Nishiki'],
+            'Kitsu silvestre': ['Emanación', 'Fusión Penta'],
+        }
 
         for card in kitsus:
             spell_suffix = card['name'].removeprefix('Kitsu ')
 
             with self.subTest(card=card['name']):
-                self.assertEqual(
-                    [spell['name'] for spell in card['spells']],
-                    [
+                if card['stage'] == 'base':
+                    expected_names = [
+                        'Kitsnición',
+                        'Espirilusión holográfica',
+                        f'Astucia del Kitsu {spell_suffix}',
+                        'Kitsupunta',
+                    ] + expected_base_extras[card['name']]
+                else:
+                    expected_names = [
                         f'Kitsnición {spell_suffix}',
                         f'Ilusión espectral {spell_suffix}',
                         f'Argucia del Kitsu {spell_suffix}',
-                    ] + (['Evolución'] if card['stage'] == 'fusion' else ['Fusión Kitsu'] if card['stage'] == 'base' and card['name'] not in {'Kitsu silvestre', 'Kitsu androide'} else []),
-                )
-                self.assertEqual(len(card['spells']), 4 if (card['stage'] == 'fusion' or (card['stage'] == 'base' and card['name'] not in {'Kitsu silvestre', 'Kitsu androide'})) else 3)
+                    ] + (['Evolución'] if card['stage'] == 'fusion' else [])
+
+                self.assertEqual([spell['name'] for spell in card['spells']], expected_names)
                 if card['stage'] == 'fusion':
                     self.assertIn('Kitsu fusionado', card['spells'][3]['effect'])
-                if card['stage'] == 'base' and card['name'] not in {'Kitsu silvestre', 'Kitsu androide'}:
-                    self.assertIn('Kitsus compatibles', card['spells'][3]['effect'])
+                if card['stage'] == 'base':
+                    self.assertEqual(card['spells'][0]['cost'], 5)
+                    self.assertEqual(card['spells'][0]['range_min'], 1)
+                    self.assertEqual(card['spells'][0]['range'], 4)
+                    self.assertEqual(card['spells'][0]['damage_min'], 150)
+                    self.assertEqual(card['spells'][0]['damage_max'], 180)
+                    self.assertEqual(card['spells'][0]['critical_chance_bonus'], 20)
+                    self.assertEqual(card['spells'][1]['cost'], 3)
+                    self.assertEqual(card['spells'][1]['range_min'], 0)
+                    self.assertEqual(card['spells'][1]['range'], 2)
+                    self.assertTrue(card['spells'][1]['non_damage'])
+                    self.assertEqual(card['spells'][2]['cost'], 1)
+                    self.assertEqual(card['spells'][2]['healing_min'], 251)
+                    self.assertEqual(card['spells'][2]['healing_max'], 260)
+                    self.assertEqual(card['spells'][3]['name'], 'Kitsupunta')
+                    self.assertEqual(card['spells'][3]['damage_min'], 75)
+                    self.assertEqual(card['spells'][3]['damage_max'], 90)
+                    if card['name'] == 'Kitsu androide':
+                        self.assertIn('-100% de daño', card['spells'][-1]['effect'])
+                    if card['name'] == 'Kitsu silvestre':
+                        self.assertEqual(card['spells'][4]['evolves_to'], 'Kitsu silvestre evolucionado')
                 for spell in card['spells']:
                     self.assertIn('cost', spell)
                     self.assertIn('range', spell)

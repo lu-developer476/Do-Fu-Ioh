@@ -17,7 +17,7 @@ const FUSION_RECIPES = {
   'Pío otoñal': ['Pío anaranjado', 'Pío castaño'],
   'Kitsu kumiawase': ['Kitsu amatista', 'Kitsu magenta'],
   'Kitsu nishiki': ['Kitsu mizu', 'Kitsu midori no mizu'],
-  'Kitsu penta': ['Kitsu amatista', 'Kitsu anaranjado', 'Kitsu carmine', 'Kitsu midori no mizu', 'Kitsu junsuina hikari'],
+  'Kitsu penta': ['Kitsu amatista', 'Kitsu anaranjado', 'Kitsu carmine', 'Kitsu magenta', 'Kitsu silvestre'],
   'Kitsu yin yang': ['Kitsu dākuburakku', 'Kitsu junsuina hikari'],
   'Escarahoja duocromada': ['Escarahoja anaranjada', 'Escarahoja tostada'],
   'Escarahoja mecanizada': ['Escarahoja tostada', 'Escarahoja limonada'],
@@ -167,7 +167,7 @@ function namesMatchRecipe(names = [], requirements = []) { const sortedNames = n
 function fusionRecipeForPair(unit, target) { if (!unit || !target || unit.owner !== target.owner) return null; const names = [unit.card.name, target.card.name]; return Object.entries(FUSION_RECIPES).find(([, req]) => req.length === 2 && namesMatchRecipe(names, req)) || null; }
 function fusionUnitsForRecipe(anchor, recipeName) { const requirements = FUSION_RECIPES[recipeName] || []; const allies = (appState.match?.[anchor.owner]?.units || []).filter((unit) => unit.id === anchor.id || distance(anchor, unit) <= 1); const selected = []; for (const requiredName of requirements) { const unit = allies.find((candidate) => candidate.card.name === requiredName && !selected.some((item) => item.id === candidate.id)); if (!unit) return []; selected.push(unit); } return selected.some((unit) => unit.id === anchor.id) ? selected : []; }
 function fusionRecipeForBattle(unit, target = null) { if (!unit || (target && unit.owner !== target.owner)) return null; const pair = fusionRecipeForPair(unit, target); if (pair) return pair; return Object.entries(FUSION_RECIPES).find(([name, req]) => req.includes(unit.card.name) && (!target || req.includes(target.card.name)) && fusionUnitsForRecipe(unit, name).length === req.length) || null; }
-function virtualFusionSpell(unit, target) { const recipe = fusionRecipeForBattle(unit, target); if (!recipe) return null; return { name: `Fusión: ${recipe[0]}`, cost: 0, range: 1, damage_min: 0, damage_max: 0, description: `Fusiona ${recipe[1].join(' + ')} para crear ${recipe[0]}.` }; }
+function virtualFusionSpell(unit, target) { const recipe = fusionRecipeForBattle(unit, target); if (!recipe) return null; const fusionLabel = recipe[0].replace(/^Kitsu /i, ''); return { name: `Fusión ${fusionLabel.charAt(0).toUpperCase()}${fusionLabel.slice(1)}`, cost: 0, range: 1, damage_min: 0, damage_max: 0, description: `Fusiona ${recipe[1].join(' + ')} para crear ${recipe[0]}.` }; }
 function virtualEvolutionSpell(unit) { return EVOLUTION_RECIPES[unit?.card?.name] ? { name: 'Evolución', cost: 0, range: 0, damage_min: 0, damage_max: 0, description: 'Asciende a la forma definitiva durante el combate.' } : null; }
 function spellCost(spell = {}) { return Math.max(0, Number(spell.cost) || 0); }
 function usableSpells(unit, target = null) { const baseSpells = Array.isArray(unit?.card?.spells) && unit.card.spells.length ? unit.card.spells : [defaultSpell(unit?.card || {})]; const specials = [target ? virtualFusionSpell(unit, target) : virtualEvolutionSpell(unit)].filter(Boolean); const spells = [...specials, ...baseSpells]; return spells.filter((spell) => spellCost(spell) <= (unit?.pa_current || 0) && (!target || distance(unit, target) <= Math.max(0, Number(spell.range) || unit.attack_range || 1))); }

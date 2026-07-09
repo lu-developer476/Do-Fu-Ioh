@@ -16,7 +16,7 @@
     </a>
     <nav class="navbar-links" aria-label="Secciones de juego">
       <details class="nav-popover">
-        <summary id="open-new-match-panel">Nueva Partida</summary>
+        <summary id="open-new-match-panel">Partida</summary>
         <div id="controls" class="nav-popover-panel" aria-label="Opciones de nueva partida">
           <div class="duel-control-card">
             <span class="control-eyebrow">Cartas iniciales</span>
@@ -61,6 +61,7 @@
         <div id="catalog-panel" class="nav-popover-panel catalog-panel" aria-labelledby="catalog-heading">
           <div class="panel-heading"><h2 id="catalog-heading">Monstruos</h2></div>
           <div id="family-filter" class="catalog-toolbar filter-chip-row" role="group" aria-label="Filtrar por familia"></div>
+          <div id="stage-filter" class="catalog-toolbar filter-chip-row" role="group" aria-label="Filtrar por tipo de monstruo"></div>
           <div id="catalog" class="catalog"></div>
         </div>
       </details>
@@ -110,9 +111,7 @@
     <dialog id="match-setup-dialog" class="hand-choice-dialog">
       <form method="dialog" class="hand-choice-modal">
         <button id="match-setup-close" class="ghost icon-close modal-close-x" value="cancel" aria-label="Cerrar">×</button>
-        <p class="kicker">Nueva Partida</p>
-        <h2>Configurá el estilo de juego</h2>
-        <p>Elegí la configuración por etapas. Los cambios se aplican recién al presionar <strong>Aceptar</strong>.</p>
+        <h2>Configuración de juego</h2>
         <ol class="setup-progress" aria-label="Etapas de configuración">
           <li data-setup-dot="cards" class="is-active">Cartas</li>
           <li data-setup-dot="bestiary">Bestiario</li>
@@ -121,7 +120,6 @@
 
         <section class="setup-step" data-setup-step="cards">
           <h3>Cantidad de cartas</h3>
-          <p class="small">Definí el tamaño de la mano inicial. Esta cantidad también limita la selección manual.</p>
           <fieldset class="segmented-control modal-segmented" aria-label="Cartas iniciales para la nueva partida">
             <legend class="control-label visually-hidden">Cartas iniciales</legend>
             <label><input type="radio" name="modal-initial-hand-size" value="1" /> <span>1 carta</span></label>
@@ -131,8 +129,7 @@
         </section>
 
         <section class="setup-step" data-setup-step="bestiary" hidden>
-          <h3>Bestiario a emplear</h3>
-          <p class="small">Restringí las cartas disponibles por familia y por tipo para la partida.</p>
+          <h3>Bestiario</h3>
           <fieldset class="segmented-control modal-segmented two-options" aria-label="Alcance del bestiario modal">
             <legend class="control-label">Bestiario</legend>
             <label><input type="radio" name="modal-deck-scope" value="family" /> <span>1 familia</span></label>
@@ -148,8 +145,7 @@
         </section>
 
         <section class="setup-step" data-setup-step="mode" hidden>
-          <h3>Baraja automática o manual</h3>
-          <p class="small">Elegí si la partida arranca con mano al azar o si preferís escoger cartas desde el Bestiario.</p>
+          <h3>Baraja</h3>
           <fieldset class="segmented-control modal-segmented two-options" aria-label="Modo de baraja">
             <legend class="control-label visually-hidden">Modo de baraja</legend>
             <label><input type="radio" name="modal-deck-mode" value="random" checked /> <span>Automática</span></label>

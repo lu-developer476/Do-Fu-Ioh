@@ -10,9 +10,10 @@ const DEPLOY_ROWS = { host: [BOARD_HEIGHT - 1], guest: [0] };
 const SIDE_DEPLOY_DEPTH = 3;
 const MATCH_SETUP_STEPS = ['cards', 'bestiary', 'mode'];
 const INITIAL_HAND_OPTIONS = new Set([1, 2, 5]);
-const appState = { cards: [], roomCode: null, match: null, selectedHandIndex: null, selectedUnitId: null, selectedCatalogCardIds: new Set(), selectedFamily: '', actionFeedback: { message: 'Seleccioná una carta o una unidad para continuar.', tone: 'normal' }, clientLog: [], combatEffects: [], aiPlayback: false, hasPromptedInitialHand: false, lastMatchConfig: null, matchSetupStep: 0, audio: { ctx: null, enabled: true, unlocked: false } };
+const appState = { cards: [], roomCode: null, match: null, selectedHandIndex: null, selectedUnitId: null, selectedCatalogCardIds: new Set(), selectedFamily: '', selectedStage: '', actionFeedback: { message: 'Seleccioná una carta o una unidad para continuar.', tone: 'normal' }, clientLog: [], combatEffects: [], aiPlayback: false, hasPromptedInitialHand: false, lastMatchConfig: null, matchSetupStep: 0, audio: { ctx: null, enabled: true, unlocked: false } };
 const $ = (sel) => document.querySelector(sel);
 const familyFilter = $('#family-filter');
+const stageFilter = $('#stage-filter');
 
 const FUSION_RECIPES = {
   'Pío combinado': ['Pío albino', 'Pío negruzco'],
@@ -438,14 +439,15 @@ function renderCatalog() {
   const catalogEl = $('#catalog'); if (!catalogEl) return;
   clearElement(catalogEl);
   const family = appState.selectedFamily || '';
-  const cards = appState.cards.filter((card) => !family || card.family === family);
+  const stage = appState.selectedStage || '';
+  const cards = appState.cards.filter((card) => (!family || card.family === family) && (!stage || card.stage === stage));
   if (!cards.length) return renderEmptyState(catalogEl, EMPTY_MESSAGES.catalog);
   cards.forEach((card) => {
     const article = document.createElement('article');
     article.className = 'card';
     article.appendChild(createCardImageElement(cardImage(card), card.name, 'card-image-catalog'));
     appendTextElement(article, 'h4', card.name);
-    appendBadgeRow(article, [stageLabel(card.stage), card.family, summarizeCardStats(card)]);
+    appendBadgeRow(article, [summarizeCardStats(card)]);
     appendCardInfoControls(article, card);
     const button = document.createElement('button');
     button.type = 'button';
@@ -556,18 +558,38 @@ function renderGame() {
   renderMatchLog(appState.match.log || []);
 }
 
-function createFamilyFilterButton(label, value) {
+function createFilterButton({ label, value, selectedValue, onSelect }) {
   const button = document.createElement('button');
   button.type = 'button';
   button.className = 'filter-chip';
   button.textContent = label;
-  button.setAttribute('aria-pressed', String((appState.selectedFamily || '') === value));
-  button.addEventListener('click', () => {
-    appState.selectedFamily = value;
-    populateFamilyFilter(appState.cards);
-    renderCatalog();
-  });
+  button.setAttribute('aria-pressed', String((selectedValue || '') === value));
+  button.addEventListener('click', onSelect);
   return button;
+}
+function createFamilyFilterButton(label, value) {
+  return createFilterButton({
+    label,
+    value,
+    selectedValue: appState.selectedFamily,
+    onSelect: () => {
+      appState.selectedFamily = value;
+      populateFamilyFilter(appState.cards);
+      renderCatalog();
+    },
+  });
+}
+function createStageFilterButton(label, value) {
+  return createFilterButton({
+    label,
+    value,
+    selectedValue: appState.selectedStage,
+    onSelect: () => {
+      appState.selectedStage = value;
+      populateStageFilter();
+      renderCatalog();
+    },
+  });
 }
 function populateFamilyFilter(cards = []) {
   if (!familyFilter) return;
@@ -575,7 +597,13 @@ function populateFamilyFilter(cards = []) {
   familyFilter.appendChild(createFamilyFilterButton('Todas las familias', ''));
   [...new Set(cards.map((card) => card.family).filter(Boolean))].forEach((family) => { familyFilter.appendChild(createFamilyFilterButton(family, family)); });
 }
-function loadCards() { appState.cards = localSeedCards(); populateFamilyFilter(appState.cards); syncFamilySelects(); renderOstControls(); renderCatalog(); return Promise.resolve(); }
+function populateStageFilter() {
+  if (!stageFilter) return;
+  clearElement(stageFilter);
+  stageFilter.appendChild(createStageFilterButton('Todos los tipos', ''));
+  [['Base', 'base'], ['Fusión', 'fusion'], ['Evolución', 'evolution']].forEach(([label, value]) => { stageFilter.appendChild(createStageFilterButton(label, value)); });
+}
+function loadCards() { appState.cards = localSeedCards(); populateFamilyFilter(appState.cards); populateStageFilter(); syncFamilySelects(); renderOstControls(); renderCatalog(); return Promise.resolve(); }
 function loadActiveMatch() { localStorage.removeItem(STORAGE_KEY); appState.roomCode = null; appState.match = null; updateDerivedCombat(); renderGame(); return Promise.resolve(); }
 function requestedHandSize() { return Number(document.querySelector('input[name="initial-hand-size"]:checked')?.value || 5); }
 async function createAIMatch(selectedCardIds = []) { startLocalMatch(selectedCardIds, requestedHandSize()); renderGame(); setStatus(selectedCardIds.length ? 'Duelo local creado con la selección manual como mano disponible.' : 'Duelo local creado con mano aleatoria.'); }

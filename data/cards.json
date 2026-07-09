@@ -349,40 +349,77 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Kitsnición amatista",
+        "name": "Kitsnición",
+        "cost": 5,
+        "range": 4,
+        "effect": "Rango 1 a 4 casillas. Inflige 150 a 180 PdV y aumenta la probabilidad de daño crítico del lanzador en 20% durante 2 turnos.",
+        "description": "Rango 1 a 4 casillas. Inflige 150 a 180 PdV y aumenta la probabilidad de daño crítico del lanzador en 20% durante 2 turnos.",
+        "damage_min": 150,
+        "damage_max": 180,
+        "range_min": 1,
+        "critical_chance_bonus": 20,
+        "duration": 2
+      },
+      {
+        "name": "Espirilusión holográfica",
         "cost": 3,
-        "range": 3,
-        "effect": "Daño elemental adaptado al color amatista del Kitsu.",
-        "description": "Daño elemental adaptado al color amatista del Kitsu.",
-        "damage_min": 123,
-        "damage_max": 158
-      },
-      {
-        "name": "Ilusión espectral amatista",
-        "cost": 4,
         "range": 2,
-        "effect": "Crea una ilusión espectral con la energía amatista del Kitsu.",
-        "description": "Crea una ilusión espectral con la energía amatista del Kitsu.",
-        "damage_min": 142,
-        "damage_max": 183
-      },
-      {
-        "name": "Argucia del Kitsu amatista",
-        "cost": 4,
-        "range": 0,
-        "effect": "Maniobra evasiva imbuida con la afinidad amatista del Kitsu.",
-        "description": "Maniobra evasiva imbuida con la afinidad amatista del Kitsu.",
-        "damage_min": 102,
-        "damage_max": 132
-      },
-      {
-        "name": "Fusión Kitsu",
-        "cost": 0,
-        "range": 1,
+        "effect": "Rango 0 a 2 casillas. Vuelve invisible al objetivo durante 2 turnos e invoca un Kitsu igual al lanzador. La invocación puede usar hechizos, pero no puede invocar.",
+        "description": "Rango 0 a 2 casillas. Vuelve invisible al objetivo durante 2 turnos e invoca un Kitsu igual al lanzador. La invocación puede usar hechizos, pero no puede invocar.",
         "damage_min": 0,
         "damage_max": 0,
-        "effect": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
-        "description": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado."
+        "range_min": 0,
+        "non_damage": true,
+        "duration": 2
+      },
+      {
+        "name": "Astucia del Kitsu amatista",
+        "cost": 1,
+        "range": 0,
+        "effect": "Otorga 251 a 260 de curas, pero durante 3 turnos aplica al lanzador: 1 PA, 3 PM y 100 de potencia de daño.",
+        "description": "Otorga 251 a 260 de curas, pero durante 3 turnos aplica al lanzador: 1 PA, 3 PM y 100 de potencia de daño.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "healing_min": 251,
+        "healing_max": 260,
+        "non_damage": true,
+        "duration": 3,
+        "action_points_bonus": 1,
+        "movement_points_bonus": 3,
+        "damage_power_bonus": 100
+      },
+      {
+        "name": "Kitsupunta",
+        "cost": 5,
+        "range": 1,
+        "effect": "Inflige 75 a 90 PdV y cura al lanzador un 18% de sus PdV máximos. Usable cada 2 turnos.",
+        "description": "Inflige 75 a 90 PdV y cura al lanzador un 18% de sus PdV máximos. Usable cada 2 turnos.",
+        "damage_min": 75,
+        "damage_max": 90,
+        "healing_max_hp_percent": 18,
+        "cooldown": 2
+      },
+      {
+        "name": "Fusión Kumiawase",
+        "cost": 0,
+        "range": 0,
+        "effect": "Los Kitsus Amatista y Magenta tienen que activar este hechizo en el mismo turno para que el Kitsu Kumiawase fusionado aparezca en combate.",
+        "description": "Los Kitsus Amatista y Magenta tienen que activar este hechizo en el mismo turno para que el Kitsu Kumiawase fusionado aparezca en combate.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true,
+        "fusion_condition": "same_turn_activation"
+      },
+      {
+        "name": "Fusión Penta",
+        "cost": 0,
+        "range": 0,
+        "effect": "Los Kitsus Amatista, Anaranjado, Carmine, Magenta y Silvestre tienen que activar este hechizo en el mismo turno para que el Kitsu Penta fusionado aparezca en combate.",
+        "description": "Los Kitsus Amatista, Anaranjado, Carmine, Magenta y Silvestre tienen que activar este hechizo en el mismo turno para que el Kitsu Penta fusionado aparezca en combate.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true,
+        "fusion_condition": "same_turn_activation"
       }
     ]
   },
@@ -403,40 +440,66 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Kitsnición anaranjado",
+        "name": "Kitsnición",
+        "cost": 5,
+        "range": 4,
+        "effect": "Rango 1 a 4 casillas. Inflige 150 a 180 PdV y aumenta la probabilidad de daño crítico del lanzador en 20% durante 2 turnos.",
+        "description": "Rango 1 a 4 casillas. Inflige 150 a 180 PdV y aumenta la probabilidad de daño crítico del lanzador en 20% durante 2 turnos.",
+        "damage_min": 150,
+        "damage_max": 180,
+        "range_min": 1,
+        "critical_chance_bonus": 20,
+        "duration": 2
+      },
+      {
+        "name": "Espirilusión holográfica",
         "cost": 3,
-        "range": 3,
-        "effect": "Daño elemental adaptado al color anaranjado del Kitsu.",
-        "description": "Daño elemental adaptado al color anaranjado del Kitsu.",
-        "damage_min": 123,
-        "damage_max": 158
-      },
-      {
-        "name": "Ilusión espectral anaranjado",
-        "cost": 4,
         "range": 2,
-        "effect": "Crea una ilusión espectral con la energía anaranjado del Kitsu.",
-        "description": "Crea una ilusión espectral con la energía anaranjado del Kitsu.",
-        "damage_min": 142,
-        "damage_max": 183
-      },
-      {
-        "name": "Argucia del Kitsu anaranjado",
-        "cost": 4,
-        "range": 0,
-        "effect": "Maniobra evasiva imbuida con la afinidad anaranjado del Kitsu.",
-        "description": "Maniobra evasiva imbuida con la afinidad anaranjado del Kitsu.",
-        "damage_min": 102,
-        "damage_max": 132
-      },
-      {
-        "name": "Fusión Kitsu",
-        "cost": 0,
-        "range": 1,
+        "effect": "Rango 0 a 2 casillas. Vuelve invisible al objetivo durante 2 turnos e invoca un Kitsu igual al lanzador. La invocación puede usar hechizos, pero no puede invocar.",
+        "description": "Rango 0 a 2 casillas. Vuelve invisible al objetivo durante 2 turnos e invoca un Kitsu igual al lanzador. La invocación puede usar hechizos, pero no puede invocar.",
         "damage_min": 0,
         "damage_max": 0,
-        "effect": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
-        "description": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado."
+        "range_min": 0,
+        "non_damage": true,
+        "duration": 2
+      },
+      {
+        "name": "Astucia del Kitsu anaranjado",
+        "cost": 1,
+        "range": 0,
+        "effect": "Otorga 251 a 260 de curas, pero durante 3 turnos aplica al lanzador: 1 PA, 3 PM y 100 de potencia de daño.",
+        "description": "Otorga 251 a 260 de curas, pero durante 3 turnos aplica al lanzador: 1 PA, 3 PM y 100 de potencia de daño.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "healing_min": 251,
+        "healing_max": 260,
+        "non_damage": true,
+        "duration": 3,
+        "action_points_bonus": 1,
+        "movement_points_bonus": 3,
+        "damage_power_bonus": 100
+      },
+      {
+        "name": "Kitsupunta",
+        "cost": 5,
+        "range": 1,
+        "effect": "Inflige 75 a 90 PdV y cura al lanzador un 18% de sus PdV máximos. Usable cada 2 turnos.",
+        "description": "Inflige 75 a 90 PdV y cura al lanzador un 18% de sus PdV máximos. Usable cada 2 turnos.",
+        "damage_min": 75,
+        "damage_max": 90,
+        "healing_max_hp_percent": 18,
+        "cooldown": 2
+      },
+      {
+        "name": "Fusión Penta",
+        "cost": 0,
+        "range": 0,
+        "effect": "Los Kitsus Amatista, Anaranjado, Carmine, Magenta y Silvestre tienen que activar este hechizo en el mismo turno para que el Kitsu Penta fusionado aparezca en combate.",
+        "description": "Los Kitsus Amatista, Anaranjado, Carmine, Magenta y Silvestre tienen que activar este hechizo en el mismo turno para que el Kitsu Penta fusionado aparezca en combate.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true,
+        "fusion_condition": "same_turn_activation"
       }
     ]
   },
@@ -457,31 +520,70 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Kitsnición androide",
+        "name": "Kitsnición",
+        "cost": 5,
+        "range": 4,
+        "effect": "Rango 1 a 4 casillas. Inflige 150 a 180 PdV y aumenta la probabilidad de daño crítico del lanzador en 20% durante 2 turnos.",
+        "description": "Rango 1 a 4 casillas. Inflige 150 a 180 PdV y aumenta la probabilidad de daño crítico del lanzador en 20% durante 2 turnos.",
+        "damage_min": 150,
+        "damage_max": 180,
+        "range_min": 1,
+        "critical_chance_bonus": 20,
+        "duration": 2
+      },
+      {
+        "name": "Espirilusión holográfica",
         "cost": 3,
-        "range": 3,
-        "effect": "Daño elemental adaptado al color androide del Kitsu.",
-        "description": "Daño elemental adaptado al color androide del Kitsu.",
-        "damage_min": 123,
-        "damage_max": 158
-      },
-      {
-        "name": "Ilusión espectral androide",
-        "cost": 4,
         "range": 2,
-        "effect": "Crea una ilusión espectral con la energía androide del Kitsu.",
-        "description": "Crea una ilusión espectral con la energía androide del Kitsu.",
-        "damage_min": 142,
-        "damage_max": 183
+        "effect": "Rango 0 a 2 casillas. Vuelve invisible al objetivo durante 2 turnos e invoca un Kitsu igual al lanzador. La invocación puede usar hechizos, pero no puede invocar.",
+        "description": "Rango 0 a 2 casillas. Vuelve invisible al objetivo durante 2 turnos e invoca un Kitsu igual al lanzador. La invocación puede usar hechizos, pero no puede invocar.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "range_min": 0,
+        "non_damage": true,
+        "duration": 2
       },
       {
-        "name": "Argucia del Kitsu androide",
-        "cost": 4,
+        "name": "Astucia del Kitsu androide",
+        "cost": 1,
         "range": 0,
-        "effect": "Maniobra evasiva imbuida con la afinidad androide del Kitsu.",
-        "description": "Maniobra evasiva imbuida con la afinidad androide del Kitsu.",
-        "damage_min": 102,
-        "damage_max": 132
+        "effect": "Otorga 251 a 260 de curas, pero durante 3 turnos aplica al lanzador: 1 PA, 3 PM y 100 de potencia de daño.",
+        "description": "Otorga 251 a 260 de curas, pero durante 3 turnos aplica al lanzador: 1 PA, 3 PM y 100 de potencia de daño.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "healing_min": 251,
+        "healing_max": 260,
+        "non_damage": true,
+        "duration": 3,
+        "action_points_bonus": 1,
+        "movement_points_bonus": 3,
+        "damage_power_bonus": 100
+      },
+      {
+        "name": "Kitsupunta",
+        "cost": 5,
+        "range": 1,
+        "effect": "Inflige 75 a 90 PdV y cura al lanzador un 18% de sus PdV máximos. Usable cada 2 turnos.",
+        "description": "Inflige 75 a 90 PdV y cura al lanzador un 18% de sus PdV máximos. Usable cada 2 turnos.",
+        "damage_min": 75,
+        "damage_max": 90,
+        "healing_max_hp_percent": 18,
+        "cooldown": 2
+      },
+      {
+        "name": "Aprendizaje",
+        "cost": 0,
+        "range": 0,
+        "effect": "Otorga al lanzador -100% de daño por 2 turnos. A partir del 3° turno y durante 6 turnos, obtiene +25% de daño incrementado de hechizo por cada ataque recibido.",
+        "description": "Otorga al lanzador -100% de daño por 2 turnos. A partir del 3° turno y durante 6 turnos, obtiene +25% de daño incrementado de hechizo por cada ataque recibido.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true,
+        "damage_percent": -100,
+        "duration": 2,
+        "delayed_start_turn": 3,
+        "delayed_duration": 6,
+        "spell_damage_bonus_per_hit": 25
       }
     ]
   },
@@ -502,40 +604,66 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Kitsnición carmine",
+        "name": "Kitsnición",
+        "cost": 5,
+        "range": 4,
+        "effect": "Rango 1 a 4 casillas. Inflige 150 a 180 PdV y aumenta la probabilidad de daño crítico del lanzador en 20% durante 2 turnos.",
+        "description": "Rango 1 a 4 casillas. Inflige 150 a 180 PdV y aumenta la probabilidad de daño crítico del lanzador en 20% durante 2 turnos.",
+        "damage_min": 150,
+        "damage_max": 180,
+        "range_min": 1,
+        "critical_chance_bonus": 20,
+        "duration": 2
+      },
+      {
+        "name": "Espirilusión holográfica",
         "cost": 3,
-        "range": 3,
-        "effect": "Daño elemental adaptado al color carmine del Kitsu.",
-        "description": "Daño elemental adaptado al color carmine del Kitsu.",
-        "damage_min": 123,
-        "damage_max": 158
-      },
-      {
-        "name": "Ilusión espectral carmine",
-        "cost": 4,
         "range": 2,
-        "effect": "Crea una ilusión espectral con la energía carmine del Kitsu.",
-        "description": "Crea una ilusión espectral con la energía carmine del Kitsu.",
-        "damage_min": 142,
-        "damage_max": 183
-      },
-      {
-        "name": "Argucia del Kitsu carmine",
-        "cost": 4,
-        "range": 0,
-        "effect": "Maniobra evasiva imbuida con la afinidad carmine del Kitsu.",
-        "description": "Maniobra evasiva imbuida con la afinidad carmine del Kitsu.",
-        "damage_min": 102,
-        "damage_max": 132
-      },
-      {
-        "name": "Fusión Kitsu",
-        "cost": 0,
-        "range": 1,
+        "effect": "Rango 0 a 2 casillas. Vuelve invisible al objetivo durante 2 turnos e invoca un Kitsu igual al lanzador. La invocación puede usar hechizos, pero no puede invocar.",
+        "description": "Rango 0 a 2 casillas. Vuelve invisible al objetivo durante 2 turnos e invoca un Kitsu igual al lanzador. La invocación puede usar hechizos, pero no puede invocar.",
         "damage_min": 0,
         "damage_max": 0,
-        "effect": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
-        "description": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado."
+        "range_min": 0,
+        "non_damage": true,
+        "duration": 2
+      },
+      {
+        "name": "Astucia del Kitsu carmine",
+        "cost": 1,
+        "range": 0,
+        "effect": "Otorga 251 a 260 de curas, pero durante 3 turnos aplica al lanzador: 1 PA, 3 PM y 100 de potencia de daño.",
+        "description": "Otorga 251 a 260 de curas, pero durante 3 turnos aplica al lanzador: 1 PA, 3 PM y 100 de potencia de daño.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "healing_min": 251,
+        "healing_max": 260,
+        "non_damage": true,
+        "duration": 3,
+        "action_points_bonus": 1,
+        "movement_points_bonus": 3,
+        "damage_power_bonus": 100
+      },
+      {
+        "name": "Kitsupunta",
+        "cost": 5,
+        "range": 1,
+        "effect": "Inflige 75 a 90 PdV y cura al lanzador un 18% de sus PdV máximos. Usable cada 2 turnos.",
+        "description": "Inflige 75 a 90 PdV y cura al lanzador un 18% de sus PdV máximos. Usable cada 2 turnos.",
+        "damage_min": 75,
+        "damage_max": 90,
+        "healing_max_hp_percent": 18,
+        "cooldown": 2
+      },
+      {
+        "name": "Fusión Penta",
+        "cost": 0,
+        "range": 0,
+        "effect": "Los Kitsus Amatista, Anaranjado, Carmine, Magenta y Silvestre tienen que activar este hechizo en el mismo turno para que el Kitsu Penta fusionado aparezca en combate.",
+        "description": "Los Kitsus Amatista, Anaranjado, Carmine, Magenta y Silvestre tienen que activar este hechizo en el mismo turno para que el Kitsu Penta fusionado aparezca en combate.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true,
+        "fusion_condition": "same_turn_activation"
       }
     ]
   },
@@ -556,40 +684,66 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Kitsnición dākuburakku",
+        "name": "Kitsnición",
+        "cost": 5,
+        "range": 4,
+        "effect": "Rango 1 a 4 casillas. Inflige 150 a 180 PdV y aumenta la probabilidad de daño crítico del lanzador en 20% durante 2 turnos.",
+        "description": "Rango 1 a 4 casillas. Inflige 150 a 180 PdV y aumenta la probabilidad de daño crítico del lanzador en 20% durante 2 turnos.",
+        "damage_min": 150,
+        "damage_max": 180,
+        "range_min": 1,
+        "critical_chance_bonus": 20,
+        "duration": 2
+      },
+      {
+        "name": "Espirilusión holográfica",
         "cost": 3,
-        "range": 3,
-        "effect": "Daño elemental adaptado al color dākuburakku del Kitsu.",
-        "description": "Daño elemental adaptado al color dākuburakku del Kitsu.",
-        "damage_min": 123,
-        "damage_max": 158
-      },
-      {
-        "name": "Ilusión espectral dākuburakku",
-        "cost": 4,
         "range": 2,
-        "effect": "Crea una ilusión espectral con la energía dākuburakku del Kitsu.",
-        "description": "Crea una ilusión espectral con la energía dākuburakku del Kitsu.",
-        "damage_min": 142,
-        "damage_max": 183
-      },
-      {
-        "name": "Argucia del Kitsu dākuburakku",
-        "cost": 4,
-        "range": 0,
-        "effect": "Maniobra evasiva imbuida con la afinidad dākuburakku del Kitsu.",
-        "description": "Maniobra evasiva imbuida con la afinidad dākuburakku del Kitsu.",
-        "damage_min": 102,
-        "damage_max": 132
-      },
-      {
-        "name": "Fusión Kitsu",
-        "cost": 0,
-        "range": 1,
+        "effect": "Rango 0 a 2 casillas. Vuelve invisible al objetivo durante 2 turnos e invoca un Kitsu igual al lanzador. La invocación puede usar hechizos, pero no puede invocar.",
+        "description": "Rango 0 a 2 casillas. Vuelve invisible al objetivo durante 2 turnos e invoca un Kitsu igual al lanzador. La invocación puede usar hechizos, pero no puede invocar.",
         "damage_min": 0,
         "damage_max": 0,
-        "effect": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
-        "description": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado."
+        "range_min": 0,
+        "non_damage": true,
+        "duration": 2
+      },
+      {
+        "name": "Astucia del Kitsu dākuburakku",
+        "cost": 1,
+        "range": 0,
+        "effect": "Otorga 251 a 260 de curas, pero durante 3 turnos aplica al lanzador: 1 PA, 3 PM y 100 de potencia de daño.",
+        "description": "Otorga 251 a 260 de curas, pero durante 3 turnos aplica al lanzador: 1 PA, 3 PM y 100 de potencia de daño.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "healing_min": 251,
+        "healing_max": 260,
+        "non_damage": true,
+        "duration": 3,
+        "action_points_bonus": 1,
+        "movement_points_bonus": 3,
+        "damage_power_bonus": 100
+      },
+      {
+        "name": "Kitsupunta",
+        "cost": 5,
+        "range": 1,
+        "effect": "Inflige 75 a 90 PdV y cura al lanzador un 18% de sus PdV máximos. Usable cada 2 turnos.",
+        "description": "Inflige 75 a 90 PdV y cura al lanzador un 18% de sus PdV máximos. Usable cada 2 turnos.",
+        "damage_min": 75,
+        "damage_max": 90,
+        "healing_max_hp_percent": 18,
+        "cooldown": 2
+      },
+      {
+        "name": "Fusión Yin Yang",
+        "cost": 0,
+        "range": 0,
+        "effect": "El Kitsu dākuburakku y la pureza del Kitsu junsuina hikari tienen que activar este hechizo en el mismo turno para que el Kitsu Yin Yang fusionado aparezca en combate.",
+        "description": "El Kitsu dākuburakku y la pureza del Kitsu junsuina hikari tienen que activar este hechizo en el mismo turno para que el Kitsu Yin Yang fusionado aparezca en combate.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true,
+        "fusion_condition": "same_turn_activation"
       }
     ]
   },
@@ -610,40 +764,66 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Kitsnición junsuina hikari",
+        "name": "Kitsnición",
+        "cost": 5,
+        "range": 4,
+        "effect": "Rango 1 a 4 casillas. Inflige 150 a 180 PdV y aumenta la probabilidad de daño crítico del lanzador en 20% durante 2 turnos.",
+        "description": "Rango 1 a 4 casillas. Inflige 150 a 180 PdV y aumenta la probabilidad de daño crítico del lanzador en 20% durante 2 turnos.",
+        "damage_min": 150,
+        "damage_max": 180,
+        "range_min": 1,
+        "critical_chance_bonus": 20,
+        "duration": 2
+      },
+      {
+        "name": "Espirilusión holográfica",
         "cost": 3,
-        "range": 3,
-        "effect": "Daño elemental adaptado al color junsuina hikari del Kitsu.",
-        "description": "Daño elemental adaptado al color junsuina hikari del Kitsu.",
-        "damage_min": 123,
-        "damage_max": 158
-      },
-      {
-        "name": "Ilusión espectral junsuina hikari",
-        "cost": 4,
         "range": 2,
-        "effect": "Crea una ilusión espectral con la energía junsuina hikari del Kitsu.",
-        "description": "Crea una ilusión espectral con la energía junsuina hikari del Kitsu.",
-        "damage_min": 142,
-        "damage_max": 183
-      },
-      {
-        "name": "Argucia del Kitsu junsuina hikari",
-        "cost": 4,
-        "range": 0,
-        "effect": "Maniobra evasiva imbuida con la afinidad junsuina hikari del Kitsu.",
-        "description": "Maniobra evasiva imbuida con la afinidad junsuina hikari del Kitsu.",
-        "damage_min": 102,
-        "damage_max": 132
-      },
-      {
-        "name": "Fusión Kitsu",
-        "cost": 0,
-        "range": 1,
+        "effect": "Rango 0 a 2 casillas. Vuelve invisible al objetivo durante 2 turnos e invoca un Kitsu igual al lanzador. La invocación puede usar hechizos, pero no puede invocar.",
+        "description": "Rango 0 a 2 casillas. Vuelve invisible al objetivo durante 2 turnos e invoca un Kitsu igual al lanzador. La invocación puede usar hechizos, pero no puede invocar.",
         "damage_min": 0,
         "damage_max": 0,
-        "effect": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
-        "description": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado."
+        "range_min": 0,
+        "non_damage": true,
+        "duration": 2
+      },
+      {
+        "name": "Astucia del Kitsu junsuina hikari",
+        "cost": 1,
+        "range": 0,
+        "effect": "Otorga 251 a 260 de curas, pero durante 3 turnos aplica al lanzador: 1 PA, 3 PM y 100 de potencia de daño.",
+        "description": "Otorga 251 a 260 de curas, pero durante 3 turnos aplica al lanzador: 1 PA, 3 PM y 100 de potencia de daño.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "healing_min": 251,
+        "healing_max": 260,
+        "non_damage": true,
+        "duration": 3,
+        "action_points_bonus": 1,
+        "movement_points_bonus": 3,
+        "damage_power_bonus": 100
+      },
+      {
+        "name": "Kitsupunta",
+        "cost": 5,
+        "range": 1,
+        "effect": "Inflige 75 a 90 PdV y cura al lanzador un 18% de sus PdV máximos. Usable cada 2 turnos.",
+        "description": "Inflige 75 a 90 PdV y cura al lanzador un 18% de sus PdV máximos. Usable cada 2 turnos.",
+        "damage_min": 75,
+        "damage_max": 90,
+        "healing_max_hp_percent": 18,
+        "cooldown": 2
+      },
+      {
+        "name": "Fusión Yin Yang",
+        "cost": 0,
+        "range": 0,
+        "effect": "El Kitsu dākuburakku y la pureza del Kitsu junsuina hikari tienen que activar este hechizo en el mismo turno para que el Kitsu Yin Yang fusionado aparezca en combate.",
+        "description": "El Kitsu dākuburakku y la pureza del Kitsu junsuina hikari tienen que activar este hechizo en el mismo turno para que el Kitsu Yin Yang fusionado aparezca en combate.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true,
+        "fusion_condition": "same_turn_activation"
       }
     ]
   },
@@ -664,40 +844,77 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Kitsnición magenta",
+        "name": "Kitsnición",
+        "cost": 5,
+        "range": 4,
+        "effect": "Rango 1 a 4 casillas. Inflige 150 a 180 PdV y aumenta la probabilidad de daño crítico del lanzador en 20% durante 2 turnos.",
+        "description": "Rango 1 a 4 casillas. Inflige 150 a 180 PdV y aumenta la probabilidad de daño crítico del lanzador en 20% durante 2 turnos.",
+        "damage_min": 150,
+        "damage_max": 180,
+        "range_min": 1,
+        "critical_chance_bonus": 20,
+        "duration": 2
+      },
+      {
+        "name": "Espirilusión holográfica",
         "cost": 3,
-        "range": 3,
-        "effect": "Daño elemental adaptado al color magenta del Kitsu.",
-        "description": "Daño elemental adaptado al color magenta del Kitsu.",
-        "damage_min": 123,
-        "damage_max": 158
-      },
-      {
-        "name": "Ilusión espectral magenta",
-        "cost": 4,
         "range": 2,
-        "effect": "Crea una ilusión espectral con la energía magenta del Kitsu.",
-        "description": "Crea una ilusión espectral con la energía magenta del Kitsu.",
-        "damage_min": 142,
-        "damage_max": 183
-      },
-      {
-        "name": "Argucia del Kitsu magenta",
-        "cost": 4,
-        "range": 0,
-        "effect": "Maniobra evasiva imbuida con la afinidad magenta del Kitsu.",
-        "description": "Maniobra evasiva imbuida con la afinidad magenta del Kitsu.",
-        "damage_min": 102,
-        "damage_max": 132
-      },
-      {
-        "name": "Fusión Kitsu",
-        "cost": 0,
-        "range": 1,
+        "effect": "Rango 0 a 2 casillas. Vuelve invisible al objetivo durante 2 turnos e invoca un Kitsu igual al lanzador. La invocación puede usar hechizos, pero no puede invocar.",
+        "description": "Rango 0 a 2 casillas. Vuelve invisible al objetivo durante 2 turnos e invoca un Kitsu igual al lanzador. La invocación puede usar hechizos, pero no puede invocar.",
         "damage_min": 0,
         "damage_max": 0,
-        "effect": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
-        "description": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado."
+        "range_min": 0,
+        "non_damage": true,
+        "duration": 2
+      },
+      {
+        "name": "Astucia del Kitsu magenta",
+        "cost": 1,
+        "range": 0,
+        "effect": "Otorga 251 a 260 de curas, pero durante 3 turnos aplica al lanzador: 1 PA, 3 PM y 100 de potencia de daño.",
+        "description": "Otorga 251 a 260 de curas, pero durante 3 turnos aplica al lanzador: 1 PA, 3 PM y 100 de potencia de daño.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "healing_min": 251,
+        "healing_max": 260,
+        "non_damage": true,
+        "duration": 3,
+        "action_points_bonus": 1,
+        "movement_points_bonus": 3,
+        "damage_power_bonus": 100
+      },
+      {
+        "name": "Kitsupunta",
+        "cost": 5,
+        "range": 1,
+        "effect": "Inflige 75 a 90 PdV y cura al lanzador un 18% de sus PdV máximos. Usable cada 2 turnos.",
+        "description": "Inflige 75 a 90 PdV y cura al lanzador un 18% de sus PdV máximos. Usable cada 2 turnos.",
+        "damage_min": 75,
+        "damage_max": 90,
+        "healing_max_hp_percent": 18,
+        "cooldown": 2
+      },
+      {
+        "name": "Fusión Kumiawase",
+        "cost": 0,
+        "range": 0,
+        "effect": "Los Kitsus Amatista y Magenta tienen que activar este hechizo en el mismo turno para que el Kitsu Kumiawase fusionado aparezca en combate.",
+        "description": "Los Kitsus Amatista y Magenta tienen que activar este hechizo en el mismo turno para que el Kitsu Kumiawase fusionado aparezca en combate.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true,
+        "fusion_condition": "same_turn_activation"
+      },
+      {
+        "name": "Fusión Penta",
+        "cost": 0,
+        "range": 0,
+        "effect": "Los Kitsus Amatista, Anaranjado, Carmine, Magenta y Silvestre tienen que activar este hechizo en el mismo turno para que el Kitsu Penta fusionado aparezca en combate.",
+        "description": "Los Kitsus Amatista, Anaranjado, Carmine, Magenta y Silvestre tienen que activar este hechizo en el mismo turno para que el Kitsu Penta fusionado aparezca en combate.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true,
+        "fusion_condition": "same_turn_activation"
       }
     ]
   },
@@ -718,40 +935,66 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Kitsnición midori no mizu",
+        "name": "Kitsnición",
+        "cost": 5,
+        "range": 4,
+        "effect": "Rango 1 a 4 casillas. Inflige 150 a 180 PdV y aumenta la probabilidad de daño crítico del lanzador en 20% durante 2 turnos.",
+        "description": "Rango 1 a 4 casillas. Inflige 150 a 180 PdV y aumenta la probabilidad de daño crítico del lanzador en 20% durante 2 turnos.",
+        "damage_min": 150,
+        "damage_max": 180,
+        "range_min": 1,
+        "critical_chance_bonus": 20,
+        "duration": 2
+      },
+      {
+        "name": "Espirilusión holográfica",
         "cost": 3,
-        "range": 3,
-        "effect": "Daño elemental adaptado al color midori no mizu del Kitsu.",
-        "description": "Daño elemental adaptado al color midori no mizu del Kitsu.",
-        "damage_min": 123,
-        "damage_max": 158
-      },
-      {
-        "name": "Ilusión espectral midori no mizu",
-        "cost": 4,
         "range": 2,
-        "effect": "Crea una ilusión espectral con la energía midori no mizu del Kitsu.",
-        "description": "Crea una ilusión espectral con la energía midori no mizu del Kitsu.",
-        "damage_min": 142,
-        "damage_max": 183
-      },
-      {
-        "name": "Argucia del Kitsu midori no mizu",
-        "cost": 4,
-        "range": 0,
-        "effect": "Maniobra evasiva imbuida con la afinidad midori no mizu del Kitsu.",
-        "description": "Maniobra evasiva imbuida con la afinidad midori no mizu del Kitsu.",
-        "damage_min": 102,
-        "damage_max": 132
-      },
-      {
-        "name": "Fusión Kitsu",
-        "cost": 0,
-        "range": 1,
+        "effect": "Rango 0 a 2 casillas. Vuelve invisible al objetivo durante 2 turnos e invoca un Kitsu igual al lanzador. La invocación puede usar hechizos, pero no puede invocar.",
+        "description": "Rango 0 a 2 casillas. Vuelve invisible al objetivo durante 2 turnos e invoca un Kitsu igual al lanzador. La invocación puede usar hechizos, pero no puede invocar.",
         "damage_min": 0,
         "damage_max": 0,
-        "effect": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
-        "description": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado."
+        "range_min": 0,
+        "non_damage": true,
+        "duration": 2
+      },
+      {
+        "name": "Astucia del Kitsu midori no mizu",
+        "cost": 1,
+        "range": 0,
+        "effect": "Otorga 251 a 260 de curas, pero durante 3 turnos aplica al lanzador: 1 PA, 3 PM y 100 de potencia de daño.",
+        "description": "Otorga 251 a 260 de curas, pero durante 3 turnos aplica al lanzador: 1 PA, 3 PM y 100 de potencia de daño.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "healing_min": 251,
+        "healing_max": 260,
+        "non_damage": true,
+        "duration": 3,
+        "action_points_bonus": 1,
+        "movement_points_bonus": 3,
+        "damage_power_bonus": 100
+      },
+      {
+        "name": "Kitsupunta",
+        "cost": 5,
+        "range": 1,
+        "effect": "Inflige 75 a 90 PdV y cura al lanzador un 18% de sus PdV máximos. Usable cada 2 turnos.",
+        "description": "Inflige 75 a 90 PdV y cura al lanzador un 18% de sus PdV máximos. Usable cada 2 turnos.",
+        "damage_min": 75,
+        "damage_max": 90,
+        "healing_max_hp_percent": 18,
+        "cooldown": 2
+      },
+      {
+        "name": "Fusión Nishiki",
+        "cost": 0,
+        "range": 0,
+        "effect": "Los Kitsus Mizu y Midori no Mizu tienen que activar este hechizo en el mismo turno para que el Kitsu Nishiki fusionado aparezca en combate.",
+        "description": "Los Kitsus Mizu y Midori no Mizu tienen que activar este hechizo en el mismo turno para que el Kitsu Nishiki fusionado aparezca en combate.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true,
+        "fusion_condition": "same_turn_activation"
       }
     ]
   },
@@ -772,40 +1015,66 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Kitsnición mizu",
+        "name": "Kitsnición",
+        "cost": 5,
+        "range": 4,
+        "effect": "Rango 1 a 4 casillas. Inflige 150 a 180 PdV y aumenta la probabilidad de daño crítico del lanzador en 20% durante 2 turnos.",
+        "description": "Rango 1 a 4 casillas. Inflige 150 a 180 PdV y aumenta la probabilidad de daño crítico del lanzador en 20% durante 2 turnos.",
+        "damage_min": 150,
+        "damage_max": 180,
+        "range_min": 1,
+        "critical_chance_bonus": 20,
+        "duration": 2
+      },
+      {
+        "name": "Espirilusión holográfica",
         "cost": 3,
-        "range": 3,
-        "effect": "Daño elemental adaptado al color mizu del Kitsu.",
-        "description": "Daño elemental adaptado al color mizu del Kitsu.",
-        "damage_min": 123,
-        "damage_max": 158
-      },
-      {
-        "name": "Ilusión espectral mizu",
-        "cost": 4,
         "range": 2,
-        "effect": "Crea una ilusión espectral con la energía mizu del Kitsu.",
-        "description": "Crea una ilusión espectral con la energía mizu del Kitsu.",
-        "damage_min": 142,
-        "damage_max": 183
-      },
-      {
-        "name": "Argucia del Kitsu mizu",
-        "cost": 4,
-        "range": 0,
-        "effect": "Maniobra evasiva imbuida con la afinidad mizu del Kitsu.",
-        "description": "Maniobra evasiva imbuida con la afinidad mizu del Kitsu.",
-        "damage_min": 102,
-        "damage_max": 132
-      },
-      {
-        "name": "Fusión Kitsu",
-        "cost": 0,
-        "range": 1,
+        "effect": "Rango 0 a 2 casillas. Vuelve invisible al objetivo durante 2 turnos e invoca un Kitsu igual al lanzador. La invocación puede usar hechizos, pero no puede invocar.",
+        "description": "Rango 0 a 2 casillas. Vuelve invisible al objetivo durante 2 turnos e invoca un Kitsu igual al lanzador. La invocación puede usar hechizos, pero no puede invocar.",
         "damage_min": 0,
         "damage_max": 0,
-        "effect": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado.",
-        "description": "Permite fusionarse sólo con los Kitsus compatibles indicados por la descripción del Kitsu fusionado."
+        "range_min": 0,
+        "non_damage": true,
+        "duration": 2
+      },
+      {
+        "name": "Astucia del Kitsu mizu",
+        "cost": 1,
+        "range": 0,
+        "effect": "Otorga 251 a 260 de curas, pero durante 3 turnos aplica al lanzador: 1 PA, 3 PM y 100 de potencia de daño.",
+        "description": "Otorga 251 a 260 de curas, pero durante 3 turnos aplica al lanzador: 1 PA, 3 PM y 100 de potencia de daño.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "healing_min": 251,
+        "healing_max": 260,
+        "non_damage": true,
+        "duration": 3,
+        "action_points_bonus": 1,
+        "movement_points_bonus": 3,
+        "damage_power_bonus": 100
+      },
+      {
+        "name": "Kitsupunta",
+        "cost": 5,
+        "range": 1,
+        "effect": "Inflige 75 a 90 PdV y cura al lanzador un 18% de sus PdV máximos. Usable cada 2 turnos.",
+        "description": "Inflige 75 a 90 PdV y cura al lanzador un 18% de sus PdV máximos. Usable cada 2 turnos.",
+        "damage_min": 75,
+        "damage_max": 90,
+        "healing_max_hp_percent": 18,
+        "cooldown": 2
+      },
+      {
+        "name": "Fusión Nishiki",
+        "cost": 0,
+        "range": 0,
+        "effect": "Los Kitsus Mizu y Midori no Mizu tienen que activar este hechizo en el mismo turno para que el Kitsu Nishiki fusionado aparezca en combate.",
+        "description": "Los Kitsus Mizu y Midori no Mizu tienen que activar este hechizo en el mismo turno para que el Kitsu Nishiki fusionado aparezca en combate.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true,
+        "fusion_condition": "same_turn_activation"
       }
     ]
   },
@@ -826,31 +1095,81 @@
     "hp_max": 1500,
     "spells": [
       {
-        "name": "Kitsnición silvestre",
+        "name": "Kitsnición",
+        "cost": 5,
+        "range": 4,
+        "effect": "Rango 1 a 4 casillas. Inflige 150 a 180 PdV y aumenta la probabilidad de daño crítico del lanzador en 20% durante 2 turnos.",
+        "description": "Rango 1 a 4 casillas. Inflige 150 a 180 PdV y aumenta la probabilidad de daño crítico del lanzador en 20% durante 2 turnos.",
+        "damage_min": 150,
+        "damage_max": 180,
+        "range_min": 1,
+        "critical_chance_bonus": 20,
+        "duration": 2
+      },
+      {
+        "name": "Espirilusión holográfica",
         "cost": 3,
-        "range": 3,
-        "effect": "Daño elemental adaptado al color silvestre del Kitsu.",
-        "description": "Daño elemental adaptado al color silvestre del Kitsu.",
-        "damage_min": 123,
-        "damage_max": 158
-      },
-      {
-        "name": "Ilusión espectral silvestre",
-        "cost": 4,
         "range": 2,
-        "effect": "Crea una ilusión espectral con la energía silvestre del Kitsu.",
-        "description": "Crea una ilusión espectral con la energía silvestre del Kitsu.",
-        "damage_min": 142,
-        "damage_max": 183
+        "effect": "Rango 0 a 2 casillas. Vuelve invisible al objetivo durante 2 turnos e invoca un Kitsu igual al lanzador. La invocación puede usar hechizos, pero no puede invocar.",
+        "description": "Rango 0 a 2 casillas. Vuelve invisible al objetivo durante 2 turnos e invoca un Kitsu igual al lanzador. La invocación puede usar hechizos, pero no puede invocar.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "range_min": 0,
+        "non_damage": true,
+        "duration": 2
       },
       {
-        "name": "Argucia del Kitsu silvestre",
-        "cost": 4,
+        "name": "Astucia del Kitsu silvestre",
+        "cost": 1,
         "range": 0,
-        "effect": "Maniobra evasiva imbuida con la afinidad silvestre del Kitsu.",
-        "description": "Maniobra evasiva imbuida con la afinidad silvestre del Kitsu.",
-        "damage_min": 102,
-        "damage_max": 132
+        "effect": "Otorga 251 a 260 de curas, pero durante 3 turnos aplica al lanzador: 1 PA, 3 PM y 100 de potencia de daño.",
+        "description": "Otorga 251 a 260 de curas, pero durante 3 turnos aplica al lanzador: 1 PA, 3 PM y 100 de potencia de daño.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "healing_min": 251,
+        "healing_max": 260,
+        "non_damage": true,
+        "duration": 3,
+        "action_points_bonus": 1,
+        "movement_points_bonus": 3,
+        "damage_power_bonus": 100
+      },
+      {
+        "name": "Kitsupunta",
+        "cost": 5,
+        "range": 1,
+        "effect": "Inflige 75 a 90 PdV y cura al lanzador un 18% de sus PdV máximos. Usable cada 2 turnos.",
+        "description": "Inflige 75 a 90 PdV y cura al lanzador un 18% de sus PdV máximos. Usable cada 2 turnos.",
+        "damage_min": 75,
+        "damage_max": 90,
+        "healing_max_hp_percent": 18,
+        "cooldown": 2
+      },
+      {
+        "name": "Emanación",
+        "cost": 1,
+        "range": 0,
+        "effect": "Otorga -100 PA y -100 PM al lanzador y el estado Invulnerable durante 3 turnos. Al terminar los efectos del hechizo, cambia al monstruo Kitsu Silvestre evolucionado.",
+        "description": "Otorga -100 PA y -100 PM al lanzador y el estado Invulnerable durante 3 turnos. Al terminar los efectos del hechizo, cambia al monstruo Kitsu Silvestre evolucionado.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true,
+        "action_points_bonus": -100,
+        "movement_points_bonus": -100,
+        "state": "Invulnerable",
+        "duration": 3,
+        "evolves_to": "Kitsu silvestre evolucionado"
+      },
+      {
+        "name": "Fusión Penta",
+        "cost": 0,
+        "range": 0,
+        "effect": "Los Kitsus Amatista, Anaranjado, Carmine, Magenta y Silvestre tienen que activar este hechizo en el mismo turno para que el Kitsu Penta fusionado aparezca en combate.",
+        "description": "Los Kitsus Amatista, Anaranjado, Carmine, Magenta y Silvestre tienen que activar este hechizo en el mismo turno para que el Kitsu Penta fusionado aparezca en combate.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true,
+        "fusion_condition": "same_turn_activation"
       }
     ]
   },

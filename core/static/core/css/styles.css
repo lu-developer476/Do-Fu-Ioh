@@ -2055,3 +2055,62 @@ body {
   color: #fff7d7;
 }
 .unit-control-spells:empty { display: none; }
+
+.token-role-invocado {
+  border-color: rgba(161, 120, 255, .72);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 0 0 2px rgba(161, 120, 255, .18);
+}
+.token-role-invocador {
+  border-color: rgba(119, 242, 162, .38);
+}
+.token-role-badge {
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  right: 4px;
+  z-index: 2;
+  padding: 1px 4px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(8, 12, 8, .68);
+  color: #f7f3dc;
+  font-size: .46rem;
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
+}
+.token-role-invocado .token-role-badge {
+  color: #eadfff;
+  border-color: rgba(187, 157, 255, .56);
+  background: rgba(49, 35, 86, .78);
+}
+.arena-card-role {
+  justify-self: start;
+  width: fit-content;
+  padding: .18rem .45rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(12, 18, 12, .58);
+  color: #f7f3dc;
+  font-size: .68rem;
+  font-weight: 900;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.arena-card-role-summoned {
+  color: #eadfff;
+  border-color: rgba(187, 157, 255, .5);
+  background: rgba(49, 35, 86, .7);
+}
+.arena-card-role-summoner {
+  color: #b8ffd0;
+  border-color: rgba(119, 242, 162, .42);
+}
+.combat-fx-summon {
+  color: #eadfff;
+  border-color: rgba(187, 157, 255, .82);
+  background: rgba(49, 35, 86, .92);
+}

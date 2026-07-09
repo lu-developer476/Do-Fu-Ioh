@@ -112,29 +112,55 @@
         <button id="match-setup-close" class="ghost icon-close modal-close-x" value="cancel" aria-label="Cerrar">×</button>
         <p class="kicker">Nueva Partida</p>
         <h2>Configurá el estilo de juego</h2>
-        <p>Elegí cuántas cartas iniciales usar, si querés una familia concreta o todo el bestiario, y si la mano será aleatoria o manual.</p>
-        <fieldset class="segmented-control modal-segmented" aria-label="Cartas iniciales para la nueva partida">
-          <legend class="control-label visually-hidden">Cartas iniciales</legend>
-          <label><input type="radio" name="modal-initial-hand-size" value="1" /> <span>1 carta</span></label>
-          <label><input type="radio" name="modal-initial-hand-size" value="2" checked /> <span>2 cartas</span></label>
-          <label><input type="radio" name="modal-initial-hand-size" value="5" /> <span>5 cartas</span></label>
-        </fieldset>
-        <fieldset class="segmented-control modal-segmented two-options" aria-label="Alcance del bestiario modal">
-          <legend class="control-label">Bestiario</legend>
-          <label><input type="radio" name="modal-deck-scope" value="family" /> <span>1 familia</span></label>
-          <label><input type="radio" name="modal-deck-scope" value="all" checked /> <span>Todo</span></label>
-        </fieldset>
-        <select id="modal-family-select" aria-label="Familia para la nueva partida"></select>
-        <fieldset class="segmented-control modal-segmented" aria-label="Tipos de cartas permitidas modal">
-          <legend class="control-label visually-hidden">Tipos de cartas permitidas</legend>
-          <label><input type="radio" name="modal-deck-tier" value="all" checked /> <span>Todas</span></label>
-          <label><input type="radio" name="modal-deck-tier" value="base" /> <span>Básicas</span></label>
-          <label><input type="radio" name="modal-deck-tier" value="special" /> <span>Fusiones, evoluciones y jefes</span></label>
-        </fieldset>
+        <p>Elegí la configuración por etapas. Los cambios se aplican recién al presionar <strong>Aceptar</strong>.</p>
+        <ol class="setup-progress" aria-label="Etapas de configuración">
+          <li data-setup-dot="cards" class="is-active">Cartas</li>
+          <li data-setup-dot="bestiary">Bestiario</li>
+          <li data-setup-dot="mode">Baraja</li>
+        </ol>
 
-        <div class="modal-actions">
-          <button id="modal-random-hand" type="button" value="random">Mano al azar</button>
-          <button id="modal-manual-hand" class="ghost" type="button" value="manual">Elegir manualmente</button>
+        <section class="setup-step" data-setup-step="cards">
+          <h3>Cantidad de cartas</h3>
+          <p class="small">Definí el tamaño de la mano inicial. Esta cantidad también limita la selección manual.</p>
+          <fieldset class="segmented-control modal-segmented" aria-label="Cartas iniciales para la nueva partida">
+            <legend class="control-label visually-hidden">Cartas iniciales</legend>
+            <label><input type="radio" name="modal-initial-hand-size" value="1" /> <span>1 carta</span></label>
+            <label><input type="radio" name="modal-initial-hand-size" value="2" checked /> <span>2 cartas</span></label>
+            <label><input type="radio" name="modal-initial-hand-size" value="5" /> <span>5 cartas</span></label>
+          </fieldset>
+        </section>
+
+        <section class="setup-step" data-setup-step="bestiary" hidden>
+          <h3>Bestiario a emplear</h3>
+          <p class="small">Restringí las cartas disponibles por familia y por tipo para la partida.</p>
+          <fieldset class="segmented-control modal-segmented two-options" aria-label="Alcance del bestiario modal">
+            <legend class="control-label">Bestiario</legend>
+            <label><input type="radio" name="modal-deck-scope" value="family" /> <span>1 familia</span></label>
+            <label><input type="radio" name="modal-deck-scope" value="all" checked /> <span>Todo</span></label>
+          </fieldset>
+          <select id="modal-family-select" aria-label="Familia para la nueva partida"></select>
+          <fieldset class="segmented-control modal-segmented" aria-label="Tipos de cartas permitidas modal">
+            <legend class="control-label visually-hidden">Tipos de cartas permitidas</legend>
+            <label><input type="radio" name="modal-deck-tier" value="all" checked /> <span>Todas</span></label>
+            <label><input type="radio" name="modal-deck-tier" value="base" /> <span>Básicas</span></label>
+            <label><input type="radio" name="modal-deck-tier" value="special" /> <span>Fusiones, evoluciones y jefes</span></label>
+          </fieldset>
+        </section>
+
+        <section class="setup-step" data-setup-step="mode" hidden>
+          <h3>Baraja automática o manual</h3>
+          <p class="small">Elegí si la partida arranca con mano al azar o si preferís escoger cartas desde el Bestiario.</p>
+          <fieldset class="segmented-control modal-segmented two-options" aria-label="Modo de baraja">
+            <legend class="control-label visually-hidden">Modo de baraja</legend>
+            <label><input type="radio" name="modal-deck-mode" value="random" checked /> <span>Automática</span></label>
+            <label><input type="radio" name="modal-deck-mode" value="manual" /> <span>Manual</span></label>
+          </fieldset>
+        </section>
+
+        <div class="modal-actions setup-actions">
+          <button id="setup-prev-step" class="ghost" type="button">Anterior</button>
+          <button id="setup-next-step" type="button">Siguiente</button>
+          <button id="setup-accept" type="button" data-loading-label="Aplicando..." hidden>Aceptar</button>
         </div>
       </form>
     </dialog>

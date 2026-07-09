@@ -203,7 +203,7 @@ input, select {
 
 .board {
   display: grid;
-  grid-template-columns: repeat(9, minmax(0, var(--board-cell-size)));
+  grid-template-columns: repeat(13, minmax(0, var(--board-cell-size)));
   gap: var(--board-gap);
   border: 6px solid #263221;
   border-radius: 18px;
@@ -814,7 +814,7 @@ body, .panel, .card, .board-header, .board-footer, .log-item, .small, input, sel
 
 /* Tactical 13x9 board preview and interaction layer. */
 :root { --board-cell-size: clamp(2.25rem, 4vw, 3.6rem); }
-.tactical-board { grid-template-columns: repeat(9, minmax(0, var(--board-cell-size))); }
+.tactical-board { grid-template-columns: repeat(13, minmax(0, var(--board-cell-size))); }
 .tactical-preview .board-scroll { max-height: 72vh; overflow: auto; border-radius: 18px; }
 .control-label { display: block; color: var(--accent-soft); font-size: .76rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .token, .hand-card, .arena-card { animation: card-enter .28s ease both; }
@@ -866,10 +866,10 @@ body, .panel, .card, .board-header, .board-footer, .log-item, .small, input, sel
 .board {
   width: 100%;
   min-width: 0;
-  grid-template-columns: repeat(9, minmax(0, 1fr));
+  grid-template-columns: repeat(13, minmax(0, 1fr));
 }
 
-.tactical-board { grid-template-columns: repeat(9, minmax(0, 1fr)); }
+.tactical-board { grid-template-columns: repeat(13, minmax(0, 1fr)); }
 
 .cell {
   min-width: 0;
@@ -1430,13 +1430,13 @@ body { padding-top: 78px; }
 .nav-popover-panel .catalog { max-height: 52vh; }
 .nav-popover-panel .match-log { max-height: 46vh; }
 
-/* Desktop board refinement: keep the full 9x13 arena visible, centered and proportional. */
+/* Desktop board refinement: keep the full 13x9 arena visible, centered and proportional. */
 @media (min-width: 901px) {
   :root {
-    --board-cell-size: min(6.4vw, calc((100vh - 250px) / 13), 72px);
+    --board-cell-size: min(5.1vw, calc((100vh - 250px) / 9), 58px);
     --board-gap: 5px;
   }
-  .card-game-shell { width: min(100%, 1180px); padding: 22px; }
+  .card-game-shell { width: min(100%, 1320px); padding: 22px; }
   .duel-panel { padding: 18px; }
   .board-panel { justify-items: center; }
   .board-frame { display: flex; justify-content: center; }
@@ -1445,7 +1445,7 @@ body { padding-top: 78px; }
   .tactical-board {
     width: auto;
     min-width: 0;
-    grid-template-columns: repeat(9, var(--board-cell-size));
+    grid-template-columns: repeat(13, var(--board-cell-size));
     padding: 10px;
   }
   .cell { width: var(--board-cell-size); }
@@ -1497,6 +1497,52 @@ body { padding-top: 78px; }
 .modal-actions-single {
   grid-template-columns: 1fr;
 }
+
+.setup-progress {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 0;
+  margin: 4px 0 10px;
+  list-style: none;
+}
+
+.setup-progress li {
+  border: 1px solid rgba(232, 213, 181, .26);
+  border-radius: 999px;
+  padding: .45rem .6rem;
+  text-align: center;
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(243, 228, 200, .72);
+  background: rgba(17, 29, 20, .34);
+}
+
+.setup-progress li.is-active,
+.setup-progress li.is-complete {
+  border-color: rgba(255, 224, 130, .72);
+  color: #fff7d7;
+  background: rgba(67, 95, 47, .58);
+}
+
+.setup-step {
+  display: grid;
+  gap: 10px;
+  padding: .9rem;
+  border: 1px solid rgba(184, 147, 100, .38);
+  border-radius: 16px;
+  background: rgba(17, 29, 20, .28);
+}
+
+.setup-step[hidden] { display: none; }
+.setup-step h3 { margin: 0; color: var(--accent-soft); text-transform: uppercase; letter-spacing: .08em; }
+.setup-step p { margin: 0; }
+.setup-actions { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); }
+.setup-actions #setup-accept { grid-column: 2; }
+.setup-actions #setup-next-step[hidden], .setup-actions #setup-accept[hidden] { display: none; }
+
 
 .site-footer {
   padding: 18px clamp(16px, 4vw, 42px) 26px;

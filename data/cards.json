@@ -3467,7 +3467,7 @@
     "shell": 6000,
     "action_points": 10,
     "movement_points": 2,
-    "description": "El Blop Multiforme Real concentra la familia Blops en un solo jefe: es un guardián resistente que alterna autosupervivencia, mejora de movilidad y potencia, daño en área con estado Incurable y ataques a distancia. Toda la familia comparte Memoria de Blop, una cura basada en la vida restante.",
+    "description": "Guardián real de la familia Blops, inspirado en el Blop Multicolor Real del Antro de los Blops: una masa gelatinosa que reúne varias formas blop en un solo jefe de nivel 120. Con 11.700 PdV, 6.000 PdE, 10 PA y 2 PM, no destaca por desplazarse de base, pero Blopacificación le permite ganar movilidad y 300% de potencia antes de presionar. Si el equipo se agrupa, Blopagación castiga el cuerpo a cuerpo en radio de 1 casilla y aplica Incurable; a media distancia, Blovocación mantiene daño constante. Como toda la familia, puede usar Memoria de Blop para curarse un 10% de su vida restante, así que conviene controlar sus turnos de mejora y evitar regalarle objetivos cercanos.",
     "image": "public/images/blops/royals/blop-multiforme-real.png",
     "image_fallback": "core/img/placeholders/card-placeholder.svg",
     "spells": [

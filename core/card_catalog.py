@@ -1,3 +1,4 @@
+import copy
 import json
 import logging
 from dataclasses import dataclass
@@ -117,23 +118,33 @@ def serialize_seed_card(item: dict, card_id: int) -> dict:
 
 
 def serialized_cards_queryset():
-    return [serialize_card(card) for card in MonsterCard.objects.all()]
+    queryset = MonsterCard.objects.order_by('family', 'stage', 'name', 'id')
+    return [serialize_card(card) for card in queryset]
 
 
 def serialized_cards_seed_data(path=CARDS_DATA_PATH):
-    cards = []
-    for index, item in enumerate(load_cards_seed_data(path=path), start=1):
-        try:
-            cards.append(serialize_seed_card(item, index))
-        except ValueError as exc:
-            logger.warning('Skipping invalid seed card #%s: %s', index, exc)
-    return cards
+    return copy.deepcopy(list(_serialized_cards_seed_data_cached(_seed_cache_key(path))))
 
 
 def load_cards_seed_data(path=CARDS_DATA_PATH):
+    return copy.deepcopy(list(_load_cards_seed_data_cached(_seed_cache_key(path))))
+
+
+def _seed_cache_key(path):
+    resolved_path = Path(path)
+    if not resolved_path.exists():
+        return str(resolved_path), None, None
+    stat = resolved_path.stat()
+    return str(resolved_path), stat.st_mtime_ns, stat.st_size
+
+
+@lru_cache(maxsize=8)
+def _load_cards_seed_data_cached(cache_key):
+    path_value, _mtime_ns, _size = cache_key
+    path = Path(path_value)
     if not path.exists():
         logger.warning('Cards seed file not found at %s', path)
-        return []
+        return tuple()
 
     try:
         payload = json.loads(path.read_text(encoding='utf-8'))
@@ -143,7 +154,18 @@ def load_cards_seed_data(path=CARDS_DATA_PATH):
     if not isinstance(payload, list):
         raise CardSeedDataError('El archivo de cartas debe contener una lista JSON.')
 
-    return payload
+    return tuple(payload)
+
+
+@lru_cache(maxsize=8)
+def _serialized_cards_seed_data_cached(cache_key):
+    cards = []
+    for index, item in enumerate(_load_cards_seed_data_cached(cache_key), start=1):
+        try:
+            cards.append(serialize_seed_card(item, index))
+        except ValueError as exc:
+            logger.warning('Skipping invalid seed card #%s: %s', index, exc)
+    return tuple(cards)
 
 
 def _normalized_card_payload(item):

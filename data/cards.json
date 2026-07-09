@@ -1200,28 +1200,41 @@
         "name": "Ilusión espectral nishiki",
         "cost": 4,
         "range": 2,
-        "effect": "Crea una ilusión espectral con la energía nishiki del Kitsu.",
-        "description": "Crea una ilusión espectral con la energía nishiki del Kitsu.",
-        "damage_min": 190,
-        "damage_max": 251
+        "effect": "Invoca a 1 Kitsu base no evolucionable requerido en la fusión actual (Kitsu mizu, Kitsu midori no mizu). La probabilidad es equitativa según la cantidad de Kitsus base fusionados del monstruo lanzador.",
+        "description": "Invoca a 1 Kitsu base no evolucionable requerido en la fusión actual (Kitsu mizu, Kitsu midori no mizu). La probabilidad es equitativa según la cantidad de Kitsus base fusionados del monstruo lanzador.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true,
+        "summons_base_components": [
+          "Kitsu mizu",
+          "Kitsu midori no mizu"
+        ],
+        "equal_probability": true
       },
       {
-        "name": "Argucia del Kitsu nishiki",
+        "name": "Argucia nishiki",
         "cost": 4,
         "range": 0,
-        "effect": "Maniobra evasiva imbuida con la afinidad nishiki del Kitsu.",
-        "description": "Maniobra evasiva imbuida con la afinidad nishiki del Kitsu.",
+        "effect": "Maniobra evasiva: otorga durante 3 turnos 75% de probabilidad de evadir el daño recibido, directo o por área de efecto. La probabilidad disminuye un 25% por turno.",
+        "description": "Maniobra evasiva: otorga durante 3 turnos 75% de probabilidad de evadir el daño recibido, directo o por área de efecto. La probabilidad disminuye un 25% por turno.",
         "damage_min": 137,
-        "damage_max": 180
+        "damage_max": 180,
+        "evasion_chance_percent": 75,
+        "evasion_duration_turns": 3,
+        "evasion_decay_percent_per_turn": 25,
+        "evades_direct_and_area_damage": true
       },
       {
         "name": "Evolución",
         "cost": 6,
         "range": 0,
-        "effect": "Sólo puede utilizarla un Kitsu fusionado en el campo para evolucionar a su forma estabilizada correspondiente.",
-        "description": "Sólo puede utilizarla un Kitsu fusionado en el campo para evolucionar a su forma estabilizada correspondiente.",
-        "damage_min": 159,
-        "damage_max": 210
+        "effect": "Hace 350 daño en área de 2 casillas, además de cambiar la apariencia del monstruo por su evolución correspondiente (Kitsu nishiki evolucionado). Usable a partir del 5° turno de combate.",
+        "description": "Hace 350 daño en área de 2 casillas, además de cambiar la apariencia del monstruo por su evolución correspondiente (Kitsu nishiki evolucionado). Usable a partir del 5° turno de combate.",
+        "damage_min": 350,
+        "damage_max": 350,
+        "area_range": 2,
+        "usable_from_turn": 5,
+        "evolves_to": "Kitsu nishiki evolucionado"
       }
     ],
     "hp_min": 1800,
@@ -1254,28 +1267,44 @@
         "name": "Ilusión espectral penta",
         "cost": 4,
         "range": 2,
-        "effect": "Crea una ilusión espectral con la energía penta del Kitsu.",
-        "description": "Crea una ilusión espectral con la energía penta del Kitsu.",
-        "damage_min": 190,
-        "damage_max": 251
+        "effect": "Invoca a 1 Kitsu base no evolucionable requerido en la fusión actual (Kitsu amatista, Kitsu anaranjado, Kitsu carmine, Kitsu magenta, Kitsu silvestre). La probabilidad es equitativa según la cantidad de Kitsus base fusionados del monstruo lanzador.",
+        "description": "Invoca a 1 Kitsu base no evolucionable requerido en la fusión actual (Kitsu amatista, Kitsu anaranjado, Kitsu carmine, Kitsu magenta, Kitsu silvestre). La probabilidad es equitativa según la cantidad de Kitsus base fusionados del monstruo lanzador.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true,
+        "summons_base_components": [
+          "Kitsu amatista",
+          "Kitsu anaranjado",
+          "Kitsu carmine",
+          "Kitsu magenta",
+          "Kitsu silvestre"
+        ],
+        "equal_probability": true
       },
       {
-        "name": "Argucia del Kitsu penta",
+        "name": "Argucia penta",
         "cost": 4,
         "range": 0,
-        "effect": "Maniobra evasiva imbuida con la afinidad penta del Kitsu.",
-        "description": "Maniobra evasiva imbuida con la afinidad penta del Kitsu.",
+        "effect": "Maniobra evasiva: otorga durante 3 turnos 75% de probabilidad de evadir el daño recibido, directo o por área de efecto. La probabilidad disminuye un 25% por turno.",
+        "description": "Maniobra evasiva: otorga durante 3 turnos 75% de probabilidad de evadir el daño recibido, directo o por área de efecto. La probabilidad disminuye un 25% por turno.",
         "damage_min": 137,
-        "damage_max": 180
+        "damage_max": 180,
+        "evasion_chance_percent": 75,
+        "evasion_duration_turns": 3,
+        "evasion_decay_percent_per_turn": 25,
+        "evades_direct_and_area_damage": true
       },
       {
         "name": "Evolución",
         "cost": 6,
         "range": 0,
-        "effect": "Sólo puede utilizarla un Kitsu fusionado en el campo para evolucionar a su forma estabilizada correspondiente.",
-        "description": "Sólo puede utilizarla un Kitsu fusionado en el campo para evolucionar a su forma estabilizada correspondiente.",
-        "damage_min": 159,
-        "damage_max": 210
+        "effect": "Hace 350 daño en área de 2 casillas, además de cambiar la apariencia del monstruo por su evolución correspondiente (Kitsu penta evolucionado). Usable a partir del 5° turno de combate.",
+        "description": "Hace 350 daño en área de 2 casillas, además de cambiar la apariencia del monstruo por su evolución correspondiente (Kitsu penta evolucionado). Usable a partir del 5° turno de combate.",
+        "damage_min": 350,
+        "damage_max": 350,
+        "area_range": 2,
+        "usable_from_turn": 5,
+        "evolves_to": "Kitsu penta evolucionado"
       }
     ],
     "hp_min": 1800,
@@ -1308,28 +1337,41 @@
         "name": "Ilusión espectral yin yang",
         "cost": 4,
         "range": 2,
-        "effect": "Crea una ilusión espectral con la energía yin yang del Kitsu.",
-        "description": "Crea una ilusión espectral con la energía yin yang del Kitsu.",
-        "damage_min": 190,
-        "damage_max": 251
+        "effect": "Invoca a 1 Kitsu base no evolucionable requerido en la fusión actual (Kitsu dākuburakku, Kitsu junsuina hikari). La probabilidad es equitativa según la cantidad de Kitsus base fusionados del monstruo lanzador.",
+        "description": "Invoca a 1 Kitsu base no evolucionable requerido en la fusión actual (Kitsu dākuburakku, Kitsu junsuina hikari). La probabilidad es equitativa según la cantidad de Kitsus base fusionados del monstruo lanzador.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true,
+        "summons_base_components": [
+          "Kitsu dākuburakku",
+          "Kitsu junsuina hikari"
+        ],
+        "equal_probability": true
       },
       {
-        "name": "Argucia del Kitsu yin yang",
+        "name": "Argucia yin yang",
         "cost": 4,
         "range": 0,
-        "effect": "Maniobra evasiva imbuida con la afinidad yin yang del Kitsu.",
-        "description": "Maniobra evasiva imbuida con la afinidad yin yang del Kitsu.",
+        "effect": "Maniobra evasiva: otorga durante 3 turnos 75% de probabilidad de evadir el daño recibido, directo o por área de efecto. La probabilidad disminuye un 25% por turno.",
+        "description": "Maniobra evasiva: otorga durante 3 turnos 75% de probabilidad de evadir el daño recibido, directo o por área de efecto. La probabilidad disminuye un 25% por turno.",
         "damage_min": 137,
-        "damage_max": 180
+        "damage_max": 180,
+        "evasion_chance_percent": 75,
+        "evasion_duration_turns": 3,
+        "evasion_decay_percent_per_turn": 25,
+        "evades_direct_and_area_damage": true
       },
       {
         "name": "Evolución",
         "cost": 6,
         "range": 0,
-        "effect": "Sólo puede utilizarla un Kitsu fusionado en el campo para evolucionar a su forma estabilizada correspondiente.",
-        "description": "Sólo puede utilizarla un Kitsu fusionado en el campo para evolucionar a su forma estabilizada correspondiente.",
-        "damage_min": 159,
-        "damage_max": 210
+        "effect": "Hace 350 daño en área de 2 casillas, además de cambiar la apariencia del monstruo por su evolución correspondiente (Kitsu yin yang evolucionado). Usable a partir del 5° turno de combate.",
+        "description": "Hace 350 daño en área de 2 casillas, además de cambiar la apariencia del monstruo por su evolución correspondiente (Kitsu yin yang evolucionado). Usable a partir del 5° turno de combate.",
+        "damage_min": 350,
+        "damage_max": 350,
+        "area_range": 2,
+        "usable_from_turn": 5,
+        "evolves_to": "Kitsu yin yang evolucionado"
       }
     ],
     "hp_min": 1800,
@@ -1405,19 +1447,29 @@
         "name": "Ilusión espectral kumiawase",
         "cost": 4,
         "range": 2,
-        "effect": "Crea una ilusión espectral con la energía kumiawase del Kitsu.",
-        "description": "Crea una ilusión espectral con la energía kumiawase del Kitsu.",
-        "damage_min": 259,
-        "damage_max": 340
+        "effect": "Invoca a 1 Kitsu base no evolucionable requerido en la fusión actual (Kitsu amatista, Kitsu magenta). La probabilidad es equitativa según la cantidad de Kitsus base fusionados del monstruo lanzador.",
+        "description": "Invoca a 1 Kitsu base no evolucionable requerido en la fusión actual (Kitsu amatista, Kitsu magenta). La probabilidad es equitativa según la cantidad de Kitsus base fusionados del monstruo lanzador.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true,
+        "summons_base_components": [
+          "Kitsu amatista",
+          "Kitsu magenta"
+        ],
+        "equal_probability": true
       },
       {
-        "name": "Argucia del Kitsu kumiawase",
+        "name": "Argucia kumiawase",
         "cost": 4,
         "range": 0,
-        "effect": "Maniobra evasiva imbuida con la afinidad kumiawase del Kitsu.",
-        "description": "Maniobra evasiva imbuida con la afinidad kumiawase del Kitsu.",
+        "effect": "Maniobra evasiva: otorga durante 3 turnos 75% de probabilidad de evadir el daño recibido, directo o por área de efecto. La probabilidad disminuye un 25% por turno.",
+        "description": "Maniobra evasiva: otorga durante 3 turnos 75% de probabilidad de evadir el daño recibido, directo o por área de efecto. La probabilidad disminuye un 25% por turno.",
         "damage_min": 186,
-        "damage_max": 244
+        "damage_max": 244,
+        "evasion_chance_percent": 75,
+        "evasion_duration_turns": 3,
+        "evasion_decay_percent_per_turn": 25,
+        "evades_direct_and_area_damage": true
       }
     ]
   },
@@ -1448,19 +1500,29 @@
         "name": "Ilusión espectral nishiki evolucionado",
         "cost": 4,
         "range": 2,
-        "effect": "Crea una ilusión espectral con la energía nishiki evolucionado del Kitsu.",
-        "description": "Crea una ilusión espectral con la energía nishiki evolucionado del Kitsu.",
-        "damage_min": 177,
-        "damage_max": 232
+        "effect": "Invoca a 1 Kitsu base no evolucionable requerido en la fusión actual (Kitsu mizu, Kitsu midori no mizu). La probabilidad es equitativa según la cantidad de Kitsus base fusionados del monstruo lanzador.",
+        "description": "Invoca a 1 Kitsu base no evolucionable requerido en la fusión actual (Kitsu mizu, Kitsu midori no mizu). La probabilidad es equitativa según la cantidad de Kitsus base fusionados del monstruo lanzador.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true,
+        "summons_base_components": [
+          "Kitsu mizu",
+          "Kitsu midori no mizu"
+        ],
+        "equal_probability": true
       },
       {
-        "name": "Argucia del Kitsu nishiki evolucionado",
+        "name": "Argucia nishiki evolucionado",
         "cost": 4,
         "range": 0,
-        "effect": "Maniobra evasiva imbuida con la afinidad nishiki evolucionado del Kitsu.",
-        "description": "Maniobra evasiva imbuida con la afinidad nishiki evolucionado del Kitsu.",
+        "effect": "Maniobra evasiva: otorga durante 3 turnos 75% de probabilidad de evadir el daño recibido, directo o por área de efecto. La probabilidad disminuye un 25% por turno.",
+        "description": "Maniobra evasiva: otorga durante 3 turnos 75% de probabilidad de evadir el daño recibido, directo o por área de efecto. La probabilidad disminuye un 25% por turno.",
         "damage_min": 186,
-        "damage_max": 244
+        "damage_max": 244,
+        "evasion_chance_percent": 75,
+        "evasion_duration_turns": 3,
+        "evasion_decay_percent_per_turn": 25,
+        "evades_direct_and_area_damage": true
       }
     ]
   },
@@ -1491,19 +1553,32 @@
         "name": "Ilusión espectral penta evolucionado",
         "cost": 4,
         "range": 2,
-        "effect": "Crea una ilusión espectral con la energía penta evolucionado del Kitsu.",
-        "description": "Crea una ilusión espectral con la energía penta evolucionado del Kitsu.",
-        "damage_min": 177,
-        "damage_max": 232
+        "effect": "Invoca a 1 Kitsu base no evolucionable requerido en la fusión actual (Kitsu amatista, Kitsu anaranjado, Kitsu carmine, Kitsu magenta, Kitsu silvestre). La probabilidad es equitativa según la cantidad de Kitsus base fusionados del monstruo lanzador.",
+        "description": "Invoca a 1 Kitsu base no evolucionable requerido en la fusión actual (Kitsu amatista, Kitsu anaranjado, Kitsu carmine, Kitsu magenta, Kitsu silvestre). La probabilidad es equitativa según la cantidad de Kitsus base fusionados del monstruo lanzador.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true,
+        "summons_base_components": [
+          "Kitsu amatista",
+          "Kitsu anaranjado",
+          "Kitsu carmine",
+          "Kitsu magenta",
+          "Kitsu silvestre"
+        ],
+        "equal_probability": true
       },
       {
-        "name": "Argucia del Kitsu penta evolucionado",
+        "name": "Argucia penta evolucionado",
         "cost": 4,
         "range": 0,
-        "effect": "Maniobra evasiva imbuida con la afinidad penta evolucionado del Kitsu.",
-        "description": "Maniobra evasiva imbuida con la afinidad penta evolucionado del Kitsu.",
+        "effect": "Maniobra evasiva: otorga durante 3 turnos 75% de probabilidad de evadir el daño recibido, directo o por área de efecto. La probabilidad disminuye un 25% por turno.",
+        "description": "Maniobra evasiva: otorga durante 3 turnos 75% de probabilidad de evadir el daño recibido, directo o por área de efecto. La probabilidad disminuye un 25% por turno.",
         "damage_min": 186,
-        "damage_max": 244
+        "damage_max": 244,
+        "evasion_chance_percent": 75,
+        "evasion_duration_turns": 3,
+        "evasion_decay_percent_per_turn": 25,
+        "evades_direct_and_area_damage": true
       }
     ]
   },
@@ -1534,19 +1609,29 @@
         "name": "Ilusión espectral yin yang evolucionado",
         "cost": 4,
         "range": 2,
-        "effect": "Crea una ilusión espectral con la energía yin yang evolucionado del Kitsu.",
-        "description": "Crea una ilusión espectral con la energía yin yang evolucionado del Kitsu.",
-        "damage_min": 177,
-        "damage_max": 232
+        "effect": "Invoca a 1 Kitsu base no evolucionable requerido en la fusión actual (Kitsu dākuburakku, Kitsu junsuina hikari). La probabilidad es equitativa según la cantidad de Kitsus base fusionados del monstruo lanzador.",
+        "description": "Invoca a 1 Kitsu base no evolucionable requerido en la fusión actual (Kitsu dākuburakku, Kitsu junsuina hikari). La probabilidad es equitativa según la cantidad de Kitsus base fusionados del monstruo lanzador.",
+        "damage_min": 0,
+        "damage_max": 0,
+        "non_damage": true,
+        "summons_base_components": [
+          "Kitsu dākuburakku",
+          "Kitsu junsuina hikari"
+        ],
+        "equal_probability": true
       },
       {
-        "name": "Argucia del Kitsu yin yang evolucionado",
+        "name": "Argucia yin yang evolucionado",
         "cost": 4,
         "range": 0,
-        "effect": "Maniobra evasiva imbuida con la afinidad yin yang evolucionado del Kitsu.",
-        "description": "Maniobra evasiva imbuida con la afinidad yin yang evolucionado del Kitsu.",
+        "effect": "Maniobra evasiva: otorga durante 3 turnos 75% de probabilidad de evadir el daño recibido, directo o por área de efecto. La probabilidad disminuye un 25% por turno.",
+        "description": "Maniobra evasiva: otorga durante 3 turnos 75% de probabilidad de evadir el daño recibido, directo o por área de efecto. La probabilidad disminuye un 25% por turno.",
         "damage_min": 186,
-        "damage_max": 244
+        "damage_max": 244,
+        "evasion_chance_percent": 75,
+        "evasion_duration_turns": 3,
+        "evasion_decay_percent_per_turn": 25,
+        "evades_direct_and_area_damage": true
       }
     ]
   },

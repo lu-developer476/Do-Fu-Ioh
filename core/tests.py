@@ -208,12 +208,23 @@ class KitsuCatalogDataTests(SimpleTestCase):
                     expected_names = [
                         f'Kitsnición {spell_suffix}',
                         f'Ilusión espectral {spell_suffix}',
-                        f'Argucia del Kitsu {spell_suffix}',
+                        (f'Argucia {spell_suffix}' if card['name'] != 'Kitsu silvestre evolucionado' else f'Argucia del Kitsu {spell_suffix}'),
                     ] + (['Evolución'] if card['stage'] == 'fusion' else [])
 
                 self.assertEqual([spell['name'] for spell in card['spells']], expected_names)
+                if card['stage'] in {'fusion', 'evolution'} and card['name'] != 'Kitsu silvestre evolucionado':
+                    self.assertIn('Kitsu base no evolucionable', card['spells'][1]['effect'])
+                    self.assertEqual(card['spells'][1]['damage_min'], 0)
+                    self.assertTrue(card['spells'][1]['non_damage'])
+                    self.assertIn('75% de probabilidad de evadir', card['spells'][2]['effect'])
+                    self.assertEqual(card['spells'][2]['evasion_chance_percent'], 75)
+                    self.assertEqual(card['spells'][2]['evasion_decay_percent_per_turn'], 25)
                 if card['stage'] == 'fusion':
-                    self.assertIn('Kitsu fusionado', card['spells'][3]['effect'])
+                    self.assertIn('350 daño en área de 2 casillas', card['spells'][3]['effect'])
+                    self.assertEqual(card['spells'][3]['damage_min'], 350)
+                    self.assertEqual(card['spells'][3]['damage_max'], 350)
+                    self.assertEqual(card['spells'][3]['area_range'], 2)
+                    self.assertEqual(card['spells'][3]['usable_from_turn'], 5)
                 if card['stage'] == 'base':
                     self.assertEqual(card['spells'][0]['cost'], 5)
                     self.assertEqual(card['spells'][0]['range_min'], 1)

@@ -1,4 +1,4 @@
-# Duel Monsters
+# Dofus Duelists
 
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![Django](https://img.shields.io/badge/Django-5.x-092E20?logo=django&logoColor=white)](https://www.djangoproject.com/)
@@ -11,7 +11,7 @@
 [![Gunicorn](https://img.shields.io/badge/Gunicorn-WSGI-499848?logo=gunicorn&logoColor=white)](https://gunicorn.org/)
 [![WhiteNoise](https://img.shields.io/badge/WhiteNoise-Static%20files-111111)](https://whitenoise.readthedocs.io/)
 
-**Duel Monsters** es un prototipo web de combate táctico por turnos inspirado en criaturas, cartas coleccionables y duelos contra IA. El proyecto está construido con Django como servidor liviano y una experiencia de juego que corre principalmente en el navegador con JavaScript vanilla.
+**Dofus Duelists** es un prototipo web de combate táctico por turnos inspirado en criaturas, cartas coleccionables y duelos contra IA. El proyecto está construido con Django como servidor liviano y una experiencia de juego que corre principalmente en el navegador con JavaScript vanilla.
 
 La prioridad actual del repositorio es que el juego sea **jugable, portable y resistente a fallos de backend**: la página entrega el catálogo de cartas, los recursos estáticos y los endpoints informativos, pero el duelo contra la IA se crea, resuelve y persiste del lado del cliente.
 

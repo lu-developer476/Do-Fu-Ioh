@@ -1,18 +1,47 @@
 # Do-Fu-Ióh
 
+[![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Django](https://img.shields.io/badge/Django-5.x-092E20?logo=django&logoColor=white)](https://www.djangoproject.com/)
+[![JavaScript](https://img.shields.io/badge/JavaScript-Vanilla-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/es/docs/Web/JavaScript)
+[![HTML5](https://img.shields.io/badge/HTML5-Templates-E34F26?logo=html5&logoColor=white)](https://developer.mozilla.org/es/docs/Web/HTML)
+[![CSS3](https://img.shields.io/badge/CSS3-Responsive-1572B6?logo=css3&logoColor=white)](https://developer.mozilla.org/es/docs/Web/CSS)
+[![SQLite](https://img.shields.io/badge/SQLite-Dev-003B57?logo=sqlite&logoColor=white)](https://www.sqlite.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Prod%20opcional-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Render](https://img.shields.io/badge/Render-Deploy-46E3B7?logo=render&logoColor=black)](https://render.com/)
+[![WhiteNoise](https://img.shields.io/badge/WhiteNoise-Static%20files-111111)](https://whitenoise.readthedocs.io/)
+
 **Do-Fu-Ióh** es un prototipo web de combate táctico por turnos inspirado en criaturas, cartas coleccionables y duelos contra IA. El proyecto está construido con Django como servidor liviano y una experiencia de juego que corre principalmente en el navegador con JavaScript vanilla.
 
 La prioridad actual del repositorio es que el juego sea **jugable, portable y resistente a fallos de backend**: la página entrega el catálogo de cartas, los recursos estáticos y los endpoints informativos, pero el duelo contra la IA se crea, resuelve y persiste del lado del cliente.
 
 ## Estado actual del proyecto
 
+El proyecto se encuentra en estado de **MVP jugable backendless-first**: Django sigue siendo la capa de entrega, configuración, catálogo y operación, mientras que el duelo contra IA se ejecuta y persiste en el navegador. La prioridad actual es mantener una experiencia single-player estable aunque la base de datos o las APIs históricas de partida no estén disponibles.
+
+### Snapshot funcional
+
 - `GET /` sirve la aplicación web y embebe el catálogo inicial desde `data/cards.json`.
 - El combate contra IA corre en el navegador, sin depender de `POST` a Django para resolver turnos.
 - La partida activa se guarda en `localStorage` con la clave `do_fu_ioh_backendless_match_v3`.
 - El backend conserva endpoints de catálogo y salud para operación, diagnóstico y compatibilidad.
 - Las APIs históricas de partida existen en las URLs, pero responden `410 Gone` porque el estado de duelo ya no se persiste en servidor.
-- El catálogo seed contiene **83 cartas** distribuidas en familias como Blops, Kitsus, Gelatinas, Escarahojas, Píos, Jalatos y Dragones.
-- Hay assets gráficos versionados en `public/images/` y un placeholder local para cartas sin imagen.
+- El catálogo seed contiene **83 cartas** distribuidas en **7 familias**: Blops, Kitsus, Gelatinas, Escarahojas, Píos, Jalatos y Dragones.
+- La distribución actual del catálogo es de **38 cartas base**, **9 fusiones** y **36 evoluciones**.
+- Hay assets gráficos versionados en `public/images/` y placeholders locales para cartas sin imagen.
+- El despliegue objetivo está preparado para Render con Gunicorn, WhiteNoise, `collectstatic`, migraciones y seed de catálogo.
+
+### Stack tecnológico
+
+| Capa | Tecnología | Uso en el proyecto |
+| --- | --- | --- |
+| Backend | Python 3.12 + Django 5.x | Servir HTML, catálogo, healthcheck, admin/modelos y rutas legacy. |
+| Frontend | JavaScript vanilla, HTML templates y CSS | Motor del duelo, UI, persistencia local, animaciones y audio básico sin bundler. |
+| Datos | `data/cards.json` + modelos Django | Seed canónico del catálogo y base para importación/persistencia futura. |
+| Persistencia local | `localStorage` | Estado real de la partida activa backendless. |
+| Base de datos | SQLite en desarrollo, PostgreSQL opcional en producción | Migraciones, admin, catálogo importado y evolución futura. |
+| Estáticos | WhiteNoise + `public/images/` | Entrega de CSS, JS, imágenes y artefactos de `collectstatic`. |
+| Producción | Render + Gunicorn | Deploy declarativo del servicio web Python. |
+| Testing | Django test runner | Validación de catálogo, endpoints backendless y comportamiento operativo. |
 
 ## Qué significa “backendless” en este proyecto
 

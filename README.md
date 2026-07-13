@@ -8,6 +8,7 @@
 [![SQLite](https://img.shields.io/badge/SQLite-Dev-003B57?logo=sqlite&logoColor=white)](https://www.sqlite.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Prod%20opcional-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Render](https://img.shields.io/badge/Render-Deploy-46E3B7?logo=render&logoColor=black)](https://render.com/)
+[![Gunicorn](https://img.shields.io/badge/Gunicorn-WSGI-499848?logo=gunicorn&logoColor=white)](https://gunicorn.org/)
 [![WhiteNoise](https://img.shields.io/badge/WhiteNoise-Static%20files-111111)](https://whitenoise.readthedocs.io/)
 
 **Duel Monsters** es un prototipo web de combate táctico por turnos inspirado en criaturas, cartas coleccionables y duelos contra IA. El proyecto está construido con Django como servidor liviano y una experiencia de juego que corre principalmente en el navegador con JavaScript vanilla.

@@ -283,11 +283,25 @@ python manage.py collectstatic --noinput
 El repositorio incluye configuración para Render:
 
 - `render.yaml` define el servicio web Python.
-- `build.sh` instala dependencias y ejecuta `collectstatic`.
+- `build.sh` instala dependencias, descarga los binarios reales de Git LFS si el checkout dejó punteros en `public/images/`, y ejecuta `collectstatic`.
 - `preDeployCommand` ejecuta migraciones y seed del catálogo.
 - `gunicorn do_fu_ioh.wsgi:application` sirve la app en producción.
 
 La carpeta `.staticfiles/` es el artefacto único de `collectstatic` y se regenera en build.
+
+### Imágenes y Git LFS
+
+Las imágenes de cartas viven en `public/images/` y están versionadas con Git LFS. Si las cartas se ven rotas en local, Codespaces, Render o GitLab, el checkout probablemente contiene punteros de texto de Git LFS en vez de los archivos PNG reales.
+
+Para arreglar un entorno local o Codespaces:
+
+```bash
+git lfs install
+git lfs pull
+python manage.py collectstatic --noinput
+```
+
+Para replicar el repo en GitLab y desplegar en Render desde GitLab, asegurate de migrar también los objetos de Git LFS, no solo el historial Git normal. El build falla con un mensaje explícito si todavía detecta punteros LFS en `public/images/`, para evitar publicar imágenes corruptas.
 
 ## Tests existentes
 

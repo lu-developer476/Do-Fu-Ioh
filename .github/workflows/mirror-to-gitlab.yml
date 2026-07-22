@@ -1,0 +1,39 @@
+name: Mirror GitHub to GitLab
+
+on:
+  push:
+    branches:
+      - '**'
+    tags:
+      - '**'
+  workflow_dispatch:
+
+env:
+  GITLAB_USERNAME: lu-developer476
+  GITLAB_PROJECT_PATH: lu-developer476/Dofus-Duelists
+
+jobs:
+  mirror:
+    name: Push refs to GitLab
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository without LFS
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: false
+
+      - name: Configure GitLab remote
+        run: |
+          git remote remove gitlab 2>/dev/null || true
+          git remote add gitlab "https://${GITLAB_USERNAME}:${{ secrets.GITLAB_TOKEN }}@gitlab.com/${GITLAB_PROJECT_PATH}.git"
+
+      - name: Mirror pushed branch
+        if: github.ref_type == 'branch'
+        run: |
+          git push gitlab "HEAD:${GITHUB_REF_NAME}" --force-with-lease
+
+      - name: Mirror pushed tag
+        if: github.ref_type == 'tag'
+        run: |
+          git push gitlab "refs/tags/${GITHUB_REF_NAME}:refs/tags/${GITHUB_REF_NAME}" --force

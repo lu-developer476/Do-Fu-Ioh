@@ -10,7 +10,7 @@ on:
 
 env:
   GITLAB_USERNAME: lu-developer476
-  GITLAB_PROJECT_PATH: lu-developer476/Dofus-Duelists
+  GITLAB_PROJECT_PATH: lu-developer476/Monster-Duelists
 
 jobs:
   mirror:
@@ -31,6 +31,7 @@ jobs:
       - name: Mirror pushed branch
         if: github.ref_type == 'branch'
         run: |
+          git fetch gitlab "${GITHUB_REF_NAME}" || true
           git push gitlab "HEAD:${GITHUB_REF_NAME}" --force-with-lease
 
       - name: Mirror pushed tag

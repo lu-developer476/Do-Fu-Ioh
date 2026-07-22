@@ -337,3 +337,9 @@ La suite actual cubre especialmente el catálogo y reglas de datos:
 ## Licencia
 
 Este proyecto incluye un archivo `LICENSE`. Revisalo antes de reutilizar código, datos o assets fuera del repositorio.
+
+## Mirror automático GitHub → GitLab
+
+El repo incluye un workflow de GitHub Actions que replica cada push de GitHub hacia GitLab. Para activarlo, crear en GitHub un secret de Actions llamado `GITLAB_TOKEN` con un Personal Access Token de GitLab que tenga permiso `write_repository` sobre `lu-developer476/Monster-Duelists`.
+
+El workflow no descarga Git LFS desde GitHub; replica las referencias Git para evitar bloquearse cuando GitHub LFS excede la cuota gratuita.

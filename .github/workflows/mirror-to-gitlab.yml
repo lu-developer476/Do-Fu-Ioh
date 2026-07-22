@@ -8,14 +8,18 @@ on:
       - '**'
   workflow_dispatch:
 
-env:
-  GITLAB_USERNAME: lu-developer476
-  GITLAB_PROJECT_PATH: lu-developer476/Monster-Duelists
+concurrency:
+  group: mirror-gitlab-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   mirror:
     name: Push refs to GitLab
     runs-on: ubuntu-latest
+    env:
+      GITLAB_MIRROR_URL: ${{ secrets.GITLAB_MIRROR_URL }}
+      GITLAB_MIRROR_TOKEN: ${{ secrets.GITLAB_MIRROR_TOKEN }}
+      GITLAB_MIRROR_USERNAME: ${{ secrets.GITLAB_MIRROR_USERNAME }}
     steps:
       - name: Checkout repository without LFS
         uses: actions/checkout@v4
@@ -23,18 +27,71 @@ jobs:
           fetch-depth: 0
           lfs: false
 
-      - name: Configure GitLab remote
+      - name: Validate GitLab mirror configuration
+        shell: bash
         run: |
+          set -euo pipefail
+
+          if [[ -z "${GITLAB_MIRROR_URL}" ]]; then
+            echo "Error: falta configurar el secret GITLAB_MIRROR_URL con la URL HTTPS exacta del repositorio GitLab terminada en .git." >&2
+            exit 1
+          fi
+
+          if [[ -z "${GITLAB_MIRROR_TOKEN}" ]]; then
+            echo "Error: falta configurar el secret GITLAB_MIRROR_TOKEN con un token de GitLab con permiso write_repository." >&2
+            exit 1
+          fi
+
+          if [[ "${GITLAB_MIRROR_URL}" != https://* ]]; then
+            echo "Error: GITLAB_MIRROR_URL debe comenzar con https://. Copiá la URL desde GitLab → Code → Clone with HTTPS." >&2
+            exit 1
+          fi
+
+          if [[ "${GITLAB_MIRROR_URL}" != *.git ]]; then
+            echo "Error: GITLAB_MIRROR_URL debe terminar en .git. Copiá la URL exacta desde GitLab → Code → Clone with HTTPS." >&2
+            exit 1
+          fi
+
+          mirror_username="${GITLAB_MIRROR_USERNAME:-lu-developer476}"
+          auth_header="Authorization: Basic $(printf '%s:%s' "${mirror_username}" "${GITLAB_MIRROR_TOKEN}" | base64 -w 0)"
+
+          echo "::add-mask::${GITLAB_MIRROR_TOKEN}"
+          echo "::add-mask::${auth_header}"
+
           git remote remove gitlab 2>/dev/null || true
-          git remote add gitlab "https://${GITLAB_USERNAME}:${{ secrets.GITLAB_TOKEN }}@gitlab.com/${GITLAB_PROJECT_PATH}.git"
+          git remote add gitlab "${GITLAB_MIRROR_URL}"
+
+          if ! git -c http.extraheader="${auth_header}" ls-remote --heads --tags gitlab >/dev/null; then
+            echo "Error: el repositorio GitLab no respondió a git ls-remote. Verificá GITLAB_MIRROR_URL, GITLAB_MIRROR_USERNAME y GITLAB_MIRROR_TOKEN." >&2
+            exit 1
+          fi
 
       - name: Mirror pushed branch
         if: github.ref_type == 'branch'
+        shell: bash
         run: |
-          git fetch gitlab "${GITHUB_REF_NAME}" || true
-          git push gitlab "HEAD:${GITHUB_REF_NAME}" --force-with-lease
+          set -euo pipefail
+
+          mirror_username="${GITLAB_MIRROR_USERNAME:-lu-developer476}"
+          auth_header="Authorization: Basic $(printf '%s:%s' "${mirror_username}" "${GITLAB_MIRROR_TOKEN}" | base64 -w 0)"
+          branch="${GITHUB_REF_NAME}"
+
+          git -c http.extraheader="${auth_header}" fetch gitlab \
+            "+refs/heads/${branch}:refs/remotes/gitlab/${branch}" || true
+
+          git -c http.extraheader="${auth_header}" push gitlab \
+            "HEAD:refs/heads/${branch}" \
+            --force-with-lease
 
       - name: Mirror pushed tag
         if: github.ref_type == 'tag'
+        shell: bash
         run: |
-          git push gitlab "refs/tags/${GITHUB_REF_NAME}:refs/tags/${GITHUB_REF_NAME}" --force
+          set -euo pipefail
+
+          mirror_username="${GITLAB_MIRROR_USERNAME:-lu-developer476}"
+          auth_header="Authorization: Basic $(printf '%s:%s' "${mirror_username}" "${GITLAB_MIRROR_TOKEN}" | base64 -w 0)"
+          tag="${GITHUB_REF_NAME}"
+
+          git -c http.extraheader="${auth_header}" push gitlab \
+            "refs/tags/${tag}:refs/tags/${tag}"

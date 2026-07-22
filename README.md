@@ -340,6 +340,14 @@ Este proyecto incluye un archivo `LICENSE`. Revisalo antes de reutilizar código
 
 ## Mirror automático GitHub → GitLab
 
-El repo incluye un workflow de GitHub Actions que replica cada push de GitHub hacia GitLab. Para activarlo, crear en GitHub un secret de Actions llamado `GITLAB_TOKEN` con un Personal Access Token de GitLab que tenga permiso `write_repository` sobre `lu-developer476/Monster-Duelists`.
+El repo incluye un workflow de GitHub Actions que replica automáticamente los pushes de GitHub hacia GitLab. No cambies ni intentes renombrar el path del proyecto en GitLab: el mirror debe apuntar al repositorio existente mediante la URL HTTPS exacta que GitLab muestra en **Code → Clone with HTTPS**. Esa URL debe copiarse completa, incluyendo el sufijo `.git`.
 
-El workflow no descarga Git LFS desde GitHub; replica las referencias Git para evitar bloquearse cuando GitHub LFS excede la cuota gratuita.
+Configurá los secrets en GitHub desde **Settings → Secrets and variables → Actions**:
+
+- `GITLAB_MIRROR_URL`: URL HTTPS exacta del repositorio GitLab, terminada en `.git`.
+- `GITLAB_MIRROR_TOKEN`: token de GitLab con permiso `write_repository`.
+- `GITLAB_MIRROR_USERNAME`: usuario asociado al token. Es opcional; si queda vacío, el workflow usa `lu-developer476`.
+
+El workflow replica pushes a cualquier branch y a cualquier tag. Cuando se mergea un Pull Request a `main`, GitHub genera un nuevo push sobre `main` y ese push también se replica a GitLab.
+
+El checkout del workflow usa `fetch-depth: 0` y `lfs: false`, por lo que no descarga objetos de Git LFS durante el mirror; sólo replica referencias Git. Si una branch está protegida en GitLab, GitLab puede rechazar un push no fast-forward aunque el workflow use `--force-with-lease` para evitar sobrescrituras incondicionales.

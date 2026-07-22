@@ -350,4 +350,15 @@ Configurá los secrets en GitHub desde **Settings → Secrets and variables → 
 
 El workflow replica pushes a cualquier branch y a cualquier tag. Cuando se mergea un Pull Request a `main`, GitHub genera un nuevo push sobre `main` y ese push también se replica a GitLab.
 
-El checkout del workflow usa `fetch-depth: 0` y `lfs: false`, por lo que no descarga objetos de Git LFS durante el mirror; sólo replica referencias Git. Si una branch está protegida en GitLab, GitLab puede rechazar un push no fast-forward aunque el workflow use `--force-with-lease` para evitar sobrescrituras incondicionales.
+El mirror replica tanto las referencias Git como los objetos de Git LFS necesarios para el commit que disparó el workflow. El checkout mantiene `fetch-depth: 0` y `lfs: false` para evitar un smudge automático inicial, pero antes de actualizar el branch o tag en GitLab el workflow ejecuta esta secuencia obligatoria:
+
+1. Comprueba que `git-lfs` esté disponible.
+2. Ejecuta `git lfs install --local`.
+3. Descarga desde `origin` en GitHub los objetos LFS requeridos por `HEAD` con `git lfs fetch origin HEAD`.
+4. Verifica los objetos locales con `git lfs fsck`.
+5. Carga esos objetos a GitLab con `git lfs push gitlab HEAD` usando autenticación por `http.extraheader`.
+6. Recién después empuja la referencia Git del branch o tag hacia GitLab.
+
+Este orden evita que Render detecte un commit nuevo en GitLab y lo clone antes de que las imágenes reales estén disponibles. Si GitHub LFS no entrega los objetos por cuota, disponibilidad o permisos, el mirror se detiene y no empuja la referencia Git. Si GitLab rechaza o no recibe los objetos LFS, también se detiene el mirror. No desactives `git lfs fsck` ni ocultes errores de `git lfs fetch`, `git lfs fsck` o `git lfs push`: esa validación impide que Render reciba commits con punteros LFS sin binarios.
+
+Si una branch está protegida en GitLab, GitLab puede rechazar un push no fast-forward aunque el workflow use `--force-with-lease` para evitar sobrescrituras incondicionales.

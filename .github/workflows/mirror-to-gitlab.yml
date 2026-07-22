@@ -66,6 +66,36 @@ jobs:
             exit 1
           fi
 
+      - name: Sync Git LFS objects to GitLab
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if ! command -v git-lfs >/dev/null 2>&1; then
+            echo "Error: git-lfs no está disponible en el runner. No se puede sincronizar Git LFS hacia GitLab." >&2
+            exit 1
+          fi
+
+          mirror_username="${GITLAB_MIRROR_USERNAME:-lu-developer476}"
+          auth_header="Authorization: Basic $(printf '%s:%s' "${mirror_username}" "${GITLAB_MIRROR_TOKEN}" | base64 -w 0)"
+
+          echo "::add-mask::${GITLAB_MIRROR_TOKEN}"
+          echo "::add-mask::${auth_header}"
+
+          git lfs install --local
+
+          if ! git lfs fetch origin HEAD; then
+            echo "Error: GitHub no entregó los objetos Git LFS requeridos por HEAD. Revisá la cuota, disponibilidad o permisos de Git LFS en GitHub antes de reintentar el mirror." >&2
+            exit 1
+          fi
+
+          git lfs fsck
+
+          if ! git -c http.extraheader="${auth_header}" lfs push gitlab HEAD; then
+            echo "Error: GitLab rechazó o no recibió los objetos Git LFS. No se actualizará la referencia Git para evitar que Render clone un commit incompleto." >&2
+            exit 1
+          fi
+
       - name: Mirror pushed branch
         if: github.ref_type == 'branch'
         shell: bash
